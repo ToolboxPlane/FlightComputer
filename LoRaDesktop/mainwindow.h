@@ -7,8 +7,6 @@
 #include <QtSerialPort/QSerialPortInfo>
 #include <QtSerialPort>
 
-#include "RadioControlProtocol/rcLib.hpp"
-
 namespace Ui {
 class MainWindow;
 }

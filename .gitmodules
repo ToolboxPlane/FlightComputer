@@ -1,0 +1,3 @@
+[submodule "FlightComputerSerial/RadioControlProtocol"]
+	path = FlightComputerSerial/RadioControlProtocol
+	url = git@github.com:ToolboxPlane/RadioControlProtocol.git

@@ -24,11 +24,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    RadioControlProtocol/rcLib.cpp
+        mainwindow.cpp
 
-HEADERS  += mainwindow.h \
-    ../../LoRaLib/lib.hpp \
-    RadioControlProtocol/rcLib.hpp
+HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui

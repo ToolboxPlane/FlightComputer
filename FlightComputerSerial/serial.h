@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QtSerialPort/QtSerialPort>
+#include "RadioControlProtocol/rcLib.hpp"
 
 class Serial : public QObject
 {
@@ -13,16 +14,17 @@ public:
 signals:
 
 public slots:
-    Q_SCRIPTABLE QString test(const QString &arg);
     Q_SCRIPTABLE int getChannel(int channel);
-    Q_SCRIPTABLE bool setChannel(int channel, int val);
+    Q_SCRIPTABLE void setChannel(int channel, int val);
+    Q_SCRIPTABLE int getRoll();
 
 private slots:
     void read();
+    void send();
 
 private:
     QSerialPort* serial;
-
+    rcLib::Package pkgIn, pkgOut;
 };
 
 #endif // SERIAL_H

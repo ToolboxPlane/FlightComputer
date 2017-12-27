@@ -8,7 +8,9 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    serial.cpp
+    serial.cpp \
+    RadioControlProtocol/rcLib.cpp
 
 HEADERS += \
-    serial.h
+    serial.h \
+    RadioControlProtocol/rcLib.hpp

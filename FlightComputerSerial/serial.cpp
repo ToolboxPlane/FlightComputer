@@ -15,32 +15,51 @@ Serial::Serial(QString port, int baud)
 
         QObject::connect(serial, SIGNAL(readyRead()), this, SLOT(read()));
 
-        //ui->btnConnect->setEnabled(false);
-        //ui->buttonTransmit->setEnabled(true);
+        pkgOut = rcLib::Package(1024, 8);
+        QTimer *timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(send()));
+        timer->start(20);
+
     } else {
         serial->close();
-        //ui->textBrowser->append("Cannot connect to serial port");
+        qDebug() << "Cannot connect to serial port";
     }
-}
-
-QString Serial::test(const QString &arg)
-{
-    return "true";
 }
 
 int Serial::getChannel(int channel)
 {
-    return channel * channel;
+    return pkgIn.getChannel(channel);
+    printf("getChannel(%d)\n", channel);
 }
 
-bool Serial::setChannel(int channel, int val)
+void Serial::setChannel(int channel, int val)
 {
-    printf("Channel %d set to %d\n", channel, val);
-    return true;
+    pkgOut.setChannel(channel, val);
+    printf("setChannel(%d, %d)\n", channel, val);
+}
+
+/*
+ * This is just an example
+ */
+int Serial::getRoll()
+{
+    return pkgIn.getChannel(2);
 }
 
 void Serial::read()
 {
+    static rcLib::Package pkgInNew;
+    QByteArray data = serial->readAll();
 
+    for(int c=0; c<data.length(); c++){
+        if(pkgInNew.decode(data[c])){
+            pkgIn = pkgInNew;
+        }
+    }
+}
+
+void Serial::send()
+{
+    serial->write((char*)pkgOut.getEncodedData(), pkgOut.encode());
 }
 
