@@ -22,24 +22,7 @@ int main(int argc, char *argv[])
     }
 
     Serial serial("/dev/ttyACM0", 9600);
-    QDBusConnection::sessionBus().registerObject("/flightcontroller", &serial, QDBusConnection::ExportAllSlots);
-
-
-   /* QDBusInterface iface("de.toolbox-bodensee.plane", "/", "", QDBusConnection::sessionBus());
-    if (iface.isValid()) {
-        QDBusMessage msg;
-       /*QDBusReply<QString> reply = iface.call("ping", argc > 1 ? argv[1] : "");
-       if (reply.isValid()) {
-           printf("Reply was: %s\n", qPrintable(reply.value()));
-           return 0;
-       }
-
-       fprintf(stderr, "Call failed: %s\n", qPrintable(reply.error().message()));
-       return 1;
-    }
-
-    fprintf(stderr, "%s\n",
-           qPrintable(QDBusConnection::sessionBus().lastError().message()));*/
+    QDBusConnection::sessionBus().registerObject("/serial", &serial, QDBusConnection::ExportAllSlots);
 
     return a.exec();
 }

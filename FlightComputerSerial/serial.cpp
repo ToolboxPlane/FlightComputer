@@ -38,14 +38,6 @@ void Serial::setChannel(int channel, int val)
     printf("setChannel(%d, %d)\n", channel, val);
 }
 
-/*
- * This is just an example
- */
-int Serial::getRoll()
-{
-    return pkgIn.getChannel(2);
-}
-
 void Serial::read()
 {
     static rcLib::Package pkgInNew;
