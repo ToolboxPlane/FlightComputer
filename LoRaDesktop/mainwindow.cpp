@@ -14,6 +14,10 @@ MainWindow::MainWindow(QWidget *parent) :
         exit(1);
     }
 
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(getData()));
+    timer->start(100);
+
 }
 
 MainWindow::~MainWindow()
@@ -21,7 +25,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::read()
+/*void MainWindow::read()
 {
     QString text;
 
@@ -36,7 +40,7 @@ void MainWindow::read()
     }
 
     ui->textReceive->setHtml(text);
-}
+}*/
 
 void MainWindow::on_buttonTransmit_clicked()
 {
@@ -48,4 +52,21 @@ void MainWindow::on_buttonTransmit_clicked()
             qDebug() << reply.error();
         }
     }
+}
+
+void MainWindow::getData()
+{
+    QString text;
+
+    for(int c=0; c<8; c++) {
+        QDBusReply<int> reply = dbusInterface.call("getChannel", c);
+        if (reply.isValid()) {
+            text += "Channel " + QString::number(c) + ": " + QString::number(reply.value()) + "<br>";
+        } else {
+            qDebug() << "Error:" << reply.error();
+            return;
+        }
+    }
+
+    ui->textReceive->setHtml(text);
 }

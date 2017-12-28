@@ -19,9 +19,9 @@ public:
     ~MainWindow();
 
 private slots:
-    void read();
-
     void on_buttonTransmit_clicked();
+
+    void getData();
 
 private:
     Ui::MainWindow *ui;
