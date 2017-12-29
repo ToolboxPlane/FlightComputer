@@ -25,23 +25,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-/*void MainWindow::read()
-{
-    QString text;
-
-    for(int c=0; c<8; c++) {
-        QDBusReply<bool> reply = dbusInterface.call("getChannel", c);
-        if (reply.isValid()) {
-            text += "Channel " + QString::number(c) + ": " + reply.value() + "<br>";
-        } else {
-            qDebug() << "Error:" << reply.error();
-            return;
-        }
-    }
-
-    ui->textReceive->setHtml(text);
-}*/
-
 void MainWindow::on_buttonTransmit_clicked()
 {
     QStringList lines = ui->textBrowserTransmit->toPlainText().split(QRegExp("[\n]"),QString::SkipEmptyParts);
@@ -58,7 +41,12 @@ void MainWindow::getData()
 {
     QString text;
 
-    for(int c=0; c<8; c++) {
+    QDBusReply<int> channelsReply = dbusInterface.call("getNumberOfChannels");
+    if(!channelsReply.isValid()) {
+        return;
+    }
+
+    for(int c=0; c<channelsReply.value(); c++) {
         QDBusReply<int> reply = dbusInterface.call("getChannel", c);
         if (reply.isValid()) {
             text += "Channel " + QString::number(c) + ": " + QString::number(reply.value()) + "<br>";

@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
     }
 
     Serial serial("/dev/ttyACM0", 9600);
+
     QDBusConnection::sessionBus().registerObject("/serial", &serial, QDBusConnection::ExportAllSlots);
 
     return a.exec();

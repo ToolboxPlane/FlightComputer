@@ -16,6 +16,7 @@ signals:
 public slots:
     Q_SCRIPTABLE int getChannel(int channel);
     Q_SCRIPTABLE void setChannel(int channel, int val);
+    Q_SCRIPTABLE int getNumberOfChannels();
 
 private slots:
     void read();

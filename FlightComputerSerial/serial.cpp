@@ -16,30 +16,32 @@ Serial::Serial(QString port, int baud)
         QObject::connect(serial, SIGNAL(readyRead()), this, SLOT(read()));
 
         pkgOut = rcLib::Package(1024, 8);
-        for(int c=0; c<8; c++) {
+        for(int c=0; c<pkgOut.getChannelCount(); c++) {
             pkgOut.setChannel(c, 1023);
         }
 
         QTimer *timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(send()));
         timer->start(500);
-
     } else {
         serial->close();
-        qDebug() << "Cannot connect to serial port";
+        qDebug() << "Cannot connect to serial port " << port;
     }
 }
 
 int Serial::getChannel(int channel)
 {
-    printf("getChannel(%d)\n", channel);
     return pkgIn.getChannel(channel);
 }
 
 void Serial::setChannel(int channel, int val)
 {
     pkgOut.setChannel(channel, val);
-    printf("setChannel(%d, %d)\n", channel, val);
+}
+
+int Serial::getNumberOfChannels()
+{
+    return pkgIn.getChannelCount();
 }
 
 void Serial::read()
@@ -49,8 +51,8 @@ void Serial::read()
 
     for(int c=0; c<data.length(); c++){
         if(pkgInNew.decode(data[c])){
+            qDebug() << "New Package from" << pkgInNew.getDeviceId();
             pkgIn = pkgInNew;
-            //qDebug() << "New Package from: " << pkgIn.getDeviceId();
         }
     }
 }
