@@ -20,7 +20,7 @@ var dbusPath string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "cli",
+	Use:   "serialDbus",
 	Short: "Decodes RadioControlProtocol packages from a serial interfaces and broadcasts them to dbus.",
 	Long: `SerialDbus connects to a serial port, decodes the incoming bytes to packages using rcLib.
 The decoded Packages will be sent json encoded as a dbus signal.`,
