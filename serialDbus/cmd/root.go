@@ -21,13 +21,9 @@ var dbusPath string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "cli",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Decodes RadioControlProtocol packages from a serial interfaces and broadcasts them to dbus.",
+	Long: `SerialDbus connects to a serial port, decodes the incoming bytes to packages using rcLib.
+The decoded Packages will be sent json encoded as a dbus signal.`,
 	Run: RunRoot,
 }
 
@@ -41,11 +37,11 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().StringVarP(&serialPort, "serialPort", "D", "/dev/ttyACM0", "Help message for toggle")
-	rootCmd.Flags().IntVarP(&baudRate, "baud", "b", 9600, "Help message for toggle")
-	rootCmd.Flags().StringVarP(&dbusInterface, "interface", "i", "de.toolboxbodensee.plane", "Help message for toggle")
-	rootCmd.Flags().StringVarP(&dbusSignalName, "signalName", "n", "onRcPackageReceived", "Help message for toggle")
-	rootCmd.Flags().StringVarP(&dbusPath, "path", "p", "/rcdata", "Help message for toggle")
+	rootCmd.Flags().StringVarP(&serialPort, "serialPort", "D", "/dev/ttyACM0", "Path to serial port")
+	rootCmd.Flags().IntVarP(&baudRate, "baud", "b", 9600, "Serial port baud rate")
+	rootCmd.Flags().StringVarP(&dbusInterface, "interface", "i", "de.toolboxbodensee.plane", "Dbus interface name")
+	rootCmd.Flags().StringVarP(&dbusSignalName, "signalName", "n", "onRcPackageReceived", "Dbus signal name")
+	rootCmd.Flags().StringVarP(&dbusPath, "path", "p", "/rcdata", "Dbus object path")
 }
 
 var conn *dbus.Conn
