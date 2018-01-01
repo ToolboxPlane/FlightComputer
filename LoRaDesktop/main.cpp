@@ -8,9 +8,10 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     if (!QDBusConnection::sessionBus().isConnected()) {
-        fprintf(stderr, "Cannot connect to the D-Bus session bus.\n"
-                "To start it, run:\n"
-                "\teval `dbus-launch --auto-syntax`\n");
+        qDebug() << "Cannot connect to the D-Bus session bus.\n"
+                       << "To start it, run:\n"
+                       << "\teval `dbus-launch --auto-syntax`\n";
+
         return 1;
     }
 

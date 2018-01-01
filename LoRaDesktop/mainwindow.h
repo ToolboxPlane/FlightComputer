@@ -4,6 +4,8 @@
 #include <QMainWindow>
 
 #include <QtDBus/QtDBus>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 
 namespace Ui {
@@ -21,7 +23,7 @@ public:
 private slots:
     void on_buttonTransmit_clicked();
 
-    void getData();
+    void dbusSignalReceived(QString);
 
 private:
     Ui::MainWindow *ui;
