@@ -45,6 +45,12 @@ void MainWindow::paintEvent(QPaintEvent *event){
                 QString::number(y/10.0 * samplesOnScreen));
     }
 
+    for(int c=0; c<channelCount; c++) {
+        painter.setPen(QPen(CHANNEL_COLORS[c%8], 2));
+        painter.drawText(viewPortWidth-72, OFFSET + (c + 1) * 12,
+                "Channel: " + QString::number(c));
+    }
+
     // Update Data
     for(int c=0; c<channelCount; c++) {
         for(int s=1; s<samplesOnScreen; s++) {
@@ -55,7 +61,7 @@ void MainWindow::paintEvent(QPaintEvent *event){
 
     // Draw Data
     for(int c=0; c<channelCount; c++) {
-        painter.setPen(QPen(CHANNEL_COLORS[c], 2));
+        painter.setPen(QPen(CHANNEL_COLORS[c%8], 2));
         for(int s=1; s<samplesOnScreen; s++) {
             painter.drawLine((s-1) * (viewPortWidth) / samplesOnScreen,
                              OFFSET + viewPortHeight - channelDataBuffer[c][s-1] * viewPortHeight / resolution,
@@ -83,13 +89,14 @@ void MainWindow::dbusSignalReceived(QString value)
 
     if(ui->spinTransmitterIdFilter->value() == tid) {
         channelCount = config.value("ChannelCount").toInt(-1);
-        resolution = config.value("Resolution").toInt(-1);
+        resolution = 1024;//config.value("Resolution").toInt(-1); //@TODO Change to Resolution
 
         channelData.resize(channelCount);
         channelDataBuffer.resize(channelCount);
 
+        samplesOnScreen = ui->spinSamplesOnScreen->value();
         for(int c=0; c<channelCount; c++) {
-            channelData[c] = c==0?channel.at(c).toInt(-1):512;
+            channelData[c] = channel.at(c).toInt(-1);
             channelDataBuffer[c].resize(samplesOnScreen);
         }
     }

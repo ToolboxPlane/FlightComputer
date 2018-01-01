@@ -38,7 +38,7 @@ private:
     QVector<QVector<int> > channelDataBuffer;
 
     int resolution = 0;
-    const int OFFSET = 48;
+    const int OFFSET = 64;
 
     int samplesOnScreen = 20;
 };
