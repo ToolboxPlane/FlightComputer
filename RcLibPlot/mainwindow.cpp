@@ -27,6 +27,27 @@ void MainWindow::paintEvent(QPaintEvent *event){
     // Background
     painter.fillRect(0,OFFSET,viewPortWidth,viewPortHeight, Qt::white);
 
+    // Update Data
+    if(!pause) {
+        for(int c=0; c<channelCount; c++) {
+            for(int s=1; s<samplesOnScreen; s++) {
+                channelDataBuffer[c][s-1] = channelDataBuffer[c][s];
+            }
+            channelDataBuffer[c][samplesOnScreen-1] = channelData[c];
+        }
+    }
+
+    // Draw Data
+    for(int c=0; c<channelCount; c++) {
+        painter.setPen(QPen(CHANNEL_COLORS[c%8], 2));
+        for(int s=1; s<samplesOnScreen; s++) {
+            painter.drawLine((s-1) * (viewPortWidth) / samplesOnScreen,
+                             OFFSET + viewPortHeight - channelDataBuffer[c][s-1] * viewPortHeight / resolution,
+                             s * (viewPortWidth) / samplesOnScreen,
+                             OFFSET + viewPortHeight - channelDataBuffer[c][s] * viewPortHeight / resolution);
+        }
+    }
+
     // Axis
     painter.setPen(QPen(Qt::black, 4));
     painter.drawLine(0, OFFSET, 0, OFFSET + viewPortHeight);
@@ -39,35 +60,16 @@ void MainWindow::paintEvent(QPaintEvent *event){
 
     painter.drawLine(0, this->size().height(), this->size().width(),this->size().height());
     for(int y=0; y<10; y++) {
-        painter.drawLine(y * (viewPortWidth) / 10, OFFSET + viewPortHeight,
-                         y * (viewPortWidth) / 10, OFFSET + viewPortHeight-10);
-        painter.drawText(y * (viewPortWidth) / 10, OFFSET + viewPortHeight-12,
-                QString::number(y/10.0 * samplesOnScreen));
+        painter.drawLine(viewPortWidth - y * (viewPortWidth) / 10, OFFSET + viewPortHeight,
+                         viewPortWidth - y * (viewPortWidth) / 10, OFFSET + viewPortHeight-10);
+        painter.drawText(viewPortWidth - y * (viewPortWidth) / 10, OFFSET + viewPortHeight-12,
+                QString::number(-y/10.0 * samplesOnScreen));
     }
 
     for(int c=0; c<channelCount; c++) {
         painter.setPen(QPen(CHANNEL_COLORS[c%8], 2));
         painter.drawText(viewPortWidth-72, OFFSET + (c + 1) * 12,
                 "Channel: " + QString::number(c));
-    }
-
-    // Update Data
-    for(int c=0; c<channelCount; c++) {
-        for(int s=1; s<samplesOnScreen; s++) {
-            channelDataBuffer[c][s-1] = channelDataBuffer[c][s];
-        }
-        channelDataBuffer[c][samplesOnScreen-1] = channelData[c];
-    }
-
-    // Draw Data
-    for(int c=0; c<channelCount; c++) {
-        painter.setPen(QPen(CHANNEL_COLORS[c%8], 2));
-        for(int s=1; s<samplesOnScreen; s++) {
-            painter.drawLine((s-1) * (viewPortWidth) / samplesOnScreen,
-                             OFFSET + viewPortHeight - channelDataBuffer[c][s-1] * viewPortHeight / resolution,
-                             s * (viewPortWidth) / samplesOnScreen,
-                             OFFSET + viewPortHeight - channelDataBuffer[c][s] * viewPortHeight / resolution);
-        }
     }
 }
 
@@ -100,4 +102,10 @@ void MainWindow::dbusSignalReceived(QString value)
             channelDataBuffer[c].resize(samplesOnScreen);
         }
     }
+}
+
+void MainWindow::on_buttonPause_clicked()
+{
+    pause = !pause;
+    ui->buttonPause->setText(pause?"Resume":"Pause");
 }

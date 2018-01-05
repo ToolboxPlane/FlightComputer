@@ -26,6 +26,8 @@ protected:
 private slots:
     void dbusSignalReceived(QString);
 
+    void on_buttonPause_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -38,9 +40,11 @@ private:
     QVector<QVector<int> > channelDataBuffer;
 
     int resolution = 0;
-    const int OFFSET = 64;
+    const int OFFSET = 40;
 
     int samplesOnScreen = 20;
+
+    bool pause = false;
 };
 
 #endif // MAINWINDOW_H
