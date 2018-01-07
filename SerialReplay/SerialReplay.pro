@@ -10,5 +10,5 @@ TEMPLATE = app
 SOURCES += main.cpp
 
 DISTFILES += \
-    testrecording
+    test.rec
 

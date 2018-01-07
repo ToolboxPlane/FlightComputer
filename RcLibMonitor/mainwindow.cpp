@@ -9,10 +9,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    if (!dbusInterface.isValid()) {
+    /*if (!dbusInterface.isValid()) {
         qDebug() << "Interface is not valid";
         exit(1);
-    }
+    }*/
 
     QDBusConnection::sessionBus().connect("", "/rcdata", "de.toolboxbodensee.plane", "onRcPackageReceived", this, SLOT(dbusSignalReceived(QString)));
 }

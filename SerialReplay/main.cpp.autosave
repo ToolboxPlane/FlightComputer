@@ -39,6 +39,8 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
+    
+    
     QFile inputFile("../SerialReplay/testrecording");
     if (!inputFile.open(QIODevice::ReadOnly))
     {
