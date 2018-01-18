@@ -4,3 +4,6 @@
 [submodule "LoRa/RadioControlProtocol"]
 	path = LoRa/RadioControlProtocol
 	url = https://github.com/ToolboxPlane/RadioControlProtocol
+[submodule "LoRaDbus/RadioControlProtocol"]
+	path = LoRaDbus/RadioControlProtocol
+	url = https://github.com/ToolboxPlane/RadioControlProtocol
