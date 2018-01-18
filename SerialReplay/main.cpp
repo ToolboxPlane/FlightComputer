@@ -35,7 +35,7 @@ void sendData(RecordingLine data, QString name, QString objectpath, bool debug) 
     QDBusMessage msg = QDBusMessage::createSignal(objectpath,name, realSignalName);
     QVariant content(data.data);
     msg << content;
-    QDBusConnection::sessionBus().send(msg);
+    QDBusConnection::systemBus().send(msg);
 }
 
 int main(int argc, char *argv[])

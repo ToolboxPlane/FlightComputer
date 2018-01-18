@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QDBusConnection::sessionBus().connect("", "/rcdata", "de.toolboxbodensee.plane", "onRcPackageReceived", this, SLOT(dbusSignalReceived(QString)));
+    QDBusConnection::systemBus().connect("", "/rcdata", "de.toolboxbodensee.plane", "onRcPackageReceived", this, SLOT(dbusSignalReceived(QString)));
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));

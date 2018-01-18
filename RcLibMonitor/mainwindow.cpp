@@ -5,7 +5,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    dbusInterface("de.toolboxbodensee.plane", "/serial", "", QDBusConnection::sessionBus())
+    dbusInterface("de.toolboxbodensee.plane", "/serial", "", QDBusConnection::systemBus())
 {
     ui->setupUi(this);
 
@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
         exit(1);
     }*/
 
-    QDBusConnection::sessionBus().connect("", "/rcdata", "de.toolboxbodensee.plane", "onRcPackageReceived", this, SLOT(dbusSignalReceived(QString)));
+    QDBusConnection::systemBus().connect("", "/rcdata", "de.toolboxbodensee.plane", "onRcPackageReceived", this, SLOT(dbusSignalReceived(QString)));
 }
 
 MainWindow::~MainWindow()

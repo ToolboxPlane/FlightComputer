@@ -48,11 +48,11 @@ var conn *dbus.Conn
 
 func RunRoot(cmd *cobra.Command, args []string) {
 	var err error
-	conn, err = dbus.SessionBus()
+	conn, err = dbus.SystemBus()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Successfully connected to SessionBus")
+	fmt.Println("Successfully connected to SystemBus")
 
 	_, err = conn.RequestName(dbusInterface, dbus.NameFlagDoNotQueue)
 	if err != nil {
