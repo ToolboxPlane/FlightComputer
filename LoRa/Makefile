@@ -35,7 +35,10 @@ RHGenericDriver.o: $(RADIOHEADBASE)/RHGenericDriver.cpp
 RHGenericSPI.o: $(RADIOHEADBASE)/RHGenericSPI.cpp
 				$(CC) $(CFLAGS) -c $(INCLUDE) $<
 
-rf95_server: rf95_server.o RH_RF95.o RasPi.o RHHardwareSPI.o RHGenericDriver.o RHGenericSPI.o RHSPIDriver.o
+rcLib.o: RadioControlProtocol/rcLib.cpp
+	$(CC) $(CFLAGS) -c RadioControlProtocol/rcLib.cpp
+
+rf95_server: rf95_server.o RH_RF95.o RasPi.o RHHardwareSPI.o RHGenericDriver.o RHGenericSPI.o RHSPIDriver.o rcLib.o
 				$(CC) $^ $(LIBS) -o rf95_server
 
 clean:

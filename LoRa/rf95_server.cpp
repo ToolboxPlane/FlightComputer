@@ -19,6 +19,8 @@
 #include <RH_RF69.h>
 #include <RH_RF95.h>
 
+#include "RadioControlProtocol/rcLib.hpp"
+
 // define hardware used change to fit your need
 // Uncomment the board you have, if not listed 
 // uncommment custom board and set wiring tin custom section
@@ -53,6 +55,9 @@ RH_RF95 rf95(RF_CS_PIN, RF_IRQ_PIN);
 
 //Flag for Ctrl-C
 volatile sig_atomic_t force_exit = false;
+
+rcLib::Package packageIn;
+rcLib::Package packageOut(1024, 8);
 
 void sig_handler(int sig)
 {
@@ -175,12 +180,17 @@ int main (int argc, const char* argv[] )
           int8_t rssi  = rf95.lastRssi();
           
           if (rf95.recv(buf, &len)) {
-            printf("Packet[%02d] #%d => #%d %ddB: ", len, from, to, rssi);
-            printbuffer(buf, len);
+            //printf("Packet[%02d] #%d => #%d %ddB: ", len, from, to, rssi);
+            //printbuffer(buf, len);
+            for(size_t c=0; c<len; c++) {
+                if(packageIn.decode(buf[c])) {
+                    printf("Channel: %d\t%d\t%d\t%d\n",packageIn.getChannel(0), packageIn.getChannel(1),packageIn.getChannel(2), packageIn.getChannel(3));
+                }
+            }
           } else {
             Serial.print("receive failed");
           }
-          printf("\n");
+          //printf("\n");
         }
         
 #ifdef RF_IRQ_PIN
