@@ -2,6 +2,7 @@
 #include <QtDBus>
 #include <QDebug>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include "LoRaHal.h"
 #include "RadioControlProtocol/rcLib.hpp"
@@ -21,7 +22,8 @@ int main(int argc, char *argv[])
             if(pkgIn.decode(lora.getData()[c])) {
                 qDebug() << "New Package " << pkgIn.getChannel(0) << pkgIn.getChannel(1) << pkgIn.getChannel(2);
                 QJsonObject json;
-                QJsonObject header, config, channel;
+                QJsonObject header, config;
+                QJsonArray channel;
                 header["Uid"] = 0;
                 header["TransmitterId"] = pkgIn.getDeviceId();
 
@@ -31,6 +33,10 @@ int main(int argc, char *argv[])
                 config["IsMeshPackage"] = pkgIn.isMesh();
                 config["Mesh"] = 0;
                 config["RoutingLength"] = 0;
+
+                for(size_t d=0; d<pkgIn.getChannelCount(); d++) {
+                    channel.append( pkgIn.getChannel(d));
+                }
 
                 json["Header"] = header;
                 json["Config"] = config;
