@@ -1,10 +1,18 @@
-#include "lorahal.h"
+#include "LoRaHal.h"
 
-LoRaHal::LoRaHal()
+#define BOARD_DRAGINO_PIHAT
+
+#include "RasPiBoards.h"
+
+// Our RFM95 Configuration
+#define RF_FREQUENCY  434.00
+#define RF_NODE_ID    1
+
+LoRaHal::LoRaHal() : rf95(RF_CS_PIN, RF_IRQ_PIN)
 {
     if (!bcm2835_init()) {
-        fprintf( stderr, "%s bcm2835_init() Failed\n\n", __BASEFILE__ );
-        return 1;
+        fprintf( stderr, "bcm2835_init() Failed\n\n");
+        return;
     }
 
     printf( "RF95 CS=GPIO%d", RF_CS_PIN);
@@ -70,44 +78,51 @@ LoRaHal::LoRaHal()
 
     // We're ready to listen for incoming message
     rf95.setModeRx();
+
+    buf = (uint8_t*)malloc(RH_RF95_MAX_MESSAGE_LEN);
 }
 
 void LoRaHal::waitForPackage()
 {
+    while(true) {
 #ifdef RF_IRQ_PIN
-    // We have a IRQ pin ,pool it instead reading
-    // Modules IRQ registers from SPI in each loop
+        // We have a IRQ pin ,pool it instead reading
+        // Modules IRQ registers from SPI in each loop
 
-    // Rising edge fired ?
-    if (bcm2835_gpio_eds(RF_IRQ_PIN)) {
-        // Now clear the eds flag by setting it to 1
-        bcm2835_gpio_set_eds(RF_IRQ_PIN);
-        //printf("Packet Received, Rising event detect for pin GPIO%d\n", RF_IRQ_PIN);
+        // Rising edge fired ?
+        if (bcm2835_gpio_eds(RF_IRQ_PIN)) {
+            // Now clear the eds flag by setting it to 1
+            bcm2835_gpio_set_eds(RF_IRQ_PIN);
+            //printf("Packet Received, Rising event detect for pin GPIO%d\n", RF_IRQ_PIN);
 #endif
 
-        if (rf95.available()) {
-            // Should be a message for us now
-            uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
-            uint8_t len  = sizeof(buf);
-            uint8_t from = rf95.headerFrom();
-            uint8_t to   = rf95.headerTo();
-            uint8_t id   = rf95.headerId();
-            uint8_t flags= rf95.headerFlags();;
-            int8_t rssi  = rf95.lastRssi();
+            if (rf95.available()) {
+                // Should be a message for us now
+//                uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
+//                uint8_t len  = sizeof(buf);
+                uint8_t from = rf95.headerFrom();
+                uint8_t to   = rf95.headerTo();
+                uint8_t id   = rf95.headerId();
+                uint8_t flags= rf95.headerFlags();;
+                int8_t rssi  = rf95.lastRssi();
 
-            if (!rf95.recv(buf, &len)) {
-                Serial.print("receive failed");
+                len = RH_RF95_MAX_MESSAGE_LEN;;
+                if (!rf95.recv(buf, &len)) {
+                    printf("Receive failed\n");
+                } else {
+                    return;
+                }
             }
-        }
 
 #ifdef RF_IRQ_PIN
-    }
+        }
 #endif
 
-    // Let OS doing other tasks
-    // For timed critical appliation you can reduce or delete
-    // this delay, but this will charge CPU usage, take care and monitor
-    bcm2835_delay(5);
+        // Let OS doing other tasks
+        // For timed critical appliation you can reduce or delete
+        // this delay, but this will charge CPU usage, take care and monitor
+        bcm2835_delay(5);
+    }
 }
 
 uint8_t *LoRaHal::getData()
