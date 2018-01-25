@@ -56,10 +56,17 @@ int main(int argc, char *argv[])
 
     parser.process(a);
 
+    if(parser.positionalArguments().size() <= 0) {
+        qDebug() << "Please enter a filename";
+        return 1;
+    }
+
+
     QFile inputFile(parser.positionalArguments()[0]);
     if (!inputFile.open(QIODevice::ReadOnly))
     {
         qDebug() << "Error opening File!";
+        return 1;
     }
 
     QTextStream in(&inputFile);
