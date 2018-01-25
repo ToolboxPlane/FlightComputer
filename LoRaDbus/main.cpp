@@ -20,7 +20,6 @@ int main(int argc, char *argv[])
         lora.waitForPackage();
         for(size_t c=0; c<lora.getLength(); c++) {
             if(pkgIn.decode(lora.getData()[c])) {
-                qDebug() << "New Package " << pkgIn.getChannel(0) << pkgIn.getChannel(1) << pkgIn.getChannel(2);
                 QJsonObject json;
                 QJsonObject header, config;
                 QJsonArray channel;
@@ -50,6 +49,8 @@ int main(int argc, char *argv[])
                 QVariant content(payload);
                 msg << content;
                 QDBusConnection::systemBus().send(msg);
+
+                qDebug() << payload;
             }
         }
     }
