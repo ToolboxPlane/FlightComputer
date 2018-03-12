@@ -9,6 +9,9 @@
 #include "Channel.hpp"
 
 template <typename T>class ChannelMultiplexer {
+public:
+    ChannelMultiplexer() = default;
+
     void addInput(Channel<T> &channel) {
         inChannel.push_back(channel);
     }
@@ -18,20 +21,20 @@ template <typename T>class ChannelMultiplexer {
     }
 
     void run() {
-        for(auto channel: inChannel) {
-            if(!channel.isClosed()) {
+        for(auto &channel: inChannel) {
+            if(!channel.get().isClosed()) {
                 T item;
-                while(channel.get(item, false)) {
+                while(channel.get().get(item, false)) {
                     sendAll(item);
                 }
             }
         }
     }
 private:
-    std::vector<Channel<T>> &inChannel, &outChannel;
+    std::vector<std::reference_wrapper<Channel<T>>> inChannel, outChannel;
     void sendAll(T item) {
-        for(auto channel: outChannel) {
-            channel.put(item);
+        for(auto &channel: outChannel) {
+            channel.get().put(item);
         }
     }
 };

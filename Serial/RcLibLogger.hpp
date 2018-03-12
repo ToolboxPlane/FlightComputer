@@ -8,10 +8,15 @@
 
 #include "RadioControlProtocol/rcLib.hpp"
 #include "../Channel.hpp"
+#include <ostream>
 
 class RcLibLogger {
 public:
-    RcLibLogger(Channel<rcLib::Package> channel, int fd = 1);
+    explicit RcLibLogger(Channel<rcLib::Package> &channel);
+    void run();
+
+private:
+    Channel<rcLib::Package> &channel;
 };
 
 

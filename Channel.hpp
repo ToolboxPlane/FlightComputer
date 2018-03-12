@@ -1,3 +1,6 @@
+#ifndef _CHANNEL_HPP_
+#define _CHANNEL_HPP_
+
 #include <list>
 #include <thread>
 #include <mutex>
@@ -40,3 +43,5 @@ public:
         return true;
     }
 };
+
+#endif
