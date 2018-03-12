@@ -6,18 +6,20 @@
 #define FLIGHTCOMPUTERMONOLITHIC_SERIAL_HPP
 
 #include "string"
-#include "Channel.hpp"
+#include "../Channel.hpp"
+#include "RadioControlProtocol/rcLib.hpp"
+#include <termios.h>
 
 class Serial {
 public:
-    Serial(const std::string& port, int baud, Channel in, Channel out);
+    Serial(const std::string& port, int baud, Channel<rcLib::Package>& in, Channel<rcLib::Package>& out);
     void run();
 
     void setBlocking(bool isBlocking);
     void setAttributes(int baud, int parity);
 private:
     int fd;
-    Channel in, out;
+    Channel<rcLib::Package> &in, &out;
 
 };
 

@@ -6,21 +6,48 @@
 #include <bits/ios_base.h>
 #include <termio.h>
 #include <cstring>
+#include <unistd.h>
+
 #include "Serial.hpp"
 
-Serial::Serial(const std::string& port, int baud, Channel in, Channel out) {
-    this->fd = open(port.c_str(), baud);
+#define BUF_SIZE 64
+
+Serial::Serial(const std::string& port, int baud, Channel<rcLib::Package> &in, Channel<rcLib::Package> &out)
+        : in(in), out(out){
+    this->fd = open(port.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
     if(this->fd < 0) {
         throw std::ios_base::failure("Error opening the serial port!");
     }
     this->setBlocking(false);
     this->setAttributes(baud, 0);
-    this->in = in;
-    this->out = out;
 }
 
 void Serial::run() {
-    
+    rcLib::Package toSend;
+    auto *received = new rcLib::Package();
+    uint8_t buf[BUF_SIZE];
+
+    while(!in.isClosed() && !out.isClosed()) {
+        ssize_t readed = read(this->fd, buf, sizeof(buf));
+        for(auto c=0; c<readed; c++) {
+            if(received->decode(buf[c])) {
+                out.put(*received);
+                received = new rcLib::Package();
+            }
+        }
+
+        if(in.get(toSend, false)) {
+            size_t length = toSend.encode();
+            ssize_t written = 0;
+            do {
+                ssize_t result = write(this->fd, toSend.getEncodedData(), length);
+                if(result < 0) {
+                    throw std::ios_base::failure("Error sending data via Serial");
+                }
+                written += result;
+            } while (written < length);
+        }
+    }
 }
 
 void Serial::setBlocking(bool isBlocking) {

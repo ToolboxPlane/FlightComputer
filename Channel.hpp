@@ -11,7 +11,8 @@ private:
     std::condition_variable cv;
     bool closed;
 public:
-    Channel() : closed(false) { }
+    Channel() : closed(false), m(), cv(), queue() { }
+
     void close() {
         std::unique_lock<std::mutex> lock(m);
         closed = true;
