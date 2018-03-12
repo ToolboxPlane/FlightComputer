@@ -4,3 +4,4 @@ build-*/
 *.rec
 *.autosave
 cmake-build-debug/
+.idea/
