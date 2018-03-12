@@ -12,14 +12,16 @@
 
 class Serial {
 public:
-    Serial(const std::string& port, int baud, Channel<rcLib::Package>& in, Channel<rcLib::Package>& out);
+    Serial(const std::string& port, int baud);
     void run();
 
     void setBlocking(bool isBlocking);
     void setAttributes(int baud, int parity);
+    Channel<rcLib::Package> &getChannelIn();
+    Channel<rcLib::Package> &getChannelOut();
 private:
     int fd;
-    Channel<rcLib::Package> &in, &out;
+    Channel<rcLib::Package> in, out;
 
 };
 

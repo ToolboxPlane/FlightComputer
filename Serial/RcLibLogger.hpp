@@ -12,11 +12,12 @@
 
 class RcLibLogger {
 public:
-    explicit RcLibLogger(Channel<rcLib::Package> &channel);
+    explicit RcLibLogger() = default;
     void run();
+    Channel<rcLib::Package> &getChannelIn();
 
 private:
-    Channel<rcLib::Package> &channel;
+    Channel<rcLib::Package> channel;
 };
 
 

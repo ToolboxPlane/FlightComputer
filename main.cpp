@@ -5,20 +5,18 @@
 #include "ChannelMultiplexer.hpp"
 
 int main() {
-    Channel<rcLib::Package> serialIn, serialOut;
-    Serial serial("/dev/ttyACM0", B9600, serialIn, serialOut);
+    Serial serial("/dev/ttyACM0", B9600);
 
-    Channel<rcLib::Package> rcLibDebug;
-    RcLibLogger rcLibLogger(rcLibDebug);
+    RcLibLogger rcLibLogger;
 
     ChannelMultiplexer<rcLib::Package> rcLibMultiplexer;
-    rcLibMultiplexer.addOutput(serialIn);
-    rcLibMultiplexer.addInput(serialOut);
-    rcLibMultiplexer.addOutput(rcLibDebug);
+    rcLibMultiplexer.addOutput(serial.getChannelIn());
+    rcLibMultiplexer.addInput(serial.getChannelOut());
+    rcLibMultiplexer.addOutput(rcLibLogger.getChannelIn());
 
-    auto rcLibLoggerHandle = std::async(std::launch::async, &RcLibLogger::run, rcLibLogger);
-    auto serialHandle = std::async(std::launch::async, &Serial::run, serial);
-    auto multiplexHandle = std::async(std::launch::async, &ChannelMultiplexer<rcLib::Package>::run, rcLibMultiplexer);
+    auto rcLibLoggerHandle = std::async(std::launch::async, &RcLibLogger::run, &rcLibLogger);
+    auto serialHandle = std::async(std::launch::async, &Serial::run, &serial);
+    auto multiplexHandle = std::async(std::launch::async, &ChannelMultiplexer<rcLib::Package>::run, &rcLibMultiplexer);
 
     while(1);
 }

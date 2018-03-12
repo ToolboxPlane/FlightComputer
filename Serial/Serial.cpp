@@ -12,8 +12,8 @@
 
 #define BUF_SIZE 64
 
-Serial::Serial(const std::string& port, int baud, Channel<rcLib::Package> &in, Channel<rcLib::Package> &out)
-        : in(in), out(out){
+Serial::Serial(const std::string& port, int baud)
+        : in(), out(){
     this->fd = open(port.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
     if(this->fd < 0) {
         throw std::ios_base::failure("Error opening the serial port!");
@@ -98,4 +98,12 @@ void Serial::setAttributes(int baud, int parity) {
     {
         throw std::ios_base::failure("Error setting term attributes");
     }
+}
+
+Channel<rcLib::Package> &Serial::getChannelIn() {
+    return this->in;
+}
+
+Channel<rcLib::Package> &Serial::getChannelOut() {
+    return this->out;
 }

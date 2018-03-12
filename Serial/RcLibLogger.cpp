@@ -3,11 +3,9 @@
 //
 
 #include <iostream>
+#include <future>
 #include "RcLibLogger.hpp"
 
-RcLibLogger::RcLibLogger(Channel<rcLib::Package> &channel)
-        : channel(channel){
-}
 
 void RcLibLogger::run() {
     while(!channel.isClosed()) {
@@ -24,4 +22,8 @@ void RcLibLogger::run() {
             std::cout << ")" << std::endl;
         }
     }
+}
+
+Channel<rcLib::Package> &RcLibLogger::getChannelIn() {
+    return channel;
 }
