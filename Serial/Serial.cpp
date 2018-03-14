@@ -13,7 +13,7 @@
 #define BUF_SIZE 64
 
 Serial::Serial(const std::string& port, int baud)
-        : in(), out(){
+        : in(), out(), ThreadModule() {
     this->fd = open(port.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
     if(this->fd < 0) {
         throw std::ios_base::failure("Error opening the serial port!");

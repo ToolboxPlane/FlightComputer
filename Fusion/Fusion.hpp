@@ -8,6 +8,7 @@
 
 #include "../Channel.hpp"
 #include "../Serial/RadioControlProtocol/rcLib.hpp"
+#include "../ThreadModule.hpp"
 
 struct state_t {
     double lat, lon;
@@ -23,10 +24,10 @@ enum ProcessingStatus {
     PROCESSED
 };
 
-class Fusion {
+class Fusion : ThreadModule {
 public:
-    Fusion() = default;
-    void run();
+    Fusion() : ThreadModule() {};
+    void run() override;
 
     Channel<rcLib::Package> &getSerialIn();
     Channel<rcLib::Package> &getLoRaIn();

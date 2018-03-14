@@ -7,10 +7,11 @@
 
 #include <vector>
 #include "Channel.hpp"
+#include "ThreadModule.hpp"
 
-template <typename T>class ChannelMultiplexer {
+template <typename T>class ChannelMultiplexer : ThreadModule{
 public:
-    ChannelMultiplexer() = default;
+    ChannelMultiplexer() : ThreadModule() {};
 
     void addInput(Channel<T> &channel) {
         inChannel.push_back(channel);
@@ -20,7 +21,7 @@ public:
         outChannel.push_back(channel);
     }
 
-    void run() {
+    void run() override {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
         while(true) {

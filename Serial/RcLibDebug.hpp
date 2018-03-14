@@ -8,14 +8,14 @@
 
 #include "RadioControlProtocol/rcLib.hpp"
 #include "../Channel.hpp"
+#include "../ThreadModule.hpp"
 #include <ostream>
 
-class RcLibDebug {
+class RcLibDebug : ThreadModule{
 public:
     explicit RcLibDebug(const std::string &tag = "RC-LIB");
-    void run();
+    void run() override;
     Channel<rcLib::Package> &getChannelIn();
-
 private:
     Channel<rcLib::Package> channel;
     std::string tag;

@@ -29,5 +29,5 @@ Channel<rcLib::Package> &RcLibDebug::getChannelIn() {
     return channel;
 }
 
-RcLibDebug::RcLibDebug(const std::string &tag) : tag(tag){
+RcLibDebug::RcLibDebug(const std::string &tag) : tag(tag), ThreadModule(){
 }

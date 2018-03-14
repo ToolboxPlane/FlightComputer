@@ -8,12 +8,13 @@
 #include "string"
 #include "../Channel.hpp"
 #include "RadioControlProtocol/rcLib.hpp"
+#include "../ThreadModule.hpp"
 #include <termios.h>
 
-class Serial {
+class Serial : ThreadModule {
 public:
     Serial(const std::string& port, int baud);
-    void run();
+    void run() override;
 
     void setBlocking(bool isBlocking);
     void setAttributes(int baud, int parity);
