@@ -9,5 +9,8 @@ make -j4
 sudo make check
 sudo make install
 
-#Qt-Installieren
-sudo apt-get install qt5-default 
+# Toolchain installieren
+
+# Program clonen
+
+# Program kompilieren
