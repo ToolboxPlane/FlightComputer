@@ -8,7 +8,7 @@
 #include <string>
 #include "Fusion.hpp"
 
-class FusionDebug : ThreadModule{
+class FusionDebug : public ThreadModule{
 public:
     explicit FusionDebug(const std::string &tag): tag(tag), ThreadModule() {}
     void run();

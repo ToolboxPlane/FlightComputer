@@ -11,7 +11,7 @@
 #include "../ThreadModule.hpp"
 #include <ostream>
 
-class RcLibDebug : ThreadModule{
+class RcLibDebug : public ThreadModule{
 public:
     explicit RcLibDebug(const std::string &tag = "RC-LIB");
     void run() override;

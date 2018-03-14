@@ -10,7 +10,7 @@
 #include "RadioControlProtocol/rcLib.hpp"
 #include "../ThreadModule.hpp"
 
-class SerialSimulator : ThreadModule{
+class SerialSimulator : public ThreadModule{
 public:
     SerialSimulator() : ThreadModule() {};
     void run() override;

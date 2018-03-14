@@ -11,10 +11,15 @@ Channel<state_t> &FusionDebug::getChannelIn() {
 
 void FusionDebug::run() {
     while(!in.isClosed()) {
-        state_t state;
+        state_t state{};
         if(in.get(state)) {
             std::cout << "[" << tag << "]\t";
-            std::cout << "Heading: " << state.heading << std::endl;
+            std::cout << "Heading: " << state.heading;
+            std::cout << "\tRoll: " << state.roll;
+            std::cout << "\tPitch: " << state.pitch;
+            std::cout << "\tHeight above ground: " << state.heightAboveGround;
+            std::cout << "\tHeight above sea: " << state.heightAboveSeaLevel;
+            std::cout << std::endl;
         }
     }
 }

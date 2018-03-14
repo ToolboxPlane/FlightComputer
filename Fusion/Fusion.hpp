@@ -24,7 +24,7 @@ enum ProcessingStatus {
     PROCESSED
 };
 
-class Fusion : ThreadModule {
+class Fusion : public ThreadModule {
 public:
     Fusion() : ThreadModule() {};
     void run() override;

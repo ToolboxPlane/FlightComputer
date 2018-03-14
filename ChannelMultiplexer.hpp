@@ -9,7 +9,7 @@
 #include "Channel.hpp"
 #include "ThreadModule.hpp"
 
-template <typename T>class ChannelMultiplexer : ThreadModule{
+template <typename T>class ChannelMultiplexer : public ThreadModule{
 public:
     ChannelMultiplexer() : ThreadModule() {};
 

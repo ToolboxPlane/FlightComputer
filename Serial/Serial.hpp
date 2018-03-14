@@ -11,7 +11,7 @@
 #include "../ThreadModule.hpp"
 #include <termios.h>
 
-class Serial : ThreadModule {
+class Serial : public ThreadModule {
 public:
     Serial(const std::string& port, int baud);
     void run() override;

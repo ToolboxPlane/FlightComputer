@@ -12,6 +12,7 @@
 class ThreadModule {
 public:
     ThreadModule() : handle(std::async(std::launch::async, &ThreadModule::run, this)) {}
+protected:
     virtual void run()= 0;
 private:
     std::future<void> handle;

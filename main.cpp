@@ -18,12 +18,12 @@ int main() {
 
     ChannelMultiplexer<rcLib::Package> flightControllerSerialMultiplexer;
     flightControllerSerialMultiplexer.addInput(serial.getChannelOut());
-    flightControllerSerialMultiplexer.addOutput(serialDebug.getChannelIn());
+    //flightControllerSerialMultiplexer.addOutput(serialDebug.getChannelIn());
     flightControllerSerialMultiplexer.addOutput(fusion.getSerialIn());
 
     ChannelMultiplexer<rcLib::Package> loraMultiplexer;
     loraMultiplexer.addInput(loraSimulator.getChannelOut());
-    loraMultiplexer.addOutput(loraDebug.getChannelIn());
+    //loraMultiplexer.addOutput(loraDebug.getChannelIn());
     loraMultiplexer.addOutput(fusion.getLoRaIn());
 
     ChannelMultiplexer<state_t> fusionMultiplexer;
