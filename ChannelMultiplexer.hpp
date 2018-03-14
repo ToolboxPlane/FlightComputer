@@ -21,14 +21,19 @@ public:
     }
 
     void run() {
-        for(auto &channel: inChannel) {
-            if(!channel.get().isClosed()) {
-                T item;
-                while(channel.get().get(item, false)) {
-                    sendAll(item);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
+        while(true) {
+            for (auto &channel: inChannel) {
+                if (!channel.get().isClosed()) {
+                    T item;
+                    while (channel.get().get(item, false)) {
+                        sendAll(item);
+                    }
                 }
             }
         }
+#pragma clang diagnostic pop
     }
 private:
     std::vector<std::reference_wrapper<Channel<T>>> inChannel, outChannel;

@@ -25,7 +25,7 @@ public:
         std::unique_lock<std::mutex> lock(m);
         return closed;
     }
-    void put(const item &i) {
+    void put(const item i) {
         std::unique_lock<std::mutex> lock(m);
         if(closed)
             throw std::logic_error("put to closed channel");
