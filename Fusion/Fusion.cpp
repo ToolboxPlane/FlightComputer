@@ -17,9 +17,13 @@ void Fusion::run() {
         if(loraStatus == READY || serialStatus == READY) {
             if(loraStatus != NOT_RECEIVED && serialStatus != NOT_RECEIVED) {
                 out.put(process(lastLoRaPackage, lastSerialPackage));
+                loraStatus = PROCESSED;
+                serialStatus = PROCESSED;
             } else {
                 // Maybe do other stuff
             }
+        } else {
+            std::this_thread::yield();
         }
     }
 }
@@ -33,13 +37,29 @@ state_t Fusion::process(rcLib::Package loraPackage, rcLib::Package serialPackage
 
     res.airspeed = 0;
 
-    res.pitch = serialPackage.getChannel(0);
-    res.roll = serialPackage.getChannel(1);
-    res.yaw = serialPackage.getChannel(2);
+    res.heading = serialPackage.getChannel(0);
+    res.roll = serialPackage.getChannel(1) - 180;
+    res.pitch = serialPackage.getChannel(2) - 180;
     res.heightAboveGround = serialPackage.getChannel(3);
+    res.heightAboveSeaLevel = serialPackage.getChannel(4);
+    if(res.heightAboveGround > 2.5) {
+        // Do stuff using SRTM data
+    }
 
     res.flightmode = loraPackage.getChannel(0);
     res.armed = loraPackage.getChannel(1);
 
     return res;
+}
+
+Channel<rcLib::Package> &Fusion::getSerialIn() {
+    return serialIn;
+}
+
+Channel<rcLib::Package> &Fusion::getLoRaIn() {
+    return loraIn;
+}
+
+Channel<state_t> &Fusion::getChannelOut() {
+    return out;
 }

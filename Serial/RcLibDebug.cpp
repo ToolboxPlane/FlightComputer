@@ -4,13 +4,14 @@
 
 #include <iostream>
 #include <future>
-#include "RcLibLogger.hpp"
+#include "RcLibDebug.hpp"
 
 
-void RcLibLogger::run() {
+void RcLibDebug::run() {
     while(!channel.isClosed()) {
         rcLib::Package pkg;
         if(channel.get(pkg)) {
+            std::cout << "[" << tag << "]\t";
             std::cout << "Received package Sender: " << (int)pkg.getDeviceId() << "\t(";
 
             for(uint8_t c=0; c<pkg.getChannelCount(); c++) {
@@ -24,6 +25,9 @@ void RcLibLogger::run() {
     }
 }
 
-Channel<rcLib::Package> &RcLibLogger::getChannelIn() {
+Channel<rcLib::Package> &RcLibDebug::getChannelIn() {
     return channel;
+}
+
+RcLibDebug::RcLibDebug(const std::string &tag) : tag(tag){
 }

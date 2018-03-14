@@ -10,14 +10,15 @@
 #include "../Channel.hpp"
 #include <ostream>
 
-class RcLibLogger {
+class RcLibDebug {
 public:
-    explicit RcLibLogger() = default;
+    explicit RcLibDebug(const std::string &tag = "RC-LIB");
     void run();
     Channel<rcLib::Package> &getChannelIn();
 
 private:
     Channel<rcLib::Package> channel;
+    std::string tag;
 };
 
 

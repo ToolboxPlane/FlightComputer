@@ -34,10 +34,14 @@ public:
     }
     bool get(item &out, bool wait = true) {
         std::unique_lock<std::mutex> lock(m);
-        if(wait)
-            cv.wait(lock, [&](){ return closed || !queue.empty(); });
-        if(queue.empty())
+        if(wait) {
+            cv.wait(lock, [&]() {
+                return closed || !queue.empty();
+            });
+        }
+        if(queue.empty()) {
             return false;
+        }
         out = queue.front();
         queue.pop_front();
         return true;

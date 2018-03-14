@@ -12,7 +12,7 @@
 struct state_t {
     double lat, lon;
     double heightAboveGround, heightAboveSeaLevel;
-    double pitch, roll, yaw;
+    double pitch, roll, heading;
     double airspeed, groundSpeed;
     int flightmode, armed;
 };
@@ -28,6 +28,9 @@ public:
     Fusion() = default;
     void run();
 
+    Channel<rcLib::Package> &getSerialIn();
+    Channel<rcLib::Package> &getLoRaIn();
+    Channel<state_t> &getChannelOut();
 private:
     state_t process(rcLib::Package loraPackage, rcLib::Package serialPackage);
 

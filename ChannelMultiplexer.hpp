@@ -32,6 +32,7 @@ public:
                     }
                 }
             }
+            std::this_thread::yield();
         }
 #pragma clang diagnostic pop
     }
