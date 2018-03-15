@@ -7,7 +7,7 @@
 
 
 #include "../ThreadModule.hpp"
-#include "../Serial/RadioControlProtocol/rcLib.hpp"
+#include "../Devices/RadioControlProtocol/rcLib.hpp"
 #include "../Channel.hpp"
 
 class MeshManager : ThreadModule{

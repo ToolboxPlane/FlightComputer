@@ -7,7 +7,7 @@
 
 
 #include "../Channel.hpp"
-#include "../Serial/RadioControlProtocol/rcLib.hpp"
+#include "../Devices/RadioControlProtocol/rcLib.hpp"
 #include "../ThreadModule.hpp"
 
 struct state_t {
