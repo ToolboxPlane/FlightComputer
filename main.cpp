@@ -33,9 +33,9 @@ int main() {
     flightControllerSerialMultiplexer.addInput(flightController.getChannelOut());
     flightControllerSerialMultiplexer.addOutput(fusion.getSerialIn());
     flightControllerSerialMultiplexer.addOutput(meshManager.getSerialIn());
-    flightControllerSerialMultiplexer.addOutput(serialDebug.getChannelIn());
+    //flightControllerSerialMultiplexer.addOutput(serialDebug.getChannelIn());
 
-    /*ChannelMultiplexer<rcLib::Package> flightControllerOutMultiplexer;
+    ChannelMultiplexer<rcLib::Package> flightControllerOutMultiplexer;
     flightControllerOutMultiplexer.addInput(meshManager.getSerialOut());
     flightControllerOutMultiplexer.addOutput(flightController.getChannelIn());
 
@@ -47,7 +47,7 @@ int main() {
     ChannelMultiplexer<rcLib::Package> loraOutMultiplexer;
     loraOutMultiplexer.addInput(meshManager.getLoraOut());
     loraOutMultiplexer.addOutput(loraSimulator.getChannelIn());
-    loraOutMultiplexer.addOutput(loraDebug.getChannelIn());
+    //loraOutMultiplexer.addOutput(loraDebug.getChannelIn());
 
     ChannelMultiplexer<gps_t> gpsMultiplexer;
     gpsMultiplexer.addOutput(fusion.getGpsIn());
@@ -55,8 +55,8 @@ int main() {
     gpsMultiplexer.addOutput(gpsDebug.getChannelIn());
 
     ChannelMultiplexer<state_t> fusionMultiplexer;
-    fusionMultiplexer.addInput(fusion.getChannelOut());*/
-    //fusionMultiplexer.addOutput(fusionDebug.getChannelIn());
+    fusionMultiplexer.addInput(fusion.getChannelOut());
+    fusionMultiplexer.addOutput(fusionDebug.getChannelIn());
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"

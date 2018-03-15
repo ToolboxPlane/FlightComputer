@@ -23,9 +23,7 @@ void FlightController::run() {
     rcLib::Package received;
     uint8_t buf[BUF_SIZE];
 
-    while(!serial.ready) {
-        std::cout << "Waiting" << std::endl;
-    }
+    while(!serial.ready) ;
     while(true) {
         ssize_t readed = read(serial.fd, buf, sizeof(buf));
         for(auto c=0; c<readed; c++) {

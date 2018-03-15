@@ -35,7 +35,11 @@ public:
     Channel<gps_t> &getGpsIn();
     Channel<state_t> &getChannelOut();
 private:
-    state_t process(rcLib::Package loraPackage, rcLib::Package serialPackage, gps_t gpsPackage);
+    state_t process();
+
+    rcLib::Package lastLoRaPackage;
+    std::list<gps_t> lastGpsValues;
+    std::list<rcLib::Package> lastSerialPackages;
 
     Channel<rcLib::Package> loraIn, serialIn;
     Channel<gps_t> gpsIn;
