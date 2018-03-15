@@ -6,8 +6,18 @@
 #define FLIGHTCOMPUTER_GPSSIMULATOR_HPP
 
 
-class GpsSimulator {
+#include "../../ThreadModule.hpp"
+#include "../../Channel.hpp"
+#include "gps_t.hpp"
 
+class GpsSimulator : public ThreadModule{
+public:
+    GpsSimulator() : ThreadModule() {}
+
+    Channel<gps_t> &getChannelOut();
+private:
+    Channel<gps_t> out;
+    void run() override;
 };
 
 

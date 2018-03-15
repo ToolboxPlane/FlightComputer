@@ -9,6 +9,7 @@
 #include "../Channel.hpp"
 #include "../Devices/RadioControlProtocol/rcLib.hpp"
 #include "../ThreadModule.hpp"
+#include "../Devices/GPS/gps_t.hpp"
 
 struct state_t {
     double lat, lon;
@@ -31,12 +32,13 @@ public:
 
     Channel<rcLib::Package> &getSerialIn();
     Channel<rcLib::Package> &getLoRaIn();
+    Channel<gps_t> &getGpsIn();
     Channel<state_t> &getChannelOut();
 private:
-    state_t process(rcLib::Package loraPackage, rcLib::Package serialPackage);
+    state_t process(rcLib::Package loraPackage, rcLib::Package serialPackage, gps_t gpsPackage);
 
     Channel<rcLib::Package> loraIn, serialIn;
-    //@TODO GPS Package
+    Channel<gps_t> gpsIn;
     Channel<state_t> out;
 };
 

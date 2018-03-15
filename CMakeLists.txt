@@ -22,7 +22,7 @@ set(SOURCES
     Navigation/Navigation.hpp
     MeshManager/MeshManager.cpp
     MeshManager/MeshManager.hpp
-)
+        Devices/GPS/gps_t.hpp)
 
 set(SOURCES_PI ${SOURCES},
     Devices/GPS/Gps.cpp
