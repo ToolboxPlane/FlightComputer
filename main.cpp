@@ -6,11 +6,15 @@
 #include "Serial/SerialSimulator.hpp"
 #include "Fusion/Fusion.hpp"
 #include "Fusion/FusionDebug.hpp"
+#include "Navigation/Navigation.hpp"
+#include "MeshManager/MeshManager.hpp"
 
 int main() {
     Serial serial("/dev/ttyACM0", B9600);
     SerialSimulator loraSimulator;
     Fusion fusion;
+    Navigation navigation;
+    MeshManager meshManager;
 
     RcLibDebug serialDebug("Serial");
     RcLibDebug loraDebug("Lora");
@@ -18,17 +22,29 @@ int main() {
 
     ChannelMultiplexer<rcLib::Package> flightControllerSerialMultiplexer;
     flightControllerSerialMultiplexer.addInput(serial.getChannelOut());
-    //flightControllerSerialMultiplexer.addOutput(serialDebug.getChannelIn());
     flightControllerSerialMultiplexer.addOutput(fusion.getSerialIn());
+    flightControllerSerialMultiplexer.addOutput(meshManager.getSerialIn());
+
+    ChannelMultiplexer<rcLib::Package> flightControllerOutMultiplexer;
+    flightControllerOutMultiplexer.addInput(meshManager.getSerialOut());
+    flightControllerOutMultiplexer.addOutput(serial.getChannelIn());
+    flightControllerOutMultiplexer.addOutput(serialDebug.getChannelIn());
 
     ChannelMultiplexer<rcLib::Package> loraMultiplexer;
     loraMultiplexer.addInput(loraSimulator.getChannelOut());
-    //loraMultiplexer.addOutput(loraDebug.getChannelIn());
     loraMultiplexer.addOutput(fusion.getLoRaIn());
+    loraMultiplexer.addOutput(meshManager.getLoraIn());
+
+    ChannelMultiplexer<rcLib::Package> loraOutMultiplexer;
+    loraOutMultiplexer.addInput(meshManager.getLoraOut());
+    loraOutMultiplexer.addOutput(loraSimulator.getChannelIn());
+    loraOutMultiplexer.addOutput(loraDebug.getChannelIn());
 
     ChannelMultiplexer<state_t> fusionMultiplexer;
     fusionMultiplexer.addInput(fusion.getChannelOut());
-    fusionMultiplexer.addOutput(fusionDebug.getChannelIn());
+    //fusionMultiplexer.addOutput(fusionDebug.getChannelIn());
 
-    while(1);
+    while(1) {
+        std::this_thread::sleep_for(std::chrono_literals::operator""h(24));
+    }
 }

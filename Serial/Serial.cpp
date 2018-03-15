@@ -24,15 +24,14 @@ Serial::Serial(const std::string& port, int baud)
 
 void Serial::run() {
     rcLib::Package toSend;
-    auto *received = new rcLib::Package();
+    rcLib::Package received;
     uint8_t buf[BUF_SIZE];
 
     while(!in.isClosed() && !out.isClosed()) {
         ssize_t readed = read(this->fd, buf, sizeof(buf));
         for(auto c=0; c<readed; c++) {
-            if(received->decode(buf[c])) {
-                out.put(*received);
-                received = new rcLib::Package();
+            if(received.decode(buf[c])) {
+                out.put(received);
             }
         }
 

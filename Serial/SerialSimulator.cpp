@@ -6,6 +6,7 @@
 
 void SerialSimulator::run() {
     rcLib::Package pkg(256, 16);
+    pkg.setMeshProperties(true);
     while(!in.isClosed() && !out.isClosed()) {
         std::this_thread::sleep_for(std::chrono::seconds(1));
         for(uint16_t c=0; c < 16; c++) {

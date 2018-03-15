@@ -2,6 +2,7 @@
 // Created by paul on 15.03.18.
 //
 
+#include <iostream>
 #include "MeshManager.hpp"
 
 Channel<rcLib::Package> &MeshManager::getLoraIn() {
@@ -23,21 +24,20 @@ Channel<rcLib::Package> &MeshManager::getSerialOut() {
 void MeshManager::run() {
     while(!loraIn.isClosed() || !serialIn.isClosed() || !loraOut.isClosed() || !serialOut.isClosed()) {
         rcLib::Package pkg;
-        if(loraIn.get(pkg)) {
+        if(loraIn.get(pkg, false)) {
             if(pkg.needsForwarding()) {
                 pkg.countNode();
-                loraOut.put(pkg);
+                serialOut.put(pkg);
             }
-        } else if(serialIn.get(pkg)) {
+        }
+        if(serialIn.get(pkg, false)) {
             if(pkg.needsForwarding())  {
                 pkg.countNode();
-                serialOut.put(pkg);
+                loraOut.put(pkg);
             }
         }
     }
 }
 
 MeshManager::MeshManager() : ThreadModule(){
-    head = 0;
-    forwardedUids = {0};
 }
