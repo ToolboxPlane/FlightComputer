@@ -1,3 +1,3 @@
-[submodule "Serial/RadioControlProtocol"]
-	path = Serial/RadioControlProtocol
+[submodule "Devices/RadioControlProtocol"]
+	path = Devices/RadioControlProtocol
 	url = git@github.com:ToolboxPlane/RadioControlProtocol.git
