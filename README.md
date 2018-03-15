@@ -1,7 +1,5 @@
 # FlightComputer
-All the modules running on the Inforce 6540
-
-Mainly based on QT and D-Bus
+All the modules running on the Raspberry Pi. 
 
 ## Transmitter-IDs
 | Device | Id |

@@ -10,18 +10,17 @@
 #include "../RadioControlProtocol/rcLib.hpp"
 #include "../../ThreadModule.hpp"
 #include <termios.h>
+#include "../Serial.hpp"
 
-class Serial : public ThreadModule {
+class FlightController : public ThreadModule {
 public:
-    Serial(const std::string& port, int baud);
+    FlightController(const std::string& port, int baud);
     void run() override;
 
-    void setBlocking(bool isBlocking);
-    void setAttributes(int baud, int parity);
     Channel<rcLib::Package> &getChannelIn();
     Channel<rcLib::Package> &getChannelOut();
 private:
-    int fd;
+    Serial serial;
     Channel<rcLib::Package> in, out;
 
 };

@@ -1,52 +1,21 @@
 //
-// Created by paul on 12.03.18.
+// Created by paul on 15.03.18.
 //
 
+#include "Serial.hpp"
 #include <fcntl.h>
 #include <bits/ios_base.h>
-#include <termio.h>
 #include <cstring>
-#include <unistd.h>
+#include <iostream>
 
-#include "Serial.hpp"
-
-#define BUF_SIZE 64
-
-Serial::Serial(const std::string& port, int baud)
-        : in(), out(), ThreadModule() {
-    this->fd = open(port.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
-    if(this->fd < 0) {
+Serial::Serial(const std::string port, int baud, bool blocking) {
+    fd = open(port.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
+    if(fd < 0) {
         throw std::ios_base::failure("Error opening the serial port!");
     }
-    this->setBlocking(false);
-    this->setAttributes(baud, 0);
-}
-
-void Serial::run() {
-    rcLib::Package toSend;
-    rcLib::Package received;
-    uint8_t buf[BUF_SIZE];
-
-    while(!in.isClosed() && !out.isClosed()) {
-        ssize_t readed = read(this->fd, buf, sizeof(buf));
-        for(auto c=0; c<readed; c++) {
-            if(received.decode(buf[c])) {
-                out.put(received);
-            }
-        }
-
-        if(in.get(toSend, false)) {
-            size_t length = toSend.encode();
-            ssize_t written = 0;
-            do {
-                ssize_t result = write(this->fd, toSend.getEncodedData(), length);
-                if(result < 0) {
-                    throw std::ios_base::failure("Error sending data via Serial");
-                }
-                written += result;
-            } while (written < length);
-        }
-    }
+    setBlocking(blocking);
+    setAttributes(baud, 0);
+    ready = true;
 }
 
 void Serial::setBlocking(bool isBlocking) {
@@ -97,12 +66,4 @@ void Serial::setAttributes(int baud, int parity) {
     {
         throw std::ios_base::failure("Error setting term attributes");
     }
-}
-
-Channel<rcLib::Package> &Serial::getChannelIn() {
-    return this->in;
-}
-
-Channel<rcLib::Package> &Serial::getChannelOut() {
-    return this->out;
 }
