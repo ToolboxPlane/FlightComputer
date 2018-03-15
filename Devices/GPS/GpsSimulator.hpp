@@ -1,0 +1,14 @@
+//
+// Created by paul on 15.03.18.
+//
+
+#ifndef FLIGHTCOMPUTER_GPSSIMULATOR_HPP
+#define FLIGHTCOMPUTER_GPSSIMULATOR_HPP
+
+
+class GpsSimulator {
+
+};
+
+
+#endif //FLIGHTCOMPUTER_GPSSIMULATOR_HPP

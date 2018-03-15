@@ -9,6 +9,11 @@
 #include "Navigation/Navigation.hpp"
 #include "MeshManager/MeshManager.hpp"
 
+#ifdef _ON_PI_
+#include "Devices/GPS/GPS.hpp"
+#include "Devices/LoRa/LoRa.hpp"
+#endif
+
 int main() {
     Serial serial("/dev/ttyACM0", B9600);
     SerialSimulator loraSimulator;
