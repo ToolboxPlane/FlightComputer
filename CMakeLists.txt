@@ -34,6 +34,9 @@ set(SOURCES_PI ${SOURCES},
     Devices/GPS/Gps.hpp
     Devices/LoRa/LoRa.cpp
     Devices/LoRa/LoRa.hpp
+    Devices/LoRa/LoRaHal.cpp
+    Devices/LoRa/LoRaHal.hpp
+    Devices/LoRa/RasPiBoards.h
 )
 
 set(SOURCES_NO_PI ${SOURCES}

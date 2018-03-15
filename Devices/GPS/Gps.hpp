@@ -9,6 +9,7 @@
 
 #include "gps_t.hpp"
 #include "../../ThreadModule.hpp"
+#include "../Serial.hpp"
 
 class Gps : ThreadModule{
 public:
@@ -16,7 +17,10 @@ public:
 
     Channel<gps_t> &getChannelOut();
 private:
+    void run() override;
     Channel<gps_t> out;
+    Serial serial;
+    gps_t parseNmeaString(uint8_t* s, size_t n);
 };
 
 
