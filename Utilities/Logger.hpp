@@ -6,15 +6,15 @@
 #define FLIGHTCOMPUTER_LOGGER_HPP
 
 #include <iostream>
-#include "ThreadModule.hpp"
-#include "Channel.hpp"
+#include "../ThreadModule.hpp"
+#include "../Channel.hpp"
 
 static std::mutex lock; // Not in the class because of template fuckups
 
 template <typename T>
 class Logger : ThreadModule{
 public:
-    explicit Logger(std::string tag, bool enabled = true, std::ostream &stream = std::cout) :
+    explicit Logger(const std::string &tag, bool enabled = true, std::ostream &stream = std::cout) :
             ThreadModule(), tag(std::move(tag)), stream(stream), enabled(enabled){}
     Channel<T> &getChannelIn() {
         return in;

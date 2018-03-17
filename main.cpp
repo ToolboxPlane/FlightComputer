@@ -10,7 +10,7 @@
 #include "Devices/LoRa/LoRa.hpp"
 #else
 #include "Devices/GPS/GpsSimulator.hpp"
-#include "Logger.hpp"
+#include "Utilities/Logger.hpp"
 
 #endif
 
