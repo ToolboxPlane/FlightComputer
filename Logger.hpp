@@ -14,8 +14,8 @@ static std::mutex lock; // Not in the class because of template fuckups
 template <typename T>
 class Logger : ThreadModule{
 public:
-    explicit Logger(std::string tag, bool enabled = true) : ThreadModule(), tag(std::move(tag)),
-        enabled(enabled){}
+    explicit Logger(std::string tag, bool enabled = true, std::ostream &stream = std::cout) :
+            ThreadModule(), tag(std::move(tag)), stream(stream), enabled(enabled){}
     Channel<T> &getChannelIn() {
         return in;
     }
@@ -26,13 +26,14 @@ private:
         while(enabled && !in.isClosed()) {
             if(in.get(item)) {
                 lock.lock();
-                std::cout << "[" << tag << "]\t" << item << std::endl;
+                stream << "[" << tag << "]\t" << item << std::endl;
                 lock.unlock();
             }
         }
     }
     Channel<T> in;
     std::string tag;
+    std::ostream &stream;
     bool enabled;
 };
 

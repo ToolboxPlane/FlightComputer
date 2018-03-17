@@ -1,9 +1,9 @@
 #include "Devices/FlightController/FlightController.hpp"
 #include "ChannelMultiplexer.hpp"
 #include "Devices/RcLibSimulator.hpp"
-#include "Fusion/Fusion.hpp"
-#include "Navigation/Navigation.hpp"
-#include "MeshManager/MeshManager.hpp"
+#include "Filters/Fusion/Fusion.hpp"
+#include "Filters/Navigation/Navigation.hpp"
+#include "Filters/MeshManager/MeshManager.hpp"
 
 #ifdef _ON_PI_
 #include "Devices/GPS/GPS.hpp"
