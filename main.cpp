@@ -16,13 +16,13 @@
 
 int main() {
     //FlightController flightController("/dev/ttyACM0", B9600);
-    SerialSimulator flightController;
+    RcLibSimultator flightController;
 
 #ifdef _ON_PI_
     Gps gps("/dev/tty?", B4800);
     LoRa lora;
 #else
-    SerialSimulator lora;
+    RcLibSimultator lora;
     GpsSimulator gps;
 #endif
 

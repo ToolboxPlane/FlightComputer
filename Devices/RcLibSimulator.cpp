@@ -4,7 +4,7 @@
 
 #include "RcLibSimulator.hpp"
 
-void SerialSimulator::run() {
+void RcLibSimultator::run() {
     rcLib::Package pkg(256, 16);
     pkg.setMeshProperties(true);
     while(!in.isClosed() && !out.isClosed()) {
@@ -16,10 +16,10 @@ void SerialSimulator::run() {
     }
 }
 
-Channel<rcLib::Package> &SerialSimulator::getChannelIn() {
+Channel<rcLib::Package> &RcLibSimultator::getChannelIn() {
     return in;
 }
 
-Channel<rcLib::Package> &SerialSimulator::getChannelOut() {
+Channel<rcLib::Package> &RcLibSimultator::getChannelOut() {
     return out;
 }

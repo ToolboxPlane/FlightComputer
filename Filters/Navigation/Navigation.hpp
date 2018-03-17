@@ -6,7 +6,7 @@
 #define FLIGHTCOMPUTER_NAVIGATION_HPP
 
 
-#include "../ThreadModule.hpp"
+#include "../../ThreadModule.hpp"
 #include "../Fusion/Fusion.hpp"
 #include "Nav_t.hpp"
 

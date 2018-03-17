@@ -10,9 +10,9 @@
 #include "RadioControlProtocol/rcLib.hpp"
 #include "../ThreadModule.hpp"
 
-class SerialSimulator : public ThreadModule{
+class RcLibSimultator : public ThreadModule{
 public:
-    SerialSimulator() : ThreadModule() {};
+    RcLibSimultator() : ThreadModule() {};
     void run() override;
 
     Channel<rcLib::Package> &getChannelIn();

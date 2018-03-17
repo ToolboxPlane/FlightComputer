@@ -6,10 +6,10 @@
 #define FLIGHTCOMPUTER_FUSION_HPP
 
 
-#include "../Channel.hpp"
-#include "../Devices/RadioControlProtocol/rcLib.hpp"
-#include "../ThreadModule.hpp"
-#include "../Devices/GPS/Gps_t.hpp"
+#include "../../Channel.hpp"
+#include "../../Devices/RadioControlProtocol/rcLib.hpp"
+#include "../../ThreadModule.hpp"
+#include "../../Devices/GPS/Gps_t.hpp"
 #include "State_t.hpp"
 
 enum ProcessingStatus {

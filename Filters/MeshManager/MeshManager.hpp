@@ -6,9 +6,9 @@
 #define FLIGHTCOMPUTER_MESHMANAGER_HPP
 
 
-#include "../ThreadModule.hpp"
-#include "../Devices/RadioControlProtocol/rcLib.hpp"
-#include "../Channel.hpp"
+#include "../../ThreadModule.hpp"
+#include "../../Devices/RadioControlProtocol/rcLib.hpp"
+#include "../../Channel.hpp"
 
 class MeshManager : ThreadModule{
 public:

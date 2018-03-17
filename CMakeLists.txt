@@ -11,17 +11,17 @@ set(SOURCES
     Channel.hpp
         Devices/RcLibSimulator.cpp
         Devices/RcLibSimulator.hpp
-    Fusion/Fusion.cpp
-    Fusion/Fusion.hpp
+        Filters/Fusion/Fusion.cpp
+        Filters/Fusion/Fusion.hpp
     ThreadModule.hpp
-    Navigation/Navigation.cpp
-    Navigation/Navigation.hpp
-    MeshManager/MeshManager.cpp
-    MeshManager/MeshManager.hpp
+        Filters/Navigation/Navigation.cpp
+        Filters/Navigation/Navigation.hpp
+        Filters/MeshManager/MeshManager.cpp
+        Filters/MeshManager/MeshManager.hpp
         Devices/GPS/Gps_t.hpp
     Devices/Serial.cpp
     Devices/Serial.hpp
-    Logger.hpp Navigation/Nav_t.hpp Fusion/State_t.hpp)
+    Logger.hpp Filters/Navigation/Nav_t.hpp Filters/Fusion/State_t.hpp Filters/OutputFilter/OutputFilter.cpp Filters/OutputFilter/OutputFilter.hpp)
 
 set(SOURCES_PI ${SOURCES},
     Devices/GPS/Gps.cpp
