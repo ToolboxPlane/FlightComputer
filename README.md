@@ -1,6 +1,10 @@
 # FlightComputer
 All the modules running on the Raspberry Pi. 
 
+## Structure
+![FlightComputerStructure](./FlightComputer.svg)
+
+
 ## Transmitter-IDs
 | Device | Id |
 | --- | --- |
