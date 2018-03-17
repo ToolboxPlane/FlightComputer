@@ -8,21 +8,18 @@
 
 #include "../ThreadModule.hpp"
 #include "../Fusion/Fusion.hpp"
-
-struct nav_t {
-    double pitch, heading, power;
-};
+#include "Nav_t.hpp"
 
 class Navigation : public ThreadModule{
 public:
     Navigation() : ThreadModule() {}
 
-    Channel<nav_t> &getChannelOut();
-    Channel<state_t> &getChannelIn();
+    Channel<Nav_t> &getChannelOut();
+    Channel<State_t> &getChannelIn();
 private:
     void run() override;
-    Channel<state_t> in;
-    Channel<nav_t> out;
+    Channel<State_t> in;
+    Channel<Nav_t> out;
 };
 
 

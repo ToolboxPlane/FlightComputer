@@ -2,7 +2,7 @@
 // Created by paul on 14.03.18.
 //
 
-#include "SerialSimulator.hpp"
+#include "RcLibSimulator.hpp"
 
 void SerialSimulator::run() {
     rcLib::Package pkg(256, 16);

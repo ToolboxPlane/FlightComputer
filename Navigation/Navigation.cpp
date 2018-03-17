@@ -6,8 +6,8 @@
 
 void Navigation::run() {
     while(!in.isClosed() && !out.isClosed()) {
-        state_t currentState{};
-        nav_t nav{};
+        State_t currentState{};
+        Nav_t nav{};
         if(in.get(currentState)) {
             nav.pitch = 0;
             nav.heading = 0;
@@ -17,10 +17,10 @@ void Navigation::run() {
     }
 }
 
-Channel<nav_t> &Navigation::getChannelOut() {
+Channel<Nav_t> &Navigation::getChannelOut() {
     return out;
 }
 
-Channel<state_t> &Navigation::getChannelIn() {
+Channel<State_t> &Navigation::getChannelIn() {
     return in;
 }

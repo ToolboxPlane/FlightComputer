@@ -9,15 +9,8 @@
 #include "../Channel.hpp"
 #include "../Devices/RadioControlProtocol/rcLib.hpp"
 #include "../ThreadModule.hpp"
-#include "../Devices/GPS/gps_t.hpp"
-
-struct state_t {
-    double lat, lon;
-    double heightAboveGround, heightAboveSeaLevel;
-    double pitch, roll, heading;
-    double airspeed, groundSpeed;
-    int flightmode, armed;
-};
+#include "../Devices/GPS/Gps_t.hpp"
+#include "State_t.hpp"
 
 enum ProcessingStatus {
     NOT_RECEIVED,
@@ -32,18 +25,18 @@ public:
 
     Channel<rcLib::Package> &getSerialIn();
     Channel<rcLib::Package> &getLoRaIn();
-    Channel<gps_t> &getGpsIn();
-    Channel<state_t> &getChannelOut();
+    Channel<Gps_t> &getGpsIn();
+    Channel<State_t> &getChannelOut();
 private:
-    state_t process();
+    State_t process();
 
     rcLib::Package lastLoRaPackage;
-    std::list<gps_t> lastGpsValues;
+    std::list<Gps_t> lastGpsValues;
     std::list<rcLib::Package> lastSerialPackages;
 
     Channel<rcLib::Package> loraIn, serialIn;
-    Channel<gps_t> gpsIn;
-    Channel<state_t> out;
+    Channel<Gps_t> gpsIn;
+    Channel<State_t> out;
 };
 
 

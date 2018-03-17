@@ -9,25 +9,19 @@ set(SOURCES
     Devices/RadioControlProtocol/rcLib.cpp
     ChannelMultiplexer.hpp
     Channel.hpp
-    Devices/RcLibDebug.cpp
-    Devices/RcLibDebug.hpp
-    Devices/SerialSimulator.cpp
-    Devices/SerialSimulator.hpp
+        Devices/RcLibSimulator.cpp
+        Devices/RcLibSimulator.hpp
     Fusion/Fusion.cpp
     Fusion/Fusion.hpp
-    Fusion/FusionDebug.cpp
-    Fusion/FusionDebug.hpp
     ThreadModule.hpp
     Navigation/Navigation.cpp
     Navigation/Navigation.hpp
     MeshManager/MeshManager.cpp
     MeshManager/MeshManager.hpp
-    Devices/GPS/gps_t.hpp
-    Devices/GPS/GpsDebug.cpp
-    Devices/GPS/GpsDebug.hpp
+        Devices/GPS/Gps_t.hpp
     Devices/Serial.cpp
     Devices/Serial.hpp
-)
+    Logger.hpp Navigation/Nav_t.hpp Fusion/State_t.hpp)
 
 set(SOURCES_PI ${SOURCES},
     Devices/GPS/Gps.cpp

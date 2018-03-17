@@ -5,13 +5,13 @@
 #include <iostream>
 #include "GpsSimulator.hpp"
 
-Channel<gps_t> &GpsSimulator::getChannelOut() {
+Channel<Gps_t> &GpsSimulator::getChannelOut() {
     return out;
 }
 
 void GpsSimulator::run() {
     while(!out.isClosed()) {
-        gps_t gps{};
+        Gps_t gps{};
         gps.lon = 17;
         gps.lat = 23;
         gps.timestamp = 24;

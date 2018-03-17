@@ -8,7 +8,7 @@
 
 void Fusion::run() {
     rcLib::Package lastSerialPackage;
-    gps_t lastGps{};
+    Gps_t lastGps{};
     ProcessingStatus serialStatus = NOT_RECEIVED, loraStatus = NOT_RECEIVED, gpsStatus = NOT_RECEIVED;
     while(!out.isClosed()) {
         if(!loraIn.isClosed() && loraIn.get(lastLoRaPackage, false)) {
@@ -44,8 +44,8 @@ void Fusion::run() {
     }
 }
 
-state_t Fusion::process() {
-    state_t res{};
+State_t Fusion::process() {
+    State_t res{};
 
     res.groundSpeed = 0;
     res.lat = lastGpsValues.back().lat;
@@ -77,10 +77,10 @@ Channel<rcLib::Package> &Fusion::getLoRaIn() {
     return loraIn;
 }
 
-Channel<state_t> &Fusion::getChannelOut() {
+Channel<State_t> &Fusion::getChannelOut() {
     return out;
 }
 
-Channel<gps_t> &Fusion::getGpsIn() {
+Channel<Gps_t> &Fusion::getGpsIn() {
     return gpsIn;
 }

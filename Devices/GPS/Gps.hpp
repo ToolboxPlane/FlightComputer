@@ -7,7 +7,7 @@
 
 #include <string>
 
-#include "gps_t.hpp"
+#include "Gps_t.hpp"
 #include "../../ThreadModule.hpp"
 #include "../Serial.hpp"
 
