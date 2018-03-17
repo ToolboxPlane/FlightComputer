@@ -47,7 +47,6 @@ void Fusion::run() {
 state_t Fusion::process() {
     state_t res{};
 
-
     res.groundSpeed = 0;
     res.lat = lastGpsValues.back().lat;
     res.lon = lastGpsValues.back().lon;

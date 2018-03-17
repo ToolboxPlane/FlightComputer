@@ -16,3 +16,11 @@ void Navigation::run() {
         }
     }
 }
+
+Channel<nav_t> &Navigation::getChannelOut() {
+    return out;
+}
+
+Channel<state_t> &Navigation::getChannelIn() {
+    return in;
+}

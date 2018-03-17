@@ -17,6 +17,8 @@ class Navigation : public ThreadModule{
 public:
     Navigation() : ThreadModule() {}
 
+    Channel<nav_t> &getChannelOut();
+    Channel<state_t> &getChannelIn();
 private:
     void run() override;
     Channel<state_t> in;

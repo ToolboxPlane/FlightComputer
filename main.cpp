@@ -16,47 +16,73 @@
 #endif
 
 int main() {
-    FlightController flightController("/dev/ttyACM0", B9600);
-    SerialSimulator loraSimulator;
-    GpsSimulator gpsSimulator;
+    //FlightController flightController("/dev/ttyACM0", B9600);
+
+    SerialSimulator flightController;
+    SerialSimulator lora;
+    GpsSimulator gps;
 
     Fusion fusion;
     Navigation navigation;
     MeshManager meshManager;
 
-    RcLibDebug serialDebug("FlightController");
-    RcLibDebug loraDebug("Lora");
+    RcLibDebug serialReceive("FlightController-Received");
+    RcLibDebug loraReceive("Lora-Received");
+    RcLibDebug serialSend("FlightController-Send");
+    RcLibDebug loraSend("Lora-Send");
     FusionDebug fusionDebug("Fusion");
     GpsDebug gpsDebug("GPS");
 
+    /*
+     * (Flightcontroller) -> (Fusion, Mesh, Debug)
+     */
     ChannelMultiplexer<rcLib::Package> flightControllerSerialMultiplexer;
     flightControllerSerialMultiplexer.addInput(flightController.getChannelOut());
     flightControllerSerialMultiplexer.addOutput(fusion.getSerialIn());
     flightControllerSerialMultiplexer.addOutput(meshManager.getSerialIn());
-    //flightControllerSerialMultiplexer.addOutput(serialDebug.getChannelIn());
+    flightControllerSerialMultiplexer.addOutput(serialReceive.getChannelIn());
 
+    /*
+     * (Mesh) -> (Serial, Debug)
+     */
     ChannelMultiplexer<rcLib::Package> flightControllerOutMultiplexer;
     flightControllerOutMultiplexer.addInput(meshManager.getSerialOut());
     flightControllerOutMultiplexer.addOutput(flightController.getChannelIn());
+    flightControllerOutMultiplexer.addOutput(serialSend.getChannelIn());
 
+    /*
+     * (LoRa) -> (Fusion, Mesh, Debug)
+     */
     ChannelMultiplexer<rcLib::Package> loraMultiplexer;
-    loraMultiplexer.addInput(loraSimulator.getChannelOut());
+    loraMultiplexer.addInput(lora.getChannelOut());
     loraMultiplexer.addOutput(fusion.getLoRaIn());
     loraMultiplexer.addOutput(meshManager.getLoraIn());
+    loraMultiplexer.addOutput(loraReceive.getChannelIn());
 
+    /*
+     * (Mesh) -> (LoRa, Debug)
+     */
     ChannelMultiplexer<rcLib::Package> loraOutMultiplexer;
     loraOutMultiplexer.addInput(meshManager.getLoraOut());
-    loraOutMultiplexer.addOutput(loraSimulator.getChannelIn());
-    //loraOutMultiplexer.addOutput(loraDebug.getChannelIn());
+    loraOutMultiplexer.addOutput(lora.getChannelIn());
+    loraOutMultiplexer.addOutput(loraSend.getChannelIn());
 
+    /*
+     * (GPS) -> (Fusion, Debug)
+     */
     ChannelMultiplexer<gps_t> gpsMultiplexer;
     gpsMultiplexer.addOutput(fusion.getGpsIn());
-    gpsMultiplexer.addInput(gpsSimulator.getChannelOut());
+    gpsMultiplexer.addInput(gps.getChannelOut());
     gpsMultiplexer.addOutput(gpsDebug.getChannelIn());
 
+    /*
+     * (Fusion) -> (Navigation, Fusion)
+     */
     ChannelMultiplexer<state_t> fusionMultiplexer;
     fusionMultiplexer.addInput(fusion.getChannelOut());
     fusionMultiplexer.addOutput(fusionDebug.getChannelIn());
+    fusionMultiplexer.addOutput(navigation.getChannelIn());
+
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
