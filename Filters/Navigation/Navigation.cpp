@@ -9,9 +9,20 @@ void Navigation::run() {
         State_t currentState{};
         Nav_t nav{};
         if(in.get(currentState)) {
-            nav.pitch = 0;
-            nav.heading = 0;
-            nav.power = 1.0;
+            nav.heading = currentState.position.angleTo(Gps_t{0});
+            double heightDifference = currentState.heightAboveGround - 50;
+            nav.pitch = heightDifference;
+
+            double speedDifference = currentState.airspeed - 50;
+            double speed = speedDifference / 20.0 + nav.pitch / 30.0;
+
+            if(speed < 0.0) {
+                speed = 0;
+            } else if(speed > 1.0) {
+                speed = 1.0;
+            }
+            nav.power = speed;
+
             out.put(nav);
         }
     }

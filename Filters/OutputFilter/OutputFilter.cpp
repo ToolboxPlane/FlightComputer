@@ -23,7 +23,7 @@ void OutputFilter::run() {
         if(in.get(nav)) {
             serialOutPkg.setChannel(0, (uint16_t)nav.heading);
             serialOutPkg.setChannel(1, (uint16_t)nav.pitch);
-            serialOutPkg.setChannel(2, (uint16_t)nav.power);
+            serialOutPkg.setChannel(2, (uint16_t)(nav.power*1023));
 
             serialOut.put(serialOutPkg);
             loraOut.put(loraOutPkg);

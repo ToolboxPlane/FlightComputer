@@ -10,7 +10,7 @@
 
 class State_t {
 public:
-    double lat, lon;
+    Gps_t position;
     double heightAboveGround, heightAboveSeaLevel;
     double pitch, roll, heading;
     double airspeed, groundSpeed;

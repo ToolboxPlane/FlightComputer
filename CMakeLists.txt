@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.5)
 project(FlightComputer)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -32,8 +32,6 @@ set(SOURCES_PI ${SOURCES}
         Devices/GPS/Gps.hpp
         Devices/LoRa/LoRa.cpp
         Devices/LoRa/LoRa.hpp
-        Devices/LoRa/LoRaHal.cpp
-        Devices/LoRa/LoRaHal.hpp
         Devices/LoRa/RasPiBoards.h )
 
 set(SOURCES_NO_PI ${SOURCES}
