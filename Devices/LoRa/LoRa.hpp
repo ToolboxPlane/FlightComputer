@@ -11,14 +11,16 @@
 
 class LoRa : public ThreadModule{
 public:
-    LoRa() : ThreadModule(), loRaHal() {}
+    LoRa();
 
     Channel<rcLib::Package> &getChannelOut();
     Channel<rcLib::Package> &getChannelIn();
 private:
     Channel<rcLib::Package> in, out;
     void run() override;
-    LoRaHal loRaHal;
+    uint8_t* buf;
+    uint8_t len;
+    RH_RF95 rf95;
 };
 
 
