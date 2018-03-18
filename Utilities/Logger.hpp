@@ -26,7 +26,7 @@ private:
         while(enabled && !in.isClosed()) {
             if(in.get(item)) {
                 lock.lock();
-                stream << "[" << tag << "]\t" << item << std::endl;
+                stream << "[" << tag << "]\t" << item << "\n";
                 lock.unlock();
             }
         }

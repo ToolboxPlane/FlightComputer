@@ -22,7 +22,9 @@ public:
         ostream << "\tPitch: " << state.pitch;
         ostream << "\tHeight above ground: " << state.heightAboveGround;
         ostream << "\tHeight above sea: " << state.heightAboveSeaLevel;
-
+        ostream << "\tAirspeed: " << state.airspeed;
+        ostream << "\tGroundspeed: " << state.groundSpeed;
+        ostream << "\tPositon: (" << state.position.lat << "," << state.position.lon << ")";
         return ostream;
     }
 };
