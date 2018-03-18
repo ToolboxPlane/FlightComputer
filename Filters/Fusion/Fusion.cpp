@@ -46,25 +46,40 @@ void Fusion::run() {
 
 State_t Fusion::process() {
     State_t res{};
+    static State_t lastState;
 
-    res.groundSpeed = 0;
-    res.lat = lastGpsValues.back().lat;
-    res.lon = lastGpsValues.back().lon;
+    res.position = lastGpsValues.back();
+    res.groundSpeed = res.position.distanceTo(lastState.position) /
+            (res.position.timestamp - lastState.position.timestamp);
+
+    res.airspeed = res.groundSpeed;
+
+    res.heading = 0;
+    res.roll = 0;
+    res.pitch = 0;
+    res.heightAboveGround = 0;
     res.heightAboveSeaLevel = 0;
 
-    res.airspeed = 0;
+    auto c = 0;
+    for(auto iterator = lastSerialPackages.begin();
+            iterator != lastSerialPackages.end(); iterator++, c++) {
+        double weight = std::pow(0.5, (lastSerialPackages.size() - c));
+        // Little workaround to get the sum of all c's to be 1
+        if(c == 0) {
+            weight *= 2;
+        }
 
-    res.heading = lastSerialPackages.back().getChannel(0);
-    res.roll = lastSerialPackages.back().getChannel(1) - 180;
-    res.pitch = lastSerialPackages.back().getChannel(2) - 180;
-    res.heightAboveGround = lastSerialPackages.back().getChannel(3);
-    res.heightAboveSeaLevel = lastSerialPackages.back().getChannel(4);
-    if(res.heightAboveGround > 2.5) {
-        // Do stuff using SRTM data
+        res.heading = iterator->getChannel(0) * weight;
+        res.roll = (iterator->getChannel(1) - 180) * weight;
+        res.pitch = (iterator->getChannel(2) - 180);
+        res.heightAboveGround = iterator->getChannel(3) * weight;
+        res.heightAboveSeaLevel = iterator->getChannel(4) * weight;
     }
 
     res.flightmode = lastLoRaPackage.getChannel(0);
     res.armed = lastLoRaPackage.getChannel(1);
+
+    lastState = res;
 
     return res;
 }

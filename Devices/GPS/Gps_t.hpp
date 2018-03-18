@@ -39,7 +39,7 @@ public:
     }
 
 private:
-    const static double EARTH_RADIUS = 6371e3;
+    static constexpr double EARTH_RADIUS = 63713;
 };
 
 #endif //FLIGHTCOMPUTER_GPS_T_HPP
