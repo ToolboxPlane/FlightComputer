@@ -4,22 +4,21 @@
 #include "Filters/Fusion/Fusion.hpp"
 #include "Filters/Navigation/Navigation.hpp"
 #include "Filters/MeshManager/MeshManager.hpp"
+#include "Utilities/Logger.hpp"
+#include "Filters/OutputFilter/OutputFilter.hpp"
 
-#ifdef _ON_PI_
+#ifdef RASPBERRY_PI
 #include "Devices/GPS/GPS.hpp"
 #include "Devices/LoRa/LoRa.hpp"
 #else
 #include "Devices/GPS/GpsSimulator.hpp"
-#include "Utilities/Logger.hpp"
-#include "Filters/OutputFilter/OutputFilter.hpp"
-
 #endif
 
 int main() {
     //FlightController flightController("/dev/ttyACM0", B9600);
     RcLibSimultator flightController;
 
-#ifdef _ON_PI_
+#ifdef RASPBERRY_PI
     Gps gps("/dev/tty?", B4800);
     LoRa lora;
 #else

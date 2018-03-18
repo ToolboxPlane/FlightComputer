@@ -39,10 +39,28 @@ set(SOURCES_NO_PI ${SOURCES}
         Devices/GPS/GpsSimulator.cpp )
 
 IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
-    add_executable(FlightComputer ${SOURCES_PI})
-    add_definitions(-D_ON_PI_)
+    add_definitions(-DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY)
+    set(RADIOHEADBASE /home/pi/RadioHead)
+    set(RADIOHEAD_SOURCES
+            ${RADIOHEADBASE}/RHutil/RasPi.cpp
+            ${RADIOHEADBASE}/RH_RF95.cpp
+            ${RADIOHEADBASE}/RHDatagram.cpp
+            ${RADIOHEADBASE}/RHHardwareSPI.cpp
+            ${RADIOHEADBASE}/RHSPIDriver.cpp
+            ${RADIOHEADBASE}/RHGenericDriver.cpp
+            ${RADIOHEADBASE}/RHGenericSPI.cpp
+            ${RADIOHEADBASE}/RHutil/RasPi.h
+            ${RADIOHEADBASE}/RH_RF95.h
+            ${RADIOHEADBASE}/RHDatagram.h
+            ${RADIOHEADBASE}/RHHardwareSPI.h
+            ${RADIOHEADBASE}/RHSPIDriver.h
+            ${RADIOHEADBASE}/RHGenericDriver.h
+            ${RADIOHEADBASE}/RHGenericSPI.h)
+    include_directories(${RADIOHEADBASE})
+    add_executable(FlightComputer ${SOURCES_PI} ${RADIOHEAD_SOURCES})
+    target_link_libraries(FlightComputer pthread bcm2835)
 ELSE(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
     add_executable(FlightComputer ${SOURCES_NO_PI})
+    target_link_libraries(FlightComputer pthread)
 ENDIF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
 
-target_link_libraries(FlightComputer pthread)
