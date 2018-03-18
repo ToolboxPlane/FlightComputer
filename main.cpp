@@ -11,6 +11,7 @@
 #else
 #include "Devices/GPS/GpsSimulator.hpp"
 #include "Utilities/Logger.hpp"
+#include "Filters/OutputFilter/OutputFilter.hpp"
 
 #endif
 
@@ -29,12 +30,13 @@ int main() {
     Fusion fusion;
     Navigation navigation;
     MeshManager meshManager;
+    OutputFilter outputFilter;
 
-    Logger<rcLib::Package> serialReceive("FC-Recv");
-    Logger<rcLib::Package> serialSend("FC-Send");
-    Logger<rcLib::Package> loraReceive("Lora-Recv");
-    Logger<rcLib::Package> loraSend("Lora-Send");
-    Logger<Gps_t> gpsDebug("GPS");
+    Logger<rcLib::Package> serialReceive("FC-Recv", false);
+    Logger<rcLib::Package> serialSend("FC-Send", false);
+    Logger<rcLib::Package> loraReceive("Lora-Recv", false);
+    Logger<rcLib::Package> loraSend("Lora-Send", false);
+    Logger<Gps_t> gpsDebug("GPS", false);
     Logger<Nav_t> navDebug("Nav");
     Logger<State_t> fusionDebug("Fusion");
 
@@ -87,6 +89,28 @@ int main() {
     fusionOutMux.addInput(fusion.getChannelOut());
     fusionOutMux.addOutput(fusionDebug.getChannelIn());
     fusionOutMux.addOutput(navigation.getChannelIn());
+
+    /*
+     * (Nav) -> (Output, Debug)
+     */
+    ChannelMultiplexer<Nav_t> navOutMux;
+    navOutMux.addInput(navigation.getChannelOut());
+    navOutMux.addOutput(navDebug.getChannelIn());
+    navOutMux.addOutput(outputFilter.getChannelIn());
+
+    /*
+     * (Output Filter) -> (LoRa)
+     */
+    ChannelMultiplexer<rcLib::Package> loraFilterMux;
+    loraFilterMux.addInput(outputFilter.getLoraOut());
+    loraFilterMux.addOutput(lora.getChannelIn());
+
+    /*
+     * (Output Filter) -> (Flightcontroller)
+     */
+    ChannelMultiplexer<rcLib::Package> serialFilterMux;
+    serialFilterMux.addInput(outputFilter.getSerialOut());
+    serialFilterMux.addOutput(flightController.getChannelIn());
 
 
 #pragma clang diagnostic push

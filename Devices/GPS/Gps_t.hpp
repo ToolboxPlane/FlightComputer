@@ -35,7 +35,7 @@ public:
         Gps_t supportPoint{this->lat, gps.lon, 0};
         double xDiff = this->distanceTo(supportPoint);
         double yDiff = supportPoint.distanceTo(gps);
-        return std::atan2(yDiff, xDiff);
+        return std::atan2(yDiff, xDiff) * 180.0 / M_PI;
     }
 
 private:

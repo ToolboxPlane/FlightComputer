@@ -2,6 +2,7 @@
 // Created by paul on 14.03.18.
 //
 
+#include <iostream>
 #include "Fusion.hpp"
 
 #define LAST_VALUES_LENGTH 64
@@ -49,8 +50,12 @@ State_t Fusion::process() {
     static State_t lastState;
 
     res.position = lastGpsValues.back();
-    res.groundSpeed = res.position.distanceTo(lastState.position) /
-            (res.position.timestamp - lastState.position.timestamp);
+    if(res.position.timestamp != lastState.position.timestamp) {
+        res.groundSpeed = res.position.distanceTo(lastState.position) /
+                          (res.position.timestamp - lastState.position.timestamp);
+    } else {
+        res.groundSpeed = lastState.groundSpeed;
+    }
 
     res.airspeed = res.groundSpeed;
 
@@ -61,6 +66,7 @@ State_t Fusion::process() {
     res.heightAboveSeaLevel = 0;
 
     auto c = 0;
+    auto sum = 0.0;
     for(auto iterator = lastSerialPackages.begin();
             iterator != lastSerialPackages.end(); iterator++, c++) {
         double weight = std::pow(0.5, (lastSerialPackages.size() - c));
@@ -68,6 +74,7 @@ State_t Fusion::process() {
         if(c == 0) {
             weight *= 2;
         }
+        sum += weight;
 
         res.heading = iterator->getChannel(0) * weight;
         res.roll = (iterator->getChannel(1) - 180) * weight;

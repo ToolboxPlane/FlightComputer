@@ -13,6 +13,12 @@ void Navigation::run() {
             double heightDifference = currentState.heightAboveGround - 50;
             nav.pitch = heightDifference;
 
+            if(nav.pitch < -30) {
+                nav.pitch = 30;
+            } else if(nav.pitch > 30) {
+                nav.pitch = 30;
+            }
+
             double speedDifference = currentState.airspeed - 50;
             double speed = speedDifference / 20.0 + nav.pitch / 30.0;
 
@@ -21,7 +27,12 @@ void Navigation::run() {
             } else if(speed > 1.0) {
                 speed = 1.0;
             }
-            nav.power = speed;
+
+            if(currentState.armed) {
+                nav.power = speed;
+            } else {
+                nav.power = 0;
+            }
 
             out.put(nav);
         }
