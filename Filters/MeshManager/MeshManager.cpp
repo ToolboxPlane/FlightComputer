@@ -5,25 +5,25 @@
 #include <iostream>
 #include "MeshManager.hpp"
 
-Channel<rcLib::Package> &MeshManager::getLoraIn() {
+Channel<rcLib::PackageExtended> &MeshManager::getLoraIn() {
     return loraIn;
 }
 
-Channel<rcLib::Package> &MeshManager::getSerialIn() {
+Channel<rcLib::PackageExtended> &MeshManager::getSerialIn() {
     return serialIn;
 }
 
-Channel<rcLib::Package> &MeshManager::getLoraOut() {
+Channel<rcLib::PackageExtended> &MeshManager::getLoraOut() {
     return loraOut;
 }
 
-Channel<rcLib::Package> &MeshManager::getSerialOut() {
+Channel<rcLib::PackageExtended> &MeshManager::getSerialOut() {
     return serialOut;
 }
 
 void MeshManager::run() {
     while(!loraIn.isClosed() || !serialIn.isClosed() || !loraOut.isClosed() || !serialOut.isClosed()) {
-        rcLib::Package pkg;
+        rcLib::PackageExtended pkg;
         if(loraIn.get(pkg, false)) {
             if(pkg.needsForwarding()) {
                 pkg.countNode();

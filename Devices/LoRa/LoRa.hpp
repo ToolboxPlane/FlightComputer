@@ -8,15 +8,16 @@
 #include "LoRaHal.cpp"
 #include "../../ThreadModule.hpp"
 #include "../../Channel.hpp"
+#include "RH_RF95.cpp"
 
 class LoRa : public ThreadModule{
 public:
     LoRa();
 
-    Channel<rcLib::Package> &getChannelOut();
-    Channel<rcLib::Package> &getChannelIn();
+    Channel<rcLib::PackageExtended> &getChannelOut();
+    Channel<rcLib::PackageExtended> &getChannelIn();
 private:
-    Channel<rcLib::Package> in, out;
+    Channel<rcLib::PackageExtended> in, out;
     void run() override;
     uint8_t* buf;
     uint8_t len;

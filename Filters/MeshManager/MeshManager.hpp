@@ -7,19 +7,19 @@
 
 
 #include "../../ThreadModule.hpp"
-#include "../../Devices/RadioControlProtocol/rcLib.hpp"
+#include "../../Devices/rcLib/PackageExtended.hpp"
 #include "../../Channel.hpp"
 
 class MeshManager : ThreadModule{
 public:
     MeshManager();
 
-    Channel<rcLib::Package> &getLoraIn();
-    Channel<rcLib::Package> &getSerialIn();
-    Channel<rcLib::Package> &getLoraOut();
-    Channel<rcLib::Package> &getSerialOut();
+    Channel<rcLib::PackageExtended> &getLoraIn();
+    Channel<rcLib::PackageExtended> &getSerialIn();
+    Channel<rcLib::PackageExtended> &getLoraOut();
+    Channel<rcLib::PackageExtended> &getSerialOut();
 private:
-    Channel<rcLib::Package> loraIn, serialIn, loraOut, serialOut;
+    Channel<rcLib::PackageExtended> loraIn, serialIn, loraOut, serialOut;
 
     void run() override;
 };

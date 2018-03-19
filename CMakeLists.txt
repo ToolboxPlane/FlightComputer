@@ -9,9 +9,12 @@ set(SOURCES
         Channel.hpp
         ThreadModule.hpp
         Devices/FlightController/FlightController.cpp
-        Devices/RadioControlProtocol/rcLib.cpp
-        Devices/RcLibSimulator.cpp
-        Devices/RcLibSimulator.hpp
+        Devices/FlightController/FlightController.hpp
+        Devices/rcLib/RadioControlProtocol/rcLib.cpp
+        Devices/rcLib/RadioControlProtocol/rcLib.hpp
+        Devices/rcLib/PackageExtended.hpp
+        Devices/rcLib/RcLibSimulator.cpp
+        Devices/rcLib/RcLibSimulator.hpp
         Devices/GPS/Gps_t.hpp
         Devices/Serial.cpp
         Devices/Serial.hpp
@@ -25,7 +28,7 @@ set(SOURCES
         Filters/Fusion/State_t.hpp
         Filters/OutputFilter/OutputFilter.cpp
         Filters/OutputFilter/OutputFilter.hpp
-        Utilities/Logger.hpp )
+        Utilities/Logger.hpp)
 
 set(SOURCES_PI ${SOURCES}
         Devices/GPS/Gps.cpp

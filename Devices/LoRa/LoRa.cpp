@@ -85,11 +85,11 @@ LoRa::LoRa() : ThreadModule(), rf95(RF_CS_PIN, RF_IRQ_PIN){
     buf = (uint8_t*)malloc(RH_RF95_MAX_MESSAGE_LEN);
 }
 
-Channel<rcLib::Package> &LoRa::getChannelOut() {
+Channel<rcLib::PackageExtended> &LoRa::getChannelOut() {
     return out;
 }
 
-Channel<rcLib::Package> &LoRa::getChannelIn() {
+Channel<rcLib::PackageExtended> &LoRa::getChannelIn() {
     return in;
 }
 

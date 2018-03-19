@@ -4,11 +4,11 @@
 
 #include "OutputFilter.hpp"
 
-Channel<rcLib::Package> &OutputFilter::getLoraOut() {
+Channel<rcLib::PackageExtended> &OutputFilter::getLoraOut() {
     return loraOut;
 }
 
-Channel<rcLib::Package> &OutputFilter::getSerialOut() {
+Channel<rcLib::PackageExtended> &OutputFilter::getSerialOut() {
     return serialOut;
 }
 
@@ -18,7 +18,7 @@ Channel<Nav_t> &OutputFilter::getChannelIn() {
 
 void OutputFilter::run() {
     Nav_t nav{};
-    rcLib::Package serialOutPkg(1024, 8), loraOutPkg(1024, 8);
+    rcLib::PackageExtended serialOutPkg(1024, 8), loraOutPkg(1024, 8);
     rcLib::Package::transmitterId = 38;
 
     loraOutPkg.setMeshProperties(static_cast<uint8_t>(true), 2);

@@ -8,7 +8,7 @@
 #define LAST_VALUES_LENGTH 64
 
 void Fusion::run() {
-    rcLib::Package lastSerialPackage;
+    rcLib::PackageExtended lastSerialPackage;
     Gps_t lastGps{};
     ProcessingStatus serialStatus = NOT_RECEIVED, loraStatus = NOT_RECEIVED, gpsStatus = NOT_RECEIVED;
     while(!out.isClosed()) {
@@ -91,11 +91,11 @@ State_t Fusion::process() {
     return res;
 }
 
-Channel<rcLib::Package> &Fusion::getSerialIn() {
+Channel<rcLib::PackageExtended> &Fusion::getSerialIn() {
     return serialIn;
 }
 
-Channel<rcLib::Package> &Fusion::getLoRaIn() {
+Channel<rcLib::PackageExtended> &Fusion::getLoRaIn() {
     return loraIn;
 }
 

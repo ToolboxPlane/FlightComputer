@@ -4,8 +4,6 @@
 
 #include <fcntl.h>
 #include <bits/ios_base.h>
-#include <termio.h>
-#include <cstring>
 #include <unistd.h>
 #include <iostream>
 #include "../Serial.hpp"
@@ -19,8 +17,8 @@ FlightController::FlightController(const std::string& port, int baud)
 }
 
 void FlightController::run() {
-    rcLib::Package toSend;
-    rcLib::Package received;
+    rcLib::PackageExtended toSend;
+    rcLib::PackageExtended received;
     uint8_t buf[BUF_SIZE];
 
     while(!serial.ready) ;
@@ -46,10 +44,10 @@ void FlightController::run() {
     }
 }
 
-Channel<rcLib::Package> &FlightController::getChannelIn() {
+Channel<rcLib::PackageExtended> &FlightController::getChannelIn() {
     return this->in;
 }
 
-Channel<rcLib::Package> &FlightController::getChannelOut() {
+Channel<rcLib::PackageExtended> &FlightController::getChannelOut() {
     return this->out;
 }

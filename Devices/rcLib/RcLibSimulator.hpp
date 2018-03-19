@@ -6,20 +6,20 @@
 #define FLIGHTCOMPUTER_SERIALSIMULATOR_HPP
 
 
-#include "../Channel.hpp"
-#include "RadioControlProtocol/rcLib.hpp"
-#include "../ThreadModule.hpp"
+#include "../../Channel.hpp"
+#include "PackageExtended.hpp"
+#include "../../ThreadModule.hpp"
 
 class RcLibSimultator : public ThreadModule{
 public:
     RcLibSimultator() : ThreadModule() {};
     void run() override;
 
-    Channel<rcLib::Package> &getChannelIn();
-    Channel<rcLib::Package> &getChannelOut();
+    Channel<rcLib::PackageExtended> &getChannelIn();
+    Channel<rcLib::PackageExtended> &getChannelOut();
 
 private:
-    Channel<rcLib::Package> in, out;
+    Channel<rcLib::PackageExtended> in, out;
 };
 
 

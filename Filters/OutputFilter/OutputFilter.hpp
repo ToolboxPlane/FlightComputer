@@ -7,7 +7,7 @@
 
 
 #include "../../ThreadModule.hpp"
-#include "../../Devices/RadioControlProtocol/rcLib.hpp"
+#include "../../Devices/rcLib/PackageExtended.hpp"
 #include "../Navigation/Nav_t.hpp"
 #include "../../Channel.hpp"
 
@@ -15,12 +15,12 @@ class OutputFilter : ThreadModule{
 public:
     OutputFilter() : ThreadModule() {}
 
-    Channel<rcLib::Package> &getLoraOut();
-    Channel<rcLib::Package> &getSerialOut();
+    Channel<rcLib::PackageExtended> &getLoraOut();
+    Channel<rcLib::PackageExtended> &getSerialOut();
     Channel<Nav_t> &getChannelIn();
 private:
     void run() override;
-    Channel<rcLib::Package> serialOut, loraOut;
+    Channel<rcLib::PackageExtended> serialOut, loraOut;
     Channel<Nav_t> in;
 };
 

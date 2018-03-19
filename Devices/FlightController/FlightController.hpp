@@ -7,7 +7,7 @@
 
 #include "string"
 #include "../../Channel.hpp"
-#include "../RadioControlProtocol/rcLib.hpp"
+#include "../rcLib/PackageExtended.hpp"
 #include "../../ThreadModule.hpp"
 #include <termios.h>
 #include "../Serial.hpp"
@@ -17,11 +17,11 @@ public:
     FlightController(const std::string& port, int baud);
     void run() override;
 
-    Channel<rcLib::Package> &getChannelIn();
-    Channel<rcLib::Package> &getChannelOut();
+    Channel<rcLib::PackageExtended> &getChannelIn();
+    Channel<rcLib::PackageExtended> &getChannelOut();
 private:
     Serial serial;
-    Channel<rcLib::Package> in, out;
+    Channel<rcLib::PackageExtended> in, out;
 
 };
 
