@@ -14,14 +14,12 @@
 
 class Gps : ThreadModule{
 public:
-    Gps(std::string port, int baud);
+    Gps();
 
     Channel<Gps_t> &getChannelOut();
 private:
     void run() override;
     Channel<Gps_t> out;
-    Serial serial;
-    Gps_t parseNmeaString(uint8_t* s, size_t n);
 };
 
 
