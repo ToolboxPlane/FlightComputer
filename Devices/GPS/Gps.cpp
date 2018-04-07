@@ -7,7 +7,7 @@
 
 #define BUF_SIZE 80
 
-Gps::Gps(std::string port, int baud) : ThreadModule(), serial("/dev/ttyAMA0", 4800){
+Gps::Gps(std::string port, int baud) : ThreadModule(), serial(port.c_str(), baud){
 }
 
 Channel<Gps_t> &Gps::getChannelOut() {
