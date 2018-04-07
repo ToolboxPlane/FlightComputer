@@ -6,25 +6,21 @@
 #include "Filters/MeshManager/MeshManager.hpp"
 #include "Utilities/Logger.hpp"
 #include "Filters/OutputFilter/OutputFilter.hpp"
+#include "Devices/GPS/GpsSimulator.hpp"
 
 #ifdef RASPBERRY_PI
 #include "Devices/GPS/Gps.hpp"
 #include "Devices/LoRa/LoRa.hpp"
-#else
-#include "Devices/GPS/GpsSimulator.hpp"
 #endif
 
 int main() {
-    //FlightController flightController("/dev/ttyACM0", B9600);
-    RcLibSimultator flightController;
-
-#ifdef RASPBERRY_PI
-    Gps gps("/dev/tty?", B4800);
+    FlightController flightController("/dev/ttyACM0", B9600);
     LoRa lora;
-#else
-    RcLibSimultator lora;
+//    Gps gps("/dev/ttyS0", B9600);
+
+    //RcLibSimultator flightController;
+//    RcLibSimultator lora;
     GpsSimulator gps;
-#endif
 
     Fusion fusion;
     Navigation navigation;
@@ -33,7 +29,7 @@ int main() {
 
     Logger<rcLib::PackageExtended> serialReceive("FC-Recv", true);
     Logger<rcLib::PackageExtended> serialSend("FC-Send", false);
-    Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", false);
+    Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", true);
     Logger<rcLib::PackageExtended> loraSend("Lora-Send", false);
     Logger<Gps_t> gpsDebug("GPS", false);
     Logger<Nav_t> navDebug("Nav");

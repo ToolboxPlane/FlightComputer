@@ -8,6 +8,7 @@
 
 #define BUF_SIZE 80
 
+
 Gps::Gps() : ThreadModule(){
     gps_data_t gps_data;
     if ((rc = gps_open("localhost", "2947", &gps_data)) == -1) {
