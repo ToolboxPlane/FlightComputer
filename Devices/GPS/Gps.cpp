@@ -3,18 +3,19 @@
 //
 
 #include "Gps.hpp"
+#include <unistd.h>
 
 #define BUF_SIZE 80
 
-Gps::Gps(std::string port, int baud) : ThreadModule(), serial("/dev/tty?", 4800){
+Gps::Gps(std::string port, int baud) : ThreadModule(), serial("/dev/ttyAMA0", 4800){
 }
 
-Channel<gps_t> &Gps::getChannelOut() {
+Channel<Gps_t> &Gps::getChannelOut() {
     return out;
 }
 
 void Gps::run() {
-    gps_t gps;
+    Gps_t gps;
     uint8_t buf[BUF_SIZE];
     uint8_t line[BUF_SIZE];
     uint8_t head = 0;
@@ -24,7 +25,7 @@ void Gps::run() {
         size_t readed = read(serial.fd, buf, sizeof(buf));
         for(auto c=0; c<readed; c++) {
             if(c < readed - 1 && buf[c] == '\r' && buf[c+1] == '\n') {
-                out.put(line, head);
+                out.put(parseNmeaString(line, head));
             } else {
                 line[head++] = buf[c];
             }
@@ -32,7 +33,7 @@ void Gps::run() {
     }
 }
 
-gps_t Gps::parseNmeaString(uint8_t* s, size_t n) {
-    gps_t ret{};
+Gps_t Gps::parseNmeaString(uint8_t* s, size_t n) {
+    Gps_t ret{};
     return ret;
 }

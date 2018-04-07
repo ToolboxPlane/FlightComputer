@@ -8,7 +8,7 @@
 #include "Filters/OutputFilter/OutputFilter.hpp"
 
 #ifdef RASPBERRY_PI
-#include "Devices/GPS/GPS.hpp"
+#include "Devices/GPS/Gps.hpp"
 #include "Devices/LoRa/LoRa.hpp"
 #else
 #include "Devices/GPS/GpsSimulator.hpp"

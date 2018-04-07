@@ -5,10 +5,11 @@
 #ifndef FLIGHTCOMPUTER_LORA_HPP
 #define FLIGHTCOMPUTER_LORA_HPP
 
-#include "LoRaHal.cpp"
 #include "../../ThreadModule.hpp"
 #include "../../Channel.hpp"
-#include "RH_RF95.cpp"
+#include "RH_RF95.h"
+#include <unistd.h>
+#include "../rcLib/PackageExtended.hpp"
 
 class LoRa : public ThreadModule{
 public:

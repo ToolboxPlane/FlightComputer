@@ -94,7 +94,7 @@ Channel<rcLib::PackageExtended> &LoRa::getChannelIn() {
 }
 
 void LoRa::run() {
-    rcLib::Package pkgIn, pkgOut;
+    rcLib::PackageExtended pkgIn, pkgOut;
     while(true) {
 #ifdef RF_IRQ_PIN
         // We have a IRQ pin ,pool it instead reading
@@ -136,7 +136,7 @@ void LoRa::run() {
 
         if(in.get(pkgIn, false)) {
             size_t len = pkgIn.encode();
-            rf95.send(len, pkgIn.getEncodedData());
+            rf95.send(pkgIn.getEncodedData(), len);
         }
     }
 }

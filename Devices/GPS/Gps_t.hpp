@@ -6,6 +6,7 @@
 #define FLIGHTCOMPUTER_GPS_T_HPP
 
 #include <cmath>
+#include <iostream>
 
 class Gps_t {
 public:

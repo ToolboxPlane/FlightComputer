@@ -9,18 +9,19 @@
 
 #include "Gps_t.hpp"
 #include "../../ThreadModule.hpp"
+#include "../../Channel.hpp"
 #include "../Serial.hpp"
 
 class Gps : ThreadModule{
 public:
     Gps(std::string port, int baud);
 
-    Channel<gps_t> &getChannelOut();
+    Channel<Gps_t> &getChannelOut();
 private:
     void run() override;
-    Channel<gps_t> out;
+    Channel<Gps_t> out;
     Serial serial;
-    gps_t parseNmeaString(uint8_t* s, size_t n);
+    Gps_t parseNmeaString(uint8_t* s, size_t n);
 };
 
 
