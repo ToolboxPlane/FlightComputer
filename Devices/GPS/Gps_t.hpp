@@ -12,6 +12,7 @@ class Gps_t {
 public:
     double lat, lon;
     unsigned long timestamp;
+    double speed;
 
     friend std::ostream &operator<<(std::ostream &ostream, Gps_t gps) {
         ostream << "Lat: " << gps.lat << "\tLon: " << gps.lon << "\tAt: " << gps.timestamp;
