@@ -28,7 +28,9 @@ set(SOURCES
         Filters/Fusion/State_t.hpp
         Filters/OutputFilter/OutputFilter.cpp
         Filters/OutputFilter/OutputFilter.hpp
-        Utilities/Logger.hpp)
+        Utilities/Logger.hpp
+        Devices/GPS/GpsSimulator.hpp
+        Devices/GPS/GpsSimulator.cpp )
 
 set(SOURCES_PI ${SOURCES}
         Devices/GPS/Gps.cpp
@@ -37,9 +39,7 @@ set(SOURCES_PI ${SOURCES}
         Devices/LoRa/LoRa.hpp
         Devices/LoRa/RasPiBoards.h )
 
-set(SOURCES_NO_PI ${SOURCES}
-        Devices/GPS/GpsSimulator.hpp
-        Devices/GPS/GpsSimulator.cpp )
+set(SOURCES_NO_PI ${SOURCES})
 
 IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
     add_definitions(-DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY)

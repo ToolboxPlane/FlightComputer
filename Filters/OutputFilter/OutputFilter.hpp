@@ -15,12 +15,12 @@ class OutputFilter : ThreadModule{
 public:
     OutputFilter() : ThreadModule() {}
 
-    Channel<rcLib::PackageExtended> &getLoraOut();
-    Channel<rcLib::PackageExtended> &getSerialOut();
+    Channel<rcLib::PackageExtended> &getBaseOut();
+    Channel<rcLib::PackageExtended> &getFlightControllerOut();
     Channel<Nav_t> &getChannelIn();
 private:
     void run() override;
-    Channel<rcLib::PackageExtended> serialOut, loraOut;
+    Channel<rcLib::PackageExtended> flightControllerOut, baseOut;
     Channel<Nav_t> in;
 };
 

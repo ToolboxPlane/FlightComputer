@@ -7,6 +7,7 @@
 void RcLibSimultator::run() {
     rcLib::PackageExtended pkg(256, 16);
     pkg.setMeshProperties(static_cast<uint8_t>(true));
+    pkg.setDeviceId(deviceId);
     while(!in.isClosed() && !out.isClosed()) {
         std::this_thread::sleep_for(std::chrono::seconds(1));
         for(uint8_t c=0; c < 16; c++) {

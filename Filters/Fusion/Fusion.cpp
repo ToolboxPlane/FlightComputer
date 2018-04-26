@@ -10,16 +10,14 @@
 void Fusion::run() {
     rcLib::PackageExtended lastSerialPackage;
     Gps_t lastGps{};
-    ProcessingStatus serialStatus = NOT_RECEIVED, loraStatus = NOT_RECEIVED, gpsStatus = NOT_RECEIVED;
+    ProcessingStatus flightControllerStatus = NOT_RECEIVED, gpsStatus = NOT_RECEIVED;
     while(!out.isClosed()) {
-        if(!loraIn.isClosed() && loraIn.get(lastLoRaPackage, false)) {
-            loraStatus = READY;
-        } else if(!serialIn.isClosed() && serialIn.get(lastSerialPackage, false)) {
-            serialStatus = READY;
+         if(!flightControllerIn.isClosed() && flightControllerIn.get(lastSerialPackage, false)) {
+            flightControllerStatus = READY;
 
-            lastSerialPackages.push_back(lastSerialPackage);
-            if(lastSerialPackages.size() >= LAST_VALUES_LENGTH) {
-                lastSerialPackages.pop_front();
+            lastFlightControllerPackages.push_back(lastSerialPackage);
+            if(lastFlightControllerPackages.size() >= LAST_VALUES_LENGTH) {
+                lastFlightControllerPackages.pop_front();
             }
         } else if(!gpsIn.isClosed() && gpsIn.get(lastGps, false)) {
             gpsStatus = READY;
@@ -30,11 +28,10 @@ void Fusion::run() {
             }
         }
 
-        if(loraStatus == READY || serialStatus == READY || gpsStatus == READY) {
-            if(loraStatus != NOT_RECEIVED && serialStatus != NOT_RECEIVED && gpsStatus != NOT_RECEIVED) {
+        if(flightControllerStatus == READY || gpsStatus == READY) {
+            if(flightControllerStatus != NOT_RECEIVED && gpsStatus != NOT_RECEIVED) {
                 out.put(process());
-                loraStatus = PROCESSED;
-                serialStatus = PROCESSED;
+                flightControllerStatus = PROCESSED;
                 gpsStatus = PROCESSED;
             } else {
                 // Maybe do other stuff
@@ -67,9 +64,9 @@ State_t Fusion::process() {
 
     auto c = 0;
     auto sum = 0.0;
-    for(auto iterator = lastSerialPackages.begin();
-            iterator != lastSerialPackages.end(); iterator++, c++) {
-        double weight = std::pow(0.5, (lastSerialPackages.size() - c));
+    for(auto iterator = lastFlightControllerPackages.begin();
+            iterator != lastFlightControllerPackages.end(); iterator++, c++) {
+        double weight = std::pow(0.5, (lastFlightControllerPackages.size() - c));
         // Little workaround to get the sum of all c's to be 1
         if(c == 0) {
             weight *= 2;
@@ -83,20 +80,9 @@ State_t Fusion::process() {
         res.heightAboveSeaLevel = iterator->getChannel(4) * weight;
     }
 
-    res.flightmode = lastLoRaPackage.getChannel(0);
-    res.armed = lastLoRaPackage.getChannel(1);
-
     lastState = res;
 
     return res;
-}
-
-Channel<rcLib::PackageExtended> &Fusion::getSerialIn() {
-    return serialIn;
-}
-
-Channel<rcLib::PackageExtended> &Fusion::getLoRaIn() {
-    return loraIn;
 }
 
 Channel<State_t> &Fusion::getChannelOut() {
@@ -105,4 +91,16 @@ Channel<State_t> &Fusion::getChannelOut() {
 
 Channel<Gps_t> &Fusion::getGpsIn() {
     return gpsIn;
+}
+
+Channel<rcLib::PackageExtended> &Fusion::getFlightControllerIn() {
+    return flightControllerIn;
+}
+
+Channel<rcLib::PackageExtended> &Fusion::getBaseIn() {
+    return baseIn;
+}
+
+Channel<rcLib::PackageExtended> &Fusion::getRemoteIn() {
+    return remoteIn;
 }

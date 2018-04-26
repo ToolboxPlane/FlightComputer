@@ -23,18 +23,18 @@ public:
     Fusion() : ThreadModule() {};
     void run() override;
 
-    Channel<rcLib::PackageExtended> &getSerialIn();
-    Channel<rcLib::PackageExtended> &getLoRaIn();
+    Channel<rcLib::PackageExtended> &getFlightControllerIn();
+    Channel<rcLib::PackageExtended> &getBaseIn();
+    Channel<rcLib::PackageExtended> &getRemoteIn();
     Channel<Gps_t> &getGpsIn();
     Channel<State_t> &getChannelOut();
 private:
     State_t process();
 
-    rcLib::PackageExtended lastLoRaPackage;
     std::list<Gps_t> lastGpsValues;
-    std::list<rcLib::PackageExtended> lastSerialPackages;
+    std::list<rcLib::PackageExtended> lastFlightControllerPackages;
 
-    Channel<rcLib::PackageExtended> loraIn, serialIn;
+    Channel<rcLib::PackageExtended> baseIn, flightControllerIn, remoteIn;
     Channel<Gps_t> gpsIn;
     Channel<State_t> out;
 };

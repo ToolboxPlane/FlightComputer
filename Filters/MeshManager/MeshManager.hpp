@@ -10,6 +10,7 @@
 #include "../../Devices/rcLib/PackageExtended.hpp"
 #include "../../Channel.hpp"
 
+
 class MeshManager : ThreadModule{
 public:
     MeshManager();
@@ -18,8 +19,34 @@ public:
     Channel<rcLib::PackageExtended> &getSerialIn();
     Channel<rcLib::PackageExtended> &getLoraOut();
     Channel<rcLib::PackageExtended> &getSerialOut();
+
+    Channel<rcLib::PackageExtended> &getFlightControllerIn() {
+        return flightControllerIn;
+    }
+
+    Channel<rcLib::PackageExtended> &getFlightControllerOut() {
+        return flightControllerOut;
+    }
+    Channel<rcLib::PackageExtended> &getRemoteIn() {
+        return remoteIn;
+    }
+
+    Channel<rcLib::PackageExtended> &getRemoteOut() {
+        return remoteOut;
+    }
+
+    Channel<rcLib::PackageExtended> &getBaseIn() {
+        return baseIn;
+    }
+
+    Channel<rcLib::PackageExtended> &getBaseOut() {
+        return baseOut;
+    }
 private:
     Channel<rcLib::PackageExtended> loraIn, serialIn, loraOut, serialOut;
+    Channel<rcLib::PackageExtended> flightControllerOut, remoteOut, baseOut, flightControllerIn, remoteIn, baseIn;
+
+    void propagateInternal(rcLib::PackageExtended pkg);
 
     void run() override;
 };
