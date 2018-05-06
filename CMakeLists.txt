@@ -32,7 +32,7 @@ set(SOURCES
         Devices/GPS/GpsSimulator.hpp
         Devices/GPS/GpsSimulator.cpp
         Utilities/json.hpp
-        Utilities/ChannelRecorder.hpp)
+        Utilities/ChannelRecorder.hpp Utilities/ChannelReplay.hpp)
 
 set(SOURCES_PI ${SOURCES}
         Devices/GPS/Gps.cpp

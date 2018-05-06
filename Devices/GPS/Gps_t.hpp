@@ -14,12 +14,23 @@ using json = nlohmann::json;
 
 class Gps_t {
 public:
+    explicit Gps_t(json json) {
+        this->lat = json["lat"];
+        this->lon = json["lon"];
+        this->speed = json["speed"];
+        this->timestamp = json["timestamp"];
+    }
+
+    Gps_t(double lat, double lon) : lat(lat), lon(lon), speed(0), timestamp(0){};
+
+    Gps_t() : lat(0), lon(0), speed(0), timestamp(0){};
+
     double lat, lon;
-    unsigned long timestamp;
     double speed;
+    double timestamp;
 
     friend std::ostream &operator<<(std::ostream &ostream, Gps_t gps) {
-        ostream << "Lat: " << gps.lat << "\tLon: " << gps.lon << "\tAt: " << gps.timestamp;
+        ostream << "Lat: " << gps.lat << "\tLon: " << gps.lon;
         return ostream;
     }
 
@@ -28,6 +39,7 @@ public:
         ret["lat"] = lat;
         ret["lon"] = lon;
         ret["speed"] = speed;
+        ret["timestamp"] = timestamp;
 
         return ret;
     }
@@ -47,7 +59,7 @@ public:
     }
 
     double angleTo(Gps_t gps) {
-        Gps_t supportPoint{this->lat, gps.lon, 0};
+        Gps_t supportPoint(this->lat, gps.lon);
         double xDiff = this->distanceTo(supportPoint);
         double yDiff = supportPoint.distanceTo(gps);
         return std::atan2(yDiff, xDiff) * 180.0 / M_PI;

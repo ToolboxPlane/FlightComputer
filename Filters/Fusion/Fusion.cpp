@@ -9,7 +9,7 @@
 
 void Fusion::run() {
     rcLib::PackageExtended lastSerialPackage;
-    Gps_t lastGps{};
+    Gps_t lastGps;
     ProcessingStatus flightControllerStatus = NOT_RECEIVED, gpsStatus = NOT_RECEIVED;
     while(!out.isClosed()) {
          if(!flightControllerIn.isClosed() && flightControllerIn.get(lastSerialPackage, false)) {

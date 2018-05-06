@@ -9,6 +9,7 @@
 #include "Filters/OutputFilter/OutputFilter.hpp"
 #include "Devices/GPS/GpsSimulator.hpp"
 #include "Utilities/ChannelRecorder.hpp"
+#include "Utilities/ChannelReplay.hpp"
 
 #ifdef RASPBERRY_PI
 #include "Devices/GPS/Gps.hpp"
@@ -23,10 +24,6 @@ int main(int argc, char** argv) {
     RcLibSimultator serial(23);
     RcLibSimultator lora(17);
     GpsSimulator gps;
-
-    std::ofstream ofstream;
-    ofstream.open("test.json");
-    ChannelRecorder<Gps_t> recorder(ofstream);
 
     Fusion fusion;
     Navigation navigation;
@@ -87,7 +84,6 @@ int main(int argc, char** argv) {
     gpsInMux.addOutput(fusion.getGpsIn());
     gpsInMux.addInput(gps.getChannelOut());
     gpsInMux.addOutput(gpsDebug.getChannelIn());
-    gpsInMux.addOutput(recorder.getChannelIn());
 
     /*
      * (Fusion) -> (Navigation, Debug)
