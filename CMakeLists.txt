@@ -32,22 +32,16 @@ set(SOURCES
         Devices/GPS/GpsSimulator.hpp
         Devices/GPS/GpsSimulator.cpp
         Utilities/json.hpp
+        Devices/GPS/Gps.cpp
+        Devices/GPS/Gps.hpp
         Utilities/ChannelRecorder.hpp Utilities/ChannelReplay.hpp)
 
 set(SOURCES_PI ${SOURCES}
-        Devices/GPS/Gps.cpp
-        Devices/GPS/Gps.hpp
         Devices/LoRa/LoRa.cpp
         Devices/LoRa/LoRa.hpp
         Devices/LoRa/RasPiBoards.h )
 
 set(SOURCES_NO_PI ${SOURCES})
-
-# Next lines needed for building all Qt projects
-find_package( Qt4 REQUIRED )
-include( ${QT_USE_FILE} )
-add_definitions( ${QT_DEFINITIONS} )
-include_directories( ${CMAKE_BINARY_DIR} )
 
 IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
     add_definitions(-DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY)
@@ -69,9 +63,9 @@ IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
             ${RADIOHEADBASE}/RHGenericSPI.h)
     include_directories(${RADIOHEADBASE})
     add_executable(FlightComputer ${SOURCES_PI} ${RADIOHEAD_SOURCES})
-    target_link_libraries(FlightComputer pthread bcm2835 ${QT_LIBRARIES})
+    target_link_libraries(FlightComputer gps pthread bcm2835)
 ELSE(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
     add_executable(FlightComputer ${SOURCES_NO_PI})
-    target_link_libraries(FlightComputer pthread ${QT_LIBRARIES})
+    target_link_libraries(FlightComputer pthread gps)
 ENDIF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
 

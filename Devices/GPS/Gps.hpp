@@ -6,6 +6,7 @@
 #define FLIGHTCOMPUTER_GPS_HPP
 
 #include <string>
+#include <gps.h>
 
 #include "Gps_t.hpp"
 #include "../../ThreadModule.hpp"
@@ -20,6 +21,7 @@ public:
 private:
     void run() override;
     Channel<Gps_t> out;
+    gps_data_t gps_data;
 };
 
 

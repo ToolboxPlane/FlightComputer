@@ -10,20 +10,20 @@
 #include "Devices/GPS/GpsSimulator.hpp"
 #include "Utilities/ChannelRecorder.hpp"
 #include "Utilities/ChannelReplay.hpp"
+#include "Devices/GPS/Gps.hpp"
 
 #ifdef RASPBERRY_PI
-#include "Devices/GPS/Gps.hpp"
 #include "Devices/LoRa/LoRa.hpp"
 #endif
 
 int main(int argc, char** argv) {
     //FlightController serial("/dev/ttyACM0", B9600);
     //LoRa lora;
-//    Gps gps("/dev/ttyS0", B9600);
+    Gps gps;
 
     RcLibSimultator serial(23);
     RcLibSimultator lora(17);
-    GpsSimulator gps;
+    //GpsSimulator gps;
 
     Fusion fusion;
     Navigation navigation;
@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     Logger<rcLib::PackageExtended> serialSend("FC-Send", false);
     Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", false);
     Logger<rcLib::PackageExtended> loraSend("Lora-Send", false);
-    Logger<Gps_t> gpsDebug("GPS", false);
+    Logger<Gps_t> gpsDebug("GPS", true);
     Logger<Nav_t> navDebug("Nav", false);
     Logger<State_t> fusionDebug("Fusion", false);
 
@@ -81,8 +81,8 @@ int main(int argc, char** argv) {
      * (GPS) -> (Fusion, Debug)
      */
     ChannelMultiplexer<Gps_t> gpsInMux;
-    gpsInMux.addOutput(fusion.getGpsIn());
     gpsInMux.addInput(gps.getChannelOut());
+    gpsInMux.addOutput(fusion.getGpsIn());
     gpsInMux.addOutput(gpsDebug.getChannelIn());
 
     /*

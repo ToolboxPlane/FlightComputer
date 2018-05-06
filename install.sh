@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Install necessary software
-sudo apt install -y build-essential git cmake
+sudo apt install -y build-essential git cmake libgps_dev gpsd
 
 # Install Radiohead
 git clone https://github.com/hallard/RadioHead /home/pi/RadioHead
