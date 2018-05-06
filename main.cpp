@@ -1,3 +1,4 @@
+#include <fstream>
 #include "Devices/FlightController/FlightController.hpp"
 #include "ChannelMultiplexer.hpp"
 #include "Devices/rcLib/RcLibSimulator.hpp"
@@ -7,13 +8,14 @@
 #include "Utilities/Logger.hpp"
 #include "Filters/OutputFilter/OutputFilter.hpp"
 #include "Devices/GPS/GpsSimulator.hpp"
+#include "Utilities/ChannelRecorder.hpp"
 
 #ifdef RASPBERRY_PI
 #include "Devices/GPS/Gps.hpp"
 #include "Devices/LoRa/LoRa.hpp"
 #endif
 
-int main() {
+int main(int argc, char** argv) {
     //FlightController serial("/dev/ttyACM0", B9600);
     //LoRa lora;
 //    Gps gps("/dev/ttyS0", B9600);
@@ -22,18 +24,22 @@ int main() {
     RcLibSimultator lora(17);
     GpsSimulator gps;
 
+    std::ofstream ofstream;
+    ofstream.open("test.json");
+    ChannelRecorder<Gps_t> recorder(ofstream);
+
     Fusion fusion;
     Navigation navigation;
     MeshManager meshManager;
     OutputFilter outputFilter;
 
-    Logger<rcLib::PackageExtended> serialReceive("FC-Recv", true);
+    Logger<rcLib::PackageExtended> serialReceive("FC-Recv", false);
     Logger<rcLib::PackageExtended> serialSend("FC-Send", false);
-    Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", true);
+    Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", false);
     Logger<rcLib::PackageExtended> loraSend("Lora-Send", false);
     Logger<Gps_t> gpsDebug("GPS", false);
-    Logger<Nav_t> navDebug("Nav");
-    Logger<State_t> fusionDebug("Fusion");
+    Logger<Nav_t> navDebug("Nav", false);
+    Logger<State_t> fusionDebug("Fusion", false);
 
     /*
      * (Flightcontroller) -> (Mesh, Debug)
@@ -81,6 +87,7 @@ int main() {
     gpsInMux.addOutput(fusion.getGpsIn());
     gpsInMux.addInput(gps.getChannelOut());
     gpsInMux.addOutput(gpsDebug.getChannelIn());
+    gpsInMux.addOutput(recorder.getChannelIn());
 
     /*
      * (Fusion) -> (Navigation, Debug)

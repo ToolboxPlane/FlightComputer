@@ -8,6 +8,10 @@
 #include <cmath>
 #include <iostream>
 
+#include "../../Utilities/json.hpp"
+
+using json = nlohmann::json;
+
 class Gps_t {
 public:
     double lat, lon;
@@ -17,6 +21,15 @@ public:
     friend std::ostream &operator<<(std::ostream &ostream, Gps_t gps) {
         ostream << "Lat: " << gps.lat << "\tLon: " << gps.lon << "\tAt: " << gps.timestamp;
         return ostream;
+    }
+
+    json toJson() {
+        json ret;
+        ret["lat"] = lat;
+        ret["lon"] = lon;
+        ret["speed"] = speed;
+
+        return ret;
     }
 
     double distanceTo(Gps_t gps) {
