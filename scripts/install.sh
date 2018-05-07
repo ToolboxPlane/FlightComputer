@@ -15,6 +15,7 @@ cd bcm2835-1.55
 make -j4
 sudo make check
 sudo make install
+cd ~
 
 # Generate a ssh-key
 ssh-keygen
@@ -31,3 +32,7 @@ mkdir build
 cd build
 cmake ..
 make -j4
+
+# Setup the autostart
+sudo cp autostart.sh /etc/init.d/FlightComputer
+sudo chmod 755 /etc/init.d/FlightComputer
