@@ -25,12 +25,24 @@ public:
 
     Gps_t() : lat(0), lon(0), speed(0), timestamp(0){};
 
+    bool fixAquired;
+
     double lat, lon;
     double speed;
     double timestamp;
+    double altitude;
+    double climb;
 
     friend std::ostream &operator<<(std::ostream &ostream, Gps_t gps) {
-        ostream << "Lat: " << gps.lat << "\tLon: " << gps.lon;
+        if(!gps.fixAquired) {
+            ostream << "No fix";
+        } else {
+            ostream << "Timestamp: " << gps.timestamp <<
+                    "\tLat: " << gps.lat <<
+                    "\tLon: " << gps.lon <<
+                    "\tAlt: " << gps.altitude <<
+                    "\tClimb: " << gps.climb;
+        }
         return ostream;
     }
 

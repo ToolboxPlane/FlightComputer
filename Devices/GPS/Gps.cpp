@@ -9,11 +9,6 @@
 #define BUF_SIZE 80
 
 Gps::Gps() : ThreadModule(){
-    if (gps_open("localhost", "3001", &gps_data) == -1) {
-        fprintf(stderr, "reason: %s\n",gps_errstr(errno));
-        return;
-    }
-    gps_stream(&gps_data, WATCH_ENABLE | WATCH_JSON, nullptr);
 }
 
 Channel<Gps_t> &Gps::getChannelOut() {
@@ -21,6 +16,12 @@ Channel<Gps_t> &Gps::getChannelOut() {
 }
 
 void Gps::run() {
+    if (gps_open("localhost", "3000", &gps_data) == -1) {
+        fprintf(stderr, "reason: %s\n",gps_errstr(errno));
+        return;
+    }
+    gps_stream(&gps_data, WATCH_ENABLE | WATCH_JSON, nullptr);
+
     Gps_t gps;
     while(!out.isClosed()) {
         if (gps_waiting(&gps_data, 60000000)) {
@@ -32,16 +33,19 @@ void Gps::run() {
                     !std::isnan(gps_data.fix.latitude) &&
                     !std::isnan(gps_data.fix.longitude)) {
 
+                    gps.fixAquired = true;
+
                     gps.lat = gps_data.fix.latitude;
                     gps.lon = gps_data.fix.longitude;
                     gps.timestamp = gps_data.fix.time;
                     gps.speed = gps_data.fix.speed;
+                    gps.climb = gps_data.fix.climb;
+                    gps.altitude = gps_data.fix.altitude;
 
-                    std::cout << gps << std::endl;
-
-                    //out.put(gps);
+                    out.put(gps);
                 } else {
-                    std::cout << "no fix" << std::endl;
+                    gps.fixAquired = false;
+                    out.put(gps);
                 }
             }
         }
