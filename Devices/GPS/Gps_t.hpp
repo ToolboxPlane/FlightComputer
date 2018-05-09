@@ -15,10 +15,15 @@ using json = nlohmann::json;
 class Gps_t {
 public:
     explicit Gps_t(json json) {
-        this->lat = json["lat"];
-        this->lon = json["lon"];
-        this->speed = json["speed"];
-        this->timestamp = json["timestamp"];
+        this->fixAquired = json["fixAquired"];
+        if(this->fixAquired) {
+            this->lat = json["lat"];
+            this->lon = json["lon"];
+            this->speed = json["speed"];
+            this->timestamp = json["timestamp"];
+            this->altitude = json["altitude"];
+            this->climb = json["climb"];
+        }
     }
 
     Gps_t(double lat, double lon) : lat(lat), lon(lon), speed(0), timestamp(0){};
@@ -48,10 +53,15 @@ public:
 
     json toJson() {
         json ret;
-        ret["lat"] = lat;
-        ret["lon"] = lon;
-        ret["speed"] = speed;
-        ret["timestamp"] = timestamp;
+        ret["fixAquired"] = fixAquired;
+        if(fixAquired) {
+            ret["altitude"] = altitude;
+            ret["climb"] = climb;
+            ret["lat"] = lat;
+            ret["lon"] = lon;
+            ret["speed"] = speed;
+            ret["timestamp"] = timestamp;
+        }
 
         return ret;
     }

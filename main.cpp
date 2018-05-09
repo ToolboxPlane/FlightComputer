@@ -137,7 +137,7 @@ int main(int argc, char** argv) {
     ChannelRecorder<rcLib::PackageExtended> serialRecorder(fileSerialRecord);
 
     std::ofstream fileGpsRecord;
-    fileSerialRecord.open("logs/gps.json");
+    fileGpsRecord.open("logs/gps.json");
     ChannelRecorder<Gps_t> gpsRecorder(fileGpsRecord);
 
     serialInMux.addOutput(serialRecorder.getChannelIn());
