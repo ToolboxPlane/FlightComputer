@@ -15,6 +15,10 @@ void GpsSimulator::run() {
         gps.lon = 17;
         gps.lat = 23;
         gps.timestamp = 24;
+        gps.altitude = 43;
+        gps.fixAquired = true;
+        gps.speed = 0;
+        gps.climb = 12;
         out.put(gps);
         std::this_thread::sleep_for(std::chrono_literals::operator""ms(500));
     }

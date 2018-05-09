@@ -80,6 +80,8 @@ State_t Fusion::process() {
         res.heightAboveSeaLevel = iterator->getChannel(4) * weight;
     }
 
+    res.heightAboveGround = (res.heightAboveSeaLevel + lastGpsValues.back().altitude)/2;
+
     lastState = res;
 
     return res;

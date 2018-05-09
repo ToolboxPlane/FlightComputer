@@ -10,9 +10,9 @@
 #include "PackageExtended.hpp"
 #include "../../ThreadModule.hpp"
 
-class RcLibSimultator : public ThreadModule{
+class RcLibSimulator : public ThreadModule{
 public:
-    explicit RcLibSimultator(const uint8_t deviceId) : deviceId(deviceId), ThreadModule() {};
+    explicit RcLibSimulator(const uint8_t deviceId) : deviceId(deviceId), ThreadModule() {};
     void run() override;
 
     Channel<rcLib::PackageExtended> &getChannelIn();

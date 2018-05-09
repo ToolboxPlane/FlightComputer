@@ -9,7 +9,7 @@ void Navigation::run() {
         State_t currentState{};
         Nav_t nav{};
         if(in.get(currentState)) {
-            nav.heading = currentState.position.angleTo(Gps_t{0});
+            nav.heading = 17;
             double heightDifference = currentState.heightAboveGround - 50;
             nav.pitch = heightDifference;
 

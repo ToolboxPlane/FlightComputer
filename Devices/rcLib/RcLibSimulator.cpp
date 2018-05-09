@@ -4,7 +4,7 @@
 
 #include "RcLibSimulator.hpp"
 
-void RcLibSimultator::run() {
+void RcLibSimulator::run() {
     rcLib::PackageExtended pkg(256, 16);
     pkg.setMeshProperties(static_cast<uint8_t>(true));
     pkg.setDeviceId(deviceId);
@@ -17,10 +17,10 @@ void RcLibSimultator::run() {
     }
 }
 
-Channel<rcLib::PackageExtended> &RcLibSimultator::getChannelIn() {
+Channel<rcLib::PackageExtended> &RcLibSimulator::getChannelIn() {
     return in;
 }
 
-Channel<rcLib::PackageExtended> &RcLibSimultator::getChannelOut() {
+Channel<rcLib::PackageExtended> &RcLibSimulator::getChannelOut() {
     return out;
 }
