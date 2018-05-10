@@ -17,14 +17,14 @@ public:
     int flightmode, armed;
 
     friend std::ostream &operator<<(std::ostream &ostream, State_t state) {
-        ostream << "Heading: " << state.heading;
+        ostream << "Head: " << state.heading;
         ostream << "\tRoll: " << state.roll;
         ostream << "\tPitch: " << state.pitch;
-        ostream << "\tHeight above ground: " << state.heightAboveGround;
-        ostream << "\tHeight above sea: " << state.heightAboveSeaLevel;
+        ostream << "\tHeight ground: " << state.heightAboveGround;
+        ostream << "\tHeight sea: " << state.heightAboveSeaLevel;
         ostream << "\tAirspeed: " << state.airspeed;
-        ostream << "\tGroundspeed: " << state.groundSpeed;
-        ostream << "\tPositon: (" << state.position.lat << "," << state.position.lon << ")";
+        ostream << "\tGndspeed: " << state.groundSpeed;
+        ostream << "\tPos: (" << state.position.lat << "," << state.position.lon << ")";
         return ostream;
     }
 };

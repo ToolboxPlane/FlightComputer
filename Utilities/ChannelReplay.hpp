@@ -22,6 +22,11 @@ public:
     Channel<T> &getChannelOut() {
         return channelOut;
     }
+
+    // This method solely exists for compatibility reasons
+    Channel<T> &getChannelIn() {
+        return channelIn;
+    }
 private:
     void run() override {
         json complete;
@@ -37,6 +42,7 @@ private:
 
     std::ifstream &ifstream;
     Channel<T> channelOut;
+    Channel<T> channelIn;
 };
 
 

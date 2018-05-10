@@ -17,14 +17,24 @@
 #endif
 
 int main(int argc, char** argv) {
+    /*
+     * I/O-Modules
+     */
     //FlightController serial("/dev/ttyACM0", B9600);
     //LoRa lora;
     //Gps gps;
 
-    RcLibSimulator serial(23);
+    //RcLibSimulator serial(23);
     RcLibSimulator lora(17);
     GpsSimulator gps;
 
+    std::ifstream serialFile;
+    serialFile.open("logs/serial180510.json");
+    ChannelReplay<rcLib::PackageExtended> serial(serialFile);
+
+    /*
+     * Internal Modules
+     */
     Fusion fusion;
     Navigation navigation;
     MeshManager meshManager;
@@ -109,12 +119,12 @@ int main(int argc, char** argv) {
     /*
      * Logging
      */
-    Logger<rcLib::PackageExtended> serialReceive("FC-Recv", true);
-    Logger<rcLib::PackageExtended> serialSend("FC-Send", true);
-    Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", true);
-    Logger<rcLib::PackageExtended> loraSend("Lora-Send", true);
-    Logger<Gps_t> gpsDebug("GPS", true);
-    Logger<Nav_t> navDebug("Nav", true);
+    Logger<rcLib::PackageExtended> serialReceive("FC-Recv", false);
+    Logger<rcLib::PackageExtended> serialSend("FC-Send", false);
+    Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", false);
+    Logger<rcLib::PackageExtended> loraSend("Lora-Send", false);
+    Logger<Gps_t> gpsDebug("GPS", false);
+    Logger<Nav_t> navDebug("Nav", false);
     Logger<State_t> fusionDebug("Fusion", true);
 
     serialInMux.addOutput(serialReceive.getChannelIn());
@@ -133,11 +143,15 @@ int main(int argc, char** argv) {
      * Recorder
      */
     std::ofstream fileSerialRecord;
-    fileSerialRecord.open("logs/serial.json");
+    std::stringstream serialFileNameStream;
+    serialFileNameStream << "logs/serial_" << std::time(nullptr) << ".json";
+    fileSerialRecord.open(serialFileNameStream.str());
     ChannelRecorder<rcLib::PackageExtended> serialRecorder(fileSerialRecord);
 
     std::ofstream fileGpsRecord;
-    fileGpsRecord.open("logs/gps.json");
+    std::stringstream gpsFileNameStream;
+    gpsFileNameStream << "logs/gps_" << std::time(nullptr) << ".json";
+    fileGpsRecord.open(gpsFileNameStream.str());
     ChannelRecorder<Gps_t> gpsRecorder(fileGpsRecord);
 
     serialInMux.addOutput(serialRecorder.getChannelIn());

@@ -17,6 +17,16 @@ namespace rcLib {
         PackageExtended() : Package() {};
         PackageExtended(uint16_t r, uint8_t c) : Package(r,c){}
 
+        explicit PackageExtended(json data) {
+            this->resolution = data["header"]["resolution"];
+            this->channelCount = data["header"]["channelCount"];
+            this->tid = data["header"]["transmitterId"];
+
+            for(auto c=0; c<this->channelCount; c++) {
+                this->channelData[c] = data["channels"][c];
+            }
+        }
+
         json toJson() {
             json ret;
             json channels,header;

@@ -63,7 +63,6 @@ State_t Fusion::process() {
     res.heightAboveSeaLevel = 0;
 
     auto c = 0;
-    auto sum = 0.0;
     for(auto iterator = lastFlightControllerPackages.begin();
             iterator != lastFlightControllerPackages.end(); iterator++, c++) {
         double weight = std::pow(0.5, (lastFlightControllerPackages.size() - c));
@@ -71,16 +70,15 @@ State_t Fusion::process() {
         if(c == 0) {
             weight *= 2;
         }
-        sum += weight;
 
-        res.heading = iterator->getChannel(0) * weight;
-        res.roll = (iterator->getChannel(1) - 180) * weight;
-        res.pitch = (iterator->getChannel(2) - 180);
-        res.heightAboveGround = iterator->getChannel(3) * weight;
-        res.heightAboveSeaLevel = iterator->getChannel(4) * weight;
+        res.heading += iterator->getChannel(0) * weight;
+        res.roll += (iterator->getChannel(1) - 180) * weight;
+        res.pitch += (iterator->getChannel(2) - 180) * weight;
+        res.heightAboveGround += 0;
+        res.heightAboveSeaLevel += iterator->getChannel(4) * weight;
     }
 
-    res.heightAboveGround = (res.heightAboveSeaLevel + lastGpsValues.back().altitude)/2;
+    res.heightAboveGround = (res.heightAboveSeaLevel + lastGpsValues.back().altitude*0)/1;
 
     lastState = res;
 
