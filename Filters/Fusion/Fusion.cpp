@@ -61,6 +61,7 @@ State_t Fusion::process() {
     res.pitch = 0;
     res.heightAboveGround = 0;
     res.heightAboveSeaLevel = 0;
+    res.voltage = 0;
 
     auto c = 0;
     for(auto iterator = lastFlightControllerPackages.begin();
@@ -76,9 +77,11 @@ State_t Fusion::process() {
         res.pitch += (iterator->getChannel(2) - 180) * weight;
         res.heightAboveGround += 0;
         res.heightAboveSeaLevel += iterator->getChannel(4) * weight;
+        res.voltage += iterator->getChannel(13) / 10.0 * weight;
     }
 
     res.heightAboveGround = (res.heightAboveSeaLevel + lastGpsValues.back().altitude*0)/1;
+
 
     lastState = res;
 

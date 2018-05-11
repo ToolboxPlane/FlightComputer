@@ -14,17 +14,18 @@ public:
     double heightAboveGround, heightAboveSeaLevel;
     double pitch, roll, heading;
     double airspeed, groundSpeed;
-    int flightmode, armed;
+    double voltage;
 
     friend std::ostream &operator<<(std::ostream &ostream, State_t state) {
-        ostream << "Head: " << state.heading;
-        ostream << "\tRoll: " << state.roll;
-        ostream << "\tPitch: " << state.pitch;
-        ostream << "\tHeight ground: " << state.heightAboveGround;
-        ostream << "\tHeight sea: " << state.heightAboveSeaLevel;
-        ostream << "\tAirspeed: " << state.airspeed;
-        ostream << "\tGndspeed: " << state.groundSpeed;
+        ostream << "H: " << state.heading;
+        ostream << "\tR: " << state.roll;
+        ostream << "\tP: " << state.pitch;
+        ostream << "\tHgt gnd: " << state.heightAboveGround;
+        ostream << "\tHgt sea: " << state.heightAboveSeaLevel;
+        ostream << "\tAirs: " << state.airspeed;
+        ostream << "\tGnds: " << state.groundSpeed;
         ostream << "\tPos: (" << state.position.lat << "," << state.position.lon << ")";
+        ostream << "\tV: " << state.voltage;
         return ostream;
     }
 };

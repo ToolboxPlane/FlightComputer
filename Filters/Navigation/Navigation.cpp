@@ -28,11 +28,6 @@ void Navigation::run() {
                 speed = 1.0;
             }
 
-            if(currentState.armed) {
-                nav.power = speed;
-            } else {
-                nav.power = 0;
-            }
 
             out.put(nav);
         }

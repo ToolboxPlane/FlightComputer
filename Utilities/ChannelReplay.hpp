@@ -32,10 +32,14 @@ private:
         json complete;
         ifstream >> complete;
         json dataList = complete["recording"];
-        auto offset = std::time(nullptr) - complete["starttime"].get<int>();
+        auto recordingStart = std::chrono::duration_cast
+                        <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        auto offset = recordingStart - complete["starttime"].get<long int>();
         for(auto& data: dataList) {
-            auto timeToWait = (data["timestamp"].get<int>() + offset) - std::time(nullptr);
-            std::this_thread::sleep_for(std::chrono::seconds(timeToWait));
+            auto currentTime = std::chrono::duration_cast
+                        <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+            auto timeToWait = (data["timestamp"].get<long int>() + offset) - currentTime;
+            std::this_thread::sleep_for(std::chrono::milliseconds(timeToWait));
             channelOut.put(T(data["data"]));
         }
     }

@@ -142,15 +142,18 @@ int main(int argc, char** argv) {
     /*
      * Recorder
      */
+    auto time = std::time(nullptr);
+    auto localTime = std::localtime(&time);
+
     std::ofstream fileSerialRecord;
     std::stringstream serialFileNameStream;
-    serialFileNameStream << "logs/serial_" << std::time(nullptr) << ".json";
+    serialFileNameStream << "logs/serial_" << std::put_time(localTime,"%y_%m_%d_%H_%M") << ".json";
     fileSerialRecord.open(serialFileNameStream.str());
     ChannelRecorder<rcLib::PackageExtended> serialRecorder(fileSerialRecord);
 
     std::ofstream fileGpsRecord;
     std::stringstream gpsFileNameStream;
-    gpsFileNameStream << "logs/gps_" << std::time(nullptr) << ".json";
+    gpsFileNameStream << "logs/gps_" << std::put_time(localTime, "%y_%m_%d_%H_%M") << ".json";
     fileGpsRecord.open(gpsFileNameStream.str());
     ChannelRecorder<Gps_t> gpsRecorder(fileGpsRecord);
 
