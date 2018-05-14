@@ -9,16 +9,19 @@
 #include "../../ThreadModule.hpp"
 #include "../Fusion/Fusion.hpp"
 #include "Nav_t.hpp"
+#include "Waypoint_t.hpp"
 
 class Navigation : public ThreadModule{
 public:
     Navigation() : ThreadModule() {}
 
     Channel<Nav_t> &getChannelOut();
-    Channel<State_t> &getChannelIn();
+    Channel<State_t> &getChannelStateIn();
+    Channel<Waypoint_t> &getChannelWaypointIn();
 private:
     void run() override;
-    Channel<State_t> in;
+    Channel<State_t> stateIn;
+    Channel<Waypoint_t> waypointIn;
     Channel<Nav_t> out;
 };
 

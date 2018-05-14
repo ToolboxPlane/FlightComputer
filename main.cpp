@@ -11,6 +11,7 @@
 #include "Utilities/ChannelRecorder.hpp"
 #include "Utilities/ChannelReplay.hpp"
 #include "Devices/GPS/Gps.hpp"
+#include "Filters/Navigation/WaypointReader.hpp"
 
 #ifdef RASPBERRY_PI
 #include "Devices/LoRa/LoRa.hpp"
@@ -31,6 +32,11 @@ int main(int argc, char** argv) {
     std::ifstream serialFile;
     serialFile.open("logs/serial180510.json");
     ChannelReplay<rcLib::PackageExtended> serial(serialFile);
+
+
+    std::ifstream waypointFile;
+    waypointFile.open("missions/waypoints.json");
+    WaypointReader waypointReader(waypointFile);
 
     /*
      * Internal Modules
@@ -87,7 +93,14 @@ int main(int argc, char** argv) {
      */
     ChannelMultiplexer<State_t> fusionOutMux;
     fusionOutMux.addInput(fusion.getChannelOut());
-    fusionOutMux.addOutput(navigation.getChannelIn());
+    fusionOutMux.addOutput(navigation.getChannelStateIn());
+
+    /*
+     * (WaypointReader) -> (Navigation)
+     */
+    ChannelMultiplexer<Waypoint_t> waypointMux;
+    waypointMux.addInput(waypointReader.getChannelOut());
+    waypointMux.addOutput(navigation.getChannelWaypointIn());
 
     /*
      * (Nav) -> (Output)

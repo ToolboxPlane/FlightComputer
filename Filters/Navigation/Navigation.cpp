@@ -5,11 +5,18 @@
 #include "Navigation.hpp"
 
 void Navigation::run() {
-    while(!in.isClosed() && !out.isClosed()) {
+    while(!stateIn.isClosed() && !out.isClosed()) {
         State_t currentState{};
         Nav_t nav{};
-        if(in.get(currentState)) {
-            nav.heading = 17;
+        Waypoint_t nextWaypoint;
+        waypointIn.get(nextWaypoint);
+
+        if(stateIn.get(currentState)) {
+            if(currentState.position.location.distanceTo(nextWaypoint.location) < nextWaypoint.maxDelta) {
+                waypointIn.get(nextWaypoint);
+            }
+            nav.heading = currentState.position.location.distanceTo(nextWaypoint.location);
+
             double heightDifference = currentState.heightAboveGround - 50;
             nav.pitch = heightDifference;
 
@@ -38,6 +45,10 @@ Channel<Nav_t> &Navigation::getChannelOut() {
     return out;
 }
 
-Channel<State_t> &Navigation::getChannelIn() {
-    return in;
+Channel<State_t> &Navigation::getChannelStateIn() {
+    return stateIn;
+}
+
+Channel<Waypoint_t> &Navigation::getChannelWaypointIn() {
+    return waypointIn;
 }
