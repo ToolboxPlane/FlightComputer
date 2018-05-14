@@ -15,7 +15,7 @@ set(SOURCES
         Devices/rcLib/PackageExtended.hpp
         Devices/rcLib/RcLibSimulator.cpp
         Devices/rcLib/RcLibSimulator.hpp
-        Devices/GPS/Gps_t.hpp
+        Devices/GPS/GpsMeasurement_t.hpp
         Devices/Serial.cpp
         Devices/Serial.hpp
         Filters/Fusion/Fusion.cpp
@@ -34,7 +34,12 @@ set(SOURCES
         Utilities/json.hpp
         Devices/GPS/Gps.cpp
         Devices/GPS/Gps.hpp
-        Utilities/ChannelRecorder.hpp Utilities/ChannelReplay.hpp)
+        Utilities/ChannelRecorder.hpp
+        Utilities/ChannelReplay.hpp
+        Filters/Navigation/WaypointReader.cpp
+        Filters/Navigation/WaypointReader.hpp
+        Filters/Navigation/Waypoint_t.hpp
+        Devices/GPS/Gps_t.hpp)
 
 set(SOURCES_PI ${SOURCES}
         Devices/LoRa/LoRa.cpp

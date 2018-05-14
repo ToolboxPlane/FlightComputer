@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
     /*
      * (GPS) -> (Fusion)
      */
-    ChannelMultiplexer<Gps_t> gpsInMux;
+    ChannelMultiplexer<GpsMeasurement_t> gpsInMux;
     gpsInMux.addInput(gps.getChannelOut());
     gpsInMux.addOutput(fusion.getGpsIn());
 
@@ -123,7 +123,7 @@ int main(int argc, char** argv) {
     Logger<rcLib::PackageExtended> serialSend("FC-Send", false);
     Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", false);
     Logger<rcLib::PackageExtended> loraSend("Lora-Send", false);
-    Logger<Gps_t> gpsDebug("GPS", false);
+    Logger<GpsMeasurement_t> gpsDebug("GPS", false);
     Logger<Nav_t> navDebug("Nav", false);
     Logger<State_t> fusionDebug("Fusion", true);
 
@@ -155,7 +155,7 @@ int main(int argc, char** argv) {
     std::stringstream gpsFileNameStream;
     gpsFileNameStream << "logs/gps_" << std::put_time(localTime, "%y_%m_%d_%H_%M") << ".json";
     fileGpsRecord.open(gpsFileNameStream.str());
-    ChannelRecorder<Gps_t> gpsRecorder(fileGpsRecord);
+    ChannelRecorder<GpsMeasurement_t> gpsRecorder(fileGpsRecord);
 
     serialInMux.addOutput(serialRecorder.getChannelIn());
     gpsInMux.addOutput(gpsRecorder.getChannelIn());

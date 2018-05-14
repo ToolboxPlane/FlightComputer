@@ -11,7 +11,7 @@
 Gps::Gps() : ThreadModule(){
 }
 
-Channel<Gps_t> &Gps::getChannelOut() {
+Channel<GpsMeasurement_t> &Gps::getChannelOut() {
     return out;
 }
 
@@ -22,7 +22,7 @@ void Gps::run() {
     }
     gps_stream(&gps_data, WATCH_ENABLE | WATCH_JSON, nullptr);
 
-    Gps_t gps;
+    GpsMeasurement_t gps;
     while(!out.isClosed()) {
         if (gps_waiting(&gps_data, 60000000)) {
             if (gps_read(&gps_data) == -1) {
@@ -35,12 +35,12 @@ void Gps::run() {
 
                     gps.fixAquired = true;
 
-                    gps.lat = gps_data.fix.latitude;
-                    gps.lon = gps_data.fix.longitude;
+                    gps.location.lat = gps_data.fix.latitude;
+                    gps.location.lon = gps_data.fix.longitude;
                     gps.timestamp = gps_data.fix.time;
                     gps.speed = gps_data.fix.speed;
                     gps.climb = gps_data.fix.climb;
-                    gps.altitude = gps_data.fix.altitude;
+                    gps.location.altitude = gps_data.fix.altitude;
 
                     out.put(gps);
                 } else {

@@ -29,5 +29,4 @@ case "(" in
 esac
 
 exit 0)
-#!/bin/bash
 

@@ -9,7 +9,7 @@
 
 void Fusion::run() {
     rcLib::PackageExtended lastSerialPackage;
-    Gps_t lastGps;
+    GpsMeasurement_t lastGps;
     ProcessingStatus flightControllerStatus = NOT_RECEIVED, gpsStatus = NOT_RECEIVED;
     while(!out.isClosed()) {
          if(!flightControllerIn.isClosed() && flightControllerIn.get(lastSerialPackage, false)) {
@@ -48,7 +48,7 @@ State_t Fusion::process() {
 
     res.position = lastGpsValues.back();
     if(res.position.timestamp != lastState.position.timestamp) {
-        res.groundSpeed = res.position.distanceTo(lastState.position) /
+        res.groundSpeed = res.position.location.distanceTo(lastState.position.location) /
                           (res.position.timestamp - lastState.position.timestamp);
     } else {
         res.groundSpeed = lastState.groundSpeed;
@@ -80,7 +80,7 @@ State_t Fusion::process() {
         res.voltage += iterator->getChannel(13) / 10.0 * weight;
     }
 
-    res.heightAboveGround = (res.heightAboveSeaLevel + lastGpsValues.back().altitude*0)/1;
+    res.heightAboveGround = (res.heightAboveSeaLevel + lastGpsValues.back().location.altitude*0)/1;
 
 
     lastState = res;
@@ -92,7 +92,7 @@ Channel<State_t> &Fusion::getChannelOut() {
     return out;
 }
 
-Channel<Gps_t> &Fusion::getGpsIn() {
+Channel<GpsMeasurement_t> &Fusion::getGpsIn() {
     return gpsIn;
 }
 

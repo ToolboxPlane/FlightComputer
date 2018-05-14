@@ -15,7 +15,7 @@ using json = nlohmann::json;
 template <typename T>
 class ChannelRecorder : public ThreadModule {
 public:
-    ChannelRecorder(std::ofstream &ofstream) : ThreadModule(), ofstream(ofstream){};
+    ChannelRecorder(std::ostream &ostream) : ThreadModule(), ostream(ostream){};
     Channel<T> &getChannelIn() {
         return channelIn;
     }
@@ -23,7 +23,7 @@ public:
 
 private:
     Channel<T> channelIn;
-    std::ostream &ofstream;
+    std::ostream &ostream;
 
     void run() override {
         T item;
@@ -39,9 +39,9 @@ private:
                         <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
                 complete["recording"].push_back(newJson);
-                ofstream.seekp(0, std::ios::beg);
-                ofstream << complete.dump(4);
-                ofstream.flush();
+                ostream.seekp(0, std::ios::beg);
+                ostream << complete.dump(4);
+                ostream.flush();
             }
         }
     }

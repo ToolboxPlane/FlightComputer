@@ -17,7 +17,7 @@ using json = nlohmann::json;
 template <typename T>
 class ChannelReplay : public ThreadModule {
 public:
-    explicit ChannelReplay(std::ifstream &ifstream) : ThreadModule(), ifstream(ifstream){};
+    explicit ChannelReplay(std::istream &istream) : ThreadModule(), istream(istream){};
 
     Channel<T> &getChannelOut() {
         return channelOut;
@@ -30,7 +30,7 @@ public:
 private:
     void run() override {
         json complete;
-        ifstream >> complete;
+        istream >> complete;
         json dataList = complete["recording"];
         auto recordingStart = std::chrono::duration_cast
                         <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -44,7 +44,7 @@ private:
         }
     }
 
-    std::ifstream &ifstream;
+    std::istream &istream;
     Channel<T> channelOut;
     Channel<T> channelIn;
 };

@@ -10,7 +10,7 @@
 
 class State_t {
 public:
-    Gps_t position;
+    GpsMeasurement_t position;
     double heightAboveGround, heightAboveSeaLevel;
     double pitch, roll, heading;
     double airspeed, groundSpeed;
@@ -24,7 +24,7 @@ public:
         ostream << "\tHgt sea: " << state.heightAboveSeaLevel;
         ostream << "\tAirs: " << state.airspeed;
         ostream << "\tGnds: " << state.groundSpeed;
-        ostream << "\tPos: (" << state.position.lat << "," << state.position.lon << ")";
+        ostream << "\tPos: (" << state.position.location.lat << "," << state.position.location.lon << ")";
         ostream << "\tV: " << state.voltage;
         return ostream;
     }
