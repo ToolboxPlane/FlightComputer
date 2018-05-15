@@ -23,6 +23,11 @@ private:
     Channel<State_t> stateIn;
     Channel<Waypoint_t> waypointIn;
     Channel<Nav_t> out;
+
+    static constexpr auto CRUISE_HEIGHT = 50.0;
+    static constexpr auto PITCH_P = 1.0;
+    static constexpr auto CRUISE_SPEED = 40.0;
+    static constexpr auto SPEED_P = 1.0;
 };
 
 

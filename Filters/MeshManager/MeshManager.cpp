@@ -8,7 +8,7 @@
 enum class RCLIB_DEVICE_ID {
     REMOTE = 17,
     FLIGHT_CONTROLLER = 23,
-    BASE = 63
+    BASE = 63, POWER_DISTRIBUTION = 74
 };
 
 Channel<rcLib::PackageExtended> &MeshManager::getLoraIn() {
@@ -30,29 +30,29 @@ Channel<rcLib::PackageExtended> &MeshManager::getSerialOut() {
 void MeshManager::run() {
     rcLib::PackageExtended pkg;
     while(!loraIn.isClosed() || !serialIn.isClosed() || !loraOut.isClosed() || !serialOut.isClosed()) {
-        if(loraIn.get(pkg, false)) {
+        if (loraIn.get(pkg, false)) {
             if(pkg.needsForwarding()) {
                 pkg.countNode();
                 serialOut.put(pkg);
             }
             propagateInternal(pkg);
         }
-        if(serialIn.get(pkg, false)) {
+        if (serialIn.get(pkg, false)) {
             if(pkg.needsForwarding())  {
                 pkg.countNode();
                 loraOut.put(pkg);
             }
             propagateInternal(pkg);
         }
-        if(flightControllerIn.get(pkg, false)) {
+        if (flightControllerIn.get(pkg, false)) {
             pkg.setMeshProperties(false);
             serialOut.put(pkg);
         }
-        if(remoteIn.get(pkg, false)) {
+        if (remoteIn.get(pkg, false)) {
             pkg.setMeshProperties(false);
             loraOut.put(pkg);
         }
-        if(baseIn.get(pkg, false)) {
+        if (baseIn.get(pkg, false)) {
             pkg.setMeshProperties(true, 2);
             loraOut.put(pkg);
         }
@@ -72,6 +72,9 @@ void MeshManager::propagateInternal(rcLib::PackageExtended pkg) {
             break;
         case RCLIB_DEVICE_ID::BASE:
             baseOut.put(pkg);
+            break;
+        case RCLIB_DEVICE_ID::POWER_DISTRIBUTION:
+            pdbOut.put(pkg);
             break;
     }
 }

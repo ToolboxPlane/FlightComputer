@@ -42,8 +42,12 @@ public:
     Channel<rcLib::PackageExtended> &getBaseOut() {
         return baseOut;
     }
+
+    Channel<rcLib::PackageExtended> &getPdbOut() {
+        return pdbOut;
+    }
 private:
-    Channel<rcLib::PackageExtended> loraIn, serialIn, loraOut, serialOut;
+    Channel<rcLib::PackageExtended> loraIn, serialIn, loraOut, serialOut, pdbOut;
     Channel<rcLib::PackageExtended> flightControllerOut, remoteOut, baseOut, flightControllerIn, remoteIn, baseIn;
 
     void propagateInternal(rcLib::PackageExtended pkg);

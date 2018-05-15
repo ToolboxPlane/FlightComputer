@@ -5,34 +5,29 @@
 #include <iostream>
 #include "Fusion.hpp"
 
-#define LAST_VALUES_LENGTH 64
 
 void Fusion::run() {
-    rcLib::PackageExtended lastSerialPackage;
-    GpsMeasurement_t lastGps;
-    ProcessingStatus flightControllerStatus = NOT_RECEIVED, gpsStatus = NOT_RECEIVED;
-    while(!out.isClosed()) {
-         if(!flightControllerIn.isClosed() && flightControllerIn.get(lastSerialPackage, false)) {
-            flightControllerStatus = READY;
+    ProcessingStatus flightControllerStatus = NOT_RECEIVED, gpsStatus = NOT_RECEIVED, powerStatus = NOT_RECEIVED;
 
-            lastFlightControllerPackages.push_back(lastSerialPackage);
-            if(lastFlightControllerPackages.size() >= LAST_VALUES_LENGTH) {
-                lastFlightControllerPackages.pop_front();
-            }
-        } else if(!gpsIn.isClosed() && gpsIn.get(lastGps, false)) {
+
+    while(!out.isClosed()) {
+        if (!flightControllerIn.isClosed() && flightControllerIn.get(fcPackage, false)) {
+            flightControllerStatus = READY;
+        }
+        if (!gpsIn.isClosed() && gpsIn.get(gpsValue, false)) {
             gpsStatus = READY;
 
-            lastGpsValues.push_back(lastGps);
-            if(lastGpsValues.size() >= LAST_VALUES_LENGTH) {
-                lastGpsValues.pop_front();
-            }
+        }
+        if (!pdbIn.isClosed() && pdbIn.get(pdbPackage, false)) {
+             powerStatus = READY;
         }
 
-        if(flightControllerStatus == READY || gpsStatus == READY) {
-            if(flightControllerStatus != NOT_RECEIVED && gpsStatus != NOT_RECEIVED) {
+        if(flightControllerStatus == READY || gpsStatus == READY || powerStatus == READY) {
+            if(flightControllerStatus != NOT_RECEIVED && gpsStatus != NOT_RECEIVED && powerStatus != NOT_RECEIVED) {
                 out.put(process());
                 flightControllerStatus = PROCESSED;
                 gpsStatus = PROCESSED;
+                powerStatus = PROCESSED;
             } else {
                 // Maybe do other stuff
             }
@@ -46,7 +41,7 @@ State_t Fusion::process() {
     State_t res{};
     static State_t lastState;
 
-    res.position = lastGpsValues.back();
+    res.position = gpsValue;
     if(res.position.timestamp != lastState.position.timestamp) {
         res.groundSpeed = res.position.location.distanceTo(lastState.position.location) /
                           (res.position.timestamp - lastState.position.timestamp);
@@ -56,14 +51,12 @@ State_t Fusion::process() {
 
     res.airspeed = res.groundSpeed;
 
-    res.heading = 0;
-    res.roll = 0;
-    res.pitch = 0;
-    res.heightAboveGround = 0;
-    res.heightAboveSeaLevel = 0;
-    res.voltage = 0;
+    res.heading = fcPackage.getChannel(0);
+    res.roll = fcPackage.getChannel(1);
+    res.pitch = fcPackage.getChannel(2);
+    res.heightAboveSeaLevel = fcPackage.getChannel(4);
 
-    auto c = 0;
+    /*auto c = 0;
     for(auto iterator = lastFlightControllerPackages.begin();
             iterator != lastFlightControllerPackages.end(); iterator++, c++) {
         double weight = std::pow(0.5, (lastFlightControllerPackages.size() - c));
@@ -77,11 +70,12 @@ State_t Fusion::process() {
         res.pitch += (iterator->getChannel(2) - 180) * weight;
         res.heightAboveGround += 0;
         res.heightAboveSeaLevel += iterator->getChannel(4) * weight;
-        res.voltage += iterator->getChannel(13) / 10.0 * weight;
-    }
+    }*/
 
-    res.heightAboveGround = (res.heightAboveSeaLevel + lastGpsValues.back().location.altitude*0)/1;
+    res.voltage = (pdbPackage.getChannel(1) * 128)/1000.0;
 
+    res.heightAboveSeaLevel = (res.heightAboveSeaLevel + gpsValue.location.altitude*0)/1;
+    res.heightAboveGround = res.heightAboveSeaLevel;
 
     lastState = res;
 
@@ -106,4 +100,8 @@ Channel<rcLib::PackageExtended> &Fusion::getBaseIn() {
 
 Channel<rcLib::PackageExtended> &Fusion::getRemoteIn() {
     return remoteIn;
+}
+
+Channel<rcLib::PackageExtended> &Fusion::getPdbIn() {
+    return pdbIn;
 }

@@ -17,8 +17,10 @@ void Navigation::run() {
             }
             nav.heading = currentState.position.location.distanceTo(nextWaypoint.location);
 
-            double heightDifference = currentState.heightAboveGround - 50;
-            nav.pitch = heightDifference;
+            double deltaHeight = currentState.heightAboveGround - Navigation::CRUISE_HEIGHT;
+            double deltaSpeed = currentState.airspeed - Navigation::CRUISE_SPEED;
+
+            nav.pitch = deltaHeight * Navigation::PITCH_P;
 
             if(nav.pitch < -30) {
                 nav.pitch = 30;
@@ -26,14 +28,14 @@ void Navigation::run() {
                 nav.pitch = 30;
             }
 
-            double speedDifference = currentState.airspeed - 50;
-            double speed = speedDifference / 20.0 + nav.pitch / 30.0;
+            double speed = deltaSpeed * Navigation::SPEED_P;
 
             if(speed < 0.0) {
                 speed = 0;
             } else if(speed > 1.0) {
                 speed = 1.0;
             }
+            nav.power = speed;
 
 
             out.put(nav);

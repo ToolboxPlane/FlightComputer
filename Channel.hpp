@@ -5,6 +5,7 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <iostream>
 
 template<class item>
 class Channel {
@@ -31,6 +32,7 @@ public:
             throw std::logic_error("put to closed channel");
         queue.push_back(i);
         cv.notify_one();
+        //std::cerr << this->getLength() << "\t" << typeid(item).name() << std::endl;
     }
     bool get(item &out, bool wait = true) {
         std::unique_lock<std::mutex> lock(m);

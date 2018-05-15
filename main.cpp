@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     /*
      * I/O-Modules
      */
-    //FlightController serial("/dev/ttyACM0", B9600);
+    FlightController serial("/dev/ttyACM0", B9600);
     //LoRa lora;
     //Gps gps;
 
@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 
     std::ifstream serialFile;
     serialFile.open("logs/serial180510.json");
-    ChannelReplay<rcLib::PackageExtended> serial(serialFile);
+    //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
 
 
     std::ifstream waypointFile;
@@ -80,6 +80,14 @@ int main(int argc, char** argv) {
     ChannelMultiplexer<rcLib::PackageExtended> meshFlightControllerOutMux;
     meshFlightControllerOutMux.addInput(meshManager.getFlightControllerOut());
     meshFlightControllerOutMux.addOutput(fusion.getFlightControllerIn());
+
+
+    /*
+     * (Mesh) -> (Fusion)
+     */
+    ChannelMultiplexer<rcLib::PackageExtended> meshPdbOutMux;
+    meshPdbOutMux.addInput(meshManager.getPdbOut());
+    meshPdbOutMux.addOutput(fusion.getPdbIn());
 
     /*
      * (GPS) -> (Fusion)
@@ -132,12 +140,12 @@ int main(int argc, char** argv) {
     /*
      * Logging
      */
-    Logger<rcLib::PackageExtended> serialReceive("FC-Recv", false);
+    Logger<rcLib::PackageExtended> serialReceive("FC-Recv", true);
     Logger<rcLib::PackageExtended> serialSend("FC-Send", false);
     Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", false);
     Logger<rcLib::PackageExtended> loraSend("Lora-Send", false);
     Logger<GpsMeasurement_t> gpsDebug("GPS", false);
-    Logger<Nav_t> navDebug("Nav", false);
+    Logger<Nav_t> navDebug("Nav", true);
     Logger<State_t> fusionDebug("Fusion", true);
 
     serialInMux.addOutput(serialReceive.getChannelIn());

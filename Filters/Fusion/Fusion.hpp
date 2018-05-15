@@ -20,21 +20,23 @@ enum ProcessingStatus {
 
 class Fusion : public ThreadModule {
 public:
-    Fusion() : ThreadModule() {};
+    Fusion() : ThreadModule(), gpsValue(0,0) {};
     void run() override;
 
     Channel<rcLib::PackageExtended> &getFlightControllerIn();
     Channel<rcLib::PackageExtended> &getBaseIn();
     Channel<rcLib::PackageExtended> &getRemoteIn();
+    Channel<rcLib::PackageExtended> &getPdbIn();
     Channel<GpsMeasurement_t> &getGpsIn();
     Channel<State_t> &getChannelOut();
+
 private:
+    rcLib::PackageExtended pdbPackage, fcPackage;
+    GpsMeasurement_t gpsValue;
+
     State_t process();
 
-    std::list<GpsMeasurement_t> lastGpsValues;
-    std::list<rcLib::PackageExtended> lastFlightControllerPackages;
-
-    Channel<rcLib::PackageExtended> baseIn, flightControllerIn, remoteIn;
+    Channel<rcLib::PackageExtended> baseIn, flightControllerIn, remoteIn, pdbIn;
     Channel<GpsMeasurement_t> gpsIn;
     Channel<State_t> out;
 };
