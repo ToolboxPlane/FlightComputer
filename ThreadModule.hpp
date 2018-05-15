@@ -11,11 +11,13 @@
 
 class ThreadModule {
 public:
-    ThreadModule() : handle(std::async(std::launch::async, &ThreadModule::run, this)) {}
+    ThreadModule() {
+        std::thread t(&ThreadModule::run, this);
+        t.detach();
+    }
 protected:
     virtual void run()= 0;
 private:
-    std::future<void> handle;
 };
 
 
