@@ -10,6 +10,7 @@ All the modules running on the Raspberry Pi.
 | Flight-Computer | 38 |
 | FrSky-Remote | 56 |
 | Ground-Station | 63 |
+| Power Distribution Board | 74 |
 
 ## JSON-Library by nlohmann (https://github.com/nlohmann/json)
 
