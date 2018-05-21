@@ -4,6 +4,10 @@
 
 #include "WaypointReader.hpp"
 
+WaypointReader::WaypointReader(std::istream &istream) : istream(istream){
+    this->start();
+}
+
 MultipleOutputChannel<Waypoint_t> &WaypointReader::getChannelOut() {
     return out;
 }
@@ -20,6 +24,3 @@ void WaypointReader::run() {
     }
 }
 
-WaypointReader::WaypointReader(std::istream &istream) : istream(istream){
-    this->start();
-}

@@ -20,36 +20,15 @@ public:
     MultipleOutputChannel<rcLib::PackageExtended> &getLoraOut();
     MultipleOutputChannel<rcLib::PackageExtended> &getSerialOut();
 
-    Channel<rcLib::PackageExtended> &getFlightControllerIn() {
-        return flightControllerIn;
-    }
+    Channel<rcLib::PackageExtended> &getFlightControllerIn();
+    Channel<rcLib::PackageExtended> &getBaseIn();
+    Channel<rcLib::PackageExtended> &getRemoteIn();
+    MultipleOutputChannel<rcLib::PackageExtended> &getFlightControllerOut();
+    MultipleOutputChannel<rcLib::PackageExtended> &getRemoteOut();
+    MultipleOutputChannel<rcLib::PackageExtended> &getBaseOut();
+    MultipleOutputChannel<rcLib::PackageExtended> &getPdbOut();
+    MultipleOutputChannel<rcLib::PackageExtended> &getTaranisOut();
 
-    MultipleOutputChannel<rcLib::PackageExtended> &getFlightControllerOut() {
-        return flightControllerOut;
-    }
-    Channel<rcLib::PackageExtended> &getRemoteIn() {
-        return remoteIn;
-    }
-
-    MultipleOutputChannel<rcLib::PackageExtended> &getRemoteOut() {
-        return remoteOut;
-    }
-
-    Channel<rcLib::PackageExtended> &getBaseIn() {
-        return baseIn;
-    }
-
-    MultipleOutputChannel<rcLib::PackageExtended> &getBaseOut() {
-        return baseOut;
-    }
-
-    MultipleOutputChannel<rcLib::PackageExtended> &getPdbOut() {
-        return pdbOut;
-    }
-
-    MultipleOutputChannel<rcLib::PackageExtended> &getTaranisOut() {
-        return taranisOut;
-    }
 private:
     Channel<rcLib::PackageExtended> loraIn, serialIn;
     Channel<rcLib::PackageExtended> flightControllerIn, remoteIn, baseIn;

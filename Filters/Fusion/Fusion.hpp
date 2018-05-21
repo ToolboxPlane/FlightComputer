@@ -27,17 +27,18 @@ public:
     Channel<rcLib::PackageExtended> &getFlightControllerIn();
     Channel<rcLib::PackageExtended> &getBaseIn();
     Channel<rcLib::PackageExtended> &getRemoteIn();
+    Channel<rcLib::PackageExtended> &getTaranisIn();
     Channel<rcLib::PackageExtended> &getPdbIn();
     Channel<GpsMeasurement_t> &getGpsIn();
-    MultipleOutputChannel<State_t> &getChannelOut();
 
+    MultipleOutputChannel<State_t> &getChannelOut();
 private:
     rcLib::PackageExtended pdbPackage, fcPackage;
     GpsMeasurement_t gpsValue;
 
     State_t process();
 
-    Channel<rcLib::PackageExtended> baseIn, flightControllerIn, remoteIn, pdbIn;
+    Channel<rcLib::PackageExtended> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
     Channel<GpsMeasurement_t> gpsIn;
     MultipleOutputChannel<State_t> out;
 };

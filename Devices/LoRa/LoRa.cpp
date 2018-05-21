@@ -13,7 +13,6 @@
 #define RF_NODE_ID    1
 
 LoRa::LoRa() : ThreadModule(), rf95(RF_CS_PIN, RF_IRQ_PIN){
-    isReady = false;
     if (!bcm2835_init()) {
         fprintf( stderr, "bcm2835_init() Failed\n\n");
         return;
@@ -84,7 +83,6 @@ LoRa::LoRa() : ThreadModule(), rf95(RF_CS_PIN, RF_IRQ_PIN){
     rf95.setModeRx();
 
     buf = (uint8_t*)malloc(RH_RF95_MAX_MESSAGE_LEN);
-    isReady = true;
 
     this->start();
 }
@@ -99,7 +97,6 @@ Channel<rcLib::PackageExtended> &LoRa::getChannelIn() {
 
 void LoRa::run() {
     rcLib::PackageExtended pkgIn, pkgOut;
-    while(!isReady);
     while(true) {
 #ifdef RF_IRQ_PIN
         // We have a IRQ pin ,pool it instead reading

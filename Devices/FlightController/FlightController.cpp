@@ -17,6 +17,14 @@ FlightController::FlightController(const std::string& port, int baud)
     this->start();
 }
 
+Channel<rcLib::PackageExtended> &FlightController::getChannelIn() {
+    return this->in;
+}
+
+MultipleOutputChannel<rcLib::PackageExtended> &FlightController::getChannelOut() {
+    return this->out;
+}
+
 void FlightController::run() {
     rcLib::PackageExtended toSend;
     rcLib::PackageExtended received;
@@ -45,10 +53,3 @@ void FlightController::run() {
     }
 }
 
-Channel<rcLib::PackageExtended> &FlightController::getChannelIn() {
-    return this->in;
-}
-
-MultipleOutputChannel<rcLib::PackageExtended> &FlightController::getChannelOut() {
-    return this->out;
-}

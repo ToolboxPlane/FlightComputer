@@ -25,7 +25,6 @@ private:
     uint8_t* buf;
     uint8_t len;
     RH_RF95 rf95;
-    bool isReady = false;
 };
 
 

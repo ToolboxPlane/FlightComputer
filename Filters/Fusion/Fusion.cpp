@@ -110,4 +110,8 @@ Fusion::Fusion() : gpsValue(0,0) {
     this->start();
 }
 
+Channel<rcLib::PackageExtended> &Fusion::getTaranisIn() {
+    return taranisIn;
+}
+
 #pragma clang diagnostic pop

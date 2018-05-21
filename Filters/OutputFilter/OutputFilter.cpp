@@ -4,6 +4,10 @@
 
 #include "OutputFilter.hpp"
 
+OutputFilter::OutputFilter() {
+    this->start();
+}
+
 MultipleOutputChannel<rcLib::PackageExtended> & OutputFilter::getBaseOut() {
     return baseOut;
 }
@@ -39,6 +43,3 @@ void OutputFilter::run() {
     }
 }
 
-OutputFilter::OutputFilter() {
-    this->start();
-}

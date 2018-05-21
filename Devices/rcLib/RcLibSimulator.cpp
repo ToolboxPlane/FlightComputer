@@ -4,6 +4,18 @@
 
 #include "RcLibSimulator.hpp"
 
+RcLibSimulator::RcLibSimulator(const uint8_t deviceId) : deviceId(deviceId){
+    this->start();
+}
+
+Channel<rcLib::PackageExtended> &RcLibSimulator::getChannelIn() {
+    return in;
+}
+
+MultipleOutputChannel<rcLib::PackageExtended> &RcLibSimulator::getChannelOut() {
+    return out;
+}
+
 void RcLibSimulator::run() {
     rcLib::PackageExtended pkg(256, 16);
     pkg.setMeshProperties(static_cast<uint8_t>(true));
@@ -17,14 +29,3 @@ void RcLibSimulator::run() {
     }
 }
 
-Channel<rcLib::PackageExtended> &RcLibSimulator::getChannelIn() {
-    return in;
-}
-
-MultipleOutputChannel<rcLib::PackageExtended> &RcLibSimulator::getChannelOut() {
-    return out;
-}
-
-RcLibSimulator::RcLibSimulator(const uint8_t deviceId) : deviceId(deviceId){
-    this->start();
-}

@@ -15,9 +15,9 @@ class Navigation : public ThreadModule{
 public:
     Navigation();
 
-    MultipleOutputChannel<Nav_t> &getChannelOut();
     Channel<State_t> &getChannelStateIn();
     Channel<Waypoint_t> &getChannelWaypointIn();
+    MultipleOutputChannel<Nav_t> &getChannelOut();
 private:
     void run() override;
     Channel<State_t> stateIn;

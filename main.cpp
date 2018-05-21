@@ -17,7 +17,7 @@
 #include "Devices/LoRa/LoRa.hpp"
 #endif
 
-int main(int argc, char** argv) {
+int main(void) {
     /*
      * I/O-Modules
      */
@@ -30,13 +30,10 @@ int main(int argc, char** argv) {
     RcLibSimulator lora(17);
     GpsSimulator gps;
 
-    std::ifstream serialFile;
-    serialFile.open("logs/serial180510.json");
+    std::ifstream serialFile("logs/serial180510.json");
     //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
 
-
-    std::ifstream waypointFile;
-    waypointFile.open("missions/waypoints.json");
+    std::ifstream waypointFile("missions/waypoints.json");
     WaypointReader waypointReader(waypointFile);
 
     /*
@@ -105,16 +102,14 @@ int main(int argc, char** argv) {
     auto time = std::time(nullptr);
     auto localTime = std::localtime(&time);
 
-    std::ofstream fileSerialRecord;
     std::stringstream serialFileNameStream;
     serialFileNameStream << "logs/serial_" << std::put_time(localTime,"%y_%m_%d_%H_%M") << ".json";
-    fileSerialRecord.open(serialFileNameStream.str());
+    std::ofstream fileSerialRecord(serialFileNameStream.str());
     ChannelRecorder<rcLib::PackageExtended> serialRecorder(fileSerialRecord);
 
-    std::ofstream fileGpsRecord;
     std::stringstream gpsFileNameStream;
     gpsFileNameStream << "logs/gps_" << std::put_time(localTime, "%y_%m_%d_%H_%M") << ".json";
-    fileGpsRecord.open(gpsFileNameStream.str());
+    std::ofstream fileGpsRecord(gpsFileNameStream.str());
     ChannelRecorder<GpsMeasurement_t> gpsRecorder(fileGpsRecord);
 
     serial.getChannelOut() >> serialRecorder.getChannelIn();
