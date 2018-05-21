@@ -9,7 +9,7 @@
 #include "../../ThreadModule.hpp"
 #include "../../Devices/rcLib/PackageExtended.hpp"
 #include "../../Channel.hpp"
-
+#include "../../MultipleOutputChannel.hpp"
 
 class MeshManager : ThreadModule{
 public:
@@ -17,21 +17,21 @@ public:
 
     Channel<rcLib::PackageExtended> &getLoraIn();
     Channel<rcLib::PackageExtended> &getSerialIn();
-    Channel<rcLib::PackageExtended> &getLoraOut();
-    Channel<rcLib::PackageExtended> &getSerialOut();
+    MultipleOutputChannel<rcLib::PackageExtended> &getLoraOut();
+    MultipleOutputChannel<rcLib::PackageExtended> &getSerialOut();
 
     Channel<rcLib::PackageExtended> &getFlightControllerIn() {
         return flightControllerIn;
     }
 
-    Channel<rcLib::PackageExtended> &getFlightControllerOut() {
+    MultipleOutputChannel<rcLib::PackageExtended> &getFlightControllerOut() {
         return flightControllerOut;
     }
     Channel<rcLib::PackageExtended> &getRemoteIn() {
         return remoteIn;
     }
 
-    Channel<rcLib::PackageExtended> &getRemoteOut() {
+    MultipleOutputChannel<rcLib::PackageExtended> &getRemoteOut() {
         return remoteOut;
     }
 
@@ -39,16 +39,22 @@ public:
         return baseIn;
     }
 
-    Channel<rcLib::PackageExtended> &getBaseOut() {
+    MultipleOutputChannel<rcLib::PackageExtended> &getBaseOut() {
         return baseOut;
     }
 
-    Channel<rcLib::PackageExtended> &getPdbOut() {
+    MultipleOutputChannel<rcLib::PackageExtended> &getPdbOut() {
         return pdbOut;
     }
+
+    MultipleOutputChannel<rcLib::PackageExtended> &getTaranisOut() {
+        return taranisOut;
+    }
 private:
-    Channel<rcLib::PackageExtended> loraIn, serialIn, loraOut, serialOut, pdbOut;
-    Channel<rcLib::PackageExtended> flightControllerOut, remoteOut, baseOut, flightControllerIn, remoteIn, baseIn;
+    Channel<rcLib::PackageExtended> loraIn, serialIn;
+    Channel<rcLib::PackageExtended> flightControllerIn, remoteIn, baseIn;
+    MultipleOutputChannel<rcLib::PackageExtended> loraOut, serialOut;
+    MultipleOutputChannel<rcLib::PackageExtended> flightControllerOut, remoteOut, baseOut, pdbOut, taranisOut;
 
     void propagateInternal(rcLib::PackageExtended pkg);
 

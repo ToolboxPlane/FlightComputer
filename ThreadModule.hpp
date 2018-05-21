@@ -7,7 +7,6 @@
 
 
 #include <thread>
-#include <future>
 
 class ThreadModule {
 public:

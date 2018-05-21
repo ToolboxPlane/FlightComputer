@@ -5,17 +5,17 @@
 #include "Navigation.hpp"
 
 void Navigation::run() {
-    while(!stateIn.isClosed() && !out.isClosed()) {
-        State_t currentState{};
-        Nav_t nav{};
-        Waypoint_t nextWaypoint;
-        waypointIn.get(nextWaypoint);
-
+    State_t currentState{};
+    Nav_t nav{};
+    Waypoint_t nextWaypoint;
+    waypointIn.get(nextWaypoint);
+    while(!stateIn.isClosed()) {
         if(stateIn.get(currentState)) {
             if(currentState.position.location.distanceTo(nextWaypoint.location) < nextWaypoint.maxDelta) {
                 waypointIn.get(nextWaypoint);
             }
-            nav.heading = currentState.position.location.distanceTo(nextWaypoint.location);
+
+            nav.heading = currentState.position.location.angleTo(nextWaypoint.location);
 
             double deltaHeight = currentState.heightAboveGround - Navigation::CRUISE_HEIGHT;
             double deltaSpeed = currentState.airspeed - Navigation::CRUISE_SPEED;
@@ -43,7 +43,7 @@ void Navigation::run() {
     }
 }
 
-Channel<Nav_t> &Navigation::getChannelOut() {
+MultipleOutputChannel<Nav_t> &Navigation::getChannelOut() {
     return out;
 }
 

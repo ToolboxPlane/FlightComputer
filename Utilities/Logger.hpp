@@ -6,7 +6,8 @@
 #define FLIGHTCOMPUTER_LOGGER_HPP
 
 #include <iostream>
-#include <utility> #include "../ThreadModule.hpp"
+#include <utility>
+#include "../ThreadModule.hpp"
 #include "../Channel.hpp"
 
 static std::mutex lock; // Not in the class because of template fuckups

@@ -39,7 +39,7 @@ set(SOURCES
         Filters/Navigation/WaypointReader.cpp
         Filters/Navigation/WaypointReader.hpp
         Filters/Navigation/Waypoint_t.hpp
-        Devices/GPS/Gps_t.hpp)
+        Devices/GPS/Gps_t.hpp MultipleOutputChannel.hpp)
 
 set(SOURCES_PI ${SOURCES}
         Devices/LoRa/LoRa.cpp

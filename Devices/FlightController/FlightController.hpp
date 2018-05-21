@@ -11,6 +11,7 @@
 #include "../../ThreadModule.hpp"
 #include <termios.h>
 #include "../Serial.hpp"
+#include "../../MultipleOutputChannel.hpp"
 
 class FlightController : public ThreadModule {
 public:
@@ -18,10 +19,11 @@ public:
     void run() override;
 
     Channel<rcLib::PackageExtended> &getChannelIn();
-    Channel<rcLib::PackageExtended> &getChannelOut();
+    MultipleOutputChannel<rcLib::PackageExtended> &getChannelOut();
 private:
     Serial serial;
-    Channel<rcLib::PackageExtended> in, out;
+    Channel<rcLib::PackageExtended> in;
+    MultipleOutputChannel<rcLib::PackageExtended> out;
 
 };
 

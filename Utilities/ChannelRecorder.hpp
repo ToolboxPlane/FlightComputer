@@ -15,7 +15,7 @@ using json = nlohmann::json;
 template <typename T>
 class ChannelRecorder : public ThreadModule {
 public:
-    ChannelRecorder(std::ostream &ostream) : ThreadModule(), ostream(ostream){};
+    explicit ChannelRecorder(std::ostream &ostream) : ThreadModule(), ostream(ostream){};
     Channel<T> &getChannelIn() {
         return channelIn;
     }

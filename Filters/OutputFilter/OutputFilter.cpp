@@ -4,11 +4,11 @@
 
 #include "OutputFilter.hpp"
 
-Channel<rcLib::PackageExtended> &OutputFilter::getBaseOut() {
+MultipleOutputChannel<rcLib::PackageExtended> & OutputFilter::getBaseOut() {
     return baseOut;
 }
 
-Channel<rcLib::PackageExtended> &OutputFilter::getFlightControllerOut() {
+MultipleOutputChannel<rcLib::PackageExtended> & OutputFilter::getFlightControllerOut() {
     return flightControllerOut;
 }
 

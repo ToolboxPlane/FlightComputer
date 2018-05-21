@@ -11,6 +11,7 @@
 #include "../../ThreadModule.hpp"
 #include "../../Devices/GPS/GpsMeasurement_t.hpp"
 #include "State_t.hpp"
+#include "../../MultipleOutputChannel.hpp"
 
 enum ProcessingStatus {
     NOT_RECEIVED,
@@ -28,7 +29,7 @@ public:
     Channel<rcLib::PackageExtended> &getRemoteIn();
     Channel<rcLib::PackageExtended> &getPdbIn();
     Channel<GpsMeasurement_t> &getGpsIn();
-    Channel<State_t> &getChannelOut();
+    MultipleOutputChannel<State_t> &getChannelOut();
 
 private:
     rcLib::PackageExtended pdbPackage, fcPackage;
@@ -38,7 +39,7 @@ private:
 
     Channel<rcLib::PackageExtended> baseIn, flightControllerIn, remoteIn, pdbIn;
     Channel<GpsMeasurement_t> gpsIn;
-    Channel<State_t> out;
+    MultipleOutputChannel<State_t> out;
 };
 
 

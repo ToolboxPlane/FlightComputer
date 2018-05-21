@@ -5,12 +5,14 @@
 #include <iostream>
 #include "GpsSimulator.hpp"
 
-Channel<GpsMeasurement_t> &GpsSimulator::getChannelOut() {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
+MultipleOutputChannel<GpsMeasurement_t> &GpsSimulator::getChannelOut() {
     return out;
 }
 
 void GpsSimulator::run() {
-    while(!out.isClosed()) {
+    while(true) {
         GpsMeasurement_t gps{};
         gps.location.lon = 17;
         gps.location.lat = 23;
@@ -23,3 +25,5 @@ void GpsSimulator::run() {
         std::this_thread::sleep_for(std::chrono_literals::operator""ms(500));
     }
 }
+
+#pragma clang diagnostic pop

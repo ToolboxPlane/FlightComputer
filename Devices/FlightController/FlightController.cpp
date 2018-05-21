@@ -48,6 +48,6 @@ Channel<rcLib::PackageExtended> &FlightController::getChannelIn() {
     return this->in;
 }
 
-Channel<rcLib::PackageExtended> &FlightController::getChannelOut() {
+MultipleOutputChannel<rcLib::PackageExtended> &FlightController::getChannelOut() {
     return this->out;
 }

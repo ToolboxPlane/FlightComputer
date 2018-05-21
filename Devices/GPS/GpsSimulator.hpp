@@ -9,14 +9,15 @@
 #include "../../ThreadModule.hpp"
 #include "../../Channel.hpp"
 #include "GpsMeasurement_t.hpp"
+#include "../../MultipleOutputChannel.hpp"
 
 class GpsSimulator : public ThreadModule{
 public:
     GpsSimulator() : ThreadModule() {}
 
-    Channel<GpsMeasurement_t> &getChannelOut();
+    MultipleOutputChannel<GpsMeasurement_t> &getChannelOut();
 private:
-    Channel<GpsMeasurement_t> out;
+    MultipleOutputChannel<GpsMeasurement_t> out;
     void run() override;
 };
 

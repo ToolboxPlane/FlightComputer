@@ -10,6 +10,7 @@
 #include <thread>
 #include "../ThreadModule.hpp"
 #include "../Channel.hpp"
+#include "../MultipleOutputChannel.hpp"
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -19,7 +20,7 @@ class ChannelReplay : public ThreadModule {
 public:
     explicit ChannelReplay(std::istream &istream) : ThreadModule(), istream(istream){};
 
-    Channel<T> &getChannelOut() {
+    MultipleOutputChannel<T> &getChannelOut() {
         return channelOut;
     }
 
@@ -45,7 +46,7 @@ private:
     }
 
     std::istream &istream;
-    Channel<T> channelOut;
+    MultipleOutputChannel<T> channelOut;
     Channel<T> channelIn;
 };
 

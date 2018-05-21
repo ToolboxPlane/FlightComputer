@@ -12,15 +12,16 @@
 #include "../../ThreadModule.hpp"
 #include "../../Channel.hpp"
 #include "../Serial.hpp"
+#include "../../MultipleOutputChannel.hpp"
 
 class Gps : ThreadModule{
 public:
     Gps();
 
-    Channel<GpsMeasurement_t> &getChannelOut();
+    MultipleOutputChannel<GpsMeasurement_t> &getChannelOut();
 private:
     void run() override;
-    Channel<GpsMeasurement_t> out;
+    MultipleOutputChannel<GpsMeasurement_t> out;
     gps_data_t gps_data;
 };
 

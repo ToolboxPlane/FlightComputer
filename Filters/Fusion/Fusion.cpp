@@ -6,20 +6,20 @@
 #include "Fusion.hpp"
 
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
 void Fusion::run() {
     ProcessingStatus flightControllerStatus = NOT_RECEIVED, gpsStatus = NOT_RECEIVED, powerStatus = NOT_RECEIVED;
 
-
-    while(!out.isClosed()) {
+    while(true) {
         if (!flightControllerIn.isClosed() && flightControllerIn.get(fcPackage, false)) {
             flightControllerStatus = READY;
         }
         if (!gpsIn.isClosed() && gpsIn.get(gpsValue, false)) {
             gpsStatus = READY;
-
         }
         if (!pdbIn.isClosed() && pdbIn.get(pdbPackage, false)) {
-             powerStatus = READY;
+            powerStatus = READY;
         }
 
         if(flightControllerStatus == READY || gpsStatus == READY || powerStatus == READY) {
@@ -82,7 +82,7 @@ State_t Fusion::process() {
     return res;
 }
 
-Channel<State_t> &Fusion::getChannelOut() {
+MultipleOutputChannel<State_t> &Fusion::getChannelOut() {
     return out;
 }
 
@@ -105,3 +105,5 @@ Channel<rcLib::PackageExtended> &Fusion::getRemoteIn() {
 Channel<rcLib::PackageExtended> &Fusion::getPdbIn() {
     return pdbIn;
 }
+
+#pragma clang diagnostic pop

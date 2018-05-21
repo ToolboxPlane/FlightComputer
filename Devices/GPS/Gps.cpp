@@ -6,12 +6,14 @@
 #include <unistd.h>
 #include <gps.h>
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
 #define BUF_SIZE 80
 
 Gps::Gps() : ThreadModule(){
 }
 
-Channel<GpsMeasurement_t> &Gps::getChannelOut() {
+MultipleOutputChannel<GpsMeasurement_t> &Gps::getChannelOut() {
     return out;
 }
 
@@ -23,7 +25,7 @@ void Gps::run() {
     gps_stream(&gps_data, WATCH_ENABLE | WATCH_JSON, nullptr);
 
     GpsMeasurement_t gps;
-    while(!out.isClosed()) {
+    while(true) {
         if (gps_waiting(&gps_data, 60000000)) {
             if (gps_read(&gps_data) == -1) {
                 fprintf(stderr, "error occured reading gps data, reason: %s\n", gps_errstr(errno));
@@ -52,3 +54,5 @@ void Gps::run() {
 
     }
 }
+
+#pragma clang diagnostic pop

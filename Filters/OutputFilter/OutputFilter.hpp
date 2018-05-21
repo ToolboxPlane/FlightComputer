@@ -10,17 +10,18 @@
 #include "../../Devices/rcLib/PackageExtended.hpp"
 #include "../Navigation/Nav_t.hpp"
 #include "../../Channel.hpp"
+#include "../../MultipleOutputChannel.hpp"
 
 class OutputFilter : ThreadModule{
 public:
     OutputFilter() : ThreadModule() {}
 
-    Channel<rcLib::PackageExtended> &getBaseOut();
-    Channel<rcLib::PackageExtended> &getFlightControllerOut();
+    MultipleOutputChannel<rcLib::PackageExtended> &getBaseOut();
+    MultipleOutputChannel<rcLib::PackageExtended> &getFlightControllerOut();
     Channel<Nav_t> &getChannelIn();
 private:
     void run() override;
-    Channel<rcLib::PackageExtended> flightControllerOut, baseOut;
+    MultipleOutputChannel<rcLib::PackageExtended> flightControllerOut, baseOut;
     Channel<Nav_t> in;
 };
 

@@ -8,7 +8,7 @@ void RcLibSimulator::run() {
     rcLib::PackageExtended pkg(256, 16);
     pkg.setMeshProperties(static_cast<uint8_t>(true));
     pkg.setDeviceId(deviceId);
-    while(!in.isClosed() && !out.isClosed()) {
+    while(!in.isClosed()) {
         std::this_thread::sleep_for(std::chrono::seconds(1));
         for(uint8_t c=0; c < 16; c++) {
             pkg.setChannel(c, c);
@@ -21,6 +21,6 @@ Channel<rcLib::PackageExtended> &RcLibSimulator::getChannelIn() {
     return in;
 }
 
-Channel<rcLib::PackageExtended> &RcLibSimulator::getChannelOut() {
+MultipleOutputChannel<rcLib::PackageExtended> &RcLibSimulator::getChannelOut() {
     return out;
 }

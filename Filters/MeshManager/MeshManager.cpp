@@ -5,10 +5,12 @@
 #include <iostream>
 #include "MeshManager.hpp"
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
 enum class RCLIB_DEVICE_ID {
     REMOTE = 17,
     FLIGHT_CONTROLLER = 23,
-    BASE = 63, POWER_DISTRIBUTION = 74
+    BASE = 63, POWER_DISTRIBUTION = 74, TARANIS = 56
 };
 
 Channel<rcLib::PackageExtended> &MeshManager::getLoraIn() {
@@ -19,17 +21,17 @@ Channel<rcLib::PackageExtended> &MeshManager::getSerialIn() {
     return serialIn;
 }
 
-Channel<rcLib::PackageExtended> &MeshManager::getLoraOut() {
+MultipleOutputChannel<rcLib::PackageExtended> &MeshManager::getLoraOut() {
     return loraOut;
 }
 
-Channel<rcLib::PackageExtended> &MeshManager::getSerialOut() {
+MultipleOutputChannel<rcLib::PackageExtended> &MeshManager::getSerialOut() {
     return serialOut;
 }
 
 void MeshManager::run() {
     rcLib::PackageExtended pkg;
-    while(!loraIn.isClosed() || !serialIn.isClosed() || !loraOut.isClosed() || !serialOut.isClosed()) {
+    while(true) {
         if (loraIn.get(pkg, false)) {
             if(pkg.needsForwarding()) {
                 pkg.countNode();
@@ -76,5 +78,10 @@ void MeshManager::propagateInternal(rcLib::PackageExtended pkg) {
         case RCLIB_DEVICE_ID::POWER_DISTRIBUTION:
             pdbOut.put(pkg);
             break;
+        case RCLIB_DEVICE_ID::TARANIS:
+            taranisOut.put(pkg);
+            break;
     }
 }
+
+#pragma clang diagnostic pop

@@ -9,6 +9,7 @@
 #include "../../Channel.hpp"
 #include "PackageExtended.hpp"
 #include "../../ThreadModule.hpp"
+#include "../../MultipleOutputChannel.hpp"
 
 class RcLibSimulator : public ThreadModule{
 public:
@@ -16,10 +17,11 @@ public:
     void run() override;
 
     Channel<rcLib::PackageExtended> &getChannelIn();
-    Channel<rcLib::PackageExtended> &getChannelOut();
+    MultipleOutputChannel<rcLib::PackageExtended> &getChannelOut();
 
 private:
-    Channel<rcLib::PackageExtended> in, out;
+    Channel<rcLib::PackageExtended> in;
+    MultipleOutputChannel<rcLib::PackageExtended> out;
     const uint8_t deviceId;
 };
 

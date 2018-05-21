@@ -4,7 +4,7 @@
 
 #include "WaypointReader.hpp"
 
-Channel<Waypoint_t> &WaypointReader::getChannelOut() {
+MultipleOutputChannel<Waypoint_t> &WaypointReader::getChannelOut() {
     return out;
 }
 

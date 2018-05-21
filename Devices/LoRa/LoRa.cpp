@@ -87,7 +87,7 @@ LoRa::LoRa() : ThreadModule(), rf95(RF_CS_PIN, RF_IRQ_PIN){
     isReady = true;
 }
 
-Channel<rcLib::PackageExtended> &LoRa::getChannelOut() {
+MultipleOutputChannel<rcLib::PackageExtended> &LoRa::getChannelOut() {
     return out;
 }
 
