@@ -5,11 +5,9 @@
 #ifndef FLIGHTCOMPUTERMONOLITHIC_SERIAL_HPP
 #define FLIGHTCOMPUTERMONOLITHIC_SERIAL_HPP
 
-#include "string"
 #include "../../Channel.hpp"
 #include "../rcLib/PackageExtended.hpp"
 #include "../../ThreadModule.hpp"
-#include <termios.h>
 #include "../Serial.hpp"
 #include "../../MultipleOutputChannel.hpp"
 

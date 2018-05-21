@@ -9,13 +9,12 @@
 #include <thread>
 
 class ThreadModule {
-public:
-    ThreadModule() {
+protected:
+    virtual void run()= 0;
+    void start() {
         std::thread t(&ThreadModule::run, this);
         t.detach();
     }
-protected:
-    virtual void run()= 0;
 private:
 };
 

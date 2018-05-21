@@ -14,7 +14,7 @@
 
 class OutputFilter : ThreadModule{
 public:
-    OutputFilter() : ThreadModule() {}
+    OutputFilter();
 
     MultipleOutputChannel<rcLib::PackageExtended> &getBaseOut();
     MultipleOutputChannel<rcLib::PackageExtended> &getFlightControllerOut();

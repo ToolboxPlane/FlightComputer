@@ -19,3 +19,7 @@ void WaypointReader::run() {
         out.put(waypoint);
     }
 }
+
+WaypointReader::WaypointReader(std::istream &istream) : istream(istream){
+    this->start();
+}

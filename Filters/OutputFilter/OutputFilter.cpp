@@ -38,3 +38,7 @@ void OutputFilter::run() {
         }
     }
 }
+
+OutputFilter::OutputFilter() {
+    this->start();
+}

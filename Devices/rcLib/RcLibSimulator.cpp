@@ -24,3 +24,7 @@ Channel<rcLib::PackageExtended> &RcLibSimulator::getChannelIn() {
 MultipleOutputChannel<rcLib::PackageExtended> &RcLibSimulator::getChannelOut() {
     return out;
 }
+
+RcLibSimulator::RcLibSimulator(const uint8_t deviceId) : deviceId(deviceId){
+    this->start();
+}

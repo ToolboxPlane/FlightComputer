@@ -29,7 +29,7 @@ void Fusion::run() {
                 gpsStatus = PROCESSED;
                 powerStatus = PROCESSED;
             } else {
-                // Maybe do other stuff
+                //@TODO PDB shouldn't be mission critical
             }
         } else {
             std::this_thread::yield();
@@ -104,6 +104,10 @@ Channel<rcLib::PackageExtended> &Fusion::getRemoteIn() {
 
 Channel<rcLib::PackageExtended> &Fusion::getPdbIn() {
     return pdbIn;
+}
+
+Fusion::Fusion() : gpsValue(0,0) {
+    this->start();
 }
 
 #pragma clang diagnostic pop

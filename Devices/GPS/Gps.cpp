@@ -8,9 +8,9 @@
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
-#define BUF_SIZE 80
 
-Gps::Gps() : ThreadModule(){
+Gps::Gps() {
+    this->start();
 }
 
 MultipleOutputChannel<GpsMeasurement_t> &Gps::getChannelOut() {

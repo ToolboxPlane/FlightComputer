@@ -18,7 +18,9 @@ using json = nlohmann::json;
 template <typename T>
 class ChannelReplay : public ThreadModule {
 public:
-    explicit ChannelReplay(std::istream &istream) : ThreadModule(), istream(istream){};
+    explicit ChannelReplay(std::istream &istream) : istream(istream){
+        this->start();
+    };
 
     MultipleOutputChannel<T> &getChannelOut() {
         return channelOut;

@@ -58,10 +58,12 @@ void MeshManager::run() {
             pkg.setMeshProperties(true, 2);
             loraOut.put(pkg);
         }
+        std::this_thread::yield();
     }
 }
 
-MeshManager::MeshManager() : ThreadModule(){
+MeshManager::MeshManager() {
+    this->start();
 }
 
 void MeshManager::propagateInternal(rcLib::PackageExtended pkg) {

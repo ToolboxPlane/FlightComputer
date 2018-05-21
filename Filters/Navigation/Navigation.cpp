@@ -54,3 +54,7 @@ Channel<State_t> &Navigation::getChannelStateIn() {
 Channel<Waypoint_t> &Navigation::getChannelWaypointIn() {
     return waypointIn;
 }
+
+Navigation::Navigation() {
+    this->start();
+}

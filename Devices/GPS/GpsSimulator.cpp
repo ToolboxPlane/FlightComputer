@@ -26,4 +26,8 @@ void GpsSimulator::run() {
     }
 }
 
+GpsSimulator::GpsSimulator() {
+    this->start();
+}
+
 #pragma clang diagnostic pop

@@ -13,7 +13,8 @@
 #define BUF_SIZE 64
 
 FlightController::FlightController(const std::string& port, int baud)
-        : serial(port, baud), in(), out(), ThreadModule() {
+        : serial(port, baud), in(), out() {
+    this->start();
 }
 
 void FlightController::run() {

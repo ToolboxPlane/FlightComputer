@@ -13,7 +13,7 @@
 
 class Navigation : public ThreadModule{
 public:
-    Navigation() : ThreadModule() {}
+    Navigation();
 
     MultipleOutputChannel<Nav_t> &getChannelOut();
     Channel<State_t> &getChannelStateIn();

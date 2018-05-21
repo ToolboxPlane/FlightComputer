@@ -13,7 +13,7 @@
 
 class GpsSimulator : public ThreadModule{
 public:
-    GpsSimulator() : ThreadModule() {}
+    GpsSimulator();
 
     MultipleOutputChannel<GpsMeasurement_t> &getChannelOut();
 private:

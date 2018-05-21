@@ -21,7 +21,7 @@ enum ProcessingStatus {
 
 class Fusion : public ThreadModule {
 public:
-    Fusion() : ThreadModule(), gpsValue(0,0) {};
+    Fusion();
     void run() override;
 
     Channel<rcLib::PackageExtended> &getFlightControllerIn();

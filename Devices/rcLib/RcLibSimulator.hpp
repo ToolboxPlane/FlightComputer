@@ -13,7 +13,7 @@
 
 class RcLibSimulator : public ThreadModule{
 public:
-    explicit RcLibSimulator(const uint8_t deviceId) : deviceId(deviceId), ThreadModule() {};
+    explicit RcLibSimulator(const uint8_t deviceId);
     void run() override;
 
     Channel<rcLib::PackageExtended> &getChannelIn();

@@ -16,7 +16,10 @@ template <typename T>
 class Logger : ThreadModule{
 public:
     explicit Logger(std::string tag, bool enabled = true, std::ostream &stream = std::cout) :
-            ThreadModule(), tag(std::move(tag)), stream(stream), enabled(enabled){}
+            tag(std::move(tag)), stream(stream), enabled(enabled){
+        this->start();
+    }
+
     Channel<T> &getChannelIn() {
         return in;
     }

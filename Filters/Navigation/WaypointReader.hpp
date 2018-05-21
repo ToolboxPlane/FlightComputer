@@ -18,7 +18,7 @@ using json = nlohmann::json;
 
 class WaypointReader : public ThreadModule{
 public:
-    explicit WaypointReader(std::istream &istream) : ThreadModule(), istream(istream) {}
+    explicit WaypointReader(std::istream &istream);
     MultipleOutputChannel<Waypoint_t> &getChannelOut();
 private:
     void run() override;
