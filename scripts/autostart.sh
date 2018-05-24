@@ -14,7 +14,8 @@ case "(" in
         echo "Starting gpsd"
         gpsd -S 3000 /dev/ttyS0
         echo "Starting FlightComputer"
-        /home/pi/FlightComputer/build/FlightComputer
+        cd /home/pi/FlightComputer/build/
+        ./FlightComputer
         ;;
     stop)
         echo "Stopping FlightComputer"

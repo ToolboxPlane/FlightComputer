@@ -13,7 +13,7 @@
 
 class RcLibSimulator : public ThreadModule{
 public:
-    explicit RcLibSimulator(const uint8_t deviceId);
+    explicit RcLibSimulator(uint8_t deviceId, const int intervalMs = 500);
     void run() override;
 
     Channel<rcLib::PackageExtended> &getChannelIn();
@@ -23,6 +23,7 @@ private:
     Channel<rcLib::PackageExtended> in;
     MultipleOutputChannel<rcLib::PackageExtended> out;
     const uint8_t deviceId;
+    const int intervalMs;
 };
 
 

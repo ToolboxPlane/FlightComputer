@@ -17,7 +17,7 @@
 #include "Devices/LoRa/LoRa.hpp"
 #endif
 
-int main(void) {
+int main() {
     /*
      * I/O-Modules
      */
@@ -25,10 +25,10 @@ int main(void) {
     //LoRa lora;
     //Gps gps;
 
-    RcLibSimulator serial(23);
-    RcLibSimulator pdb(74);
-    RcLibSimulator lora(17);
-    GpsSimulator gps;
+    RcLibSimulator serial(23, 1000);
+    RcLibSimulator pdb(74, 60000);
+    RcLibSimulator lora(17, 60000);
+    GpsSimulator gps(60000);
 
     std::ifstream serialFile("logs/serial180510.json");
     //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
@@ -80,9 +80,9 @@ int main(void) {
      * Logging
      */
     Logger<rcLib::PackageExtended> serialReceive("Serial-Recv", true);
-    Logger<rcLib::PackageExtended> serialSend("Serial-Send", true);
-    Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", true);
-    Logger<rcLib::PackageExtended> loraSend("Lora-Send", true);
+    Logger<rcLib::PackageExtended> serialSend("Serial-Send", false);
+    Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", false);
+    Logger<rcLib::PackageExtended> loraSend("Lora-Send", false);
     Logger<GpsMeasurement_t> gpsDebug("GPS", true);
     Logger<Nav_t> navDebug("Nav", true);
     Logger<State_t> fusionDebug("Fusion", true);

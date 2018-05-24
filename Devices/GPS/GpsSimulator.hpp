@@ -13,12 +13,13 @@
 
 class GpsSimulator : public ThreadModule{
 public:
-    GpsSimulator();
+    explicit GpsSimulator(int intervalMs = 500);
 
     MultipleOutputChannel<GpsMeasurement_t> &getChannelOut();
 private:
     MultipleOutputChannel<GpsMeasurement_t> out;
     void run() override;
+    const int intervalMs;
 };
 
 

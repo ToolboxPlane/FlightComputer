@@ -6,6 +6,7 @@
 #define FLIGHTCOMPUTER_LOGGER_HPP
 
 #include <iostream>
+#include <chrono>
 #include <utility>
 #include "../ThreadModule.hpp"
 #include "../Channel.hpp"
@@ -30,7 +31,10 @@ private:
         while(enabled && !in.isClosed()) {
             if(in.get(item)) {
                 lock.lock();
-                stream << "[" << tag <<"]\t" << item << "\n";
+                auto time = std::chrono::duration_cast< std::chrono::milliseconds >(
+                        std::chrono::system_clock::now().time_since_epoch()
+                ).count();
+                stream << "[" << tag /*<< " " << time*/ <<"]\t" << item << "\n";
                 lock.unlock();
             }
         }

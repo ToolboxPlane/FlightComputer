@@ -33,6 +33,9 @@ cd build
 cmake ..
 make -j4
 
+# Create all necessary directorys
+mkdir logs
+
 # Setup the autostart
 sudo cp autostart.sh /etc/init.d/FlightComputer
 sudo chmod 755 /etc/init.d/FlightComputer

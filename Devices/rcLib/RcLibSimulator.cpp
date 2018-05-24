@@ -4,7 +4,8 @@
 
 #include "RcLibSimulator.hpp"
 
-RcLibSimulator::RcLibSimulator(const uint8_t deviceId) : deviceId(deviceId){
+RcLibSimulator::RcLibSimulator(const uint8_t deviceId, const int intervalMs) :
+        deviceId(deviceId), intervalMs(intervalMs){
     this->start();
 }
 
@@ -21,11 +22,11 @@ void RcLibSimulator::run() {
     pkg.setMeshProperties(static_cast<uint8_t>(true));
     pkg.setDeviceId(deviceId);
     while(!in.isClosed()) {
-        std::this_thread::sleep_for(std::chrono::seconds(1));
         for(uint8_t c=0; c < 16; c++) {
             pkg.setChannel(c, c);
         }
         out.put(pkg);
+        std::this_thread::sleep_for(std::chrono::milliseconds(intervalMs));
     }
 }
 
