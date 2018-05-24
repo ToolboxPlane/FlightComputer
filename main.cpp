@@ -56,6 +56,9 @@ int main() {
 
     meshManager.getFlightControllerOut() >> fusion.getFlightControllerIn();
     meshManager.getPdbOut() >> fusion.getPdbIn();
+    meshManager.getTaranisOut() >> fusion.getTaranisIn();
+    meshManager.getRemoteOut() >> fusion.getRemoteIn();
+    meshManager.getBaseOut() >> fusion.getBaseIn();
 
     /*
      * Fusion

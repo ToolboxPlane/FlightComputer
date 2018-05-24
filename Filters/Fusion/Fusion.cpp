@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "Fusion.hpp"
+#include "State_t.hpp"
 
 
 #pragma clang diagnostic push
@@ -60,6 +61,9 @@ void Fusion::run() {
         if(!baseIn.isClosed()) {
             baseIn.get(*lastBasePackage, false);
         }
+        if(!remoteIn.isClosed()) {
+            remoteIn.get(*lastRemotePackage, false);
+        }
         if (!flightControllerIn.isClosed() && flightControllerIn.get(lastFcPackage, false)) {
             out.put(process());
         } else {
@@ -107,9 +111,23 @@ State_t Fusion::process() {
             res.groundSpeed = lastState.groundSpeed;
         }
     }
+
+    // PDB
     if(lastPdbPackage) {
         res.voltage = (lastPdbPackage->getChannel(1) * 128) / 1000.0;
     }
+
+    // Taranis
+    if(lastTaranisPackage) {
+        res.taranis.throttle = lastTaranisPackage->getChannel(6);
+        res.taranis.yaw = lastTaranisPackage->getChannel(7);
+        res.taranis.pitch = lastTaranisPackage->getChannel(8);
+        res.taranis.roll= lastTaranisPackage->getChannel(9);
+        res.taranis.isArmed = lastTaranisPackage->getChannel(10) != 0;
+        res.taranis.manualOverrideActive = lastTaranisPackage->getChannel(11) != 0;
+    }
+
+    //@TODO handle remote and base, discuss which data to send
 
     lastState = res;
 

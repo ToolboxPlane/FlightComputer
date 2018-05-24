@@ -39,6 +39,7 @@ private:
     std::experimental::optional<GpsMeasurement_t> lastGpsMeasurement;
     std::experimental::optional<rcLib::PackageExtended> lastBasePackage;
     std::experimental::optional<rcLib::PackageExtended> lastTaranisPackage;
+    std::experimental::optional<rcLib::PackageExtended> lastRemotePackage;
 
     State_t process();
 

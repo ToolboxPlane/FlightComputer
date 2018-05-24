@@ -16,6 +16,11 @@ public:
     double airspeed, groundSpeed;
     double voltage;
 
+    struct {
+        int throttle, yaw, pitch, roll;
+        bool isArmed, manualOverrideActive;
+    } taranis;
+
     friend std::ostream &operator<<(std::ostream &ostream, State_t state) {
         ostream << "H: " << state.heading;
         ostream << "\tR: " << state.roll;

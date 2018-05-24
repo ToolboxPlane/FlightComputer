@@ -4,6 +4,22 @@
 
 #include "Navigation.hpp"
 
+Navigation::Navigation() {
+    this->start();
+}
+
+MultipleOutputChannel<Nav_t> &Navigation::getChannelOut() {
+    return out;
+}
+
+Channel<State_t> &Navigation::getChannelStateIn() {
+    return stateIn;
+}
+
+Channel<Waypoint_t> &Navigation::getChannelWaypointIn() {
+    return waypointIn;
+}
+
 void Navigation::run() {
     State_t currentState{};
     Nav_t nav{};
@@ -43,18 +59,3 @@ void Navigation::run() {
     }
 }
 
-MultipleOutputChannel<Nav_t> &Navigation::getChannelOut() {
-    return out;
-}
-
-Channel<State_t> &Navigation::getChannelStateIn() {
-    return stateIn;
-}
-
-Channel<Waypoint_t> &Navigation::getChannelWaypointIn() {
-    return waypointIn;
-}
-
-Navigation::Navigation() {
-    this->start();
-}
