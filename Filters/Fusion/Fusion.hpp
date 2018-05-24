@@ -12,6 +12,7 @@
 #include "../../Devices/GPS/GpsMeasurement_t.hpp"
 #include "State_t.hpp"
 #include "../../MultipleOutputChannel.hpp"
+#include <experimental/optional>
 
 enum ProcessingStatus {
     NOT_RECEIVED,
@@ -33,8 +34,11 @@ public:
 
     MultipleOutputChannel<State_t> &getChannelOut();
 private:
-    rcLib::PackageExtended pdbPackage, fcPackage;
-    GpsMeasurement_t gpsValue;
+    rcLib::PackageExtended lastFcPackage;
+    std::experimental::optional<rcLib::PackageExtended> lastPdbPackage;
+    std::experimental::optional<GpsMeasurement_t> lastGpsMeasurement;
+    std::experimental::optional<rcLib::PackageExtended> lastBasePackage;
+    std::experimental::optional<rcLib::PackageExtended> lastTaranisPackage;
 
     State_t process();
 

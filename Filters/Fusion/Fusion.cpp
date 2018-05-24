@@ -8,78 +8,12 @@
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
-void Fusion::run() {
-    ProcessingStatus flightControllerStatus = NOT_RECEIVED, gpsStatus = NOT_RECEIVED, powerStatus = NOT_RECEIVED;
 
-    while(true) {
-        if (!flightControllerIn.isClosed() && flightControllerIn.get(fcPackage, false)) {
-            flightControllerStatus = READY;
-        }
-        if (!gpsIn.isClosed() && gpsIn.get(gpsValue, false)) {
-            gpsStatus = READY;
-        }
-        if (!pdbIn.isClosed() && pdbIn.get(pdbPackage, false)) {
-            powerStatus = READY;
-        }
-
-        if(flightControllerStatus == READY || gpsStatus == READY || powerStatus == READY) {
-            if(flightControllerStatus != NOT_RECEIVED && gpsStatus != NOT_RECEIVED && powerStatus != NOT_RECEIVED) {
-                out.put(process());
-                flightControllerStatus = PROCESSED;
-                gpsStatus = PROCESSED;
-                powerStatus = PROCESSED;
-            } else {
-                //@TODO PDB shouldn't be mission critical
-            }
-        } else {
-            std::this_thread::yield();
-        }
-    }
-}
-
-State_t Fusion::process() {
-    State_t res{};
-    static State_t lastState;
-
-    res.position = gpsValue;
-    if(res.position.timestamp != lastState.position.timestamp) {
-        res.groundSpeed = res.position.location.distanceTo(lastState.position.location) /
-                          (res.position.timestamp - lastState.position.timestamp);
-    } else {
-        res.groundSpeed = lastState.groundSpeed;
-    }
-
-    res.airspeed = res.groundSpeed;
-
-    res.heading = fcPackage.getChannel(0);
-    res.roll = fcPackage.getChannel(1);
-    res.pitch = fcPackage.getChannel(2);
-    res.heightAboveSeaLevel = fcPackage.getChannel(4);
-
-    /*auto c = 0;
-    for(auto iterator = lastFlightControllerPackages.begin();
-            iterator != lastFlightControllerPackages.end(); iterator++, c++) {
-        double weight = std::pow(0.5, (lastFlightControllerPackages.size() - c));
-        // Little workaround to get the sum of all c's to be 1
-        if(c == 0) {
-            weight *= 2;
-        }
-
-        res.heading += iterator->getChannel(0) * weight;
-        res.roll += (iterator->getChannel(1) - 180) * weight;
-        res.pitch += (iterator->getChannel(2) - 180) * weight;
-        res.heightAboveGround += 0;
-        res.heightAboveSeaLevel += iterator->getChannel(4) * weight;
-    }*/
-
-    res.voltage = (pdbPackage.getChannel(1) * 128)/1000.0;
-
-    res.heightAboveSeaLevel = (res.heightAboveSeaLevel + gpsValue.location.altitude*0)/1;
-    res.heightAboveGround = res.heightAboveSeaLevel;
-
-    lastState = res;
-
-    return res;
+Fusion::Fusion() :
+        lastPdbPackage(std::experimental::nullopt), lastGpsMeasurement(std::experimental::nullopt),
+        lastBasePackage(std::experimental::nullopt), lastTaranisPackage(std::experimental::nullopt)
+{
+    this->start();
 }
 
 MultipleOutputChannel<State_t> &Fusion::getChannelOut() {
@@ -106,12 +40,81 @@ Channel<rcLib::PackageExtended> &Fusion::getPdbIn() {
     return pdbIn;
 }
 
-Fusion::Fusion() : gpsValue(0,0) {
-    this->start();
-}
 
 Channel<rcLib::PackageExtended> &Fusion::getTaranisIn() {
     return taranisIn;
 }
+
+void Fusion::run() {
+
+    while(true) {
+        if (!gpsIn.isClosed()) {
+            gpsIn.get(*lastGpsMeasurement, false);
+        }
+        if (!pdbIn.isClosed()) {
+            pdbIn.get(*lastPdbPackage, false);
+        }
+        if(!taranisIn.isClosed()) {
+            taranisIn.get(*lastTaranisPackage, false);
+        }
+        if(!baseIn.isClosed()) {
+            baseIn.get(*lastBasePackage, false);
+        }
+        if (!flightControllerIn.isClosed() && flightControllerIn.get(lastFcPackage, false)) {
+            out.put(process());
+        } else {
+            std::this_thread::yield();
+        }
+    }
+}
+
+State_t Fusion::process() {
+    State_t res{};
+    static State_t lastState;
+
+    // Flightcontroller Data
+    res.airspeed = res.groundSpeed;
+
+    res.heading = lastFcPackage.getChannel(0);
+    res.roll = lastFcPackage.getChannel(1);
+    res.pitch = lastFcPackage.getChannel(2);
+    res.heightAboveSeaLevel = lastFcPackage.getChannel(4);
+
+    /*auto c = 0;
+    for(auto iterator = lastFlightControllerPackages.begin();
+            iterator != lastFlightControllerPackages.end(); iterator++, c++) {
+        double weight = std::pow(0.5, (lastFlightControllerPackages.size() - c));
+        // Little workaround to get the sum of all c's to be 1
+        if(c == 0) {
+            weight *= 2;
+        }
+
+        res.heading += iterator->getChannel(0) * weight;
+        res.roll += (iterator->getChannel(1) - 180) * weight;
+        res.pitch += (iterator->getChannel(2) - 180) * weight;
+        res.heightAboveGround += 0;
+        res.heightAboveSeaLevel += iterator->getChannel(4) * weight;
+    }*/
+    res.heightAboveGround = res.heightAboveSeaLevel; // Waiting for some kind of distance sensor
+
+    // Gps
+    if(lastGpsMeasurement) {
+        res.position = *lastGpsMeasurement;
+        if (res.position.timestamp != lastState.position.timestamp) {
+            res.groundSpeed = res.position.location.distanceTo(lastState.position.location) /
+                              (res.position.timestamp - lastState.position.timestamp);
+        } else {
+            res.groundSpeed = lastState.groundSpeed;
+        }
+    }
+    if(lastPdbPackage) {
+        res.voltage = (lastPdbPackage->getChannel(1) * 128) / 1000.0;
+    }
+
+    lastState = res;
+
+    return res;
+}
+
 
 #pragma clang diagnostic pop
