@@ -10,11 +10,12 @@
 
 #include "FlightController.hpp"
 
-#define BUF_SIZE 64
+#define BUF_SIZE 20
 
 FlightController::FlightController(const std::string& port, int baud)
         : serial(port, baud), in(), out() {
     this->start();
+    serial.setAttributes(baud, 0, 30);
 }
 
 Channel<rcLib::PackageExtended> &FlightController::getChannelIn() {

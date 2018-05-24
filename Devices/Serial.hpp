@@ -12,7 +12,7 @@ class Serial {
 public:
     explicit Serial(std::string port, int baud = B9600, bool blocking = false);
     void setBlocking(bool isBlocking);
-    void setAttributes(int baud, int parity);
+    void setAttributes(int baud, int parity, int timeoutMs = 500);
     int fd = 0;
     bool ready = false;
 };

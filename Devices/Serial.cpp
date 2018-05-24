@@ -33,7 +33,7 @@ void Serial::setBlocking(bool isBlocking) {
     }
 }
 
-void Serial::setAttributes(int baud, int parity) {
+void Serial::setAttributes(int baud, int parity, int timeoutMs) {
     termios tty{};
     memset (&tty, 0, sizeof tty);
     if (tcgetattr (fd, &tty) != 0) {
@@ -51,7 +51,7 @@ void Serial::setAttributes(int baud, int parity) {
     // no canonical processing
     tty.c_oflag = 0;                // no remapping, no delays
     tty.c_cc[VMIN]  = 0;            // read doesn't block
-    tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
+    tty.c_cc[VTIME] = static_cast<cc_t>(timeoutMs / 100);            // 0.5 seconds read timeout
 
     tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
 
