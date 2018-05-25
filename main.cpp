@@ -21,12 +21,12 @@ int main() {
     /*
      * I/O-Modules
      */
-    //FlightController serial("/dev/ttyACM0", B9600);
+    FlightController serial("/dev/ttyACM0", B9600);
     //LoRa lora;
     //Gps gps;
 
-    RcLibSimulator serial(23, 1000);
-    RcLibSimulator pdb(74, 60000);
+    //RcLibSimulator serial(23, 1000);
+    //RcLibSimulator pdb(74, 60000);
     RcLibSimulator lora(17, 60000);
     GpsSimulator gps(60000);
 
@@ -48,7 +48,7 @@ int main() {
      * Mesh Manager
      */
     serial.getChannelOut() >> meshManager.getSerialIn();
-    pdb.getChannelOut() >> meshManager.getSerialIn();
+    //pdb.getChannelOut() >> meshManager.getSerialIn();
     meshManager.getSerialOut() >> serial.getChannelIn();
 
     lora.getChannelOut() >> meshManager.getLoraIn();
@@ -82,12 +82,12 @@ int main() {
     /*
      * Logging
      */
-    Logger<rcLib::PackageExtended> serialReceive("Serial-Recv", true);
+    Logger<rcLib::PackageExtended> serialReceive("Serial-Recv", false);
     Logger<rcLib::PackageExtended> serialSend("Serial-Send", false);
     Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", false);
     Logger<rcLib::PackageExtended> loraSend("Lora-Send", false);
-    Logger<GpsMeasurement_t> gpsDebug("GPS", true);
-    Logger<Nav_t> navDebug("Nav", true);
+    Logger<GpsMeasurement_t> gpsDebug("GPS", false);
+    Logger<Nav_t> navDebug("Nav", false);
     Logger<State_t> fusionDebug("Fusion", true);
 
     serial.getChannelOut() >> serialReceive.getChannelIn();

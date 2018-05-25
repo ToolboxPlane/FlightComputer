@@ -10,9 +10,7 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
-Fusion::Fusion() :
-        lastPdbPackage(std::experimental::nullopt), lastGpsMeasurement(std::experimental::nullopt),
-        lastBasePackage(std::experimental::nullopt), lastTaranisPackage(std::experimental::nullopt)
+Fusion::Fusion()
 {
     this->start();
 }
@@ -50,19 +48,24 @@ void Fusion::run() {
 
     while(true) {
         if (!gpsIn.isClosed()) {
-            gpsIn.get(*lastGpsMeasurement, false);
+            gpsIn.get(lastGpsMeasurement, false);
+            gpsRecv = true;
         }
         if (!pdbIn.isClosed()) {
-            pdbIn.get(*lastPdbPackage, false);
+            pdbIn.get(lastPdbPackage, false);
+            pdbRecv = true;
         }
         if(!taranisIn.isClosed()) {
-            taranisIn.get(*lastTaranisPackage, false);
+            taranisIn.get(lastTaranisPackage, false);
+            taranisRecv = true;
         }
         if(!baseIn.isClosed()) {
-            baseIn.get(*lastBasePackage, false);
+            baseIn.get(lastBasePackage, false);
+            baseRecv = true;
         }
         if(!remoteIn.isClosed()) {
-            remoteIn.get(*lastRemotePackage, false);
+            remoteIn.get(lastRemotePackage, false);
+            remoteRecv = true;
         }
         if (!flightControllerIn.isClosed() && flightControllerIn.get(lastFcPackage, false)) {
             out.put(process());
@@ -77,12 +80,12 @@ State_t Fusion::process() {
     static State_t lastState;
 
     // Flightcontroller Data
-    res.airspeed = res.groundSpeed;
 
     res.heading = lastFcPackage.getChannel(0);
-    res.roll = lastFcPackage.getChannel(1);
-    res.pitch = lastFcPackage.getChannel(2);
+    res.roll = lastFcPackage.getChannel(1) - 180;
+    res.pitch = lastFcPackage.getChannel(2) - 180;
     res.heightAboveSeaLevel = lastFcPackage.getChannel(4);
+    res.airspeed = lastFcPackage.getChannel(6);
 
     /*auto c = 0;
     for(auto iterator = lastFlightControllerPackages.begin();
@@ -102,8 +105,8 @@ State_t Fusion::process() {
     res.heightAboveGround = res.heightAboveSeaLevel; // Waiting for some kind of distance sensor
 
     // Gps
-    if(lastGpsMeasurement) {
-        res.position = *lastGpsMeasurement;
+    if(gpsRecv) {
+        res.position = lastGpsMeasurement;
         if (res.position.timestamp != lastState.position.timestamp) {
             res.groundSpeed = res.position.location.distanceTo(lastState.position.location) /
                               (res.position.timestamp - lastState.position.timestamp);
@@ -113,18 +116,18 @@ State_t Fusion::process() {
     }
 
     // PDB
-    if(lastPdbPackage) {
-        res.voltage = (lastPdbPackage->getChannel(1) * 128) / 1000.0;
+    if(pdbRecv) {
+        res.voltage = (lastPdbPackage.getChannel(1) * 128) / 1000.0;
     }
 
     // Taranis
-    if(lastTaranisPackage) {
-        res.taranis.throttle = lastTaranisPackage->getChannel(6);
-        res.taranis.yaw = lastTaranisPackage->getChannel(7);
-        res.taranis.pitch = lastTaranisPackage->getChannel(8);
-        res.taranis.roll= lastTaranisPackage->getChannel(9);
-        res.taranis.isArmed = lastTaranisPackage->getChannel(10) != 0;
-        res.taranis.manualOverrideActive = lastTaranisPackage->getChannel(11) != 0;
+    if(taranisRecv) {
+        res.taranis.throttle = lastTaranisPackage.getChannel(6);
+        res.taranis.yaw = lastTaranisPackage.getChannel(7);
+        res.taranis.pitch = lastTaranisPackage.getChannel(8);
+        res.taranis.roll= lastTaranisPackage.getChannel(9);
+        res.taranis.isArmed = lastTaranisPackage.getChannel(10) != 0;
+        res.taranis.manualOverrideActive = lastTaranisPackage.getChannel(11) != 0;
     }
 
     //@TODO handle remote and base, discuss which data to send

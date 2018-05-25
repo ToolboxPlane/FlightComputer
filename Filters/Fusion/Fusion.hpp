@@ -35,11 +35,12 @@ public:
     MultipleOutputChannel<State_t> &getChannelOut();
 private:
     rcLib::PackageExtended lastFcPackage;
-    std::experimental::optional<rcLib::PackageExtended> lastPdbPackage;
-    std::experimental::optional<GpsMeasurement_t> lastGpsMeasurement;
-    std::experimental::optional<rcLib::PackageExtended> lastBasePackage;
-    std::experimental::optional<rcLib::PackageExtended> lastTaranisPackage;
-    std::experimental::optional<rcLib::PackageExtended> lastRemotePackage;
+    rcLib::PackageExtended lastPdbPackage;
+    GpsMeasurement_t lastGpsMeasurement;
+    rcLib::PackageExtended lastBasePackage;
+    rcLib::PackageExtended lastTaranisPackage;
+    rcLib::PackageExtended lastRemotePackage;
+    bool pdbRecv = false, gpsRecv = false, baseRecv = false, taranisRecv = false, remoteRecv = false;
 
     State_t process();
 

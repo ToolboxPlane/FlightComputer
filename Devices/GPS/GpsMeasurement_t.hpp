@@ -33,13 +33,6 @@ public:
 
     GpsMeasurement_t() : location(0,0), speed(0), timestamp(0), fixAquired(false), climb(0){};
 
-    bool fixAquired;
-
-    Gps_t location;
-    double speed;
-    double timestamp;
-    double climb;
-
     friend std::ostream &operator<<(std::ostream &ostream, GpsMeasurement_t gps) {
         if(!gps.fixAquired) {
             ostream << "No fix";
@@ -67,6 +60,13 @@ public:
 
         return ret;
     }
+
+    bool fixAquired;
+
+    Gps_t location;
+    double speed;
+    double timestamp;
+    double climb;
 
 
 };
