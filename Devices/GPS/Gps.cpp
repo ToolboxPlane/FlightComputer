@@ -20,7 +20,7 @@ MultipleOutputChannel<GpsMeasurement_t> &Gps::getChannelOut() {
 void Gps::run() {
     if (gps_open("localhost", "3000", &gps_data) == -1) {
         fprintf(stderr, "reason: %s\n",gps_errstr(errno));
-        return;
+        exit(1);
     }
     gps_stream(&gps_data, WATCH_ENABLE | WATCH_JSON, nullptr);
 
