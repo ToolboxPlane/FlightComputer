@@ -43,6 +43,7 @@ private:
     bool pdbRecv = false, gpsRecv = false, baseRecv = false, taranisRecv = false, remoteRecv = false;
 
     State_t process();
+    int normalizeTaranis(int input);
 
     Channel<rcLib::PackageExtended> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
     Channel<GpsMeasurement_t> gpsIn;

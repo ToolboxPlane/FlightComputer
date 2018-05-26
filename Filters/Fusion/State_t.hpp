@@ -22,15 +22,17 @@ public:
     } taranis;
 
     friend std::ostream &operator<<(std::ostream &ostream, State_t state) {
-        ostream << "H: " << state.heading;
-        ostream << "\tR: " << state.roll;
-        ostream << "\tP: " << state.pitch;
-        ostream << "\tHgt gnd: " << state.heightAboveGround;
-        ostream << "\tHgt sea: " << state.heightAboveSeaLevel;
-        ostream << "\tAirs: " << state.airspeed;
-        ostream << "\tGnds: " << state.groundSpeed;
-        ostream << "\tPos: (" << state.position.location.lat << "," << state.position.location.lon << ")";
-        ostream << "\tV: " << state.voltage;
+        ostream << "H:" << state.heading;
+        ostream << "\tR:" << state.roll;
+        ostream << "\tP:" << state.pitch;
+        ostream << "\tGnd:" << state.heightAboveGround;
+        ostream << "\tSea:" << state.heightAboveSeaLevel;
+        ostream << "\tAirs:" << state.airspeed;
+        ostream << "\tGnds:" << state.groundSpeed;
+        ostream << "\tPos:(" << state.position.location.lat << "," << state.position.location.lon << ")";
+        ostream << "\tV:" << state.voltage;
+        ostream << "\tAr:" << state.taranis.isArmed?1:0;
+        ostream << "\tOr:" << state.taranis.manualOverrideActive?1:0;
         return ostream;
     }
 };
