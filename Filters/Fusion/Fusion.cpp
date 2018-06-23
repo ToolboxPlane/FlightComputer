@@ -122,12 +122,12 @@ State_t Fusion::process() {
 
     // Taranis
     if(taranisRecv) {
-        res.taranis.throttle = normalizeTaranis(lastTaranisPackage.getChannel(6));
-        res.taranis.yaw = normalizeTaranis(lastTaranisPackage.getChannel(7));
-        res.taranis.pitch = normalizeTaranis(lastTaranisPackage.getChannel(8));
-        res.taranis.roll= normalizeTaranis(lastTaranisPackage.getChannel(9));
-        res.taranis.isArmed = normalizeTaranis(lastTaranisPackage.getChannel(10)) > 250;
-        res.taranis.manualOverrideActive = normalizeTaranis(lastTaranisPackage.getChannel(11)) > 250;
+        res.taranis.throttle = normalizeTaranis(lastTaranisPackage.getChannel(5));
+        res.taranis.yaw = normalizeTaranis(lastTaranisPackage.getChannel(6));
+        res.taranis.pitch = normalizeTaranis(lastTaranisPackage.getChannel(7));
+        res.taranis.roll= normalizeTaranis(lastTaranisPackage.getChannel(8));
+        res.taranis.isArmed = normalizeTaranis(lastTaranisPackage.getChannel(9)) > 250;
+        res.taranis.manualOverrideActive = normalizeTaranis(lastTaranisPackage.getChannel(10)) > 250;
     }
 
     //@TODO handle remote and base, discuss which data to send

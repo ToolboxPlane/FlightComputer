@@ -23,12 +23,12 @@ int main() {
      */
     FlightController serial("/dev/ttyACM0", B9600);
     //LoRa lora;
-    //Gps gps;
+    Gps gps;
 
     //RcLibSimulator serial(23, 1000);
     //RcLibSimulator pdb(74, 60000);
     RcLibSimulator lora(17, 60000);
-    GpsSimulator gps(60000);
+    //GpsSimulator gps(60000);
 
     std::ifstream serialFile("logs/serial180510.json");
     //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
