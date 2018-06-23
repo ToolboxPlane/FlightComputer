@@ -39,3 +39,12 @@ mkdir logs
 # Setup the autostart
 sudo cp autostart.sh /etc/init.d/FlightComputer
 sudo chmod 755 /etc/init.d/FlightComputer
+
+# Install ST-Link
+cd ~
+sudo apt install libusb-1.0-0 libusb-1.0-0-dev
+git clone https://github.com/texane/stlink.git
+cd stlink
+mkdir build && cd build
+cmake ..
+make -j4
