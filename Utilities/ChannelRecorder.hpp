@@ -29,23 +29,15 @@ private:
 
     void run() override {
         T item;
-        json complete;
-        complete["starttime"] = std::chrono::duration_cast
-                <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        ostream << std::chrono::duration_cast
+                <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() << "\n";
+        ostream << T::header() << "\n";
 
         while(!channelIn.isClosed()) {
             if(channelIn.get(item)) {
-                json newJson;
-                newJson["data"] = item.toJson();
-                newJson["timestamp"] = std::chrono::duration_cast
+                ostream << std::chrono::duration_cast
                         <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-
-                complete["recording"].push_back(newJson);
-
-
-                ostream.seekp(0, std::ios::beg);
-                ostream << complete.dump(4);
-                ostream.flush();
+                ostream << "; " << item.getLine() << std::endl;
             }
         }
     }

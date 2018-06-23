@@ -16,16 +16,14 @@ using json = nlohmann::json;
 
 class GpsMeasurement_t {
 public:
-    explicit GpsMeasurement_t(json json) : location(0,0){
-        this->fixAquired = json["fixAquired"];
-        if(this->fixAquired) {
-            this->location.lat = json["lat"];
-            this->location.lon = json["lon"];
-            this->speed = json["speed"];
-            this->timestamp = json["timestamp"];
-            this->location.altitude = json["altitude"];
-            this->climb = json["climb"];
-        }
+    explicit GpsMeasurement_t(const std::vector<std::string> &items) : location(0,0){
+        this->fixAquired = static_cast<bool>(std::stoi(items[0]));
+        this->location.lat = std::stod(items[1]);
+        this->location.lon = std::stod(items[2]);
+        this->speed = std::stod(items[3]);
+        this->timestamp = std::stoi(items[4]);
+        this->location.altitude = std::stod(items[5]);
+        this->climb = std::stod(items[6]);
     }
 
     GpsMeasurement_t(double lat, double lon) :
@@ -59,6 +57,23 @@ public:
         }
 
         return ret;
+    }
+
+    std::string getLine() {
+        std::stringstream stringstream;
+        stringstream << (this->fixAquired ? 1:0) << "; ";
+        stringstream << this->location.lat << "; ";
+        stringstream << this->location.lon << "; ";
+        stringstream << this->speed << "; ";
+        stringstream << this->timestamp << "; ";
+        stringstream << this->location.altitude << "; ";
+        stringstream << this->climb;
+
+        return stringstream.str();
+    }
+
+    static std::string header() {
+        return "Fix; Lat; Lon; Speed; Timestamp; Altitude; Climb";
     }
 
     bool fixAquired;

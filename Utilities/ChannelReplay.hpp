@@ -32,19 +32,31 @@ public:
     }
 private:
     void run() override {
-        json complete;
-        istream >> complete;
-        json dataList = complete["recording"];
         auto recordingStart = std::chrono::duration_cast
                         <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-        auto offset = recordingStart - complete["starttime"].get<long int>();
-        for(auto& data: dataList) {
+        std::string line;
+        std::getline(istream, line);
+        auto offset = recordingStart - std::stol(line);
+        std::getline(istream, line);
+
+        while(std::getline(istream, line)) {
+            std::string item;
+            std::stringstream linestream(line);
+            std::getline(linestream, item, ';');
+            auto timestamp = std::stol(item);
+            std::vector<std::string> remainingItems;
+            while(std::getline(linestream, item, ';')) {
+                remainingItems.push_back(item);
+            }
+
             auto currentTime = std::chrono::duration_cast
-                        <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-            auto timeToWait = (data["timestamp"].get<long int>() + offset) - currentTime;
+                    <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+            auto timeToWait = (timestamp + offset) - currentTime;
             std::this_thread::sleep_for(std::chrono::milliseconds(timeToWait));
-            channelOut.put(T(data["data"]));
+            channelOut.put(T(remainingItems));
         }
+
+
     }
 
     std::istream &istream;

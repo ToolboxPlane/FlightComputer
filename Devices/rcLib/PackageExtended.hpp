@@ -17,30 +17,32 @@ namespace rcLib {
         PackageExtended() : Package() {};
         PackageExtended(uint16_t r, uint8_t c) : Package(r,c){}
 
-        explicit PackageExtended(json data) {
-            this->resolution = data["header"]["resolution"];
-            this->channelCount = data["header"]["channelCount"];
-            this->tid = data["header"]["transmitterId"];
+        explicit PackageExtended(const std::vector<std::string> &items) {
+            this->tid = static_cast<uint8_t>(std::stoi(items[0]));
+            this->channelCount = static_cast<uint16_t>(items.size() - 1);
 
-            for(auto c=0; c<this->channelCount; c++) {
-                this->channelData[c] = data["channels"][c];
+            for(auto c=0; c<items.size(); c++) {
+                this->channelData[c-1] = static_cast<uint16_t>(std::stoi(items[c]));
             }
         }
 
-        json toJson() {
-            json ret;
-            json channels,header;
-            for(auto c=0; c<this->getChannelCount(); c++) {
-                channels[c] = this->getChannel(c);
+        static std::string header() {
+            std::stringstream stringstream;
+            stringstream << "Transmitter-ID";
+            for(auto c=0; c<16; c++) {
+                stringstream << "; " << "Channel " << c;
             }
-            header["resolution"] = this->getResolution();
-            header["channelCount"] = this->getChannelCount();
-            header["transmitterId"] = this->getDeviceId();
+            return stringstream.str();
+        }
 
-            ret["header"] = header;
-            ret["channels"] = channels;
+        std::string getLine() {
+            std::stringstream stringstream;
+            stringstream << (int)this->tid;
 
-            return ret;
+            for(auto c=0; c<this->channelCount; c++) {
+                stringstream << "; " << this->getChannel(static_cast<uint8_t>(c));
+            }
+            return stringstream.str();
         }
 
         friend std::ostream &rcLib::operator<<(std::ostream &ostream, PackageExtended package) {

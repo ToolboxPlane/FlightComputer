@@ -21,17 +21,17 @@ int main() {
     /*
      * I/O-Modules
      */
-    FlightController serial("/dev/ttyACM0", B9600);
+    //FlightController serial("/dev/ttyACM0", B9600);
     //LoRa lora;
-    Gps gps;
+    //Gps gps;
 
     //RcLibSimulator serial(23, 1000);
-    //RcLibSimulator pdb(74, 60000);
+    RcLibSimulator pdb(74, 60000);
     RcLibSimulator lora(17, 60000);
-    //GpsSimulator gps(60000);
+    GpsSimulator gps(60000);
 
-    std::ifstream serialFile("logs/serial180510.json");
-    //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
+    std::ifstream serialFile("logs/serial_18_06_23_23_45.csv");
+    ChannelReplay<rcLib::PackageExtended> serial(serialFile);
 
     std::ifstream waypointFile("missions/waypoints.json");
     WaypointReader waypointReader(waypointFile);
@@ -106,12 +106,12 @@ int main() {
     auto localTime = std::localtime(&time);
 
     std::stringstream serialFileNameStream;
-    serialFileNameStream << "logs/serial_" << std::put_time(localTime,"%y_%m_%d_%H_%M") << ".json";
+    serialFileNameStream << "logs/serial_" << std::put_time(localTime,"%y_%m_%d_%H_%M") << ".csv";
     std::ofstream fileSerialRecord(serialFileNameStream.str());
     ChannelRecorder<rcLib::PackageExtended> serialRecorder(fileSerialRecord);
 
     std::stringstream gpsFileNameStream;
-    gpsFileNameStream << "logs/gps_" << std::put_time(localTime, "%y_%m_%d_%H_%M") << ".json";
+    gpsFileNameStream << "logs/gps_" << std::put_time(localTime, "%y_%m_%d_%H_%M") << ".csv";
     std::ofstream fileGpsRecord(gpsFileNameStream.str());
     ChannelRecorder<GpsMeasurement_t> gpsRecorder(fileGpsRecord);
 
