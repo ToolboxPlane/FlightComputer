@@ -11,9 +11,6 @@
 #include "../ThreadModule.hpp"
 #include "../Channel.hpp"
 #include "../MultipleOutputChannel.hpp"
-#include "json.hpp"
-
-using json = nlohmann::json;
 
 template <typename T>
 class ChannelReplay : public ThreadModule {

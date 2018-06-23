@@ -6,10 +6,9 @@
 #define FLIGHTCOMPUTER_PACKAGEEXTENDED_HPP
 
 #include "RadioControlProtocol/rcLib.hpp"
-#include "../../Utilities/json.hpp"
 #include <iostream>
-
-using json = nlohmann::json;
+#include <vector>
+#include <sstream>
 
 namespace rcLib {
     class PackageExtended : public Package{

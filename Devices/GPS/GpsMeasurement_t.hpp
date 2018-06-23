@@ -7,12 +7,10 @@
 
 #include <cmath>
 #include <iostream>
-
-#include "../../Utilities/json.hpp"
-
+#include <string>
+#include <vector>
+#include <sstream>
 #include "Gps_t.hpp"
-
-using json = nlohmann::json;
 
 class GpsMeasurement_t {
 public:
@@ -44,20 +42,6 @@ public:
         return ostream;
     }
 
-    json toJson() {
-        json ret;
-        ret["fixAquired"] = fixAquired;
-        if(fixAquired) {
-            ret["altitude"] = location.altitude;
-            ret["climb"] = climb;
-            ret["lat"] = location.lat;
-            ret["lon"] = location.lon;
-            ret["speed"] = speed;
-            ret["timestamp"] = timestamp;
-        }
-
-        return ret;
-    }
 
     std::string getLine() {
         std::stringstream stringstream;

@@ -8,9 +8,6 @@
 #include <iostream>
 #include "../ThreadModule.hpp"
 #include "../Channel.hpp"
-#include "json.hpp"
-
-using json = nlohmann::json;
 
 template <typename T>
 class ChannelRecorder : public ThreadModule {

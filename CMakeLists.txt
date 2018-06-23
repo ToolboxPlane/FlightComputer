@@ -30,13 +30,10 @@ set(SOURCES
         Utilities/Logger.hpp
         Devices/GPS/GpsSimulator.hpp
         Devices/GPS/GpsSimulator.cpp
-        Utilities/json.hpp
         Devices/GPS/Gps.cpp
         Devices/GPS/Gps.hpp
         Utilities/ChannelRecorder.hpp
         Utilities/ChannelReplay.hpp
-        Filters/Navigation/WaypointReader.cpp
-        Filters/Navigation/WaypointReader.hpp
         Filters/Navigation/Waypoint_t.hpp
         Devices/GPS/Gps_t.hpp MultipleOutputChannel.hpp)
 

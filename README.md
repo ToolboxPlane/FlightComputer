@@ -12,29 +12,14 @@ All the modules running on the Raspberry Pi.
 | Ground-Station | 63 |
 | Power Distribution Board | 74 |
 
-## JSON-Library by nlohmann (https://github.com/nlohmann/json)
-
 ## Waypoint file Format
-The waypoint file is a json file, the main structure is an array of all waypoints.
-Each waypoint consists of a latitude, a longitude, an altitude, the maximum distance to the waypoint (all numbers),
-and a boolean wheter the plane is allowed to land.
+The waypoint file is a csv file.
+Each line consists of a latitude, a longitude, an altitude, the maximum distance to the waypoint (all doubles),
+and a integer wheter the plane is allowed to land (1 or 0).
 
 ### Example
 ```
-[
-  {
-    "lat": 0,
-    "lon": 0,
-    "altitude": 17,
-    "maxDelta": 5,
-    "landingAllowed": false
-  },
-  {
-    "lat": 0,
-    "lon": 0,
-    "altitude": 17,
-    "maxDelta": 5,
-    "landingAllowed": false
-  }
-]
+Timestamp; Lat; Lon; Altitude; MaxDelta; LandingAllowed
+0; 0; 0; 17; 10; 0
+0; 10; 10; 0; 5; 1
 ```

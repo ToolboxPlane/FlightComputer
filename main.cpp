@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iomanip>
 #include "Devices/FlightController/FlightController.hpp"
 #include "Devices/rcLib/RcLibSimulator.hpp"
 #include "Filters/Fusion/Fusion.hpp"
@@ -10,7 +11,6 @@
 #include "Utilities/ChannelRecorder.hpp"
 #include "Utilities/ChannelReplay.hpp"
 #include "Devices/GPS/Gps.hpp"
-#include "Filters/Navigation/WaypointReader.hpp"
 #include "MultipleOutputChannel.hpp"
 
 #ifdef RASPBERRY_PI
@@ -33,8 +33,8 @@ int main() {
     std::ifstream serialFile("logs/serial_18_06_23_23_45.csv");
     ChannelReplay<rcLib::PackageExtended> serial(serialFile);
 
-    std::ifstream waypointFile("missions/waypoints.json");
-    WaypointReader waypointReader(waypointFile);
+    std::ifstream waypointFile("missions/waypoints.csv");
+    ChannelReplay<Waypoint_t> waypointReader(waypointFile);
 
     /*
      * Internal Modules
