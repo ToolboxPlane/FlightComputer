@@ -8,7 +8,7 @@
 #include <ostream>
 
 enum class FlightMode{
-    LAUNCH, LAND, ANGLE, HOLD, WAYPOINT
+    ANGLE = 0, LAUNCH = 1, LAND = 2, HOLD = 3, WAYPOINT = 4
 };
 
 class State_t {

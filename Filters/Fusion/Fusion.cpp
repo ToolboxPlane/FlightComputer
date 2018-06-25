@@ -99,11 +99,15 @@ State_t Fusion::process() {
         } else {
             res.groundSpeed = lastState.groundSpeed;
         }
+    } else {
+        res.groundSpeed = res.airspeed;
     }
 
     // PDB
     if(pdbRecv) {
         res.voltage = (lastPdbPackage.getChannel(1) * 128) / 1000.0;
+    } else {
+        res.voltage = 16.8;
     }
 
     // Taranis
@@ -117,12 +121,14 @@ State_t Fusion::process() {
     }
 
     if(remoteRecv) {
-        res.lora.joyLeft.x = (lastRemotePackage.getChannel(0)-127)/127.0;
-        res.lora.joyLeft.y = (lastRemotePackage.getChannel(1)-127)/127.0;
-        res.lora.joyRight.x = (lastRemotePackage.getChannel(3)-127)/127.0;
-        res.lora.joyRight.y = (lastRemotePackage.getChannel(4)-127)/127.0;
-        res.lora.isArmed = static_cast<bool>(lastRemotePackage.getChannel(6));
-        res.lora.flightMode = static_cast<FlightMode>(lastRemotePackage.getChannel(7));
+        res.lora.joyRight.x = (lastRemotePackage.getChannel(0)-127)/127.0;
+        res.lora.joyRight.y = (lastRemotePackage.getChannel(1)-127)/127.0;
+        res.lora.joyLeft.x = (lastRemotePackage.getChannel(2)-127)/127.0;
+        res.lora.joyLeft.y = (lastRemotePackage.getChannel(3)-127)/127.0;
+        res.lora.flightMode = static_cast<FlightMode>(lastRemotePackage.getChannel(4));
+        res.lora.isArmed = static_cast<bool>(lastRemotePackage.getChannel(5));
+    } else {
+        res.lora.flightMode = FlightMode::HOLD;
     }
 
     //@TODO handle base, discuss which data to send
