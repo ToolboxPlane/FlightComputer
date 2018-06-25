@@ -24,10 +24,22 @@ private:
     Channel<Waypoint_t> waypointIn;
     MultipleOutputChannel<Nav_t> out;
 
-    static constexpr auto CRUISE_HEIGHT = 50.0;
-    static constexpr auto PITCH_P = 1.0;
+    void waypoints(State_t state);
+    void land(State_t state);
+    void launch(State_t state);
+    void angle(State_t state);
+    void hold(State_t state);
+
+    auto speedControl(double airspeed, double target = CRUISE_SPEED) -> double;
+
     static constexpr auto CRUISE_SPEED = 40.0;
     static constexpr auto SPEED_P = 1.0;
+    static constexpr auto PITCH_P = 1.0;
+    static constexpr auto MAX_ROLL = 90.0;
+    static constexpr auto MAX_PITCH = 60.0;
+    static constexpr auto HEADING_P = 0.5;
+    static constexpr auto POST_LAUNCH_CLIMB = 20;
+    static constexpr auto THROW_THRESH = 2.0;
 };
 
 

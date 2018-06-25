@@ -9,9 +9,9 @@
 
 class Nav_t {
 public:
-    double pitch, heading, power;
+    double pitch, roll, power;
     friend std::ostream &operator<<(std::ostream &stream, Nav_t nav) {
-        stream << "Pitch: " << nav.pitch << "\tHeading: " << nav.heading << "\tPower: " << nav.power;
+        stream << "Pitch: " << nav.pitch << "\tRoll: " << nav.roll << "\tPower: " << nav.power;
         return stream;
     }
 };

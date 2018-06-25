@@ -5,8 +5,11 @@
 #ifndef FLIGHTCOMPUTER_STATE_T_HPP
 #define FLIGHTCOMPUTER_STATE_T_HPP
 
-
 #include <ostream>
+
+enum class FlightMode{
+    LAUNCH, LAND, ANGLE, HOLD, WAYPOINT
+};
 
 class State_t {
 public:
@@ -15,11 +18,21 @@ public:
     double pitch, roll, heading;
     double airspeed, groundSpeed;
     double voltage;
+    double accForward, accSide, accUpdown;
 
     struct {
         int throttle, yaw, pitch, roll;
         bool isArmed, manualOverrideActive;
     } taranis;
+
+    struct {
+        struct {
+            double x,y;
+        }joyLeft, joyRight;
+
+        bool isArmed;
+        FlightMode flightMode;
+    } lora;
 
     friend std::ostream &operator<<(std::ostream &ostream, State_t state) {
         ostream << "H:" << state.heading;

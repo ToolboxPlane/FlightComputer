@@ -29,11 +29,11 @@ void OutputFilter::run() {
 
     while(!in.isClosed()) {
         if(in.get(nav)) {
-            serialOutPkg.setChannel(0, (uint16_t)nav.heading);
-            serialOutPkg.setChannel(1, (uint16_t)nav.pitch);
-            serialOutPkg.setChannel(2, (uint16_t)(nav.power*1023));
+            serialOutPkg.setChannel(0, (uint16_t)(nav.power*1023));
+            serialOutPkg.setChannel(1, (uint16_t)(nav.pitch+180));
+            serialOutPkg.setChannel(2, (uint16_t)(nav.roll+180));
 
-            loraOutPkg.setChannel(0, (uint16_t)nav.heading);
+            loraOutPkg.setChannel(0, (uint16_t)nav.roll);
             loraOutPkg.setChannel(1, (uint16_t)nav.pitch);
             loraOutPkg.setChannel(2, (uint16_t)(nav.power*1023));
 

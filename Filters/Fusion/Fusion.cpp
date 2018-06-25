@@ -80,29 +80,15 @@ State_t Fusion::process() {
     static State_t lastState;
 
     // Flightcontroller Data
-
     res.heading = lastFcPackage.getChannel(0);
     res.roll = lastFcPackage.getChannel(1) - 180;
     res.pitch = lastFcPackage.getChannel(2) - 180;
     res.heightAboveSeaLevel = lastFcPackage.getChannel(4);
-    res.airspeed = lastFcPackage.getChannel(6);
-
-    /*auto c = 0;
-    for(auto iterator = lastFlightControllerPackages.begin();
-            iterator != lastFlightControllerPackages.end(); iterator++, c++) {
-        double weight = std::pow(0.5, (lastFlightControllerPackages.size() - c));
-        // Little workaround to get the sum of all c's to be 1
-        if(c == 0) {
-            weight *= 2;
-        }
-
-        res.heading += iterator->getChannel(0) * weight;
-        res.roll += (iterator->getChannel(1) - 180) * weight;
-        res.pitch += (iterator->getChannel(2) - 180) * weight;
-        res.heightAboveGround += 0;
-        res.heightAboveSeaLevel += iterator->getChannel(4) * weight;
-    }*/
     res.heightAboveGround = res.heightAboveSeaLevel; // Waiting for some kind of distance sensor
+    res.airspeed = lastFcPackage.getChannel(5);
+    res.accForward = lastFcPackage.getChannel(6);
+    res.accSide = lastFcPackage.getChannel(7);
+    res.accUpdown = lastFcPackage.getChannel(8);
 
     // Gps
     if(gpsRecv) {
@@ -127,10 +113,19 @@ State_t Fusion::process() {
         res.taranis.pitch = normalizeTaranis(lastTaranisPackage.getChannel(7));
         res.taranis.roll= normalizeTaranis(lastTaranisPackage.getChannel(8));
         res.taranis.isArmed = normalizeTaranis(lastTaranisPackage.getChannel(9)) > 250;
-        res.taranis.manualOverrideActive = normalizeTaranis(lastTaranisPackage.getChannel(10)) > 250;
+        res.taranis.manualOverrideActive = normalizeTaranis(lastTaranisPackage.getChannel(10)) < 250;
     }
 
-    //@TODO handle remote and base, discuss which data to send
+    if(remoteRecv) {
+        res.lora.joyLeft.x = (lastRemotePackage.getChannel(0)-127)/127.0;
+        res.lora.joyLeft.y = (lastRemotePackage.getChannel(1)-127)/127.0;
+        res.lora.joyRight.x = (lastRemotePackage.getChannel(3)-127)/127.0;
+        res.lora.joyRight.y = (lastRemotePackage.getChannel(4)-127)/127.0;
+        res.lora.isArmed = static_cast<bool>(lastRemotePackage.getChannel(6));
+        res.lora.flightMode = static_cast<FlightMode>(lastRemotePackage.getChannel(7));
+    }
+
+    //@TODO handle base, discuss which data to send
 
     lastState = res;
 
