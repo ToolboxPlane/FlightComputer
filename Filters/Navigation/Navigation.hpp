@@ -24,11 +24,11 @@ private:
     Channel<Waypoint_t> waypointIn;
     MultipleOutputChannel<Nav_t> out;
 
-    void waypoints(State_t state);
-    void land(State_t state);
-    void launch(State_t state);
-    void angle(State_t state);
-    void hold(State_t state);
+    void waypoints(State_t state, bool reset = false);
+    void land(State_t state, bool reset = false);
+    void launch(State_t state, bool reset = false);
+    void angle(State_t state, bool reset = false);
+    void hold(State_t state, bool reset = false);
 
     auto speedControl(double airspeed, double target = CRUISE_SPEED) -> double;
 
@@ -40,6 +40,7 @@ private:
     static constexpr auto HEADING_P = 0.5;
     static constexpr auto POST_LAUNCH_CLIMB = 20;
     static constexpr auto THROW_THRESH = 2.0;
+    static constexpr auto SPEED_I = 0.5;
 };
 
 

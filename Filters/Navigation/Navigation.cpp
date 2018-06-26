@@ -24,30 +24,33 @@ Channel<Waypoint_t> &Navigation::getChannelWaypointIn() {
 
 void Navigation::run() {
     State_t currentState{};
+    static FlightMode lastFLightMode;
+
     while(!stateIn.isClosed()) {
         if(stateIn.get(currentState)) {
             switch (currentState.lora.flightMode) {
                 case FlightMode::LAUNCH:
-                    launch(currentState);
+                    launch(currentState, lastFLightMode != currentState.lora.flightMode);
                     break;
                 case FlightMode::LAND:
-                    land(currentState);
+                    land(currentState, lastFLightMode != currentState.lora.flightMode);
                     break;
                 case FlightMode::ANGLE:
-                    angle(currentState);
+                    angle(currentState, lastFLightMode != currentState.lora.flightMode);
                     break;
                 case FlightMode::HOLD:
-                    hold(currentState);
+                    hold(currentState, lastFLightMode != currentState.lora.flightMode);
                     break;
                 case FlightMode::WAYPOINT:
-                    waypoints(currentState);
+                    waypoints(currentState, lastFLightMode != currentState.lora.flightMode);
                     break;
             }
+            lastFLightMode = currentState.lora.flightMode;
         }
     }
 }
 
-void Navigation::waypoints(State_t currentState) {
+void Navigation::waypoints(State_t currentState, bool reset) {
     static Waypoint_t nextWaypoint(currentState.position.location, std::numeric_limits<double>::max(), false);
     Nav_t nav{};
 
@@ -84,7 +87,7 @@ void Navigation::waypoints(State_t currentState) {
     out.put(nav);
 }
 
-void Navigation::land(State_t state) {
+void Navigation::land(State_t state, bool reset) {
     Nav_t nav{};
     nav.power = 0;
     nav.roll = 0;
@@ -93,10 +96,15 @@ void Navigation::land(State_t state) {
     out.put(nav);
 }
 
-void Navigation::launch(State_t state) {
+void Navigation::launch(State_t state, bool reset) {
     static enum {
         IN_HAND, THROWN, CLIMB
     } launchState = IN_HAND;
+
+    if(reset) {
+        launchState = IN_HAND;
+    }
+
     Nav_t nav{};
 
     switch (launchState) {
@@ -125,7 +133,7 @@ void Navigation::launch(State_t state) {
     out.put(nav);
 }
 
-void Navigation::angle(State_t state) {
+void Navigation::angle(State_t state, bool reset) {
     Nav_t nav{};
     nav.pitch = state.lora.joyRight.y * MAX_PITCH;
     nav.roll = state.lora.joyRight.x * MAX_ROLL;
@@ -134,19 +142,20 @@ void Navigation::angle(State_t state) {
     out.put(nav);
 }
 
-void Navigation::hold(State_t state) {
+void Navigation::hold(State_t state, bool reset) {
     Nav_t nav{};
     nav.power = speedControl(state.airspeed);
-    nav.pitch = POST_LAUNCH_CLIMB;
+    nav.pitch = 0;
     nav.roll = 0;
 
     out.put(nav);
 }
 
 auto Navigation::speedControl(double airspeed, double target) -> double {
+    static double diffSum = 0;
     double deltaSpeed = airspeed - target;
-    static double speed = 0;
-    speed += deltaSpeed * Navigation::SPEED_P;
+    diffSum += deltaSpeed;
+    double speed = deltaSpeed * Navigation::SPEED_P + diffSum * Navigation::SPEED_I;
 
     if(speed < 0.0) {
         speed = 0;
