@@ -2,13 +2,13 @@
 // Created by paul on 15.03.18.
 //
 
-#include "Serial.hpp"
+#include "SerialDriver.hpp"
 #include <fcntl.h>
 #include <bits/ios_base.h>
 #include <cstring>
 #include <iostream>
 
-Serial::Serial(const std::string port, int baud, bool blocking) {
+SerialDriver::SerialDriver(const std::string port, int baud, bool blocking) {
     fd = open(port.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
     if(fd < 0) {
         throw std::ios_base::failure("Error opening the serial port!");
@@ -18,7 +18,7 @@ Serial::Serial(const std::string port, int baud, bool blocking) {
     ready = true;
 }
 
-void Serial::setBlocking(bool isBlocking) {
+void SerialDriver::setBlocking(bool isBlocking) {
     termios tty{};
     memset (&tty, 0, sizeof tty);
     if (tcgetattr (fd, &tty) != 0) {
@@ -33,7 +33,7 @@ void Serial::setBlocking(bool isBlocking) {
     }
 }
 
-void Serial::setAttributes(int baud, int parity, int timeoutMs) {
+void SerialDriver::setAttributes(int baud, int parity, int timeoutMs) {
     termios tty{};
     memset (&tty, 0, sizeof tty);
     if (tcgetattr (fd, &tty) != 0) {

@@ -8,9 +8,9 @@
 #include <string>
 #include <termios.h>
 
-class Serial {
+class SerialDriver {
 public:
-    explicit Serial(std::string port, int baud = B9600, bool blocking = false);
+    explicit SerialDriver(std::string port, int baud = B9600, bool blocking = false);
     void setBlocking(bool isBlocking);
     void setAttributes(int baud, int parity, int timeoutMs = 500);
     int fd = 0;

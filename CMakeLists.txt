@@ -7,16 +7,16 @@ set(SOURCES
         main.cpp
         Channel.hpp
         ThreadModule.hpp
-        Devices/FlightController/FlightController.cpp
-        Devices/FlightController/FlightController.hpp
+        Devices/Serial/Serial.cpp
+        Devices/Serial/Serial.hpp
         Devices/rcLib/RadioControlProtocol/rcLib.cpp
         Devices/rcLib/RadioControlProtocol/rcLib.hpp
         Devices/rcLib/PackageExtended.hpp
         Devices/rcLib/RcLibSimulator.cpp
         Devices/rcLib/RcLibSimulator.hpp
         Devices/GPS/GpsMeasurement_t.hpp
-        Devices/Serial.cpp
-        Devices/Serial.hpp
+        Devices/Serial/SerialDriver.cpp
+        Devices/Serial/SerialDriver.hpp
         Filters/Fusion/Fusion.cpp
         Filters/Fusion/Fusion.hpp
         Filters/Navigation/Navigation.cpp

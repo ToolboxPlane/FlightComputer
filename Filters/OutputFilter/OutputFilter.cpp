@@ -22,7 +22,7 @@ Channel<Nav_t> &OutputFilter::getChannelIn() {
 
 void OutputFilter::run() {
     Nav_t nav{};
-    rcLib::PackageExtended serialOutPkg(1024, 8), loraOutPkg(1024, 8);
+    rcLib::PackageExtended serialOutPkg(1024, 4), loraOutPkg(1024, 4);
     rcLib::Package::transmitterId = 38;
 
     loraOutPkg.setMeshProperties(static_cast<uint8_t>(true), 2);

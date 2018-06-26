@@ -8,18 +8,18 @@
 #include "../../Channel.hpp"
 #include "../rcLib/PackageExtended.hpp"
 #include "../../ThreadModule.hpp"
-#include "../Serial.hpp"
+#include "SerialDriver.hpp"
 #include "../../MultipleOutputChannel.hpp"
 
-class FlightController : public ThreadModule {
+class Serial : public ThreadModule {
 public:
-    FlightController(const std::string& port, int baud);
+    Serial(const std::string& port, int baud);
     void run() override;
 
     Channel<rcLib::PackageExtended> &getChannelIn();
     MultipleOutputChannel<rcLib::PackageExtended> &getChannelOut();
 private:
-    Serial serial;
+    SerialDriver serial;
     Channel<rcLib::PackageExtended> in;
     MultipleOutputChannel<rcLib::PackageExtended> out;
 

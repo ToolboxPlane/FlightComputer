@@ -1,16 +1,15 @@
 # FlightComputer
 All the modules running on the Raspberry Pi. 
 
-## Transmitter-IDs
-| Device | Id |
+## Output Package
+Both output packages are 4-Channel, 10 bit Packages.
+
+| Channel | Content |
 | --- | --- |
-| Receiver-Wing | 13 |
-| LoRa-Remote | 17 |
-| Flight-Controller | 23 |
-| Flight-Computer | 38 |
-| FrSky-Remote | 56 |
-| Ground-Station | 63 |
-| Power Distribution Board | 74 |
+| 0 | Power (between 0 and 1023) |
+| 1 | Pitch-Target + 180 |
+| 2 | Roll-Target + 180 |
+| 3 | Empty |
 
 ## Waypoint file Format
 The waypoint file is a csv file.

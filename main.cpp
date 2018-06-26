@@ -1,6 +1,6 @@
 #include <fstream>
 #include <iomanip>
-#include "Devices/FlightController/FlightController.hpp"
+#include "Devices/Serial/Serial.hpp"
 #include "Devices/rcLib/RcLibSimulator.hpp"
 #include "Filters/Fusion/Fusion.hpp"
 #include "Filters/Navigation/Navigation.hpp"
@@ -21,7 +21,7 @@ int main() {
     /*
      * I/O-Modules
      */
-    //FlightController serial("/dev/ttyACM0", B9600);
+    //Serial serial("/dev/ttyACM0", B9600);
     //LoRa lora;
     //Gps gps;
 

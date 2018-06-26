@@ -11,7 +11,7 @@
 #include "GpsMeasurement_t.hpp"
 #include "../../ThreadModule.hpp"
 #include "../../Channel.hpp"
-#include "../Serial.hpp"
+#include "../Serial/SerialDriver.hpp"
 #include "../../MultipleOutputChannel.hpp"
 
 class Gps : ThreadModule{

@@ -6,27 +6,27 @@
 #include <bits/ios_base.h>
 #include <unistd.h>
 #include <iostream>
-#include "../Serial.hpp"
+#include "SerialDriver.hpp"
 
-#include "FlightController.hpp"
+#include "Serial.hpp"
 
 #define BUF_SIZE 20
 
-FlightController::FlightController(const std::string& port, int baud)
+Serial::Serial(const std::string& port, int baud)
         : serial(port, baud), in(), out() {
     this->start();
     serial.setAttributes(baud, 0, 30);
 }
 
-Channel<rcLib::PackageExtended> &FlightController::getChannelIn() {
+Channel<rcLib::PackageExtended> &Serial::getChannelIn() {
     return this->in;
 }
 
-MultipleOutputChannel<rcLib::PackageExtended> &FlightController::getChannelOut() {
+MultipleOutputChannel<rcLib::PackageExtended> &Serial::getChannelOut() {
     return this->out;
 }
 
-void FlightController::run() {
+void Serial::run() {
     rcLib::PackageExtended toSend;
     rcLib::PackageExtended received;
     uint8_t buf[BUF_SIZE];
@@ -46,7 +46,7 @@ void FlightController::run() {
             do {
                 ssize_t result = write(serial.fd, toSend.getEncodedData(), length);
                 if(result < 0) {
-                    throw std::ios_base::failure("Error sending data via FlightController");
+                    throw std::ios_base::failure("Error sending data via Serial");
                 }
                 written += result;
             } while (written < length);
