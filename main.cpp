@@ -23,15 +23,15 @@ int main() {
      */
     //Serial serial("/dev/ttyACM0", B9600);
     //LoRa lora;
-    //Gps gps;
+    Gps gps;
 
-    //RcLibSimulator serial(23, 1000);
+    RcLibSimulator serial(23, 1000);
     RcLibSimulator pdb(74, 60000);
     RcLibSimulator lora(17, 60000);
-    GpsSimulator gps(60000);
+    //GpsSimulator gps(60000);
 
     std::ifstream serialFile("logs/serial_18_06_23_23_45.csv");
-    ChannelReplay<rcLib::PackageExtended> serial(serialFile);
+    //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
 
     std::ifstream waypointFile("missions/waypoints.csv");
     ChannelReplay<Waypoint_t> waypointReader(waypointFile);
@@ -86,7 +86,7 @@ int main() {
     Logger<rcLib::PackageExtended> serialSend("Serial-Send", false);
     Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", false);
     Logger<rcLib::PackageExtended> loraSend("Lora-Send", false);
-    Logger<GpsMeasurement_t> gpsDebug("GPS", false);
+    Logger<GpsMeasurement_t> gpsDebug("GPS", true);
     Logger<Nav_t> navDebug("Nav", false);
     Logger<State_t> fusionDebug("Fusion", true);
 

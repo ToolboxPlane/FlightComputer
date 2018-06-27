@@ -42,7 +42,11 @@ public:
         ostream << "\tSea:" << state.heightAboveSeaLevel;
         ostream << "\tAirs:" << state.airspeed;
         ostream << "\tGnds:" << state.groundSpeed;
-        ostream << "\tPos:(" << state.position.location.lat << "," << state.position.location.lon << ")";
+        if(state.position.fixAquired) {
+            ostream << "\tPos:(" << state.position.location.lat << "," << state.position.location.lon << ")";
+        } else {
+            ostream << "\t No Fix";
+        }
         ostream << "\tV:" << state.voltage;
         ostream << "\tAr:" << state.taranis.isArmed?1:0;
         ostream << "\tOr:" << state.taranis.manualOverrideActive?1:0;
