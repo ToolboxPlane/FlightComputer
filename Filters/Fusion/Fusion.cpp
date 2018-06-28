@@ -48,24 +48,29 @@ void Fusion::run() {
 
     while(true) {
         if (!gpsIn.isClosed()) {
-            gpsIn.get(lastGpsMeasurement, false);
-            gpsRecv = true;
+            if(gpsIn.get(lastGpsMeasurement, false)) {
+                gpsRecv = true;
+            }
         }
         if (!pdbIn.isClosed()) {
-            pdbIn.get(lastPdbPackage, false);
-            pdbRecv = true;
+            if(pdbIn.get(lastPdbPackage, false)) {
+                pdbRecv = true;
+            }
         }
         if(!taranisIn.isClosed()) {
-            taranisIn.get(lastTaranisPackage, false);
-            taranisRecv = true;
+            if(taranisIn.get(lastTaranisPackage, false)) {
+                taranisRecv = true;
+            }
         }
         if(!baseIn.isClosed()) {
-            baseIn.get(lastBasePackage, false);
-            baseRecv = true;
+            if(baseIn.get(lastBasePackage, false)) {
+                baseRecv = true;
+            }
         }
         if(!remoteIn.isClosed()) {
-            remoteIn.get(lastRemotePackage, false);
-            remoteRecv = true;
+            if(remoteIn.get(lastRemotePackage, false)) {
+                remoteRecv = true;
+            }
         }
         if (!flightControllerIn.isClosed() && flightControllerIn.get(lastFcPackage, false)) {
             out.put(process());
@@ -91,7 +96,7 @@ State_t Fusion::process() {
     res.accUpdown = lastFcPackage.getChannel(8);
 
     // Gps
-    if(gpsRecv) {
+    if(gpsRecv && lastGpsMeasurement.fixAquired) {
         res.position = lastGpsMeasurement;
         if (res.position.timestamp != lastState.position.timestamp) {
             res.groundSpeed = res.position.location.distanceTo(lastState.position.location) /
@@ -101,6 +106,7 @@ State_t Fusion::process() {
         }
     } else {
         res.groundSpeed = res.airspeed;
+        res.position.fixAquired = false;
     }
 
     // PDB
