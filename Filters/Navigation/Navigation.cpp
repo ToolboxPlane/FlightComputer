@@ -59,17 +59,7 @@ void Navigation::waypoints(State_t currentState, bool reset) {
     }
 
     double headingTarget = currentState.position.location.angleTo(nextWaypoint.location);
-    double headingDiff = headingTarget - currentState.heading;
-    headingDiff = fmod(headingDiff, 360);
-    if(headingDiff > 180) {
-        headingDiff -= 180;
-    }
-    nav.roll = headingDiff * HEADING_P;
-    if(nav.roll < MAX_ROLL) {
-        nav.roll = -MAX_ROLL;
-    } else if(nav.pitch > MAX_ROLL) {
-        nav.pitch = MAX_ROLL;
-    }
+    nav.pitch = headingControl(currentState.heading, headingTarget);
 
     nav.roll = currentState.position.location.angleTo(nextWaypoint.location);
 
@@ -82,15 +72,20 @@ void Navigation::waypoints(State_t currentState, bool reset) {
         nav.pitch = MAX_PITCH;
     }
 
-    nav.power = speedControl(currentState.airspeed);
+    nav.power = currentState.lora.isArmed ? speedControl(currentState.airspeed) : 0;
 
     out.put(nav);
 }
 
 void Navigation::land(State_t state, bool reset) {
+    static double targetHeading = state.heading;
+    if(reset) {
+        targetHeading = state.heading;
+    }
+
     Nav_t nav{};
     nav.power = 0;
-    nav.roll = 0;
+    nav.roll = headingControl(state.heading, targetHeading);
     nav.pitch = 0;
 
     out.put(nav);
@@ -117,7 +112,7 @@ void Navigation::launch(State_t state, bool reset) {
             }
             break;
         case THROWN:
-            nav.power = 1.0;
+            nav.power = state.lora.isArmed ? 1.0 : 0.0;
             nav.roll = 0.0;
             nav.pitch = 0.0;
             if(state.airspeed >= CRUISE_SPEED) {
@@ -125,7 +120,7 @@ void Navigation::launch(State_t state, bool reset) {
             }
             break;
         case CLIMB:
-            nav.power = speedControl(state.airspeed);
+            nav.power = state.lora.isArmed ? speedControl(state.airspeed) : 0;
             nav.pitch = POST_LAUNCH_CLIMB;
             nav.roll = 0;
             break;
@@ -137,16 +132,21 @@ void Navigation::angle(State_t state, bool reset) {
     Nav_t nav{};
     nav.pitch = state.lora.joyRight.y * MAX_PITCH;
     nav.roll = state.lora.joyRight.x * MAX_ROLL;
-    nav.power = speedControl(state.airspeed);
+    nav.power = state.lora.isArmed ? speedControl(state.airspeed) : 0;
 
     out.put(nav);
 }
 
 void Navigation::hold(State_t state, bool reset) {
     Nav_t nav{};
+    static double targetHeading = state.heading;
+    if(reset) {
+        targetHeading = state.heading;
+    }
+
     nav.power = speedControl(state.airspeed);
     nav.pitch = 0;
-    nav.roll = 0;
+    nav.roll = headingControl(state.heading, targetHeading);
 
     out.put(nav);
 }
@@ -163,5 +163,20 @@ auto Navigation::speedControl(double airspeed, double target) -> double {
         speed = 1.0;
     }
     return speed;
+}
+
+auto Navigation::headingControl(double currHeading, double target) -> double {
+    double headingDiff = target - currHeading;
+    headingDiff = fmod(headingDiff, 360);
+    if(headingDiff > 180) {
+        headingDiff -= 180;
+    }
+    double roll = headingDiff * HEADING_P;
+    if(roll < MAX_ROLL) {
+        roll = -MAX_ROLL;
+    } else if(roll > MAX_ROLL) {
+        roll = MAX_ROLL;
+    }
+    return roll;
 }
 

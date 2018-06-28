@@ -31,6 +31,7 @@ private:
     void hold(State_t state, bool reset = false);
 
     auto speedControl(double airspeed, double target = CRUISE_SPEED) -> double;
+    auto headingControl(double currHeading, double target) -> double;
 
     static constexpr auto CRUISE_SPEED = 40.0;
     static constexpr auto SPEED_P = 1.0;
