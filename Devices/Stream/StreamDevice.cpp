@@ -31,7 +31,7 @@ void StreamDevice::run() {
             ssize_t written = 0;
             do {
                 ssize_t result = write(this->getFileDescriptor(), toSend.getEncodedData(), length);
-                if(result < 0) {
+                if(!ignoreErrors && result < 0) {
                     throw std::ios_base::failure("Error sending data!");
                 }
                 written += result;

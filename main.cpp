@@ -37,6 +37,9 @@ int main() {
     std::ifstream waypointFile("missions/waypoints.csv");
     ChannelReplay<Waypoint_t> waypointReader(waypointFile);
 
+    TcpServer tcpServer(4444);
+    serial.getChannelOut() >> tcpServer.getChannelIn();
+
     /*
      * Internal Modules
      */

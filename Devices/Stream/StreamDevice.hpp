@@ -12,7 +12,8 @@
 
 class StreamDevice : public Filter {
 public:
-    explicit StreamDevice(const int BUF_SIZE) : BUF_SIZE(BUF_SIZE) {};
+    StreamDevice(const int BUF_SIZE, const  bool ignoreErrors = false) :
+            BUF_SIZE(BUF_SIZE), ignoreErrors(ignoreErrors) {};
     Channel<rcLib::PackageExtended> &getChannelIn();
     MultipleOutputChannel<rcLib::PackageExtended> &getChannelOut();
 private:
@@ -20,6 +21,7 @@ private:
     MultipleOutputChannel<rcLib::PackageExtended> out;
     void run() override;
     const int BUF_SIZE;
+    const bool ignoreErrors;
 protected:
     virtual int getFileDescriptor() = 0;
 };

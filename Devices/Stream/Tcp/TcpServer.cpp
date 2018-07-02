@@ -4,9 +4,10 @@
 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <fcntl.h>
 #include "TcpServer.hpp"
 
-TcpServer::TcpServer(uint16_t port, const int BUF_SIZE) : StreamDevice(BUF_SIZE), fileDescriptor(-1) {
+TcpServer::TcpServer(uint16_t port, const int BUF_SIZE) : StreamDevice(BUF_SIZE, true), fileDescriptor(-1) {
     socketFileDescriptor = socket(AF_INET, SOCK_STREAM, 0);
     if(socketFileDescriptor < 0) {
         throw std::ios_base::failure("Could not create socket");
@@ -24,6 +25,7 @@ TcpServer::TcpServer(uint16_t port, const int BUF_SIZE) : StreamDevice(BUF_SIZE)
         throw std::ios_base::failure("Could not open socket");
     }
 
+
     this->start();
 }
 
@@ -31,10 +33,11 @@ int TcpServer::getFileDescriptor() {
     if(fileDescriptor == -1) {
         struct sockaddr_in clientAddress{};
         socklen_t clientAddressLen = 0;
-        fileDescriptor = accept(socketFileDescriptor, (sockaddr*)&clientAddress, &clientAddressLen);
-        if(fileDescriptor < 0) {
-            throw std::ios_base::failure("Could not accept connection");
+        while ((fileDescriptor =
+                accept(socketFileDescriptor, (sockaddr*)&clientAddress, &clientAddressLen)) < 0) {
+            std::this_thread::yield();
         }
+        fcntl(fileDescriptor, F_SETFL, O_NONBLOCK);
     }
     return fileDescriptor;
 }
