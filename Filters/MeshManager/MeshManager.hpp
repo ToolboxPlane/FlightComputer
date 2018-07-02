@@ -23,16 +23,18 @@ public:
     Channel<rcLib::PackageExtended> &getFlightControllerIn();
     Channel<rcLib::PackageExtended> &getBaseIn();
     Channel<rcLib::PackageExtended> &getRemoteIn();
+    Channel<rcLib::PackageExtended> &getTcpIn();
+
     MultipleOutputChannel<rcLib::PackageExtended> &getFlightControllerOut();
     MultipleOutputChannel<rcLib::PackageExtended> &getRemoteOut();
     MultipleOutputChannel<rcLib::PackageExtended> &getBaseOut();
     MultipleOutputChannel<rcLib::PackageExtended> &getPdbOut();
     MultipleOutputChannel<rcLib::PackageExtended> &getTaranisOut();
-
+    MultipleOutputChannel<rcLib::PackageExtended> &getTcpOut();
 private:
-    Channel<rcLib::PackageExtended> loraIn, serialIn;
+    Channel<rcLib::PackageExtended> loraIn, serialIn, tcpIn;
     Channel<rcLib::PackageExtended> flightControllerIn, remoteIn, baseIn;
-    MultipleOutputChannel<rcLib::PackageExtended> loraOut, serialOut;
+    MultipleOutputChannel<rcLib::PackageExtended> loraOut, serialOut, tcpOut;
     MultipleOutputChannel<rcLib::PackageExtended> flightControllerOut, remoteOut, baseOut, pdbOut, taranisOut;
 
     void propagateInternal(rcLib::PackageExtended pkg);

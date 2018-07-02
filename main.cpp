@@ -26,19 +26,18 @@ int main() {
     //LoRa lora;
     //Gps gps;
 
-    RcLibSimulator serial(23, 1000);
-    RcLibSimulator pdb(74, 60000);
+    //RcLibSimulator serial(23, 1000);
+    //RcLibSimulator pdb(74, 60000);
     RcLibSimulator lora(17, 60000);
     GpsSimulator gps(60000);
 
-    std::ifstream serialFile("logs/serial_18_06_23_23_45.csv");
-    //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
+    std::ifstream serialFile("logs/piLogs/flight_23_6_18/serial_18_06_23_12_58.csv");
+    ChannelReplay<rcLib::PackageExtended> serial(serialFile);
 
     std::ifstream waypointFile("missions/waypoints.csv");
     ChannelReplay<Waypoint_t> waypointReader(waypointFile);
 
-    TcpServer tcpServer(4444);
-    serial.getChannelOut() >> tcpServer.getChannelIn();
+    TcpServer tcpServer(61888);
 
     /*
      * Internal Modules
@@ -54,6 +53,7 @@ int main() {
     serial.getChannelOut() >> meshManager.getSerialIn();
     //pdb.getChannelOut() >> meshManager.getSerialIn();
     meshManager.getSerialOut() >> serial.getChannelIn();
+    meshManager.getTcpOut() >> tcpServer.getChannelIn();
 
     lora.getChannelOut() >> meshManager.getLoraIn();
     meshManager.getLoraOut() >> lora.getChannelIn();

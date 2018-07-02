@@ -8,7 +8,7 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 enum class RCLIB_DEVICE_ID {
-    REMOTE = 17,
+    REMOTE = 17, FLIGHT_COMPUTER = 38,
     FLIGHT_CONTROLLER = 23,
     BASE = 63, POWER_DISTRIBUTION = 74, TARANIS = 56
 };
@@ -65,6 +65,14 @@ MultipleOutputChannel<rcLib::PackageExtended> &MeshManager::getTaranisOut() {
     return taranisOut;
 }
 
+Channel<rcLib::PackageExtended> &MeshManager::getTcpIn() {
+    return tcpIn;
+}
+
+MultipleOutputChannel<rcLib::PackageExtended> &MeshManager::getTcpOut() {
+    return tcpOut;
+}
+
 void MeshManager::run() {
     rcLib::PackageExtended pkg;
     while(true) {
@@ -73,6 +81,7 @@ void MeshManager::run() {
                 pkg.countNode();
                 serialOut.put(pkg);
             }
+            tcpOut.put(pkg);
             propagateInternal(pkg);
         }
         if (serialIn.get(pkg, false)) {
@@ -80,18 +89,31 @@ void MeshManager::run() {
                 pkg.countNode();
                 loraOut.put(pkg);
             }
+            tcpOut.put(pkg);
+            propagateInternal(pkg);
+        }
+        if (tcpIn.get(pkg, false)) {
+            if(pkg.needsForwarding())  {
+                pkg.countNode();
+                loraOut.put(pkg);
+                serialOut.put(pkg);
+            }
             propagateInternal(pkg);
         }
         if (flightControllerIn.get(pkg, false)) {
             pkg.setMeshProperties(static_cast<uint8_t>(false));
+            pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
             serialOut.put(pkg);
+            tcpOut.put(pkg);
         }
         if (remoteIn.get(pkg, false)) {
             pkg.setMeshProperties(static_cast<uint8_t>(false));
+            pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
             loraOut.put(pkg);
         }
         if (baseIn.get(pkg, false)) {
             pkg.setMeshProperties(static_cast<uint8_t>(true), 2);
+            pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
             loraOut.put(pkg);
         }
         std::this_thread::yield();
@@ -116,7 +138,11 @@ void MeshManager::propagateInternal(rcLib::PackageExtended pkg) {
         case RCLIB_DEVICE_ID::TARANIS:
             taranisOut.put(pkg);
             break;
+        case RCLIB_DEVICE_ID::FLIGHT_COMPUTER:
+            // We routed in a loop...
+            break;
     }
 }
+
 
 #pragma clang diagnostic pop
