@@ -1,42 +1,47 @@
 //
-// Created by paul on 15.03.18.
+// Created by paul on 12.03.18.
 //
 
-#include "SerialDriver.hpp"
 #include <fcntl.h>
 #include <bits/ios_base.h>
-#include <cstring>
+#include <unistd.h>
 #include <iostream>
+#include <cstring>
+#include <termios.h>
 
-SerialDriver::SerialDriver(const std::string port, int baud, bool blocking) {
-    fd = open(port.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
-    if(fd < 0) {
+#include "Serial.hpp"
+
+
+Serial::Serial(const std::string& port, int baud, const int BUF_SIZE)
+        : StreamDevice(BUF_SIZE) {
+    fileDescriptor = open(port.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
+    if(fileDescriptor < 0) {
         throw std::ios_base::failure("Error opening the serial port!");
     }
-    setBlocking(blocking);
+    setBlocking(false);
     setAttributes(baud, 0);
-    ready = true;
+    this->start();
 }
 
-void SerialDriver::setBlocking(bool isBlocking) {
+void Serial::setBlocking(bool isBlocking) {
     termios tty{};
     memset (&tty, 0, sizeof tty);
-    if (tcgetattr (fd, &tty) != 0) {
+    if (tcgetattr (fileDescriptor, &tty) != 0) {
         throw std::ios_base::failure("Error from tggettattr");
     }
 
     tty.c_cc[VMIN]  = static_cast<cc_t>(isBlocking);
     tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
 
-    if (tcsetattr (fd, TCSANOW, &tty) != 0) {
+    if (tcsetattr (fileDescriptor, TCSANOW, &tty) != 0) {
         throw std::ios_base::failure("Error setting term attributes");
     }
 }
 
-void SerialDriver::setAttributes(int baud, int parity, int timeoutMs) {
+void Serial::setAttributes(int baud, int parity, int timeoutMs) {
     termios tty{};
     memset (&tty, 0, sizeof tty);
-    if (tcgetattr (fd, &tty) != 0) {
+    if (tcgetattr (fileDescriptor, &tty) != 0) {
         throw std::ios_base::failure("Error from tggettattr");
     }
 
@@ -62,8 +67,12 @@ void SerialDriver::setAttributes(int baud, int parity, int timeoutMs) {
     tty.c_cflag &= ~CSTOPB;
     tty.c_cflag &= ~CRTSCTS;
 
-    if (tcsetattr (fd, TCSANOW, &tty) != 0)
+    if (tcsetattr (fileDescriptor, TCSANOW, &tty) != 0)
     {
         throw std::ios_base::failure("Error setting term attributes");
     }
+}
+
+int Serial::getFileDescriptor() {
+    return fileDescriptor;
 }

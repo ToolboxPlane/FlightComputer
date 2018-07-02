@@ -5,7 +5,7 @@
 #ifndef FLIGHTCOMPUTER_LORA_HPP
 #define FLIGHTCOMPUTER_LORA_HPP
 
-#include "../../ThreadModule.hpp"
+#include "../../Filter.hpp"
 #include "../../Channel.hpp"
 #include "RH_RF95.h"
 #include <unistd.h>

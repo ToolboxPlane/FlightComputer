@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iomanip>
-#include "Devices/Serial/Serial.hpp"
+#include "Devices/Stream/Serial/Serial.hpp"
+#include "Devices/Stream/Tcp/TcpServer.hpp"
 #include "Devices/rcLib/RcLibSimulator.hpp"
 #include "Filters/Fusion/Fusion.hpp"
 #include "Filters/Navigation/Navigation.hpp"
@@ -21,14 +22,14 @@ int main() {
     /*
      * I/O-Modules
      */
-    //Serial serial("/dev/ttyACM0", B9600);
+    //FileDescriptor serial("/dev/ttyACM0", B9600);
     //LoRa lora;
-    Gps gps;
+    //Gps gps;
 
     RcLibSimulator serial(23, 1000);
     RcLibSimulator pdb(74, 60000);
     RcLibSimulator lora(17, 60000);
-    //GpsSimulator gps(60000);
+    GpsSimulator gps(60000);
 
     std::ifstream serialFile("logs/serial_18_06_23_23_45.csv");
     //ChannelReplay<rcLib::PackageExtended> serial(serialFile);

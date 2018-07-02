@@ -8,7 +8,7 @@
 
 #include "../../Channel.hpp"
 #include "../../Devices/rcLib/PackageExtended.hpp"
-#include "../../ThreadModule.hpp"
+#include "../../Filter.hpp"
 #include "../../Devices/GPS/GpsMeasurement_t.hpp"
 #include "State_t.hpp"
 #include "../../MultipleOutputChannel.hpp"
@@ -20,7 +20,7 @@ enum ProcessingStatus {
     PROCESSED
 };
 
-class Fusion : public ThreadModule {
+class Fusion : public Filter {
 public:
     Fusion();
     void run() override;

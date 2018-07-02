@@ -6,12 +6,12 @@
 #define FLIGHTCOMPUTER_MESHMANAGER_HPP
 
 
-#include "../../ThreadModule.hpp"
+#include "../../Filter.hpp"
 #include "../../Devices/rcLib/PackageExtended.hpp"
 #include "../../Channel.hpp"
 #include "../../MultipleOutputChannel.hpp"
 
-class MeshManager : ThreadModule{
+class MeshManager : Filter{
 public:
     MeshManager();
 

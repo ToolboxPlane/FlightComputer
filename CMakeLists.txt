@@ -6,17 +6,19 @@ set(CMAKE_CXX_STANDARD 14)
 set(SOURCES
         main.cpp
         Channel.hpp
-        ThreadModule.hpp
-        Devices/Serial/Serial.cpp
-        Devices/Serial/Serial.hpp
+        Filter.hpp
+        Devices/Stream/Serial/Serial.cpp
+        Devices/Stream/Serial/Serial.hpp
+        Devices/Stream/Tcp/TcpServer.cpp
+        Devices/Stream/Tcp/TcpServer.hpp
+        Devices/Stream/StreamDevice.cpp
+        Devices/Stream/StreamDevice.hpp
         Devices/rcLib/RadioControlProtocol/rcLib.cpp
         Devices/rcLib/RadioControlProtocol/rcLib.hpp
         Devices/rcLib/PackageExtended.hpp
         Devices/rcLib/RcLibSimulator.cpp
         Devices/rcLib/RcLibSimulator.hpp
         Devices/GPS/GpsMeasurement_t.hpp
-        Devices/Serial/SerialDriver.cpp
-        Devices/Serial/SerialDriver.hpp
         Filters/Fusion/Fusion.cpp
         Filters/Fusion/Fusion.hpp
         Filters/Navigation/Navigation.cpp
@@ -35,7 +37,8 @@ set(SOURCES
         Utilities/ChannelRecorder.hpp
         Utilities/ChannelReplay.hpp
         Filters/Navigation/Waypoint_t.hpp
-        Devices/GPS/Gps_t.hpp MultipleOutputChannel.hpp)
+        Devices/GPS/Gps_t.hpp
+        MultipleOutputChannel.hpp)
 
 set(SOURCES_PI ${SOURCES}
         Devices/LoRa/LoRa.cpp

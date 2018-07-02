@@ -9,12 +9,11 @@
 #include <gps.h>
 
 #include "GpsMeasurement_t.hpp"
-#include "../../ThreadModule.hpp"
+#include "../../Filter.hpp"
 #include "../../Channel.hpp"
-#include "../Serial/SerialDriver.hpp"
 #include "../../MultipleOutputChannel.hpp"
 
-class Gps : ThreadModule{
+class Gps : Filter{
 public:
     Gps();
 

@@ -8,11 +8,11 @@
 
 #include <thread>
 
-class ThreadModule {
+class Filter {
 protected:
     virtual void run()= 0;
     void start() {
-        std::thread t(&ThreadModule::run, this);
+        std::thread t(&Filter::run, this);
         t.detach();
     }
 private:

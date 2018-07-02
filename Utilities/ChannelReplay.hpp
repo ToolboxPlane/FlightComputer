@@ -8,12 +8,12 @@
 #include <fstream>
 #include <chrono>
 #include <thread>
-#include "../ThreadModule.hpp"
+#include "../Filter.hpp"
 #include "../Channel.hpp"
 #include "../MultipleOutputChannel.hpp"
 
 template <typename T>
-class ChannelReplay : public ThreadModule {
+class ChannelReplay : public Filter {
 public:
     explicit ChannelReplay(std::istream &istream) : istream(istream){
         this->start();

@@ -6,11 +6,11 @@
 #define FLIGHTCOMPUTER_RECORDER_HPP
 
 #include <iostream>
-#include "../ThreadModule.hpp"
+#include "../Filter.hpp"
 #include "../Channel.hpp"
 
 template <typename T>
-class ChannelRecorder : public ThreadModule {
+class ChannelRecorder : public Filter {
 public:
     explicit ChannelRecorder(std::ostream &ostream) : ostream(ostream){
         this->start();

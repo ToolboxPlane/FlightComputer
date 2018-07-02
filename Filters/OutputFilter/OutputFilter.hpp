@@ -6,13 +6,13 @@
 #define FLIGHTCOMPUTER_OUTPUTFILTER_HPP
 
 
-#include "../../ThreadModule.hpp"
+#include "../../Filter.hpp"
 #include "../../Devices/rcLib/PackageExtended.hpp"
 #include "../Navigation/Nav_t.hpp"
 #include "../../Channel.hpp"
 #include "../../MultipleOutputChannel.hpp"
 
-class OutputFilter : ThreadModule{
+class OutputFilter : Filter{
 public:
     OutputFilter();
 

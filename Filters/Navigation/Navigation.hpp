@@ -6,12 +6,12 @@
 #define FLIGHTCOMPUTER_NAVIGATION_HPP
 
 
-#include "../../ThreadModule.hpp"
+#include "../../Filter.hpp"
 #include "../Fusion/Fusion.hpp"
 #include "Nav_t.hpp"
 #include "Waypoint_t.hpp"
 
-class Navigation : public ThreadModule{
+class Navigation : public Filter{
 public:
     Navigation();
 

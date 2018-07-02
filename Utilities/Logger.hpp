@@ -8,13 +8,13 @@
 #include <iostream>
 #include <chrono>
 #include <utility>
-#include "../ThreadModule.hpp"
+#include "../Filter.hpp"
 #include "../Channel.hpp"
 
 static std::mutex lock; // Not in the class because of template fuckups
 
 template <typename T>
-class Logger : ThreadModule{
+class Logger : Filter{
 public:
     explicit Logger(std::string tag, bool enabled = true, std::ostream &stream = std::cout) :
             tag(std::move(tag)), stream(stream), enabled(enabled){

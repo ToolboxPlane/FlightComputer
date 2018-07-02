@@ -8,10 +8,10 @@
 
 #include "../../Channel.hpp"
 #include "PackageExtended.hpp"
-#include "../../ThreadModule.hpp"
+#include "../../Filter.hpp"
 #include "../../MultipleOutputChannel.hpp"
 
-class RcLibSimulator : public ThreadModule{
+class RcLibSimulator : public Filter{
 public:
     explicit RcLibSimulator(uint8_t deviceId, const int intervalMs = 500);
     void run() override;

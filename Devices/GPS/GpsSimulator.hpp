@@ -6,12 +6,12 @@
 #define FLIGHTCOMPUTER_GPSSIMULATOR_HPP
 
 
-#include "../../ThreadModule.hpp"
+#include "../../Filter.hpp"
 #include "../../Channel.hpp"
 #include "GpsMeasurement_t.hpp"
 #include "../../MultipleOutputChannel.hpp"
 
-class GpsSimulator : public ThreadModule{
+class GpsSimulator : public Filter{
 public:
     explicit GpsSimulator(int intervalMs = 500);
 
