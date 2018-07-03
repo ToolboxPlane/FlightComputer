@@ -34,7 +34,7 @@ private:
             if(channelIn.get(item)) {
                 ostream << std::chrono::duration_cast
                         <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-                ostream << "; " << item.getLine() << std::endl;
+                ostream << "; " << item.getLine() << "\n";
             }
         }
     }

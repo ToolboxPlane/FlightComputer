@@ -35,13 +35,16 @@ private:
         std::getline(istream, line);
         auto offset = recordingStart - std::stol(line);
         std::getline(istream, line);
+        std::vector<std::string> remainingItems;
+        remainingItems.reserve(256);
 
         while(std::getline(istream, line)) {
             std::string item;
             std::stringstream linestream(line);
             std::getline(linestream, item, ';');
             auto timestamp = std::stol(item);
-            std::vector<std::string> remainingItems;
+
+            remainingItems.resize(0);
             while(std::getline(linestream, item, ';')) {
                 remainingItems.push_back(item);
             }

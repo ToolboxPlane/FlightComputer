@@ -48,31 +48,31 @@ void Fusion::run() {
 
     while(true) {
         if (!gpsIn.isClosed()) {
-            if(gpsIn.get(lastGpsMeasurement, false)) {
+            while (gpsIn.get(lastGpsMeasurement, false)) {
                 gpsRecv = true;
             }
         }
         if (!pdbIn.isClosed()) {
-            if(pdbIn.get(lastPdbPackage, false)) {
+            while (pdbIn.get(lastPdbPackage, false)) {
                 pdbRecv = true;
             }
         }
         if(!taranisIn.isClosed()) {
-            if(taranisIn.get(lastTaranisPackage, false)) {
+            while (taranisIn.get(lastTaranisPackage, false)) {
                 taranisRecv = true;
             }
         }
         if(!baseIn.isClosed()) {
-            if(baseIn.get(lastBasePackage, false)) {
+            while (baseIn.get(lastBasePackage, false)) {
                 baseRecv = true;
             }
         }
         if(!remoteIn.isClosed()) {
-            if(remoteIn.get(lastRemotePackage, false)) {
+            while (remoteIn.get(lastRemotePackage, false)) {
                 remoteRecv = true;
             }
         }
-        if (!flightControllerIn.isClosed() && flightControllerIn.get(lastFcPackage, false)) {
+        if (!flightControllerIn.isClosed() && flightControllerIn.get(lastFcPackage)) {
             out.put(process());
         } else {
             std::this_thread::yield();

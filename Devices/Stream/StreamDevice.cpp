@@ -20,12 +20,14 @@ void StreamDevice::run() {
 
     while(true) {
         ssize_t readed = read(this->getFileDescriptor(), buf, sizeof(buf));
-        if(readed >= 0) {
+        if(readed > 0) {
             for (auto c = 0; c < readed; c++) {
                 if (received.decode(buf[c])) {
                     out.put(received);
                 }
             }
+        } else if (readed == 0) {
+            std::this_thread::yield();
         } else {
             if(errno == EPIPE) {
                 this->invalidateFileDescriptor();
@@ -46,8 +48,11 @@ void StreamDevice::run() {
                     } else {
                         throw std::ios_base::failure("Error sending data!");
                     }
+                } else if(result == 0) {
+                    std::this_thread::yield();
+                } else {
+                    written += result;
                 }
-                written += result;
             } while (written < length);
         }
     }
