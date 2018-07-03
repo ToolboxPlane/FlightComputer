@@ -5,7 +5,6 @@
 #ifndef FLIGHTCOMPUTER_TCPSERVER_HPP
 #define FLIGHTCOMPUTER_TCPSERVER_HPP
 
-
 #include "../StreamDevice.hpp"
 
 class TcpServer : public StreamDevice {
@@ -18,6 +17,7 @@ private:
 
 protected:
     int getFileDescriptor() override;
+    void invalidateFileDescriptor() override;
 };
 
 

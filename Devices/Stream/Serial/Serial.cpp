@@ -76,3 +76,7 @@ void Serial::setAttributes(int baud, int parity, int timeoutMs) {
 int Serial::getFileDescriptor() {
     return fileDescriptor;
 }
+
+void Serial::invalidateFileDescriptor() {
+
+}

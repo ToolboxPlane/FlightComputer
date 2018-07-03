@@ -24,6 +24,7 @@ private:
     const bool ignoreErrors;
 protected:
     virtual int getFileDescriptor() = 0;
+    virtual void invalidateFileDescriptor() = 0;
 };
 
 

@@ -2,10 +2,11 @@
 // Created by paul on 01.07.18.
 //
 
+#include "TcpServer.hpp"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <fcntl.h>
-#include "TcpServer.hpp"
+#include <csignal>
 
 TcpServer::TcpServer(uint16_t port, const int BUF_SIZE) : StreamDevice(BUF_SIZE, true), fileDescriptor(-1) {
     socketFileDescriptor = socket(AF_INET, SOCK_STREAM, 0);
@@ -31,13 +32,18 @@ TcpServer::TcpServer(uint16_t port, const int BUF_SIZE) : StreamDevice(BUF_SIZE,
 
 int TcpServer::getFileDescriptor() {
     if(fileDescriptor == -1) {
+        signal(SIGPIPE, SIG_IGN); // Ignore SIGPIPE
         struct sockaddr_in clientAddress{};
         socklen_t clientAddressLen = 0;
         while ((fileDescriptor =
                 accept(socketFileDescriptor, (sockaddr*)&clientAddress, &clientAddressLen)) < 0) {
-            std::this_thread::yield();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
-        fcntl(fileDescriptor, F_SETFL, O_NONBLOCK);
+        fcntl(fileDescriptor, F_SETFL, O_NONBLOCK); // Set the file descriptor non blocking
     }
     return fileDescriptor;
+}
+
+void TcpServer::invalidateFileDescriptor() {
+    fileDescriptor = -1;
 }

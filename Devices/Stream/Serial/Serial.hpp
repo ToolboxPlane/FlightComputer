@@ -21,6 +21,7 @@ private:
 
 protected:
     int getFileDescriptor() override;
+    void invalidateFileDescriptor() override;
 };
 
 
