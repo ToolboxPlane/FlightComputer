@@ -22,19 +22,19 @@ int main() {
     /*
      * I/O-Modules
      */
-    //FileDescriptor serial("/dev/ttyACM0", B9600);
+    Serial lora("/dev/ttyACM0", B9600);
     //LoRa lora;
     //Gps gps;
 
     //RcLibSimulator serial(23, 1000);
     //RcLibSimulator pdb(74, 60000);
-    RcLibSimulator lora(17, 60000);
-    GpsSimulator gps(60000);
+    //RcLibSimulator lora(17, 60000);
+    GpsSimulator gps(5000);
 
     std::ifstream serialFile("logs/piLogs/flight_23_6_18/serial_18_06_23_12_58.csv");
     ChannelReplay<rcLib::PackageExtended> serial(serialFile);
 
-    std::ifstream waypointFile("missions/waypoints.csv");
+    std::ifstream waypointFile("missions/mission.csv");
     ChannelReplay<Waypoint_t> waypointReader(waypointFile);
 
     TcpServer tcpServer(61888);
@@ -90,7 +90,7 @@ int main() {
     Logger<rcLib::PackageExtended> serialSend("Serial-Send", false);
     Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", false);
     Logger<rcLib::PackageExtended> loraSend("Lora-Send", false);
-    Logger<GpsMeasurement_t> gpsDebug("GPS", true);
+    Logger<GpsMeasurement_t> gpsDebug("GPS", false);
     Logger<Nav_t> navDebug("Nav", false);
     Logger<State_t> fusionDebug("Fusion", true);
 
@@ -122,6 +122,7 @@ int main() {
     serial.getChannelOut() >> serialRecorder.getChannelIn();
     gps.getChannelOut() >> gpsRecorder.getChannelIn();
 
+    std::cout << "Started all modules!" << "\n";
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
     while(true) {

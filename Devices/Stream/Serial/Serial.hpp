@@ -5,6 +5,8 @@
 #ifndef FLIGHTCOMPUTERMONOLITHIC_SERIAL_HPP
 #define FLIGHTCOMPUTERMONOLITHIC_SERIAL_HPP
 
+#include <termios.h>
+
 #include "../../../Channel.hpp"
 #include "../../rcLib/PackageExtended.hpp"
 #include "../../../Filter.hpp"

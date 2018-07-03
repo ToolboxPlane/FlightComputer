@@ -38,8 +38,8 @@ private:
     static constexpr auto PITCH_P = 1.0;
     static constexpr auto MAX_ROLL = 90.0;
     static constexpr auto MAX_PITCH = 60.0;
-    static constexpr auto HEADING_P = 0.5;
-    static constexpr auto POST_LAUNCH_CLIMB = 20;
+    static constexpr auto HEADING_P = 1.0;
+    static constexpr auto POST_LAUNCH_CLIMB = -20.0;
     static constexpr auto THROW_THRESH = 2.0;
     static constexpr auto SPEED_I = 0.5;
 };

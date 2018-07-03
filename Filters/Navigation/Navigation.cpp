@@ -59,15 +59,13 @@ void Navigation::waypoints(State_t currentState, bool reset) {
     }
 
     double headingTarget = currentState.position.location.angleTo(nextWaypoint.location);
-    nav.pitch = headingControl(currentState.heading, headingTarget);
-
-    nav.roll = currentState.position.location.angleTo(nextWaypoint.location);
+    nav.roll = headingControl(currentState.heading, headingTarget);
 
     double deltaHeight = currentState.heightAboveSeaLevel - nextWaypoint.location.altitude;
     nav.pitch = deltaHeight * Navigation::PITCH_P;
 
     if(nav.pitch < -MAX_PITCH) {
-        nav.pitch = MAX_PITCH;
+        nav.pitch = -MAX_PITCH;
     } else if(nav.pitch > MAX_PITCH) {
         nav.pitch = MAX_PITCH;
     }
@@ -144,7 +142,7 @@ void Navigation::hold(State_t state, bool reset) {
         targetHeading = state.heading;
     }
 
-    nav.power = speedControl(state.airspeed);
+    nav.power = state.lora.isArmed ? speedControl(state.airspeed) : 0;
     nav.pitch = 0;
     nav.roll = headingControl(state.heading, targetHeading);
 
@@ -170,9 +168,11 @@ auto Navigation::headingControl(double currHeading, double target) -> double {
     headingDiff = fmod(headingDiff, 360);
     if(headingDiff > 180) {
         headingDiff -= 180;
+    } else if(headingDiff < -180) {
+        headingDiff += 360;
     }
-    double roll = headingDiff * HEADING_P;
-    if(roll < MAX_ROLL) {
+    double roll = - headingDiff * HEADING_P; // sign is a result of compass angles not being mathematically positive
+    if(roll < -MAX_ROLL) {
         roll = -MAX_ROLL;
     } else if(roll > MAX_ROLL) {
         roll = MAX_ROLL;

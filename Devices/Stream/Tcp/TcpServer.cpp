@@ -7,6 +7,7 @@
 #include <netinet/in.h>
 #include <fcntl.h>
 #include <csignal>
+#include <unistd.h>
 
 TcpServer::TcpServer(uint16_t port, const int BUF_SIZE) : StreamDevice(BUF_SIZE, true), fileDescriptor(-1) {
     socketFileDescriptor = socket(AF_INET, SOCK_STREAM, 0);
@@ -45,5 +46,6 @@ int TcpServer::getFileDescriptor() {
 }
 
 void TcpServer::invalidateFileDescriptor() {
+    close(fileDescriptor);
     fileDescriptor = -1;
 }

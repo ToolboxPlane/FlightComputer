@@ -19,13 +19,13 @@ MultipleOutputChannel<GpsMeasurement_t> &GpsSimulator::getChannelOut() {
 void GpsSimulator::run() {
     while(true) {
         GpsMeasurement_t gps{};
-        gps.location.lon = 17;
-        gps.location.lat = 23;
+        gps.location.lon = 48.4235495;
+        gps.location.lat = 9.9292937;
         gps.timestamp = 24;
-        gps.location.altitude = 43;
+        gps.location.altitude = 500;
         gps.fixAquired = true;
-        gps.speed = 0;
-        gps.climb = 12;
+        gps.speed = 40;
+        gps.climb = 0;
         out.put(gps);
         std::this_thread::sleep_for(std::chrono::milliseconds(intervalMs));
     }
