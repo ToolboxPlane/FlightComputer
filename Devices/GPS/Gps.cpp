@@ -18,7 +18,7 @@ MultipleOutputChannel<GpsMeasurement_t> &Gps::getChannelOut() {
 }
 
 void Gps::run() {
-    if (gps_open("localhost", "3000", &gps_data) == -1) {
+    if (gps_open("localhost", "2947", &gps_data) == -1) {
         fprintf(stderr, "reason: %s\n",gps_errstr(errno));
         exit(1);
     }

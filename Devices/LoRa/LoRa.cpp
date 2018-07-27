@@ -3,6 +3,7 @@
 //
 
 #include "LoRa.hpp"
+#include <iostream>
 
 #define BOARD_DRAGINO_PIHAT
 
@@ -12,7 +13,7 @@
 #define RF_FREQUENCY  434.00
 #define RF_NODE_ID    1
 
-LoRa::LoRa() : ThreadModule(), rf95(RF_CS_PIN, RF_IRQ_PIN){
+LoRa::LoRa() : Filter(), rf95(RF_CS_PIN, RF_IRQ_PIN){
     if (!bcm2835_init()) {
         fprintf( stderr, "bcm2835_init() Failed\n\n");
         return;
@@ -110,6 +111,7 @@ void LoRa::run() {
 #endif
 
             if (rf95.available()) {
+                std::cout << "available" << std::endl;
                 // Should be a message for us now
                 uint8_t from = rf95.headerFrom();
                 uint8_t to   = rf95.headerTo();

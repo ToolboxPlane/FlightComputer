@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iomanip>
+#include <cassert>
 #include "Devices/Stream/Serial/Serial.hpp"
 #include "Devices/Stream/Tcp/TcpServer.hpp"
 #include "Devices/rcLib/RcLibSimulator.hpp"
@@ -22,19 +23,21 @@ int main() {
     /*
      * I/O-Modules
      */
-    Serial lora("/dev/ttyACM0", B9600);
-    //LoRa lora;
+    //Serial lora("/dev/ttyACM0", B9600);
+    LoRa lora;
     //Gps gps;
 
-    //RcLibSimulator serial(23, 1000);
-    //RcLibSimulator pdb(74, 60000);
+    RcLibSimulator serial(23, 1000);
+    RcLibSimulator pdb(74, 60000);
     //RcLibSimulator lora(17, 60000);
     GpsSimulator gps(5000);
 
-    std::ifstream serialFile("logs/piLogs/flight_23_6_18/serial_18_06_23_12_58.csv");
-    ChannelReplay<rcLib::PackageExtended> serial(serialFile);
+    //std::ifstream serialFile("logs/serial_18_06_27_19_43.csv");
+    //assert(serialFile.is_open());
+    //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
 
-    std::ifstream waypointFile("missions/mission.csv");
+    std::ifstream waypointFile("missions/waypoints.csv");
+    assert(waypointFile.is_open());
     ChannelReplay<Waypoint_t> waypointReader(waypointFile);
 
     TcpServer tcpServer(61888);
@@ -88,11 +91,11 @@ int main() {
      */
     Logger<rcLib::PackageExtended> serialReceive("Serial-Recv", false);
     Logger<rcLib::PackageExtended> serialSend("Serial-Send", false);
-    Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", false);
-    Logger<rcLib::PackageExtended> loraSend("Lora-Send", false);
-    Logger<GpsMeasurement_t> gpsDebug("GPS", false);
+    Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", true);
+    Logger<rcLib::PackageExtended> loraSend("Lora-Send", true);
+    Logger<GpsMeasurement_t> gpsDebug("GPS", true);
     Logger<Nav_t> navDebug("Nav", false);
-    Logger<State_t> fusionDebug("Fusion", true);
+    Logger<State_t> fusionDebug("Fusion", false);
 
     serial.getChannelOut() >> serialReceive.getChannelIn();
     meshManager.getSerialOut() >> serialSend.getChannelIn();

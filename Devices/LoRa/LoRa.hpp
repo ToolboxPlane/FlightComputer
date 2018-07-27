@@ -12,7 +12,7 @@
 #include "../rcLib/PackageExtended.hpp"
 #include "../../MultipleOutputChannel.hpp"
 
-class LoRa : public ThreadModule{
+class LoRa : public Filter {
 public:
     LoRa();
 
