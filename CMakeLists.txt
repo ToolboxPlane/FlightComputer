@@ -47,28 +47,10 @@ set(SOURCES_PI ${SOURCES}
 set(SOURCES_NO_PI ${SOURCES})
 
 IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
-    add_definitions(-DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY)
-    set(RADIOHEADBASE /home/pi/RadioHead)
-    set(RADIOHEAD_SOURCES
-            ${RADIOHEADBASE}/RHutil/RasPi.cpp
-            ${RADIOHEADBASE}/RH_RF95.cpp
-            ${RADIOHEADBASE}/RHDatagram.cpp
-            ${RADIOHEADBASE}/RHHardwareSPI.cpp
-            ${RADIOHEADBASE}/RHSPIDriver.cpp
-            ${RADIOHEADBASE}/RHGenericDriver.cpp
-            ${RADIOHEADBASE}/RHGenericSPI.cpp
-            ${RADIOHEADBASE}/RHutil/RasPi.h
-            ${RADIOHEADBASE}/RH_RF95.h
-            ${RADIOHEADBASE}/RHDatagram.h
-            ${RADIOHEADBASE}/RHHardwareSPI.h
-            ${RADIOHEADBASE}/RHSPIDriver.h
-            ${RADIOHEADBASE}/RHGenericDriver.h
-            ${RADIOHEADBASE}/RHGenericSPI.h)
-#    include_directories(${RADIOHEADBASE})
     add_executable(FlightComputer ${SOURCES_PI})
     target_link_libraries(FlightComputer gps pthread wiringPi)
 ELSE(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
-    add_executable(FlightComputer ${SOURCES_NO_PI})
+    add_executable(FlightComputer ${SOURCES_PI})
     target_link_libraries(FlightComputer pthread gps)
 ENDIF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
 
