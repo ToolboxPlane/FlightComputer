@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <arpa/inet.h>
+//#include <arpa/inet.h>
 #include <string.h>
 #include <sys/time.h>
 #include <signal.h>
@@ -228,9 +228,9 @@ void SetupLoRa()
 {
 
     digitalWrite(RST, HIGH);
-    delay(100);
+    delay((unsigned int)100);
     digitalWrite(RST, LOW);
-    delay(100);
+    delay((unsigned int)100);
 
     byte version = readReg(REG_VERSION);
 
@@ -241,9 +241,9 @@ void SetupLoRa()
     } else {
         // sx1276?
         digitalWrite(RST, LOW);
-        delay(100);
+        delay((unsigned int)100);
         digitalWrite(RST, HIGH);
-        delay(100);
+        delay((unsigned int)100);
         version = readReg(REG_VERSION);
         if (version == 0x12) {
             // sx1276
@@ -454,7 +454,7 @@ void LoRa::run() {
         printf("------------------\n");
         while(1) {
             receivepacket();
-            delay(1);
+            delay((unsigned int)1);
         }
 
     }

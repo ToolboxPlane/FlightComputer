@@ -7,7 +7,6 @@
 
 #include "../../Filter.hpp"
 #include "../../Channel.hpp"
-#include "RH_RF95.h"
 #include <unistd.h>
 #include "../rcLib/PackageExtended.hpp"
 #include "../../MultipleOutputChannel.hpp"
@@ -22,9 +21,6 @@ private:
     Channel<rcLib::PackageExtended> in;
     MultipleOutputChannel<rcLib::PackageExtended> out;
     void run() override;
-    uint8_t* buf;
-    uint8_t len;
-    RH_RF95 rf95;
 };
 
 

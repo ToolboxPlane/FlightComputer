@@ -42,8 +42,7 @@ set(SOURCES
 
 set(SOURCES_PI ${SOURCES}
         Devices/LoRa/LoRa.cpp
-        Devices/LoRa/LoRa.hpp
-        Devices/LoRa/RasPiBoards.h )
+        Devices/LoRa/LoRa.hpp)
 
 set(SOURCES_NO_PI ${SOURCES})
 
@@ -65,8 +64,8 @@ IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
             ${RADIOHEADBASE}/RHSPIDriver.h
             ${RADIOHEADBASE}/RHGenericDriver.h
             ${RADIOHEADBASE}/RHGenericSPI.h)
-    include_directories(${RADIOHEADBASE})
-    add_executable(FlightComputer ${SOURCES_PI} ${RADIOHEAD_SOURCES})
+#    include_directories(${RADIOHEADBASE})
+    add_executable(FlightComputer ${SOURCES_PI})
     target_link_libraries(FlightComputer gps pthread wiringPi)
 ELSE(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
     add_executable(FlightComputer ${SOURCES_NO_PI})
