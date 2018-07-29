@@ -23,14 +23,13 @@ int main() {
     /*
      * I/O-Modules
      */
-    //Serial lora("/dev/ttyACM0", B9600);
+    //Serial serial("/dev/ttyACM0", B9600);
     LoRa lora;
-    //Gps gps;
+    Gps gps;
 
     RcLibSimulator serial(23, 1000);
-    RcLibSimulator pdb(74, 60000);
     //RcLibSimulator lora(17, 60000);
-    GpsSimulator gps(5000);
+    //GpsSimulator gps(5000);
 
     //std::ifstream serialFile("logs/serial_18_06_27_19_43.csv");
     //assert(serialFile.is_open());
@@ -54,7 +53,6 @@ int main() {
      * Mesh Manager
      */
     serial.getChannelOut() >> meshManager.getSerialIn();
-    //pdb.getChannelOut() >> meshManager.getSerialIn();
     meshManager.getSerialOut() >> serial.getChannelIn();
     meshManager.getTcpOut() >> tcpServer.getChannelIn();
 

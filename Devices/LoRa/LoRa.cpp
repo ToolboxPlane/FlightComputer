@@ -127,7 +127,7 @@ void LoRa::run() {
                         }
                     }
                 }
-            }
+            } 
 
 #ifdef RF_IRQ_PIN
         }
@@ -138,9 +138,9 @@ void LoRa::run() {
         // this delay, but this will charge CPU usage, take care and monitor
         bcm2835_delay(5);
 
-        if(in.get(pkgIn, false)) {
+        /*if(in.get(pkgIn, false)) {
             size_t len = pkgIn.encode();
             rf95.send(pkgIn.getEncodedData(), len);
-        }
+        }*/
     }
 }
