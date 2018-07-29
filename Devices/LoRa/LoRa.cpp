@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-//#include <arpa/inet.h>
 #include <string.h>
 #include <sys/time.h>
 #include <signal.h>
@@ -19,6 +18,8 @@
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
 
+#include <chrono>
+#include <thread>
 
 // #############################################
 // #############################################
@@ -398,11 +399,11 @@ void LoRa::run() {
                     rssicorr = 157;
                 }
 
-                printf("Packet RSSI: %d, ", readRegister(0x1A)-rssicorr);
+          /*      printf("Packet RSSI: %d, ", readRegister(0x1A)-rssicorr);
                 printf("RSSI: %d, ", readRegister(0x1B)-rssicorr);
                 printf("SNR: %li, ", SNR);
                 printf("Length: %i", (int)receivedbytes);
-                printf("\n");
+                printf("\n");*/
 
                 for(auto c=0; c<receivedbytes; c++) {
                     if(pkgIn.decode(message[c])) {
@@ -414,9 +415,11 @@ void LoRa::run() {
 
         } // dio0=1
 
-        /*if(in.get(pkgOut, false)) {
+/*        if(in.get(pkgOut, false)) {
             auto len = pkgOut.encode();
             txLoRa(pkgOut.getEncodedData(), len);
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            setOpMode(OPMODE_RX);
         }*/
     }
 }

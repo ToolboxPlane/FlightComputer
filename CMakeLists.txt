@@ -48,9 +48,10 @@ set(SOURCES_NO_PI ${SOURCES})
 
 IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
     add_executable(FlightComputer ${SOURCES_PI})
+    add_definitions(-DRASPBERRY_PI)
     target_link_libraries(FlightComputer gps pthread wiringPi)
 ELSE(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
-    add_executable(FlightComputer ${SOURCES_PI})
+    add_executable(FlightComputer ${SOURCES_NO_PI})
     target_link_libraries(FlightComputer pthread gps)
 ENDIF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
 
