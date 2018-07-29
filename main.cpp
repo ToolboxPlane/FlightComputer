@@ -24,7 +24,7 @@ int main() {
      * I/O-Modules
      */
     //Serial serial("/dev/ttyACM0", B9600);
-    LoRa lora;
+    //LoRa lora;
     Gps gps;
 
     RcLibSimulator serial(23, 1000);
