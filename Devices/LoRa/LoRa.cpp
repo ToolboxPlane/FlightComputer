@@ -198,7 +198,6 @@ void LoRa::setupLoRa()
 
     if (version == 0x22) {
         // sx1272
-        printf("SX1272 detected, starting.\n");
         sx1272 = true;
     } else {
         // sx1276?
@@ -209,7 +208,6 @@ void LoRa::setupLoRa()
         version = readRegister(REG_VERSION);
         if (version == 0x12) {
             // sx1276
-            printf("SX1276 detected, starting.\n");
             sx1272 = false;
         } else {
             printf("Unrecognized transceiver.\n");
@@ -399,11 +397,11 @@ void LoRa::run() {
                     rssicorr = 157;
                 }
 
-          /*      printf("Packet RSSI: %d, ", readRegister(0x1A)-rssicorr);
-                printf("RSSI: %d, ", readRegister(0x1B)-rssicorr);
-                printf("SNR: %li, ", SNR);
-                printf("Length: %i", (int)receivedbytes);
-                printf("\n");*/
+                //printf("Packet RSSI: %d, ", readRegister(0x1A)-rssicorr);
+                //printf("RSSI: %d, ", readRegister(0x1B)-rssicorr);
+                //printf("SNR: %li, ", SNR);
+                //printf("Length: %i", (int)receivedbytes);
+                //printf("\n");
 
                 for(auto c=0; c<receivedbytes; c++) {
                     if(pkgIn.decode(message[c])) {
@@ -411,15 +409,16 @@ void LoRa::run() {
                     }
                 }
 
-            } // received a message
-
-        } // dio0=1
+            } 
+        } 
 
 /*        if(in.get(pkgOut, false)) {
+//            setOpMode(OPMODE_STANDBY);
             auto len = pkgOut.encode();
             txLoRa(pkgOut.getEncodedData(), len);
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            setOpMode(OPMODE_RX);
+            std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+            std::cout << "Sending..." << std::endl;
+//            setOpMode(OPMODE_RX);
         }*/
     }
 }

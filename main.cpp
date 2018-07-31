@@ -23,11 +23,11 @@ int main() {
     /*
      * I/O-Modules
      */
-    //Serial serial("/dev/ttyACM0", B9600);
+    Serial serial("/dev/ttyACM0", B9600);
     LoRa lora;
     Gps gps;
 
-    RcLibSimulator serial(23, 1000);
+    //RcLibSimulator serial(23, 50);
     //RcLibSimulator lora(17, 60000);
     //GpsSimulator gps(5000);
 
