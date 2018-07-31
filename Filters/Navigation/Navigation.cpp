@@ -52,10 +52,12 @@ void Navigation::run() {
 
 void Navigation::waypoints(State_t currentState, bool reset) {
     static Waypoint_t nextWaypoint(currentState.position.location, std::numeric_limits<double>::max(), false);
+    static uint16_t waypointIndex = 0;
     Nav_t nav{};
 
     if(currentState.position.location.distanceTo(nextWaypoint.location) < nextWaypoint.maxDelta) {
         waypointIn.get(nextWaypoint);
+        waypointIndex++;
     }
 
     double headingTarget = currentState.position.location.angleTo(nextWaypoint.location);
@@ -72,6 +74,9 @@ void Navigation::waypoints(State_t currentState, bool reset) {
 
     nav.power = currentState.lora.isArmed ? speedControl(currentState.airspeed) : 0;
 
+    nav.stateMajor = 4;
+    nav.stateMinor = waypointIndex;
+
     out.put(nav);
 }
 
@@ -85,6 +90,9 @@ void Navigation::land(State_t state, bool reset) {
     nav.power = 0;
     nav.roll = headingControl(state.heading, targetHeading);
     nav.pitch = 0;
+
+    nav.stateMajor = 2;
+    nav.stateMinor = 0;
 
     out.put(nav);
 }
@@ -123,6 +131,10 @@ void Navigation::launch(State_t state, bool reset) {
             nav.roll = 0;
             break;
     }
+
+    nav.stateMajor = 1;
+    nav.stateMinor = launchState;
+
     out.put(nav);
 }
 
@@ -131,6 +143,9 @@ void Navigation::angle(State_t state, bool reset) {
     nav.pitch = state.lora.joyRight.y * MAX_PITCH;
     nav.roll = state.lora.joyRight.x * MAX_ROLL;
     nav.power = state.lora.isArmed ? speedControl(state.airspeed) : 0;
+
+    nav.stateMajor = 0;
+    nav.stateMinor = 0;
 
     out.put(nav);
 }
@@ -145,6 +160,9 @@ void Navigation::hold(State_t state, bool reset) {
     nav.power = state.lora.isArmed ? speedControl(state.airspeed) : 0;
     nav.pitch = 0;
     nav.roll = headingControl(state.heading, targetHeading);
+
+    nav.stateMajor = 3;
+    nav.stateMinor = 0;
 
     out.put(nav);
 }

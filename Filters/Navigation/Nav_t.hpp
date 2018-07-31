@@ -10,8 +10,10 @@
 class Nav_t {
 public:
     double pitch, roll, power;
+    uint16_t stateMajor, stateMinor;
     friend std::ostream &operator<<(std::ostream &stream, Nav_t nav) {
         stream << "Pitch: " << nav.pitch << "\tRoll: " << nav.roll << "\tPower: " << nav.power;
+        stream << "\tMaj: " << nav.stateMajor << "\tMin: " << nav.stateMinor;
         return stream;
     }
 };

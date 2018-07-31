@@ -104,7 +104,6 @@ void MeshManager::run() {
             pkg.setMeshProperties(static_cast<uint8_t>(false));
             pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
             serialOut.put(pkg);
-            tcpOut.put(pkg);
         }
         if (remoteIn.get(pkg, false)) {
             pkg.setMeshProperties(static_cast<uint8_t>(false));
@@ -115,6 +114,7 @@ void MeshManager::run() {
             pkg.setMeshProperties(static_cast<uint8_t>(true), 2);
             pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
             loraOut.put(pkg);
+            tcpOut.put(pkg);
         }
         std::this_thread::yield();
     }
