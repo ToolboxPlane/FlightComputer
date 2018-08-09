@@ -169,8 +169,17 @@ void Navigation::hold(State_t state, bool reset) {
 
 auto Navigation::speedControl(double airspeed, double target) -> double {
     static double diffSum = 0;
-    double deltaSpeed = airspeed - target;
+    static double lastDiff = target - airspeed;
+    double deltaSpeed = target - airspeed;
     diffSum += deltaSpeed;
+
+    // Change in sign, anti windup
+    if(lastDiff * deltaSpeed < 0) {
+        diffSum = 0;
+    }
+    lastDiff = deltaSpeed;
+
+    // PI-Controller (I necessary to achieve stationary accuracy)
     double speed = deltaSpeed * Navigation::SPEED_P + diffSum * Navigation::SPEED_I;
 
     if(speed < 0.0) {

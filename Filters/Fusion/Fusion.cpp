@@ -98,9 +98,10 @@ State_t Fusion::process() {
     // Gps
     if(gpsRecv && lastGpsMeasurement.fixAquired) {
         res.position = lastGpsMeasurement;
-        if (res.position.timestamp != lastState.position.timestamp) {
+        if (res.position.timestamp > lastState.position.timestamp) {
             res.groundSpeed = res.position.location.distanceTo(lastState.position.location) /
                               (res.position.timestamp - lastState.position.timestamp);
+            //@TODO maybe res.position.speed is the better choice, requires testing
         } else {
             res.groundSpeed = lastState.groundSpeed;
         }
@@ -137,7 +138,7 @@ State_t Fusion::process() {
         res.lora.flightMode = FlightMode::HOLD;
     }
 
-    //@TODO handle base, discuss which data to send
+    //@TODO handle base, discuss which data to send. ATM not necessary due to non functioning lora tx
 
     lastState = res;
 
