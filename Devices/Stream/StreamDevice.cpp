@@ -38,7 +38,7 @@ void StreamDevice::run() {
             size_t length = toSend.encode();
             ssize_t written = 0;
             do {
-                ssize_t result = write(this->getFileDescriptor(), toSend.getEncodedData(), length);
+                ssize_t result = write(this->getFileDescriptor(), toSend.getEncodedData() + written, length);
                 if(result < 0) {
                     if(ignoreErrors) {
                         if(errno == EPIPE) {

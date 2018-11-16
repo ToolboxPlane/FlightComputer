@@ -9,11 +9,6 @@
 
 template<class item>
 class Channel {
-private:
-    std::list<item> queue;
-    std::mutex m;
-    std::condition_variable cv;
-    bool closed;
 public:
     Channel() : closed(false), m(), cv(), queue() { }
 
@@ -48,6 +43,11 @@ public:
         queue.pop_front();
         return true;
     }
+private:
+    std::list<item> queue{};
+    std::mutex m{};
+    std::condition_variable cv{};
+    bool closed{false};
 };
 
 #endif

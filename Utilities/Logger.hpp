@@ -34,7 +34,7 @@ private:
                 auto time = std::chrono::duration_cast< std::chrono::milliseconds >(
                         std::chrono::system_clock::now().time_since_epoch()
                 ).count();
-                stream << "[" << tag /*<< " " << time*/ <<"]\t" << item << "\n";
+                stream << "[" << tag << " " << time <<"]\t" << item << "\n";
                 lock.unlock();
             }
         }

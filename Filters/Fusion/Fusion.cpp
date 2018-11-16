@@ -91,9 +91,9 @@ State_t Fusion::process() {
     res.heightAboveSeaLevel = lastFcPackage.getChannel(4);
     res.heightAboveGround = res.heightAboveSeaLevel; // Waiting for some kind of distance sensor
     res.airspeed = lastFcPackage.getChannel(5);
-    res.accForward = lastFcPackage.getChannel(6);
-    res.accSide = lastFcPackage.getChannel(7);
-    res.accUpdown = lastFcPackage.getChannel(8);
+    res.accForward = lastFcPackage.getChannel(6) - 500;
+    res.accSide = lastFcPackage.getChannel(7)  - 500;
+    res.accUpdown = lastFcPackage.getChannel(8) - 500;
 
     // Gps
     if(gpsRecv && lastGpsMeasurement.fixAquired) {

@@ -48,8 +48,9 @@ public:
             ostream << "\t No Fix";
         }
         ostream << "\tV:" << state.voltage;
-        ostream << "\tAr:" << state.taranis.isArmed?1:0;
-        ostream << "\tOr:" << state.taranis.manualOverrideActive?1:0;
+        ostream << "\tAr:" << (state.taranis.isArmed?1:0);
+        ostream << "\tOr:" << (state.taranis.manualOverrideActive?1:0);
+        ostream << "\tAcc: (" << state.accForward << ","<< state.accSide << "," << state.accUpdown << ")";
         return ostream;
     }
 };

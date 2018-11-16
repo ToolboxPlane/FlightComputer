@@ -20,7 +20,7 @@ namespace rcLib {
             this->tid = static_cast<uint8_t>(std::stoi(items[0]));
             this->channelCount = static_cast<uint16_t>(items.size() - 1);
 
-            for(auto c=0; c<items.size(); c++) {
+            for(size_t c=0; c<items.size(); c++) {
                 this->channelData[c-1] = static_cast<uint16_t>(std::stoi(items[c]));
             }
         }
