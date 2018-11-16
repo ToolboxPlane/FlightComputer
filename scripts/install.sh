@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Install necessary software
-sudo apt install -y build-essential git cmake libgps-dev gpsd
+sudo apt install -y build-essential git cmake libgps-dev gpsd setserial
 
 # Install wiring pi
 git clone git://git.drogon.net/wiringPi
