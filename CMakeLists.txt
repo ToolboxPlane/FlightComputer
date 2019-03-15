@@ -1,62 +1,42 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 project(FlightComputer)
 
-set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
-set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
-
-set (CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic")
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif(NOT CMAKE_BUILD_TYPE)
 
 set(CMAKE_CXX_STANDARD 14)
 
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+endif ()
+
 set(SOURCES
         main.cpp
-        InputChannel.hpp
-        Filter.hpp
         Devices/Stream/Serial/Serial.cpp
-        Devices/Stream/Serial/Serial.hpp
         Devices/Stream/Tcp/TcpServer.cpp
-        Devices/Stream/Tcp/TcpServer.hpp
         Devices/Stream/StreamDevice.cpp
-        Devices/Stream/StreamDevice.hpp
         Devices/rcLib/RadioControlProtocol/rcLib.cpp
-        Devices/rcLib/RadioControlProtocol/rcLib.hpp
-        Devices/rcLib/PackageExtended.hpp
         Devices/rcLib/RcLibSimulator.cpp
-        Devices/rcLib/RcLibSimulator.hpp
-        Devices/GPS/GpsMeasurement_t.hpp
         Filters/Fusion/Fusion.cpp
-        Filters/Fusion/Fusion.hpp
         Filters/Navigation/Navigation.cpp
-        Filters/Navigation/Navigation.hpp
         Filters/MeshManager/MeshManager.cpp
-        Filters/MeshManager/MeshManager.hpp
-        Filters/Navigation/Nav_t.hpp
-        Filters/Fusion/State_t.hpp
         Filters/OutputFilter/OutputFilter.cpp
-        Filters/OutputFilter/OutputFilter.hpp
-        Utilities/Logger.hpp
-        Devices/GPS/GpsSimulator.hpp
         Devices/GPS/GpsSimulator.cpp
-        Devices/GPS/Gps.cpp
-        Devices/GPS/Gps.hpp
-        Utilities/ChannelRecorder.hpp
-        Utilities/ChannelReplay.hpp
-        Filters/Navigation/Waypoint_t.hpp
-        Devices/GPS/Gps_t.hpp
-        OutputChannel.hpp)
+        Devices/GPS/Gps.cpp)
 
 set(SOURCES_PI ${SOURCES}
-        Devices/LoRa/LoRa.cpp
-        Devices/LoRa/LoRa.hpp)
+        Devices/LoRa/LoRa.cpp)
 
 set(SOURCES_NO_PI ${SOURCES})
 
 IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
-    add_executable(FlightComputer ${SOURCES_PI})
     add_definitions(-DRASPBERRY_PI)
+    add_executable(FlightComputer ${SOURCES_PI})
     target_link_libraries(FlightComputer gps pthread wiringPi)
 ELSE(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
     add_executable(FlightComputer ${SOURCES_NO_PI})
-    target_link_libraries(FlightComputer pthread gps)
+    target_link_libraries(${PROJECT_NAME} pthread gps)
 ENDIF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
 
