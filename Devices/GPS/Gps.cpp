@@ -13,7 +13,7 @@ Gps::Gps() {
     this->start();
 }
 
-MultipleOutputChannel<GpsMeasurement_t> &Gps::getChannelOut() {
+OutputChannel<GpsMeasurement_t> &Gps::getChannelOut() {
     return out;
 }
 

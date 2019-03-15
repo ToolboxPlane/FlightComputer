@@ -5,11 +5,11 @@
 #include "StreamDevice.hpp"
 #include <unistd.h>
 
-Channel<rcLib::PackageExtended> &StreamDevice::getChannelIn() {
+InputChannel<rcLib::PackageExtended> &StreamDevice::getChannelIn() {
     return in;
 }
 
-MultipleOutputChannel<rcLib::PackageExtended> &StreamDevice::getChannelOut() {
+OutputChannel<rcLib::PackageExtended> &StreamDevice::getChannelOut() {
     return out;
 }
 

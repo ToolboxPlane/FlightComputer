@@ -6,22 +6,22 @@
 #define FLIGHTCOMPUTER_SERIALSIMULATOR_HPP
 
 
-#include "../../Channel.hpp"
+#include "../../InputChannel.hpp"
 #include "PackageExtended.hpp"
 #include "../../Filter.hpp"
-#include "../../MultipleOutputChannel.hpp"
+#include "../../OutputChannel.hpp"
 
 class RcLibSimulator : public Filter{
 public:
     explicit RcLibSimulator(uint8_t deviceId, const int intervalMs = 500);
     void run() override;
 
-    Channel<rcLib::PackageExtended> &getChannelIn();
-    MultipleOutputChannel<rcLib::PackageExtended> &getChannelOut();
+    InputChannel<rcLib::PackageExtended> &getChannelIn();
+    OutputChannel<rcLib::PackageExtended> &getChannelOut();
 
 private:
-    Channel<rcLib::PackageExtended> in;
-    MultipleOutputChannel<rcLib::PackageExtended> out;
+    InputChannel<rcLib::PackageExtended> in;
+    OutputChannel<rcLib::PackageExtended> out;
     const uint8_t deviceId;
     const int intervalMs;
 };

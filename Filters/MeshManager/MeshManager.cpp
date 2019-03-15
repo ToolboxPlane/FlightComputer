@@ -17,59 +17,59 @@ MeshManager::MeshManager() {
     this->start();
 }
 
-Channel<rcLib::PackageExtended> &MeshManager::getLoraIn() {
+InputChannel<rcLib::PackageExtended> &MeshManager::getLoraIn() {
     return loraIn;
 }
 
-Channel<rcLib::PackageExtended> &MeshManager::getSerialIn() {
+InputChannel<rcLib::PackageExtended> &MeshManager::getSerialIn() {
     return serialIn;
 }
 
-MultipleOutputChannel<rcLib::PackageExtended> &MeshManager::getLoraOut() {
+OutputChannel<rcLib::PackageExtended> &MeshManager::getLoraOut() {
     return loraOut;
 }
 
-MultipleOutputChannel<rcLib::PackageExtended> &MeshManager::getSerialOut() {
+OutputChannel<rcLib::PackageExtended> &MeshManager::getSerialOut() {
     return serialOut;
 }
 
-Channel<rcLib::PackageExtended> &MeshManager::getFlightControllerIn() {
+InputChannel<rcLib::PackageExtended> &MeshManager::getFlightControllerIn() {
     return flightControllerIn;
 }
 
-Channel<rcLib::PackageExtended> &MeshManager::getBaseIn() {
+InputChannel<rcLib::PackageExtended> &MeshManager::getBaseIn() {
     return baseIn;
 }
 
-Channel<rcLib::PackageExtended> &MeshManager::getRemoteIn() {
+InputChannel<rcLib::PackageExtended> &MeshManager::getRemoteIn() {
     return remoteIn;
 }
 
-MultipleOutputChannel<rcLib::PackageExtended> &MeshManager::getFlightControllerOut() {
+OutputChannel<rcLib::PackageExtended> &MeshManager::getFlightControllerOut() {
     return flightControllerOut;
 }
 
-MultipleOutputChannel<rcLib::PackageExtended> &MeshManager::getRemoteOut() {
+OutputChannel<rcLib::PackageExtended> &MeshManager::getRemoteOut() {
     return remoteOut;
 }
 
-MultipleOutputChannel<rcLib::PackageExtended> &MeshManager::getBaseOut() {
+OutputChannel<rcLib::PackageExtended> &MeshManager::getBaseOut() {
     return baseOut;
 }
 
-MultipleOutputChannel<rcLib::PackageExtended> &MeshManager::getPdbOut() {
+OutputChannel<rcLib::PackageExtended> &MeshManager::getPdbOut() {
     return pdbOut;
 }
 
-MultipleOutputChannel<rcLib::PackageExtended> &MeshManager::getTaranisOut() {
+OutputChannel<rcLib::PackageExtended> &MeshManager::getTaranisOut() {
     return taranisOut;
 }
 
-Channel<rcLib::PackageExtended> &MeshManager::getTcpIn() {
+InputChannel<rcLib::PackageExtended> &MeshManager::getTcpIn() {
     return tcpIn;
 }
 
-MultipleOutputChannel<rcLib::PackageExtended> &MeshManager::getTcpOut() {
+OutputChannel<rcLib::PackageExtended> &MeshManager::getTcpOut() {
     return tcpOut;
 }
 

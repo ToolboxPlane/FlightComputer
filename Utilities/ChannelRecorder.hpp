@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include "../Filter.hpp"
-#include "../Channel.hpp"
+#include "../InputChannel.hpp"
 
 template <typename T>
 class ChannelRecorder : public Filter {
@@ -15,13 +15,13 @@ public:
     explicit ChannelRecorder(std::ostream &ostream) : ostream(ostream){
         this->start();
     };
-    Channel<T> &getChannelIn() {
+    InputChannel<T> &getChannelIn() {
         return channelIn;
     }
 
 
 private:
-    Channel<T> channelIn;
+    InputChannel<T> channelIn;
     std::ostream &ostream;
 
     void run() override {

@@ -7,18 +7,18 @@
 
 
 #include "../../Filter.hpp"
-#include "../../MultipleOutputChannel.hpp"
+#include "../../OutputChannel.hpp"
 #include "../rcLib/PackageExtended.hpp"
 
 class StreamDevice : public Filter {
 public:
     StreamDevice(const int BUF_SIZE, const  bool ignoreErrors = false) :
             BUF_SIZE(BUF_SIZE), ignoreErrors(ignoreErrors) {};
-    Channel<rcLib::PackageExtended> &getChannelIn();
-    MultipleOutputChannel<rcLib::PackageExtended> &getChannelOut();
+    InputChannel<rcLib::PackageExtended> &getChannelIn();
+    OutputChannel<rcLib::PackageExtended> &getChannelOut();
 private:
-    Channel<rcLib::PackageExtended> in;
-    MultipleOutputChannel<rcLib::PackageExtended> out;
+    InputChannel<rcLib::PackageExtended> in;
+    OutputChannel<rcLib::PackageExtended> out;
     void run() override;
     const int BUF_SIZE;
     const bool ignoreErrors;

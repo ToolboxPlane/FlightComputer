@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(SOURCES
         main.cpp
-        Channel.hpp
+        InputChannel.hpp
         Filter.hpp
         Devices/Stream/Serial/Serial.cpp
         Devices/Stream/Serial/Serial.hpp
@@ -43,7 +43,7 @@ set(SOURCES
         Utilities/ChannelReplay.hpp
         Filters/Navigation/Waypoint_t.hpp
         Devices/GPS/Gps_t.hpp
-        MultipleOutputChannel.hpp)
+        OutputChannel.hpp)
 
 set(SOURCES_PI ${SOURCES}
         Devices/LoRa/LoRa.cpp

@@ -12,7 +12,7 @@ GpsSimulator::GpsSimulator(const int intervalMs): intervalMs(intervalMs) {
     this->start();
 }
 
-MultipleOutputChannel<GpsMeasurement_t> &GpsSimulator::getChannelOut() {
+OutputChannel<GpsMeasurement_t> &GpsSimulator::getChannelOut() {
     return out;
 }
 

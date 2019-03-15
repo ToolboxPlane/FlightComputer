@@ -8,15 +8,15 @@ OutputFilter::OutputFilter() {
     this->start();
 }
 
-MultipleOutputChannel<rcLib::PackageExtended> & OutputFilter::getBaseOut() {
+OutputChannel<rcLib::PackageExtended> & OutputFilter::getBaseOut() {
     return baseOut;
 }
 
-MultipleOutputChannel<rcLib::PackageExtended> & OutputFilter::getFlightControllerOut() {
+OutputChannel<rcLib::PackageExtended> & OutputFilter::getFlightControllerOut() {
     return flightControllerOut;
 }
 
-Channel<Nav_t> &OutputFilter::getChannelIn() {
+InputChannel<Nav_t> &OutputFilter::getChannelIn() {
     return in;
 }
 

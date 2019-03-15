@@ -15,32 +15,32 @@ Fusion::Fusion()
     this->start();
 }
 
-MultipleOutputChannel<State_t> &Fusion::getChannelOut() {
+OutputChannel<State_t> &Fusion::getChannelOut() {
     return out;
 }
 
-Channel<GpsMeasurement_t> &Fusion::getGpsIn() {
+InputChannel<GpsMeasurement_t> &Fusion::getGpsIn() {
     return gpsIn;
 }
 
-Channel<rcLib::PackageExtended> &Fusion::getFlightControllerIn() {
+InputChannel<rcLib::PackageExtended> &Fusion::getFlightControllerIn() {
     return flightControllerIn;
 }
 
-Channel<rcLib::PackageExtended> &Fusion::getBaseIn() {
+InputChannel<rcLib::PackageExtended> &Fusion::getBaseIn() {
     return baseIn;
 }
 
-Channel<rcLib::PackageExtended> &Fusion::getRemoteIn() {
+InputChannel<rcLib::PackageExtended> &Fusion::getRemoteIn() {
     return remoteIn;
 }
 
-Channel<rcLib::PackageExtended> &Fusion::getPdbIn() {
+InputChannel<rcLib::PackageExtended> &Fusion::getPdbIn() {
     return pdbIn;
 }
 
 
-Channel<rcLib::PackageExtended> &Fusion::getTaranisIn() {
+InputChannel<rcLib::PackageExtended> &Fusion::getTaranisIn() {
     return taranisIn;
 }
 

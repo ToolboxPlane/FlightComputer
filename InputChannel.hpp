@@ -8,9 +8,9 @@
 #include <iostream>
 
 template<class item>
-class Channel {
+class InputChannel {
 public:
-    Channel() : closed(false), m(), cv(), queue() { }
+    InputChannel() : closed(false), m(), cv(), queue() { }
 
     void close() {
         std::unique_lock<std::mutex> lock(m);

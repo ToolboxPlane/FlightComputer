@@ -6,10 +6,10 @@
 #define FLIGHTCOMPUTER_LORA_HPP
 
 #include "../../Filter.hpp"
-#include "../../Channel.hpp"
+#include "../../InputChannel.hpp"
 #include <unistd.h>
 #include "../rcLib/PackageExtended.hpp"
-#include "../../MultipleOutputChannel.hpp"
+#include "../../OutputChannel.hpp"
 
 class LoRa : public Filter {
 public:

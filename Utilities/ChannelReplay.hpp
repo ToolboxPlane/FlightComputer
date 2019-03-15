@@ -9,8 +9,8 @@
 #include <chrono>
 #include <thread>
 #include "../Filter.hpp"
-#include "../Channel.hpp"
-#include "../MultipleOutputChannel.hpp"
+#include "../InputChannel.hpp"
+#include "../OutputChannel.hpp"
 
 template <typename T>
 class ChannelReplay : public Filter {
@@ -19,12 +19,12 @@ public:
         this->start();
     };
 
-    MultipleOutputChannel<T> &getChannelOut() {
+    OutputChannel<T> &getChannelOut() {
         return channelOut;
     }
 
     // This method solely exists for compatibility reasons
-    Channel<T> &getChannelIn() {
+    InputChannel<T> &getChannelIn() {
         return channelIn;
     }
 private:
@@ -61,8 +61,8 @@ private:
     }
 
     std::istream &istream;
-    MultipleOutputChannel<T> channelOut;
-    Channel<T> channelIn;
+    OutputChannel<T> channelOut;
+    InputChannel<T> channelIn;
 };
 
 

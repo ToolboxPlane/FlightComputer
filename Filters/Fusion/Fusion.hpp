@@ -6,12 +6,12 @@
 #define FLIGHTCOMPUTER_FUSION_HPP
 
 
-#include "../../Channel.hpp"
+#include "../../InputChannel.hpp"
 #include "../../Devices/rcLib/PackageExtended.hpp"
 #include "../../Filter.hpp"
 #include "../../Devices/GPS/GpsMeasurement_t.hpp"
 #include "State_t.hpp"
-#include "../../MultipleOutputChannel.hpp"
+#include "../../OutputChannel.hpp"
 #include <experimental/optional>
 
 enum ProcessingStatus {
@@ -25,14 +25,14 @@ public:
     Fusion();
     void run() override;
 
-    Channel<rcLib::PackageExtended> &getFlightControllerIn();
-    Channel<rcLib::PackageExtended> &getBaseIn();
-    Channel<rcLib::PackageExtended> &getRemoteIn();
-    Channel<rcLib::PackageExtended> &getTaranisIn();
-    Channel<rcLib::PackageExtended> &getPdbIn();
-    Channel<GpsMeasurement_t> &getGpsIn();
+    InputChannel<rcLib::PackageExtended> &getFlightControllerIn();
+    InputChannel<rcLib::PackageExtended> &getBaseIn();
+    InputChannel<rcLib::PackageExtended> &getRemoteIn();
+    InputChannel<rcLib::PackageExtended> &getTaranisIn();
+    InputChannel<rcLib::PackageExtended> &getPdbIn();
+    InputChannel<GpsMeasurement_t> &getGpsIn();
 
-    MultipleOutputChannel<State_t> &getChannelOut();
+    OutputChannel<State_t> &getChannelOut();
 private:
     rcLib::PackageExtended lastFcPackage;
     rcLib::PackageExtended lastPdbPackage;
@@ -45,9 +45,9 @@ private:
     State_t process();
     int normalizeTaranis(int input);
 
-    Channel<rcLib::PackageExtended> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
-    Channel<GpsMeasurement_t> gpsIn;
-    MultipleOutputChannel<State_t> out;
+    InputChannel<rcLib::PackageExtended> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
+    InputChannel<GpsMeasurement_t> gpsIn;
+    OutputChannel<State_t> out;
 };
 
 

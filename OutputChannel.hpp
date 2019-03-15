@@ -6,10 +6,10 @@
 #define FLIGHTCOMPUTER_MIMOCHANNEL_HPP
 
 #include <vector>
-#include "Channel.hpp"
+#include "InputChannel.hpp"
 
 template<typename T>
-class MultipleOutputChannel {
+class OutputChannel {
 public:
     void put(T item) {
         for(auto &channel: outputChannelList) {
@@ -17,11 +17,11 @@ public:
         }
     }
 
-    void operator>>(Channel<T> & channel) {
+    void operator>>(InputChannel<T> & channel) {
         outputChannelList.push_back(channel);
     }
 private:
-    std::vector<std::reference_wrapper<Channel<T>>> outputChannelList;
+    std::vector<std::reference_wrapper<InputChannel<T>>> outputChannelList;
 
 };
 

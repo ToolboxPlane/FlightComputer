@@ -7,10 +7,10 @@
 
 #include <termios.h>
 
-#include "../../../Channel.hpp"
+#include "../../../InputChannel.hpp"
 #include "../../rcLib/PackageExtended.hpp"
 #include "../../../Filter.hpp"
-#include "../../../MultipleOutputChannel.hpp"
+#include "../../../OutputChannel.hpp"
 #include "../StreamDevice.hpp"
 
 class Serial : public StreamDevice {

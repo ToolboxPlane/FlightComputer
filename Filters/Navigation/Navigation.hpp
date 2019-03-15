@@ -15,14 +15,14 @@ class Navigation : public Filter{
 public:
     Navigation();
 
-    Channel<State_t> &getChannelStateIn();
-    Channel<Waypoint_t> &getChannelWaypointIn();
-    MultipleOutputChannel<Nav_t> &getChannelOut();
+    InputChannel<State_t> &getChannelStateIn();
+    InputChannel<Waypoint_t> &getChannelWaypointIn();
+    OutputChannel<Nav_t> &getChannelOut();
 private:
     void run() override;
-    Channel<State_t> stateIn;
-    Channel<Waypoint_t> waypointIn;
-    MultipleOutputChannel<Nav_t> out;
+    InputChannel<State_t> stateIn;
+    InputChannel<Waypoint_t> waypointIn;
+    OutputChannel<Nav_t> out;
 
     void waypoints(State_t state, bool reset = false);
     void land(State_t state, bool reset = false);

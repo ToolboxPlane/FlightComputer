@@ -8,34 +8,34 @@
 
 #include "../../Filter.hpp"
 #include "../../Devices/rcLib/PackageExtended.hpp"
-#include "../../Channel.hpp"
-#include "../../MultipleOutputChannel.hpp"
+#include "../../InputChannel.hpp"
+#include "../../OutputChannel.hpp"
 
-class MeshManager : Filter{
+class MeshManager : public Filter{
 public:
     MeshManager();
 
-    Channel<rcLib::PackageExtended> &getLoraIn();
-    Channel<rcLib::PackageExtended> &getSerialIn();
-    MultipleOutputChannel<rcLib::PackageExtended> &getLoraOut();
-    MultipleOutputChannel<rcLib::PackageExtended> &getSerialOut();
+    InputChannel<rcLib::PackageExtended> &getLoraIn();
+    InputChannel<rcLib::PackageExtended> &getSerialIn();
+    OutputChannel<rcLib::PackageExtended> &getLoraOut();
+    OutputChannel<rcLib::PackageExtended> &getSerialOut();
 
-    Channel<rcLib::PackageExtended> &getFlightControllerIn();
-    Channel<rcLib::PackageExtended> &getBaseIn();
-    Channel<rcLib::PackageExtended> &getRemoteIn();
-    Channel<rcLib::PackageExtended> &getTcpIn();
+    InputChannel<rcLib::PackageExtended> &getFlightControllerIn();
+    InputChannel<rcLib::PackageExtended> &getBaseIn();
+    InputChannel<rcLib::PackageExtended> &getRemoteIn();
+    InputChannel<rcLib::PackageExtended> &getTcpIn();
 
-    MultipleOutputChannel<rcLib::PackageExtended> &getFlightControllerOut();
-    MultipleOutputChannel<rcLib::PackageExtended> &getRemoteOut();
-    MultipleOutputChannel<rcLib::PackageExtended> &getBaseOut();
-    MultipleOutputChannel<rcLib::PackageExtended> &getPdbOut();
-    MultipleOutputChannel<rcLib::PackageExtended> &getTaranisOut();
-    MultipleOutputChannel<rcLib::PackageExtended> &getTcpOut();
+    OutputChannel<rcLib::PackageExtended> &getFlightControllerOut();
+    OutputChannel<rcLib::PackageExtended> &getRemoteOut();
+    OutputChannel<rcLib::PackageExtended> &getBaseOut();
+    OutputChannel<rcLib::PackageExtended> &getPdbOut();
+    OutputChannel<rcLib::PackageExtended> &getTaranisOut();
+    OutputChannel<rcLib::PackageExtended> &getTcpOut();
 private:
-    Channel<rcLib::PackageExtended> loraIn, serialIn, tcpIn;
-    Channel<rcLib::PackageExtended> flightControllerIn, remoteIn, baseIn;
-    MultipleOutputChannel<rcLib::PackageExtended> loraOut, serialOut, tcpOut;
-    MultipleOutputChannel<rcLib::PackageExtended> flightControllerOut, remoteOut, baseOut, pdbOut, taranisOut;
+    InputChannel<rcLib::PackageExtended> loraIn, serialIn, tcpIn;
+    InputChannel<rcLib::PackageExtended> flightControllerIn, remoteIn, baseIn;
+    OutputChannel<rcLib::PackageExtended> loraOut, serialOut, tcpOut;
+    OutputChannel<rcLib::PackageExtended> flightControllerOut, remoteOut, baseOut, pdbOut, taranisOut;
 
     void propagateInternal(rcLib::PackageExtended pkg);
 

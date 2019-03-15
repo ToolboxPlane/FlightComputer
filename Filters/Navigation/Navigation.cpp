@@ -10,15 +10,15 @@ Navigation::Navigation() {
     this->start();
 }
 
-MultipleOutputChannel<Nav_t> &Navigation::getChannelOut() {
+OutputChannel<Nav_t> &Navigation::getChannelOut() {
     return out;
 }
 
-Channel<State_t> &Navigation::getChannelStateIn() {
+InputChannel<State_t> &Navigation::getChannelStateIn() {
     return stateIn;
 }
 
-Channel<Waypoint_t> &Navigation::getChannelWaypointIn() {
+InputChannel<Waypoint_t> &Navigation::getChannelWaypointIn() {
     return waypointIn;
 }
 

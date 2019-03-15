@@ -9,11 +9,11 @@ RcLibSimulator::RcLibSimulator(const uint8_t deviceId, const int intervalMs) :
     this->start();
 }
 
-Channel<rcLib::PackageExtended> &RcLibSimulator::getChannelIn() {
+InputChannel<rcLib::PackageExtended> &RcLibSimulator::getChannelIn() {
     return in;
 }
 
-MultipleOutputChannel<rcLib::PackageExtended> &RcLibSimulator::getChannelOut() {
+OutputChannel<rcLib::PackageExtended> &RcLibSimulator::getChannelOut() {
     return out;
 }
 

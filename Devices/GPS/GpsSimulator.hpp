@@ -7,17 +7,17 @@
 
 
 #include "../../Filter.hpp"
-#include "../../Channel.hpp"
+#include "../../InputChannel.hpp"
 #include "GpsMeasurement_t.hpp"
-#include "../../MultipleOutputChannel.hpp"
+#include "../../OutputChannel.hpp"
 
 class GpsSimulator : public Filter{
 public:
     explicit GpsSimulator(int intervalMs = 500);
 
-    MultipleOutputChannel<GpsMeasurement_t> &getChannelOut();
+    OutputChannel<GpsMeasurement_t> &getChannelOut();
 private:
-    MultipleOutputChannel<GpsMeasurement_t> out;
+    OutputChannel<GpsMeasurement_t> out;
     void run() override;
     const int intervalMs;
 };

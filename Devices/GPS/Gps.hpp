@@ -10,17 +10,17 @@
 
 #include "GpsMeasurement_t.hpp"
 #include "../../Filter.hpp"
-#include "../../Channel.hpp"
-#include "../../MultipleOutputChannel.hpp"
+#include "../../InputChannel.hpp"
+#include "../../OutputChannel.hpp"
 
-class Gps : Filter{
+class Gps : public Filter{
 public:
     Gps();
 
-    MultipleOutputChannel<GpsMeasurement_t> &getChannelOut();
+    OutputChannel<GpsMeasurement_t> &getChannelOut();
 private:
     void run() override;
-    MultipleOutputChannel<GpsMeasurement_t> out;
+    OutputChannel<GpsMeasurement_t> out;
     gps_data_t gps_data;
 };
 

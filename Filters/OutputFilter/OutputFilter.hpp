@@ -9,20 +9,20 @@
 #include "../../Filter.hpp"
 #include "../../Devices/rcLib/PackageExtended.hpp"
 #include "../Navigation/Nav_t.hpp"
-#include "../../Channel.hpp"
-#include "../../MultipleOutputChannel.hpp"
+#include "../../InputChannel.hpp"
+#include "../../OutputChannel.hpp"
 
-class OutputFilter : Filter{
+class OutputFilter : public Filter{
 public:
     OutputFilter();
 
-    MultipleOutputChannel<rcLib::PackageExtended> &getBaseOut();
-    MultipleOutputChannel<rcLib::PackageExtended> &getFlightControllerOut();
-    Channel<Nav_t> &getChannelIn();
+    OutputChannel<rcLib::PackageExtended> &getBaseOut();
+    OutputChannel<rcLib::PackageExtended> &getFlightControllerOut();
+    InputChannel<Nav_t> &getChannelIn();
 private:
     void run() override;
-    MultipleOutputChannel<rcLib::PackageExtended> flightControllerOut, baseOut;
-    Channel<Nav_t> in;
+    OutputChannel<rcLib::PackageExtended> flightControllerOut, baseOut;
+    InputChannel<Nav_t> in;
 };
 
 

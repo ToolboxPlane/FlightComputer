@@ -15,7 +15,6 @@ protected:
         std::thread t(&Filter::run, this);
         t.detach();
     }
-private:
 };
 
 

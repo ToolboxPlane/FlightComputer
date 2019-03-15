@@ -13,7 +13,7 @@
 #include "Utilities/ChannelRecorder.hpp"
 #include "Utilities/ChannelReplay.hpp"
 #include "Devices/GPS/Gps.hpp"
-#include "MultipleOutputChannel.hpp"
+#include "OutputChannel.hpp"
 
 #ifdef RASPBERRY_PI
 #include "Devices/LoRa/LoRa.hpp"
@@ -23,12 +23,11 @@ int main() {
     /*
      * I/O-Modules
      */
-    //Serial serial("/dev/ttyACM0", B9600);
-    //Serial serial("/dev/ttyACM0", B9600);
+    Serial serial("/dev/ttyACM0", B9600);
     //LoRa lora;
     //Gps gps;
 
-    RcLibSimulator serial(23, 50);
+    //RcLibSimulator serial(23, 50);
     RcLibSimulator lora(17, 60000);
     GpsSimulator gps(5000);
 
@@ -89,7 +88,7 @@ int main() {
      * Logging
      */
     Logger<rcLib::PackageExtended> serialReceive("Serial-Recv", true);
-    Logger<rcLib::PackageExtended> serialSend("Serial-Send", true);
+    Logger<rcLib::PackageExtended> serialSend("Serial-Send", false);
     Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", false);
     Logger<rcLib::PackageExtended> loraSend("Lora-Send", false);
     Logger<GpsMeasurement_t> gpsDebug("GPS", false);
