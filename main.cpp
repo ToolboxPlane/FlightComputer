@@ -23,13 +23,13 @@ int main() {
     /*
      * I/O-Modules
      */
-    Serial serial("/dev/ttyACM0", B9600);
+    Serial serial{"/dev/ttyACM0", B9600};
     //LoRa lora;
     //Gps gps;
 
-    //RcLibSimulator serial(23, 50);
-    RcLibSimulator lora(17, 60000);
-    GpsSimulator gps(5000);
+    //RcLibSimulator serial{23, 50};
+    RcLibSimulator lora{17, 60000};
+    GpsSimulator gps{5000};
 
     //std::ifstream serialFile("logs/serial_18_06_27_19_43.csv");
     //assert(serialFile.is_open());
@@ -37,17 +37,17 @@ int main() {
 
     std::ifstream waypointFile("missions/waypoints.csv");
     assert(waypointFile.is_open());
-    ChannelReplay<Waypoint_t> waypointReader(waypointFile);
+    ChannelReplay<Waypoint_t> waypointReader{waypointFile};
 
-    TcpServer tcpServer(61888);
+    TcpServer tcpServer{61888};
 
     /*
      * Internal Modules
      */
-    Fusion fusion;
-    Navigation navigation;
-    MeshManager meshManager;
-    OutputFilter outputFilter;
+    Fusion fusion{};
+    Navigation navigation{};
+    MeshManager meshManager{};
+    OutputFilter outputFilter{};
 
     /*
      * Mesh Manager
@@ -87,13 +87,13 @@ int main() {
     /*
      * Logging
      */
-    Logger<rcLib::PackageExtended> serialReceive("Serial-Recv", true);
-    Logger<rcLib::PackageExtended> serialSend("Serial-Send", false);
-    Logger<rcLib::PackageExtended> loraReceive("Lora-Recv", false);
-    Logger<rcLib::PackageExtended> loraSend("Lora-Send", false);
-    Logger<GpsMeasurement_t> gpsDebug("GPS", false);
-    Logger<Nav_t> navDebug("Nav", false);
-    Logger<State_t> fusionDebug("Fusion", false);
+    Logger<rcLib::PackageExtended> serialReceive{"Serial-Recv", true};
+    Logger<rcLib::PackageExtended> serialSend{"Serial-Send", false};
+    Logger<rcLib::PackageExtended> loraReceive{"Lora-Recv", false};
+    Logger<rcLib::PackageExtended> loraSend{"Lora-Send", false};
+    Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
+    Logger<Nav_t> navDebug{"Nav", false};
+    Logger<State_t> fusionDebug{"Fusion", false};
 
 
     serial.getChannelOut() >> serialReceive.getChannelIn();
