@@ -5,7 +5,6 @@
 #ifndef FLIGHTCOMPUTER_THREADMODULE_HPP
 #define FLIGHTCOMPUTER_THREADMODULE_HPP
 
-
 #include <thread>
 
 class Node {

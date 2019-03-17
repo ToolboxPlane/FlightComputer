@@ -1,13 +1,7 @@
 #!/bin/bash
 
 # Install necessary software
-sudo apt install -y build-essential git cmake libgps-dev gpsd setserial
-
-# Install wiring pi
-git clone git://git.drogon.net/wiringPi
-cd wiringPi
-./build
-cd ..
+sudo apt install -y git docker
 
 # Generate a ssh-key
 ssh-keygen
@@ -18,15 +12,6 @@ git clone git@github.com:ToolboxPlane/FlightComputer.git
 cd FlightComputer
 git submodule init
 git submodule update
-
-# Compile the program
-mkdir build
-cd build
-cmake ..
-make -j4
-
-# Create all necessary directorys
-mkdir logs
 
 # Setup the autostart
 sudo cp autostart.sh /etc/init.d/FlightComputer

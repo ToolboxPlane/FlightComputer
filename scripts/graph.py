@@ -33,8 +33,7 @@ for line in lines:
 text = 'digraph G {\n'
 text += '\tfontname = "Helvetica"\n'
 text += '\tfontsize = 8\n'
-text += '\trankdir="LR";\n'
-text += '\tnodesep = "0.6"\n'
+text += '\tnodesep = "1"\n'
 text += '\tsplines=ortho\n'
 text += '\tnode [\n'
 text += '\t\tfontname = "Helvetica"\n'
@@ -50,7 +49,7 @@ text += '\t]\n\n'
 for filt in filters:
     text += '\n\t' + filt[0] + ' [\n'
     if filt[1]:
-        text += '\t\tlabel = "' + filt[0] + '(' + filt[1] + ')"\n'
+        text += '\t\tlabel = "{' + filt[0] + '|' + filt[1] + '\\l}"\n'
     else:
         text += '\t\tlabel = "' + filt[0] + '"\n'
     text += '\t\tcolor = "' + colors[filt[2]] + '"\n'
@@ -58,8 +57,12 @@ for filt in filters:
 
 for connection in connections:
     text += '\n\t' + connection[0] + ' -> ' + connection[1] + ' [\n'
-    text += '\t\t' + 'taillabel = "' + connection[2] + '"\n'
-    text += '\t\t' + 'headlabel = "' + connection[3] + '"\n'
+    if connection[2] and connection[3] and connection[2] != connection[3]:
+        text += '\t\txlabel = "' + connection[2] + '->' + connection[3] + '"\n'
+    elif connection[2]:
+        text += '\t\txlabel = "' + connection[2] + '"\n'
+    elif connection[3]:
+        text += '\t\txlabel = "' + connection[3] + '"\n'
     text += '\t]\n'
 
 text += '}'
