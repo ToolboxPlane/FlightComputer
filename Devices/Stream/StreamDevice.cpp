@@ -17,7 +17,7 @@ namespace device {
     void StreamDevice::run() {
         rcLib::PackageExtended toSend;
         rcLib::PackageExtended received;
-        uint8_t buf[BUF_SIZE];
+        uint8_t buf[4096];
 
         while (true) {
             ssize_t readed = read(this->getFileDescriptor(), buf, sizeof(buf));
@@ -54,7 +54,7 @@ namespace device {
                     } else {
                         written += result;
                     }
-                } while (written < length);
+                } while (written < static_cast<ssize_t>(length));
             }
         }
     }

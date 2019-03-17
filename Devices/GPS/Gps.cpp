@@ -6,9 +6,6 @@
 #include <unistd.h>
 #include <gps.h>
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
-
 namespace device {
     Gps::Gps() {
         this->start();
@@ -55,5 +52,3 @@ namespace device {
         }
     }
 }
-
-#pragma clang diagnostic pop

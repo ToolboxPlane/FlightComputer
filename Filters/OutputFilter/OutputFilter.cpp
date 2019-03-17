@@ -23,26 +23,22 @@ namespace filter {
 
     void OutputFilter::run() {
         Control_t control{};
-        rcLib::PackageExtended serialOutPkg(1024, 4), loraOutPkg(1024, 8);
+        rcLib::PackageExtended serialOutPkg(1024, 4), loraOutPkg(1024, 4);
         rcLib::Package::transmitterId = 38;
 
         loraOutPkg.setMeshProperties(static_cast<uint8_t>(true), 2);
 
         while (!in.isClosed()) {
             if (in.get(control)) {
-                serialOutPkg.setChannel(0, (uint16_t) (control.power * 1023));
-                serialOutPkg.setChannel(1, (uint16_t) (control.pitch + 180));
-                serialOutPkg.setChannel(2, (uint16_t) (control.roll + 180));
+                serialOutPkg.setChannel(0, static_cast<uint16_t>(control.power * 1023));
+                serialOutPkg.setChannel(1, static_cast<uint16_t>(control.pitch + 180));
+                serialOutPkg.setChannel(2, static_cast<uint16_t>(control.roll + 180));
                 serialOutPkg.setChannel(3, 0);
 
-                loraOutPkg.setChannel(0, (uint16_t) (control.power * 1023));
-                loraOutPkg.setChannel(1, (uint16_t) (control.pitch + 180));
-                loraOutPkg.setChannel(2, (uint16_t) (control.roll + 180));
+                loraOutPkg.setChannel(0, static_cast<uint16_t>(control.power * 1023));
+                loraOutPkg.setChannel(1, static_cast<uint16_t>(control.pitch + 180));
+                loraOutPkg.setChannel(2, static_cast<uint16_t>(control.roll + 180));
                 loraOutPkg.setChannel(3, 0);
-                loraOutPkg.setChannel(4, 0);
-                loraOutPkg.setChannel(5, 0);
-                loraOutPkg.setChannel(6, 0);
-                loraOutPkg.setChannel(7, 0);
 
                 flightControllerOut.put(serialOutPkg);
                 baseOut.put(loraOutPkg);

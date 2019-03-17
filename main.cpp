@@ -119,10 +119,7 @@ int main() {
     gps.getChannelOut() >> gpsRecorder.getChannelIn();
 
     std::cout << "Started all modules!" << "\n";
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
-    while(true) {
+    while(!serial.getChannelIn().isClosed()) {
         std::this_thread::sleep_for(24h);
     }
-#pragma clang diagnostic pop
 }

@@ -5,9 +5,6 @@
 #include <iostream>
 #include "GpsSimulator.hpp"
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
-
 namespace device {
     GpsSimulator::GpsSimulator(const int intervalMs) : intervalMs(intervalMs) {
         this->start();
@@ -32,5 +29,3 @@ namespace device {
         }
     }
 }
-
-#pragma clang diagnostic pop

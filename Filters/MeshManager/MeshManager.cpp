@@ -5,9 +5,6 @@
 #include <iostream>
 #include "MeshManager.hpp"
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
-
 namespace filter {
     enum class RCLIB_DEVICE_ID {
         REMOTE = 17, FLIGHT_COMPUTER = 38,
@@ -77,7 +74,7 @@ namespace filter {
 
     void MeshManager::run() {
         rcLib::PackageExtended pkg{};
-        while (true) {
+        while (!serialIn.isClosed()) {
             if (loraIn.get(pkg, false)) {
                 if (pkg.needsForwarding()) {
                     pkg.countNode();
@@ -146,5 +143,3 @@ namespace filter {
         }
     }
 }
-
-#pragma clang diagnostic pop

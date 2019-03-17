@@ -11,7 +11,7 @@
 template<typename T>
 class InputChannel {
 public:
-    InputChannel() : closed(false), m(), cv(), queue() { }
+    InputChannel() : closed{false} {}
 
     void close() {
         std::unique_lock<std::mutex> lock(m);
@@ -54,10 +54,10 @@ public:
         }
     }
 private:
-    std::list<T> queue{};
-    std::mutex m{};
-    std::condition_variable cv{};
-    bool closed{false};
+    std::list<T> queue;
+    std::mutex m;
+    std::condition_variable cv;
+    bool closed;
 };
 
 #endif

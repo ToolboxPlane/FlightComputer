@@ -14,7 +14,7 @@
 
 class GpsMeasurement_t {
 public:
-    explicit GpsMeasurement_t(const std::vector<std::string> &items) : location(0,0){
+    explicit GpsMeasurement_t(const std::vector<std::string> &items) : location{0,0} {
         this->fixAquired = static_cast<bool>(std::stoi(items[0]));
         this->location.lat = std::stod(items[1]);
         this->location.lon = std::stod(items[2]);
@@ -25,9 +25,9 @@ public:
     }
 
     GpsMeasurement_t(double lat, double lon) :
-            location(lat, lon,0), speed(0), timestamp(0), fixAquired(false), climb(0){};
+            fixAquired{false}, location{lat, lon,0}, speed{0}, timestamp{0}, climb{0} {};
 
-    GpsMeasurement_t() : location(0,0), speed(0), timestamp(0), fixAquired(false), climb(0){};
+    GpsMeasurement_t() : fixAquired{false}, location{0,0}, speed{0}, timestamp{0}, climb{0} {};
 
     friend std::ostream &operator<<(std::ostream &ostream, GpsMeasurement_t gps) {
         if(!gps.fixAquired) {

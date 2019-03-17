@@ -51,7 +51,7 @@ namespace filter {
         }
     }
 
-    void Navigation::waypoints(State_t currentState, bool reset) {
+    void Navigation::waypoints(State_t currentState, bool) {
         static Waypoint_t nextWaypoint(currentState.position.location, std::numeric_limits<double>::max(), false);
         static uint16_t waypointIndex = 0;
         Nav_t nav{};
@@ -135,9 +135,9 @@ namespace filter {
         out.put(nav);
     }
 
-    void Navigation::angle(State_t state, bool reset) {
-        Nav_t nav{};
-        /*nav.pitch = state.lora.joyRight.y * MAX_PITCH;
+    void Navigation::angle(State_t , bool ) {
+        /*Nav_t nav{};
+        nav.pitch = state.lora.joyRight.y * MAX_PITCH;
         nav.roll = state.lora.joyRight.x * MAX_ROLL;
         nav.power = state.lora.isArmed ? speedControl(state.airspeed) : 0;
 
