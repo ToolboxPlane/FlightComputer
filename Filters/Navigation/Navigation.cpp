@@ -61,19 +61,10 @@ namespace filter {
             waypointIndex++;
         }
 
-        double headingTarget = currentState.position.location.angleTo(nextWaypoint.location);
-        nav.roll = headingControl(currentState.heading, headingTarget);
+        nav.heading = currentState.position.location.angleTo(nextWaypoint.location);
+        nav.altitude = nextWaypoint.location.altitude;
 
-        double deltaHeight = currentState.heightAboveSeaLevel - nextWaypoint.location.altitude;
-        nav.pitch = deltaHeight * Navigation::PITCH_P;
-
-        if (nav.pitch < -MAX_PITCH) {
-            nav.pitch = -MAX_PITCH;
-        } else if (nav.pitch > MAX_PITCH) {
-            nav.pitch = MAX_PITCH;
-        }
-
-        nav.power = currentState.lora.isArmed ? speedControl(currentState.airspeed) : 0;
+        nav.speed = currentState.lora.isArmed ? CRUISE_SPEED : 0;
 
         nav.stateMajor = 4;
         nav.stateMinor = waypointIndex;
@@ -83,14 +74,16 @@ namespace filter {
 
     void Navigation::land(State_t state, bool reset) {
         static double targetHeading = state.heading;
+        static double targetAltitude = state.heightAboveSeaLevel;
         if (reset) {
             targetHeading = state.heading;
+            targetAltitude = state.heightAboveSeaLevel;
         }
 
         Nav_t nav{};
-        nav.power = 0;
-        nav.roll = headingControl(state.heading, targetHeading);
-        nav.pitch = 0;
+        nav.speed = 0;
+        nav.heading = targetHeading;
+        nav.altitude = targetAltitude;
 
         nav.stateMajor = 2;
         nav.stateMinor = 0;
@@ -106,30 +99,33 @@ namespace filter {
         if (reset) {
             launchState = IN_HAND;
         }
+        static double headingTarget, altitudeTarget;
 
         Nav_t nav{};
 
         switch (launchState) {
             case IN_HAND:
-                nav.power = 0.0;
-                nav.roll = 0.0;
-                nav.pitch = 0.0;
+                nav.speed = 0.0;
+                nav.heading = state.heading;
+                nav.altitude = state.heightAboveSeaLevel;
                 if (state.accForward > THROW_THRESH) {
+                    headingTarget = state.heading;
+                    altitudeTarget = state.heightAboveSeaLevel + POST_LAUNCH_ALTITUDE;
                     launchState = THROWN;
                 }
                 break;
             case THROWN:
-                nav.power = state.lora.isArmed ? 1.0 : 0.0;
-                nav.roll = 0.0;
-                nav.pitch = 0.0;
+                nav.speed = state.lora.isArmed ? std::numeric_limits<double>::max() : 0.0;
+                nav.altitude = altitudeTarget;
+                nav.heading = headingTarget;
                 if (state.airspeed >= CRUISE_SPEED) {
                     launchState = CLIMB;
                 }
                 break;
             case CLIMB:
-                nav.power = state.lora.isArmed ? speedControl(state.airspeed) : 0;
-                nav.pitch = POST_LAUNCH_CLIMB;
-                nav.roll = 0;
+                nav.speed = state.lora.isArmed ? CRUISE_SPEED : 0;
+                nav.altitude = altitudeTarget;
+                nav.heading = headingTarget;
                 break;
         }
 
@@ -141,26 +137,29 @@ namespace filter {
 
     void Navigation::angle(State_t state, bool reset) {
         Nav_t nav{};
-        nav.pitch = state.lora.joyRight.y * MAX_PITCH;
+        /*nav.pitch = state.lora.joyRight.y * MAX_PITCH;
         nav.roll = state.lora.joyRight.x * MAX_ROLL;
         nav.power = state.lora.isArmed ? speedControl(state.airspeed) : 0;
 
         nav.stateMajor = 0;
         nav.stateMinor = 0;
 
-        out.put(nav);
+        out.put(nav);*/
+        //@TODO
     }
 
     void Navigation::hold(State_t state, bool reset) {
         Nav_t nav{};
         static double targetHeading = state.heading;
+        static double targetAltitude = state.heightAboveSeaLevel;
         if (reset) {
             targetHeading = state.heading;
+            targetAltitude = state.heightAboveSeaLevel;
         }
 
-        nav.power = state.lora.isArmed ? speedControl(state.airspeed) : 0;
-        nav.pitch = 0;
-        nav.roll = headingControl(state.heading, targetHeading);
+        nav.speed = state.lora.isArmed ? CRUISE_SPEED : 0;
+        nav.heading = targetHeading;
+        nav.altitude = targetAltitude;
 
         nav.stateMajor = 3;
         nav.stateMinor = 0;
@@ -168,43 +167,4 @@ namespace filter {
         out.put(nav);
     }
 
-    auto Navigation::speedControl(double airspeed, double target) -> double {
-        static double diffSum = 0;
-        static double lastDiff = target - airspeed;
-        double deltaSpeed = target - airspeed;
-        diffSum += deltaSpeed;
-
-        // Change in sign, anti windup
-        if (lastDiff * deltaSpeed < 0) {
-            diffSum = 0;
-        }
-        lastDiff = deltaSpeed;
-
-        // PI-Controller (I necessary to achieve stationary accuracy)
-        double speed = deltaSpeed * Navigation::SPEED_P + diffSum * Navigation::SPEED_I;
-
-        if (speed < 0.0) {
-            speed = 0;
-        } else if (speed > 1.0) {
-            speed = 1.0;
-        }
-        return speed;
-    }
-
-    auto Navigation::headingControl(double currHeading, double target) -> double {
-        double headingDiff = target - currHeading;
-        headingDiff = fmod(headingDiff, 360);
-        if (headingDiff > 180) {
-            headingDiff -= 180;
-        } else if (headingDiff < -180) {
-            headingDiff += 360;
-        }
-        double roll = -headingDiff * HEADING_P; // sign is a result of compass angles not being mathematically positive
-        if (roll < -MAX_ROLL) {
-            roll = -MAX_ROLL;
-        } else if (roll > MAX_ROLL) {
-            roll = MAX_ROLL;
-        }
-        return roll;
-    }
 }

@@ -6,13 +6,16 @@
 #define FLIGHTCOMPUTER_NAV_T_HPP
 
 #include <ostream>
+#include "../Fusion/State_t.hpp"
 
 class Nav_t {
 public:
-    double pitch, roll, power;
+    double heading, speed, altitude;
     uint16_t stateMajor, stateMinor;
+    State_t state;
+
     friend std::ostream &operator<<(std::ostream &stream, Nav_t nav) {
-        stream << "Pitch: " << nav.pitch << "\tRoll: " << nav.roll << "\tPower: " << nav.power;
+        stream << "Heading: " << nav.heading << "\tSpeed : " << nav.speed<< "\taltitude: " << nav.altitude;
         stream << "\tMaj: " << nav.stateMajor << "\tMin: " << nav.stateMinor;
         return stream;
     }

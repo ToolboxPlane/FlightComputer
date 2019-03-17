@@ -6,6 +6,7 @@
 #define FLIGHTCOMPUTER_STATE_T_HPP
 
 #include <ostream>
+#include "../../Devices/GPS/GpsMeasurement_t.hpp"
 
 enum class FlightMode{
     ANGLE = 0, LAUNCH = 1, LAND = 2, HOLD = 3, WAYPOINT = 4

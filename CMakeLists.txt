@@ -24,7 +24,8 @@ set(SOURCES
         Filters/MeshManager/MeshManager.cpp
         Filters/OutputFilter/OutputFilter.cpp
         Devices/GPS/GpsSimulator.cpp
-        Devices/GPS/Gps.cpp)
+        Devices/GPS/Gps.cpp
+        Filters/FeedbackControl/FeedbackControl.cpp)
 
 set(SOURCES_PI ${SOURCES}
         Devices/LoRa/LoRa.cpp)

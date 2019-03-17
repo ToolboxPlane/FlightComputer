@@ -14,12 +14,14 @@
 #include "Utilities/ChannelReplay.hpp"
 #include "Devices/GPS/Gps.hpp"
 #include "OutputChannel.hpp"
+#include "Filters/FeedbackControl/FeedbackControl.hpp"
 
 #ifdef RASPBERRY_PI
 #include "Devices/LoRa/LoRa.hpp"
 #endif
 
 int main() {
+    using namespace std::chrono_literals;
     /*
      * I/O-Modules
      */
@@ -42,21 +44,22 @@ int main() {
     device::TcpServer tcpServer{61888};
 
     /*
-     * Internal Modules
+     * Filters
      */
+    filter::MeshManager meshManager{};
     filter::Fusion fusion{};
     filter::Navigation navigation{};
-    filter::MeshManager meshManager{};
+    filter::FeedbackControl feedbackControl{};
     filter::OutputFilter outputFilter{};
 
     /*
-     * Mesh Manager
+     * Mesh Manager connections
      */
     serial.getChannelOut() >> meshManager.getSerialIn();
     meshManager.getSerialOut() >> serial.getChannelIn();
     meshManager.getTcpOut() >> tcpServer.getChannelIn();
 
-    //lora.getChannelOut() >> meshManager.getLoraIn();
+    lora.getChannelOut() >> meshManager.getLoraIn();
     meshManager.getLoraOut() >> lora.getChannelIn();
 
     meshManager.getFlightControllerOut() >> fusion.getFlightControllerIn();
@@ -66,21 +69,13 @@ int main() {
     meshManager.getBaseOut() >> fusion.getBaseIn();
 
     /*
-     * Fusion
+     * Internal connection
      */
     gps.getChannelOut() >> fusion.getGpsIn();
     fusion.getChannelOut() >> navigation.getChannelStateIn();
-
-    /*
-     * Navigation
-     */
     waypointReader.getChannelOut() >> navigation.getChannelWaypointIn();
-    navigation.getChannelOut() >> outputFilter.getChannelIn();
-
-
-    /*
-     * Output Node
-     */
+    navigation.getChannelOut() >> feedbackControl.getChannelIn();
+    feedbackControl.getChannelOut() >> outputFilter.getChannelIn();
     outputFilter.getBaseOut() >> meshManager.getBaseIn();
     outputFilter.getFlightControllerOut() >> meshManager.getFlightControllerIn();
 
@@ -103,7 +98,6 @@ int main() {
     gps.getChannelOut() >> gpsDebug.getChannelIn();
     fusion.getChannelOut() >> fusionDebug.getChannelIn();
     navigation.getChannelOut() >> navDebug.getChannelIn();
-
 
     /*
      * Recorder
@@ -128,7 +122,7 @@ int main() {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
     while(true) {
-        std::this_thread::sleep_for(std::chrono_literals::operator""h(24));
+        std::this_thread::sleep_for(24h);
     }
 #pragma clang diagnostic pop
 }
