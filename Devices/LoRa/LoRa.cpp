@@ -177,7 +177,7 @@ namespace device {
 
     void LoRa::setOpModeLoRa() {
         uint8_t u = OPMODE_LORA;
-        if (sx1272 == false)
+        if (!sx1272)
             u |= 0x8;   // TBD: sx1276 high freq
         writeRegister(REG_OPMODE, u);
     }

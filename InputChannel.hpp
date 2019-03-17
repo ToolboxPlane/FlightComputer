@@ -6,8 +6,9 @@
 #include <mutex>
 #include <condition_variable>
 #include <iostream>
+#include <optional>
 
-template<class item>
+template<typename T>
 class InputChannel {
 public:
     InputChannel() : closed(false), m(), cv(), queue() { }
@@ -21,15 +22,15 @@ public:
         std::unique_lock<std::mutex> lock(m);
         return closed;
     }
-    void put(const item i) {
+    void put(const T i) {
         std::unique_lock<std::mutex> lock(m);
         if(closed)
             throw std::logic_error("put to closed channel");
         queue.push_back(i);
         cv.notify_one();
-        //std::cerr << this->queue.size() << "\t" << typeid(item).name() << std::endl;
+        //std::cerr << this->queue.size() << "\t" << typeid(T).name() << std::endl;
     }
-    bool get(item &out, bool wait = true) {
+    bool get(T &out, bool wait = true) {
         std::unique_lock<std::mutex> lock(m);
         if(wait) {
             cv.wait(lock, [&]() {
@@ -43,8 +44,17 @@ public:
         queue.pop_front();
         return true;
     }
+
+    std::optional<T> get() {
+        T t;
+        if (this->get(t, false)) {
+            return t;
+        } else {
+            return std::nullopt;
+        }
+    }
 private:
-    std::list<item> queue{};
+    std::list<T> queue{};
     std::mutex m{};
     std::condition_variable cv{};
     bool closed{false};

@@ -12,15 +12,9 @@
 #include "../../Devices/GPS/GpsMeasurement_t.hpp"
 #include "State_t.hpp"
 #include "../../OutputChannel.hpp"
-#include <experimental/optional>
+#include <optional>
 
 namespace filter {
-    enum ProcessingStatus {
-        NOT_RECEIVED,
-        READY,
-        PROCESSED
-    };
-
     class Fusion : public Node {
     public:
         Fusion();
@@ -43,12 +37,11 @@ namespace filter {
 
     private:
         rcLib::PackageExtended lastFcPackage;
-        rcLib::PackageExtended lastPdbPackage;
-        GpsMeasurement_t lastGpsMeasurement;
-        rcLib::PackageExtended lastBasePackage;
-        rcLib::PackageExtended lastTaranisPackage;
-        rcLib::PackageExtended lastRemotePackage;
-        bool pdbRecv = false, gpsRecv = false, baseRecv = false, taranisRecv = false, remoteRecv = false;
+        std::optional<rcLib::PackageExtended> lastPdbPackage;
+        std::optional<GpsMeasurement_t> lastGpsMeasurement;
+        std::optional<rcLib::PackageExtended> lastBasePackage;
+        std::optional<rcLib::PackageExtended> lastTaranisPackage;
+        std::optional<rcLib::PackageExtended> lastRemotePackage;
 
         State_t process();
 

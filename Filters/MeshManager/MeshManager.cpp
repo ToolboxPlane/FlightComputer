@@ -76,7 +76,7 @@ namespace filter {
     }
 
     void MeshManager::run() {
-        rcLib::PackageExtended pkg;
+        rcLib::PackageExtended pkg{};
         while (true) {
             if (loraIn.get(pkg, false)) {
                 if (pkg.needsForwarding()) {

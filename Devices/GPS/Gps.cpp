@@ -20,8 +20,7 @@ namespace device {
 
     void Gps::run() {
         if (gps_open("localhost", "2947", &gps_data) == -1) {
-            fprintf(stderr, "reason: %s\n", gps_errstr(errno));
-            exit(1);
+            throw std::runtime_error(gps_errstr(errno));
         }
         gps_stream(&gps_data, WATCH_ENABLE | WATCH_JSON, nullptr);
 

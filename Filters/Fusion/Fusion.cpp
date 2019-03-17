@@ -6,10 +6,6 @@
 #include "Fusion.hpp"
 #include "State_t.hpp"
 
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
-
 namespace filter {
     Fusion::Fusion() {
         this->start();
@@ -39,40 +35,19 @@ namespace filter {
         return pdbIn;
     }
 
-
     InputChannel<rcLib::PackageExtended> &Fusion::getTaranisIn() {
         return taranisIn;
     }
 
     void Fusion::run() {
+        while (!flightControllerIn.isClosed()) {
+            lastGpsMeasurement = gpsIn.get();
+            lastPdbPackage = pdbIn.get();
+            lastTaranisPackage = taranisIn.get();
+            lastBasePackage = baseIn.get();
+            lastRemotePackage = remoteIn.get();
 
-        while (true) {
-            if (!gpsIn.isClosed()) {
-                while (gpsIn.get(lastGpsMeasurement, false)) {
-                    gpsRecv = true;
-                }
-            }
-            if (!pdbIn.isClosed()) {
-                while (pdbIn.get(lastPdbPackage, false)) {
-                    pdbRecv = true;
-                }
-            }
-            if (!taranisIn.isClosed()) {
-                while (taranisIn.get(lastTaranisPackage, false)) {
-                    taranisRecv = true;
-                }
-            }
-            if (!baseIn.isClosed()) {
-                while (baseIn.get(lastBasePackage, false)) {
-                    baseRecv = true;
-                }
-            }
-            if (!remoteIn.isClosed()) {
-                while (remoteIn.get(lastRemotePackage, false)) {
-                    remoteRecv = true;
-                }
-            }
-            if (!flightControllerIn.isClosed() && flightControllerIn.get(lastFcPackage)) {
+            if (flightControllerIn.get(lastFcPackage)) {
                 out.put(process());
             } else {
                 std::this_thread::yield();
@@ -96,8 +71,8 @@ namespace filter {
         res.accUpdown = lastFcPackage.getChannel(8) - 500;
 
         // Gps
-        if (gpsRecv && lastGpsMeasurement.fixAquired) {
-            res.position = lastGpsMeasurement;
+        if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired) {
+            res.position = lastGpsMeasurement.value();
             if (res.position.timestamp > lastState.position.timestamp) {
                 res.groundSpeed = res.position.location.distanceTo(lastState.position.location) /
                                   (res.position.timestamp - lastState.position.timestamp);
@@ -111,29 +86,31 @@ namespace filter {
         }
 
         // PDB
-        if (pdbRecv) {
-            res.voltage = (lastPdbPackage.getChannel(1) * 128) / 1000.0;
+        if (lastPdbPackage.has_value()) {
+            res.voltage = (lastPdbPackage.value().getChannel(1) * 128) / 1000.0;
         } else {
             res.voltage = 16.8;
         }
 
         // Taranis
-        if (taranisRecv) {
-            res.taranis.throttle = normalizeTaranis(lastTaranisPackage.getChannel(5));
-            res.taranis.yaw = normalizeTaranis(lastTaranisPackage.getChannel(6));
-            res.taranis.pitch = normalizeTaranis(lastTaranisPackage.getChannel(7));
-            res.taranis.roll = normalizeTaranis(lastTaranisPackage.getChannel(8));
-            res.taranis.isArmed = normalizeTaranis(lastTaranisPackage.getChannel(9)) > 250;
-            res.taranis.manualOverrideActive = normalizeTaranis(lastTaranisPackage.getChannel(10)) < 250;
+        if (lastTaranisPackage.has_value()) {
+            auto pkg = lastTaranisPackage.value();
+            res.taranis.throttle = normalizeTaranis(pkg.getChannel(5));
+            res.taranis.yaw = normalizeTaranis(pkg.getChannel(6));
+            res.taranis.pitch = normalizeTaranis(pkg.getChannel(7));
+            res.taranis.roll = normalizeTaranis(pkg.getChannel(8));
+            res.taranis.isArmed = normalizeTaranis(pkg.getChannel(9)) > 250;
+            res.taranis.manualOverrideActive = normalizeTaranis(pkg.getChannel(10)) < 250;
         }
 
-        if (remoteRecv) {
-            res.lora.joyRight.x = (lastRemotePackage.getChannel(0) - 127) / 127.0;
-            res.lora.joyRight.y = (lastRemotePackage.getChannel(1) - 127) / 127.0;
-            res.lora.joyLeft.x = (lastRemotePackage.getChannel(2) - 127) / 127.0;
-            res.lora.joyLeft.y = (lastRemotePackage.getChannel(3) - 127) / 127.0;
-            res.lora.flightMode = static_cast<FlightMode>(lastRemotePackage.getChannel(4));
-            res.lora.isArmed = static_cast<bool>(lastRemotePackage.getChannel(5));
+        if (lastRemotePackage.has_value()) {
+            auto pkg = lastRemotePackage.value();
+            res.lora.joyRight.x = (pkg.getChannel(0) - 127) / 127.0;
+            res.lora.joyRight.y = (pkg.getChannel(1) - 127) / 127.0;
+            res.lora.joyLeft.x = (pkg.getChannel(2) - 127) / 127.0;
+            res.lora.joyLeft.y = (pkg.getChannel(3) - 127) / 127.0;
+            res.lora.flightMode = static_cast<FlightMode>(pkg.getChannel(4));
+            res.lora.isArmed = static_cast<bool>(pkg.getChannel(5));
         } else {
             res.lora.flightMode = FlightMode::HOLD;
         }
@@ -149,5 +126,3 @@ namespace filter {
         return (input - 172) * 1000 / (1811 - 172);
     }
 }
-
-#pragma clang diagnostic pop
