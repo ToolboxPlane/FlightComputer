@@ -18,9 +18,9 @@ namespace device {
 
         void run() override;
 
-        InputChannel<rcLib::PackageExtended> &getChannelIn();
+        auto getChannelIn() -> InputChannel<rcLib::PackageExtended>&;
 
-        OutputChannel<rcLib::PackageExtended> &getChannelOut();
+        auto getChannelOut() -> OutputChannel<rcLib::PackageExtended>&;
 
     private:
         InputChannel<rcLib::PackageExtended> in;

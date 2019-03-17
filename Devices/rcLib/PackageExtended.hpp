@@ -56,7 +56,6 @@ namespace rcLib {
             ostream << ")";
             return ostream;
         }
-
     };
 }
 

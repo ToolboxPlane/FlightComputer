@@ -23,7 +23,7 @@ namespace filter {
         }
     }
 
-    auto FeedbackControl::speedControl(State_t state, double target) -> double {
+    auto FeedbackControl::speedControl(State_t state, double target) const -> double {
         if (target == 0) {
             return 0;
         }
@@ -42,15 +42,10 @@ namespace filter {
         // PI-Controller (I necessary to achieve stationary accuracy)
         double speed = deltaSpeed * FeedbackControl::SPEED_P + diffSum * FeedbackControl::SPEED_I;
 
-        if (speed < 0.0) {
-            speed = 0;
-        } else if (speed > 1.0) {
-            speed = 1.0;
-        }
-        return speed;
+        return clamp(speed, 0.0, 1.0);
     }
 
-    auto FeedbackControl::headingControl(State_t state, double target) -> double {
+    auto FeedbackControl::headingControl(State_t state, double target) const -> double {
         double headingDiff = target - state.heading;
         headingDiff = std::fmod(headingDiff, 360);
         if (headingDiff > 180) {
@@ -58,26 +53,15 @@ namespace filter {
         } else if (headingDiff < -180) {
             headingDiff += 360;
         }
-        double roll = -headingDiff * HEADING_P; // sign is a result of compass angles not being mathematically positive
-        if (roll < -MAX_ROLL) {
-            roll = -MAX_ROLL;
-        } else if (roll > MAX_ROLL) {
-            roll = MAX_ROLL;
-        }
-        return roll;
+        auto roll = -headingDiff * HEADING_P; // sign is a result of compass angles not being mathematically positive
+        return clamp(roll, -MAX_ROLL, MAX_ROLL);
     }
 
-    auto FeedbackControl::altitudeControl(State_t state, double target) -> double {
+    auto FeedbackControl::altitudeControl(State_t state, double target) const -> double {
         double deltaHeight = state.heightAboveSeaLevel - target;
         double pitch = deltaHeight * FeedbackControl::PITCH_P;
 
-        if (pitch < -MAX_PITCH) {
-            pitch = -MAX_PITCH;
-        } else if (pitch > MAX_PITCH) {
-            pitch = MAX_PITCH;
-        }
-
-        return pitch;
+        return clamp(pitch, -MAX_PITCH, MAX_PITCH);
     }
 
     InputChannel<Nav_t> &FeedbackControl::getChannelIn() {
@@ -86,6 +70,17 @@ namespace filter {
 
     OutputChannel<Control_t> &FeedbackControl::getChannelOut() {
         return this->channelOut;
+    }
+
+    template<typename T>
+    auto FeedbackControl::clamp(T val, T min, T max) -> T {
+        if (val < min) {
+            return min;
+        } else if (val > max) {
+            return max;
+        } else {
+            return val;
+        }
     }
 
 }

@@ -18,13 +18,12 @@ namespace device {
     public:
         Gps();
 
-        OutputChannel<GpsMeasurement_t> &getChannelOut();
+        auto getChannelOut() -> OutputChannel<GpsMeasurement_t>&;
 
     private:
         void run() override;
 
         OutputChannel<GpsMeasurement_t> out;
-        gps_data_t gps_data;
     };
 }
 

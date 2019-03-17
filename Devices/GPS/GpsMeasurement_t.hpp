@@ -14,7 +14,7 @@
 
 class GpsMeasurement_t {
 public:
-    explicit GpsMeasurement_t(const std::vector<std::string> &items) : location{0,0} {
+    GpsMeasurement_t(const std::vector<std::string> &items) : location{0,0} {
         this->fixAquired = static_cast<bool>(std::stoi(items[0]));
         this->location.lat = std::stod(items[1]);
         this->location.lon = std::stod(items[2]);
@@ -43,7 +43,7 @@ public:
     }
 
 
-    std::string getLine() {
+    auto getLine() const -> std::string {
         std::stringstream stringstream;
         stringstream << (this->fixAquired ? 1:0) << "; ";
         stringstream << this->location.lat << "; ";
@@ -56,7 +56,7 @@ public:
         return stringstream.str();
     }
 
-    static std::string header() {
+    static auto header() -> std::string {
         return "Fix; Lat; Lon; Speed; Timestamp; Altitude; Climb";
     }
 

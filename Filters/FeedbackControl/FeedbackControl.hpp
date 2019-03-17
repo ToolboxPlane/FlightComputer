@@ -17,14 +17,17 @@
 namespace filter {
     class FeedbackControl : public Node {
     public:
-        InputChannel<Nav_t> &getChannelIn();
-        OutputChannel<Control_t> &getChannelOut();
+        auto getChannelIn() -> InputChannel<Nav_t>&;
+        auto getChannelOut() -> OutputChannel<Control_t>&;
     private:
         void run() override;
 
-        auto speedControl(State_t state, double target) -> double;
-        auto headingControl(State_t state, double target) -> double;
-        auto altitudeControl(State_t state, double target) -> double;
+        auto speedControl(State_t state, double target) const -> double;
+        auto headingControl(State_t state, double target) const -> double;
+        auto altitudeControl(State_t state, double target) const -> double;
+
+        template <typename T>
+        static auto clamp(T val, T min, T max) -> T;
 
         InputChannel<Nav_t> channelIn;
         OutputChannel<Control_t> channelOut;

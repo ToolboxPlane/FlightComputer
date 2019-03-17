@@ -10,11 +10,11 @@
 
 class Gps_t {
 public:
-    explicit Gps_t(double lat, double lon, double altitude = 0) : lat(lat), lon(lon), altitude(altitude){};
+    Gps_t(double lat, double lon, double altitude = 0) : lat(lat), lon(lon), altitude(altitude){};
     double lat, lon;
     double altitude;
 
-    double distanceTo(Gps_t gps) {
+    double distanceTo(const Gps_t &gps) const {
         double phi1 = this->lon / 180 * M_PI;
         double sigma1 = M_PI/2 - (this->lat / 180 * M_PI);
         double r1 = EARTH_RADIUS + this->altitude;
@@ -36,14 +36,13 @@ public:
         return std::sqrt(dx*dx + dy*dy + dz*dz);
     }
 
-    double angleTo(Gps_t gps) {
+    double angleTo(const Gps_t &gps) const {
         Gps_t supportPoint(this->lat, gps.lon);
         double xDiff = this->distanceTo(supportPoint);
         double yDiff = supportPoint.distanceTo(gps);
         return -std::atan2(yDiff, xDiff) * 180.0 / M_PI + 90;
     }
 
-private:
     static constexpr double EARTH_RADIUS = 6371300;
 };
 

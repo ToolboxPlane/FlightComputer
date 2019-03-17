@@ -10,10 +10,6 @@ namespace device {
         this->start();
     }
 
-    OutputChannel<GpsMeasurement_t> &GpsSimulator::getChannelOut() {
-        return out;
-    }
-
     void GpsSimulator::run() {
         while (true) {
             GpsMeasurement_t gps{};
@@ -27,5 +23,9 @@ namespace device {
             out.put(gps);
             std::this_thread::sleep_for(std::chrono::milliseconds(intervalMs));
         }
+    }
+
+    auto GpsSimulator::getChannelOut() -> OutputChannel<GpsMeasurement_t> & {
+        return out;
     }
 }

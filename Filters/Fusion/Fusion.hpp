@@ -45,7 +45,7 @@ namespace filter {
 
         State_t process();
 
-        int normalizeTaranis(int input);
+        static int normalizeTaranis(int input);
 
         InputChannel<rcLib::PackageExtended> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
         InputChannel<GpsMeasurement_t> gpsIn;

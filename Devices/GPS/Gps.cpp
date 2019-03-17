@@ -11,11 +11,9 @@ namespace device {
         this->start();
     }
 
-    OutputChannel<GpsMeasurement_t> &Gps::getChannelOut() {
-        return out;
-    }
-
     void Gps::run() {
+        gps_data_t gps_data{};
+
         if (gps_open("localhost", "2947", &gps_data) == -1) {
             throw std::runtime_error(gps_errstr(errno));
         }
@@ -49,5 +47,9 @@ namespace device {
                 }
             }
         }
+    }
+
+    auto Gps::getChannelOut() -> OutputChannel<GpsMeasurement_t>&  {
+        return out;
     }
 }

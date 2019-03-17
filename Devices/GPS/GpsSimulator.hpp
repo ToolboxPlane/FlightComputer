@@ -16,7 +16,7 @@ namespace device {
     public:
         explicit GpsSimulator(int intervalMs = 500);
 
-        OutputChannel<GpsMeasurement_t> &getChannelOut();
+        auto getChannelOut() -> OutputChannel<GpsMeasurement_t>&;
 
     private:
         OutputChannel<GpsMeasurement_t> out;

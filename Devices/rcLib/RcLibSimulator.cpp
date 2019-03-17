@@ -10,14 +10,6 @@ namespace device {
         this->start();
     }
 
-    InputChannel<rcLib::PackageExtended> &RcLibSimulator::getChannelIn() {
-        return in;
-    }
-
-    OutputChannel<rcLib::PackageExtended> &RcLibSimulator::getChannelOut() {
-        return out;
-    }
-
     void RcLibSimulator::run() {
         rcLib::PackageExtended pkg(256, 16);
         pkg.setMeshProperties(static_cast<uint8_t>(true));
@@ -29,5 +21,13 @@ namespace device {
             out.put(pkg);
             std::this_thread::sleep_for(std::chrono::milliseconds(intervalMs));
         }
+    }
+
+    auto RcLibSimulator::getChannelIn() -> InputChannel<rcLib::PackageExtended> & {
+        return in;
+    }
+
+    auto RcLibSimulator::getChannelOut() -> OutputChannel<rcLib::PackageExtended> & {
+        return out;
     }
 }

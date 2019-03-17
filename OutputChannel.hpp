@@ -18,7 +18,7 @@ public:
     }
 
     void operator>>(InputChannel<T> & channel) {
-        outputChannelList.push_back(channel);
+        outputChannelList.emplace_back(channel);
     }
 private:
     std::vector<std::reference_wrapper<InputChannel<T>>> outputChannelList;
