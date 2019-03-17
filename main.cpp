@@ -23,13 +23,13 @@ int main() {
     /*
      * I/O-Modules
      */
-    Serial serial{"/dev/ttyACM0", B9600};
+    //Serial serial{"/dev/ttyACM0", B9600};
     //LoRa lora;
     //Gps gps;
 
-    //RcLibSimulator serial{23, 50};
-    RcLibSimulator lora{17, 60000};
-    GpsSimulator gps{5000};
+    device::RcLibSimulator serial{23, 50};
+    device::RcLibSimulator lora{17, 60000};
+    device::GpsSimulator gps{5000};
 
     //std::ifstream serialFile("logs/serial_18_06_27_19_43.csv");
     //assert(serialFile.is_open());
@@ -37,17 +37,17 @@ int main() {
 
     std::ifstream waypointFile("missions/waypoints.csv");
     assert(waypointFile.is_open());
-    ChannelReplay<Waypoint_t> waypointReader{waypointFile};
+    recording::ChannelReplay<Waypoint_t> waypointReader{waypointFile};
 
-    TcpServer tcpServer{61888};
+    device::TcpServer tcpServer{61888};
 
     /*
      * Internal Modules
      */
-    Fusion fusion{};
-    Navigation navigation{};
-    MeshManager meshManager{};
-    OutputFilter outputFilter{};
+    filter::Fusion fusion{};
+    filter::Navigation navigation{};
+    filter::MeshManager meshManager{};
+    filter::OutputFilter outputFilter{};
 
     /*
      * Mesh Manager
@@ -68,7 +68,7 @@ int main() {
     /*
      * Fusion
      */
-    //gps.getChannelOut() >> fusion.getGpsIn();
+    gps.getChannelOut() >> fusion.getGpsIn();
     fusion.getChannelOut() >> navigation.getChannelStateIn();
 
     /*
@@ -79,7 +79,7 @@ int main() {
 
 
     /*
-     * Output Filter
+     * Output Node
      */
     outputFilter.getBaseOut() >> meshManager.getBaseIn();
     outputFilter.getFlightControllerOut() >> meshManager.getFlightControllerIn();
@@ -87,19 +87,19 @@ int main() {
     /*
      * Logging
      */
-    Logger<rcLib::PackageExtended> serialReceive{"Serial-Recv", true};
-    Logger<rcLib::PackageExtended> serialSend{"Serial-Send", false};
-    Logger<rcLib::PackageExtended> loraReceive{"Lora-Recv", false};
-    Logger<rcLib::PackageExtended> loraSend{"Lora-Send", false};
-    Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
-    Logger<Nav_t> navDebug{"Nav", false};
-    Logger<State_t> fusionDebug{"Fusion", false};
+    debug::Logger<rcLib::PackageExtended> serialReceiveDebug{"Serial-Recv", true};
+    debug::Logger<rcLib::PackageExtended> serialSendDebug{"Serial-Send", false};
+    debug::Logger<rcLib::PackageExtended> loraReceiveDebug{"Lora-Recv", false};
+    debug::Logger<rcLib::PackageExtended> loraSendDebug{"Lora-Send", false};
+    debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
+    debug::Logger<Nav_t> navDebug{"Nav", false};
+    debug::Logger<State_t> fusionDebug{"Fusion", false};
 
 
-    serial.getChannelOut() >> serialReceive.getChannelIn();
-    meshManager.getSerialOut() >> serialSend.getChannelIn();
-    lora.getChannelOut() >> loraReceive.getChannelIn();
-    meshManager.getLoraOut() >> loraSend.getChannelIn();
+    serial.getChannelOut() >> serialReceiveDebug.getChannelIn();
+    meshManager.getSerialOut() >> serialSendDebug.getChannelIn();
+    lora.getChannelOut() >> loraReceiveDebug.getChannelIn();
+    meshManager.getLoraOut() >> loraSendDebug.getChannelIn();
     gps.getChannelOut() >> gpsDebug.getChannelIn();
     fusion.getChannelOut() >> fusionDebug.getChannelIn();
     navigation.getChannelOut() >> navDebug.getChannelIn();
@@ -114,12 +114,12 @@ int main() {
     std::stringstream serialFileNameStream;
     serialFileNameStream << "logs/serial_" << std::put_time(localTime,"%y_%m_%d_%H_%M") << ".csv";
     std::ofstream fileSerialRecord(serialFileNameStream.str());
-    ChannelRecorder<rcLib::PackageExtended> serialRecorder(fileSerialRecord);
+    recording::ChannelRecorder<rcLib::PackageExtended> serialRecorder(fileSerialRecord);
 
     std::stringstream gpsFileNameStream;
     gpsFileNameStream << "logs/gps_" << std::put_time(localTime, "%y_%m_%d_%H_%M") << ".csv";
     std::ofstream fileGpsRecord(gpsFileNameStream.str());
-    ChannelRecorder<GpsMeasurement_t> gpsRecorder(fileGpsRecord);
+    recording::ChannelRecorder<GpsMeasurement_t> gpsRecorder(fileGpsRecord);
 
     serial.getChannelOut() >> serialRecorder.getChannelIn();
     gps.getChannelOut() >> gpsRecorder.getChannelIn();

@@ -2,18 +2,27 @@ import re
 import sys
 
 lines = sys.argv[1].split(";")
-print(sys.argv)
 lines = list(map(lambda x: x.strip(), lines))
+
+colors = {
+    "debug": "red",
+    "filter": "green",
+    "device": "blue",
+    "recording": "grey"
+}
 filters = []
 connections = []
 for line in lines:
-    filterMatch = re.search('[a-zA-Z0-9:<>]+ +([a-zA-Z0-9]+){(([[a-zA-Z0-9"/:\.]+,?\ *)*)}', line)
+    filterMatch = re.search(
+        '([a-zA-Z0-9]+)::.+ +([a-zA-Z0-9]+){(([[a-zA-Z0-9"/:.]+,? *)*)}', line)
     if filterMatch is not None:
-        escaped = filterMatch.group(2).replace('"', '\\"')
-        filters.append((filterMatch.group(1), escaped))
+        escaped = filterMatch.group(3).replace('"', '\\"')
+        print(filterMatch.group(1), filterMatch.group(2))
+        filters.append((filterMatch.group(2), escaped, colors[filterMatch.group(1)]))
 
 for line in lines:
-    connectionMatch = re.search('([a-zA-Z0-9]+)\.([a-zA-Z0-9]+)\(\) *>> *([a-zA-Z0-9]+)\.([a-zA-Z0-9]+)\(\)', line)
+    connectionMatch = re.search(
+        '([a-zA-Z0-9]+)\.([a-zA-Z0-9]+)\(\) *>> *([a-zA-Z0-9]+)\.([a-zA-Z0-9]+)\(\)', line)
     if connectionMatch is not None:
         connections.append((connectionMatch.group(1),
                             connectionMatch.group(3),
@@ -43,6 +52,7 @@ for filt in filters:
         text += '\t\tlabel = "' + filt[0] + '(' + filt[1] + ')"\n'
     else:
         text += '\t\tlabel = "' + filt[0] + '"\n'
+    text += '\t\tcolor = "' + filt[2] + '"\n'
     text += '\t]\n'
 
 for connection in connections:

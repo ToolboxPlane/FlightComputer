@@ -8,26 +8,28 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
-GpsSimulator::GpsSimulator(const int intervalMs): intervalMs(intervalMs) {
-    this->start();
-}
+namespace device {
+    GpsSimulator::GpsSimulator(const int intervalMs) : intervalMs(intervalMs) {
+        this->start();
+    }
 
-OutputChannel<GpsMeasurement_t> &GpsSimulator::getChannelOut() {
-    return out;
-}
+    OutputChannel<GpsMeasurement_t> &GpsSimulator::getChannelOut() {
+        return out;
+    }
 
-void GpsSimulator::run() {
-    while(true) {
-        GpsMeasurement_t gps{};
-        gps.location.lon = 48.4235495;
-        gps.location.lat = 9.9292937;
-        gps.timestamp = 24;
-        gps.location.altitude = 500;
-        gps.fixAquired = true;
-        gps.speed = 40;
-        gps.climb = 0;
-        out.put(gps);
-        std::this_thread::sleep_for(std::chrono::milliseconds(intervalMs));
+    void GpsSimulator::run() {
+        while (true) {
+            GpsMeasurement_t gps{};
+            gps.location.lon = 48.4235495;
+            gps.location.lat = 9.9292937;
+            gps.timestamp = 24;
+            gps.location.altitude = 500;
+            gps.fixAquired = true;
+            gps.speed = 40;
+            gps.climb = 0;
+            out.put(gps);
+            std::this_thread::sleep_for(std::chrono::milliseconds(intervalMs));
+        }
     }
 }
 

@@ -8,23 +8,26 @@
 
 #include "../../InputChannel.hpp"
 #include "PackageExtended.hpp"
-#include "../../Filter.hpp"
+#include "../../Node.hpp"
 #include "../../OutputChannel.hpp"
 
-class RcLibSimulator : public Filter{
-public:
-    explicit RcLibSimulator(uint8_t deviceId, const int intervalMs = 500);
-    void run() override;
+namespace device {
+    class RcLibSimulator : public Node {
+    public:
+        explicit RcLibSimulator(uint8_t deviceId, int intervalMs = 500);
 
-    InputChannel<rcLib::PackageExtended> &getChannelIn();
-    OutputChannel<rcLib::PackageExtended> &getChannelOut();
+        void run() override;
 
-private:
-    InputChannel<rcLib::PackageExtended> in;
-    OutputChannel<rcLib::PackageExtended> out;
-    const uint8_t deviceId;
-    const int intervalMs;
-};
+        InputChannel<rcLib::PackageExtended> &getChannelIn();
 
+        OutputChannel<rcLib::PackageExtended> &getChannelOut();
+
+    private:
+        InputChannel<rcLib::PackageExtended> in;
+        OutputChannel<rcLib::PackageExtended> out;
+        const uint8_t deviceId;
+        const int intervalMs;
+    };
+}
 
 #endif //FLIGHTCOMPUTER_SERIALSIMULATOR_HPP

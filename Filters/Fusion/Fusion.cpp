@@ -10,144 +10,144 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
-Fusion::Fusion()
-{
-    this->start();
-}
+namespace filter {
+    Fusion::Fusion() {
+        this->start();
+    }
 
-OutputChannel<State_t> &Fusion::getChannelOut() {
-    return out;
-}
+    OutputChannel<State_t> &Fusion::getChannelOut() {
+        return out;
+    }
 
-InputChannel<GpsMeasurement_t> &Fusion::getGpsIn() {
-    return gpsIn;
-}
+    InputChannel<GpsMeasurement_t> &Fusion::getGpsIn() {
+        return gpsIn;
+    }
 
-InputChannel<rcLib::PackageExtended> &Fusion::getFlightControllerIn() {
-    return flightControllerIn;
-}
+    InputChannel<rcLib::PackageExtended> &Fusion::getFlightControllerIn() {
+        return flightControllerIn;
+    }
 
-InputChannel<rcLib::PackageExtended> &Fusion::getBaseIn() {
-    return baseIn;
-}
+    InputChannel<rcLib::PackageExtended> &Fusion::getBaseIn() {
+        return baseIn;
+    }
 
-InputChannel<rcLib::PackageExtended> &Fusion::getRemoteIn() {
-    return remoteIn;
-}
+    InputChannel<rcLib::PackageExtended> &Fusion::getRemoteIn() {
+        return remoteIn;
+    }
 
-InputChannel<rcLib::PackageExtended> &Fusion::getPdbIn() {
-    return pdbIn;
-}
+    InputChannel<rcLib::PackageExtended> &Fusion::getPdbIn() {
+        return pdbIn;
+    }
 
 
-InputChannel<rcLib::PackageExtended> &Fusion::getTaranisIn() {
-    return taranisIn;
-}
+    InputChannel<rcLib::PackageExtended> &Fusion::getTaranisIn() {
+        return taranisIn;
+    }
 
-void Fusion::run() {
+    void Fusion::run() {
 
-    while(true) {
-        if (!gpsIn.isClosed()) {
-            while (gpsIn.get(lastGpsMeasurement, false)) {
-                gpsRecv = true;
+        while (true) {
+            if (!gpsIn.isClosed()) {
+                while (gpsIn.get(lastGpsMeasurement, false)) {
+                    gpsRecv = true;
+                }
+            }
+            if (!pdbIn.isClosed()) {
+                while (pdbIn.get(lastPdbPackage, false)) {
+                    pdbRecv = true;
+                }
+            }
+            if (!taranisIn.isClosed()) {
+                while (taranisIn.get(lastTaranisPackage, false)) {
+                    taranisRecv = true;
+                }
+            }
+            if (!baseIn.isClosed()) {
+                while (baseIn.get(lastBasePackage, false)) {
+                    baseRecv = true;
+                }
+            }
+            if (!remoteIn.isClosed()) {
+                while (remoteIn.get(lastRemotePackage, false)) {
+                    remoteRecv = true;
+                }
+            }
+            if (!flightControllerIn.isClosed() && flightControllerIn.get(lastFcPackage)) {
+                out.put(process());
+            } else {
+                std::this_thread::yield();
             }
         }
-        if (!pdbIn.isClosed()) {
-            while (pdbIn.get(lastPdbPackage, false)) {
-                pdbRecv = true;
+    }
+
+    State_t Fusion::process() {
+        State_t res{};
+        static State_t lastState;
+
+        // Flightcontroller Data
+        res.heading = lastFcPackage.getChannel(0);
+        res.roll = lastFcPackage.getChannel(1) - 180;
+        res.pitch = lastFcPackage.getChannel(2) - 180;
+        res.heightAboveSeaLevel = lastFcPackage.getChannel(4);
+        res.heightAboveGround = res.heightAboveSeaLevel; // Waiting for some kind of distance sensor
+        res.airspeed = lastFcPackage.getChannel(5);
+        res.accForward = lastFcPackage.getChannel(6) - 500;
+        res.accSide = lastFcPackage.getChannel(7) - 500;
+        res.accUpdown = lastFcPackage.getChannel(8) - 500;
+
+        // Gps
+        if (gpsRecv && lastGpsMeasurement.fixAquired) {
+            res.position = lastGpsMeasurement;
+            if (res.position.timestamp > lastState.position.timestamp) {
+                res.groundSpeed = res.position.location.distanceTo(lastState.position.location) /
+                                  (res.position.timestamp - lastState.position.timestamp);
+                //@TODO maybe res.position.speed is the better choice, requires testing
+            } else {
+                res.groundSpeed = lastState.groundSpeed;
             }
-        }
-        if(!taranisIn.isClosed()) {
-            while (taranisIn.get(lastTaranisPackage, false)) {
-                taranisRecv = true;
-            }
-        }
-        if(!baseIn.isClosed()) {
-            while (baseIn.get(lastBasePackage, false)) {
-                baseRecv = true;
-            }
-        }
-        if(!remoteIn.isClosed()) {
-            while (remoteIn.get(lastRemotePackage, false)) {
-                remoteRecv = true;
-            }
-        }
-        if (!flightControllerIn.isClosed() && flightControllerIn.get(lastFcPackage)) {
-            out.put(process());
         } else {
-            std::this_thread::yield();
+            res.groundSpeed = res.airspeed;
+            res.position.fixAquired = false;
         }
-    }
-}
 
-State_t Fusion::process() {
-    State_t res{};
-    static State_t lastState;
-
-    // Flightcontroller Data
-    res.heading = lastFcPackage.getChannel(0);
-    res.roll = lastFcPackage.getChannel(1) - 180;
-    res.pitch = lastFcPackage.getChannel(2) - 180;
-    res.heightAboveSeaLevel = lastFcPackage.getChannel(4);
-    res.heightAboveGround = res.heightAboveSeaLevel; // Waiting for some kind of distance sensor
-    res.airspeed = lastFcPackage.getChannel(5);
-    res.accForward = lastFcPackage.getChannel(6) - 500;
-    res.accSide = lastFcPackage.getChannel(7)  - 500;
-    res.accUpdown = lastFcPackage.getChannel(8) - 500;
-
-    // Gps
-    if(gpsRecv && lastGpsMeasurement.fixAquired) {
-        res.position = lastGpsMeasurement;
-        if (res.position.timestamp > lastState.position.timestamp) {
-            res.groundSpeed = res.position.location.distanceTo(lastState.position.location) /
-                              (res.position.timestamp - lastState.position.timestamp);
-            //@TODO maybe res.position.speed is the better choice, requires testing
+        // PDB
+        if (pdbRecv) {
+            res.voltage = (lastPdbPackage.getChannel(1) * 128) / 1000.0;
         } else {
-            res.groundSpeed = lastState.groundSpeed;
+            res.voltage = 16.8;
         }
-    } else {
-        res.groundSpeed = res.airspeed;
-        res.position.fixAquired = false;
+
+        // Taranis
+        if (taranisRecv) {
+            res.taranis.throttle = normalizeTaranis(lastTaranisPackage.getChannel(5));
+            res.taranis.yaw = normalizeTaranis(lastTaranisPackage.getChannel(6));
+            res.taranis.pitch = normalizeTaranis(lastTaranisPackage.getChannel(7));
+            res.taranis.roll = normalizeTaranis(lastTaranisPackage.getChannel(8));
+            res.taranis.isArmed = normalizeTaranis(lastTaranisPackage.getChannel(9)) > 250;
+            res.taranis.manualOverrideActive = normalizeTaranis(lastTaranisPackage.getChannel(10)) < 250;
+        }
+
+        if (remoteRecv) {
+            res.lora.joyRight.x = (lastRemotePackage.getChannel(0) - 127) / 127.0;
+            res.lora.joyRight.y = (lastRemotePackage.getChannel(1) - 127) / 127.0;
+            res.lora.joyLeft.x = (lastRemotePackage.getChannel(2) - 127) / 127.0;
+            res.lora.joyLeft.y = (lastRemotePackage.getChannel(3) - 127) / 127.0;
+            res.lora.flightMode = static_cast<FlightMode>(lastRemotePackage.getChannel(4));
+            res.lora.isArmed = static_cast<bool>(lastRemotePackage.getChannel(5));
+        } else {
+            res.lora.flightMode = FlightMode::HOLD;
+        }
+
+        //@TODO handle base, discuss which data to send. ATM not necessary due to non functioning lora tx
+
+        lastState = res;
+
+        return res;
     }
 
-    // PDB
-    if(pdbRecv) {
-        res.voltage = (lastPdbPackage.getChannel(1) * 128) / 1000.0;
-    } else {
-        res.voltage = 16.8;
+    int Fusion::normalizeTaranis(int input) {
+        return (input - 172) * 1000 / (1811 - 172);
     }
-
-    // Taranis
-    if(taranisRecv) {
-        res.taranis.throttle = normalizeTaranis(lastTaranisPackage.getChannel(5));
-        res.taranis.yaw = normalizeTaranis(lastTaranisPackage.getChannel(6));
-        res.taranis.pitch = normalizeTaranis(lastTaranisPackage.getChannel(7));
-        res.taranis.roll= normalizeTaranis(lastTaranisPackage.getChannel(8));
-        res.taranis.isArmed = normalizeTaranis(lastTaranisPackage.getChannel(9)) > 250;
-        res.taranis.manualOverrideActive = normalizeTaranis(lastTaranisPackage.getChannel(10)) < 250;
-    }
-
-    if(remoteRecv) {
-        res.lora.joyRight.x = (lastRemotePackage.getChannel(0)-127)/127.0;
-        res.lora.joyRight.y = (lastRemotePackage.getChannel(1)-127)/127.0;
-        res.lora.joyLeft.x = (lastRemotePackage.getChannel(2)-127)/127.0;
-        res.lora.joyLeft.y = (lastRemotePackage.getChannel(3)-127)/127.0;
-        res.lora.flightMode = static_cast<FlightMode>(lastRemotePackage.getChannel(4));
-        res.lora.isArmed = static_cast<bool>(lastRemotePackage.getChannel(5));
-    } else {
-        res.lora.flightMode = FlightMode::HOLD;
-    }
-
-    //@TODO handle base, discuss which data to send. ATM not necessary due to non functioning lora tx
-
-    lastState = res;
-
-    return res;
 }
-
-int Fusion::normalizeTaranis(int input) {
-    return (input-172)*1000/(1811-172);
-}
-
 
 #pragma clang diagnostic pop

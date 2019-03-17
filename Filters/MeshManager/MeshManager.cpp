@@ -7,142 +7,144 @@
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
-enum class RCLIB_DEVICE_ID {
-    REMOTE = 17, FLIGHT_COMPUTER = 38,
-    FLIGHT_CONTROLLER = 23,
-    BASE = 63, POWER_DISTRIBUTION = 74, TARANIS = 56
-};
 
-MeshManager::MeshManager() {
-    this->start();
-}
+namespace filter {
+    enum class RCLIB_DEVICE_ID {
+        REMOTE = 17, FLIGHT_COMPUTER = 38,
+        FLIGHT_CONTROLLER = 23,
+        BASE = 63, POWER_DISTRIBUTION = 74, TARANIS = 56
+    };
 
-InputChannel<rcLib::PackageExtended> &MeshManager::getLoraIn() {
-    return loraIn;
-}
+    MeshManager::MeshManager() {
+        this->start();
+    }
 
-InputChannel<rcLib::PackageExtended> &MeshManager::getSerialIn() {
-    return serialIn;
-}
+    InputChannel<rcLib::PackageExtended> &MeshManager::getLoraIn() {
+        return loraIn;
+    }
 
-OutputChannel<rcLib::PackageExtended> &MeshManager::getLoraOut() {
-    return loraOut;
-}
+    InputChannel<rcLib::PackageExtended> &MeshManager::getSerialIn() {
+        return serialIn;
+    }
 
-OutputChannel<rcLib::PackageExtended> &MeshManager::getSerialOut() {
-    return serialOut;
-}
+    OutputChannel<rcLib::PackageExtended> &MeshManager::getLoraOut() {
+        return loraOut;
+    }
 
-InputChannel<rcLib::PackageExtended> &MeshManager::getFlightControllerIn() {
-    return flightControllerIn;
-}
+    OutputChannel<rcLib::PackageExtended> &MeshManager::getSerialOut() {
+        return serialOut;
+    }
 
-InputChannel<rcLib::PackageExtended> &MeshManager::getBaseIn() {
-    return baseIn;
-}
+    InputChannel<rcLib::PackageExtended> &MeshManager::getFlightControllerIn() {
+        return flightControllerIn;
+    }
 
-InputChannel<rcLib::PackageExtended> &MeshManager::getRemoteIn() {
-    return remoteIn;
-}
+    InputChannel<rcLib::PackageExtended> &MeshManager::getBaseIn() {
+        return baseIn;
+    }
 
-OutputChannel<rcLib::PackageExtended> &MeshManager::getFlightControllerOut() {
-    return flightControllerOut;
-}
+    InputChannel<rcLib::PackageExtended> &MeshManager::getRemoteIn() {
+        return remoteIn;
+    }
 
-OutputChannel<rcLib::PackageExtended> &MeshManager::getRemoteOut() {
-    return remoteOut;
-}
+    OutputChannel<rcLib::PackageExtended> &MeshManager::getFlightControllerOut() {
+        return flightControllerOut;
+    }
 
-OutputChannel<rcLib::PackageExtended> &MeshManager::getBaseOut() {
-    return baseOut;
-}
+    OutputChannel<rcLib::PackageExtended> &MeshManager::getRemoteOut() {
+        return remoteOut;
+    }
 
-OutputChannel<rcLib::PackageExtended> &MeshManager::getPdbOut() {
-    return pdbOut;
-}
+    OutputChannel<rcLib::PackageExtended> &MeshManager::getBaseOut() {
+        return baseOut;
+    }
 
-OutputChannel<rcLib::PackageExtended> &MeshManager::getTaranisOut() {
-    return taranisOut;
-}
+    OutputChannel<rcLib::PackageExtended> &MeshManager::getPdbOut() {
+        return pdbOut;
+    }
 
-InputChannel<rcLib::PackageExtended> &MeshManager::getTcpIn() {
-    return tcpIn;
-}
+    OutputChannel<rcLib::PackageExtended> &MeshManager::getTaranisOut() {
+        return taranisOut;
+    }
 
-OutputChannel<rcLib::PackageExtended> &MeshManager::getTcpOut() {
-    return tcpOut;
-}
+    InputChannel<rcLib::PackageExtended> &MeshManager::getTcpIn() {
+        return tcpIn;
+    }
 
-void MeshManager::run() {
-    rcLib::PackageExtended pkg;
-    while(true) {
-        if (loraIn.get(pkg, false)) {
-            if(pkg.needsForwarding()) {
-                pkg.countNode();
+    OutputChannel<rcLib::PackageExtended> &MeshManager::getTcpOut() {
+        return tcpOut;
+    }
+
+    void MeshManager::run() {
+        rcLib::PackageExtended pkg;
+        while (true) {
+            if (loraIn.get(pkg, false)) {
+                if (pkg.needsForwarding()) {
+                    pkg.countNode();
+                    serialOut.put(pkg);
+                }
+                tcpOut.put(pkg);
+                propagateInternal(pkg);
+            }
+            if (serialIn.get(pkg, false)) {
+                if (pkg.needsForwarding()) {
+                    pkg.countNode();
+                    loraOut.put(pkg);
+                }
+                tcpOut.put(pkg);
+                propagateInternal(pkg);
+            }
+            if (tcpIn.get(pkg, false)) {
+                if (pkg.needsForwarding()) {
+                    pkg.countNode();
+                    loraOut.put(pkg);
+                    serialOut.put(pkg);
+                }
+                propagateInternal(pkg);
+            }
+            if (flightControllerIn.get(pkg, false)) {
+                pkg.setMeshProperties(static_cast<uint8_t>(false));
+                pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
                 serialOut.put(pkg);
             }
-            tcpOut.put(pkg);
-            propagateInternal(pkg);
-        }
-        if (serialIn.get(pkg, false)) {
-            if(pkg.needsForwarding())  {
-                pkg.countNode();
+            if (remoteIn.get(pkg, false)) {
+                pkg.setMeshProperties(static_cast<uint8_t>(false));
+                pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
                 loraOut.put(pkg);
             }
-            tcpOut.put(pkg);
-            propagateInternal(pkg);
-        }
-        if (tcpIn.get(pkg, false)) {
-            if(pkg.needsForwarding())  {
-                pkg.countNode();
+            if (baseIn.get(pkg, false)) {
+                pkg.setMeshProperties(static_cast<uint8_t>(true), 2);
+                pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
                 loraOut.put(pkg);
-                serialOut.put(pkg);
+                tcpOut.put(pkg);
             }
-            propagateInternal(pkg);
+            std::this_thread::yield();
         }
-        if (flightControllerIn.get(pkg, false)) {
-            pkg.setMeshProperties(static_cast<uint8_t>(false));
-            pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
-            serialOut.put(pkg);
+    }
+
+
+    void MeshManager::propagateInternal(rcLib::PackageExtended pkg) {
+        switch ((RCLIB_DEVICE_ID) pkg.getDeviceId()) {
+            case RCLIB_DEVICE_ID::REMOTE:
+                remoteOut.put(pkg);
+                break;
+            case RCLIB_DEVICE_ID::FLIGHT_CONTROLLER:
+                flightControllerOut.put(pkg);
+                break;
+            case RCLIB_DEVICE_ID::BASE:
+                baseOut.put(pkg);
+                break;
+            case RCLIB_DEVICE_ID::POWER_DISTRIBUTION:
+                pdbOut.put(pkg);
+                break;
+            case RCLIB_DEVICE_ID::TARANIS:
+                taranisOut.put(pkg);
+                break;
+            case RCLIB_DEVICE_ID::FLIGHT_COMPUTER:
+                // We routed in a loop...
+                break;
         }
-        if (remoteIn.get(pkg, false)) {
-            pkg.setMeshProperties(static_cast<uint8_t>(false));
-            pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
-            loraOut.put(pkg);
-        }
-        if (baseIn.get(pkg, false)) {
-            pkg.setMeshProperties(static_cast<uint8_t>(true), 2);
-            pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
-            loraOut.put(pkg);
-            tcpOut.put(pkg);
-        }
-        std::this_thread::yield();
     }
 }
-
-
-void MeshManager::propagateInternal(rcLib::PackageExtended pkg) {
-    switch ((RCLIB_DEVICE_ID)pkg.getDeviceId()) {
-        case RCLIB_DEVICE_ID::REMOTE:
-            remoteOut.put(pkg);
-            break;
-        case RCLIB_DEVICE_ID::FLIGHT_CONTROLLER:
-            flightControllerOut.put(pkg);
-            break;
-        case RCLIB_DEVICE_ID::BASE:
-            baseOut.put(pkg);
-            break;
-        case RCLIB_DEVICE_ID::POWER_DISTRIBUTION:
-            pdbOut.put(pkg);
-            break;
-        case RCLIB_DEVICE_ID::TARANIS:
-            taranisOut.put(pkg);
-            break;
-        case RCLIB_DEVICE_ID::FLIGHT_COMPUTER:
-            // We routed in a loop...
-            break;
-    }
-}
-
 
 #pragma clang diagnostic pop

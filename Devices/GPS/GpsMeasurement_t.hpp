@@ -66,8 +66,6 @@ public:
     double speed;
     double timestamp;
     double climb;
-
-
 };
 
 #endif //FLIGHTCOMPUTER_GPS_MEASUREMENT_T_HPP

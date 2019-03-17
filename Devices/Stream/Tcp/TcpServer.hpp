@@ -7,18 +7,20 @@
 
 #include "../StreamDevice.hpp"
 
-class TcpServer : public StreamDevice {
-public:
-    explicit TcpServer(uint16_t port, int BUF_SIZE = 64);
+namespace device {
+    class TcpServer : public StreamDevice {
+    public:
+        explicit TcpServer(uint16_t port, int BUF_SIZE = 64);
 
-private:
-    int socketFileDescriptor;
-    int fileDescriptor;
+    private:
+        int socketFileDescriptor;
+        int fileDescriptor;
 
-protected:
-    int getFileDescriptor() override;
-    void invalidateFileDescriptor() override;
-};
+    protected:
+        int getFileDescriptor() override;
 
+        void invalidateFileDescriptor() override;
+    };
+}
 
 #endif //FLIGHTCOMPUTER_TCPSERVER_HPP

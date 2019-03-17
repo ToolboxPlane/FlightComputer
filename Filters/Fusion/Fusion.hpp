@@ -8,47 +8,56 @@
 
 #include "../../InputChannel.hpp"
 #include "../../Devices/rcLib/PackageExtended.hpp"
-#include "../../Filter.hpp"
+#include "../../Node.hpp"
 #include "../../Devices/GPS/GpsMeasurement_t.hpp"
 #include "State_t.hpp"
 #include "../../OutputChannel.hpp"
 #include <experimental/optional>
 
-enum ProcessingStatus {
-    NOT_RECEIVED,
-    READY,
-    PROCESSED
-};
+namespace filter {
+    enum ProcessingStatus {
+        NOT_RECEIVED,
+        READY,
+        PROCESSED
+    };
 
-class Fusion : public Filter {
-public:
-    Fusion();
-    void run() override;
+    class Fusion : public Node {
+    public:
+        Fusion();
 
-    InputChannel<rcLib::PackageExtended> &getFlightControllerIn();
-    InputChannel<rcLib::PackageExtended> &getBaseIn();
-    InputChannel<rcLib::PackageExtended> &getRemoteIn();
-    InputChannel<rcLib::PackageExtended> &getTaranisIn();
-    InputChannel<rcLib::PackageExtended> &getPdbIn();
-    InputChannel<GpsMeasurement_t> &getGpsIn();
+        void run() override;
 
-    OutputChannel<State_t> &getChannelOut();
-private:
-    rcLib::PackageExtended lastFcPackage;
-    rcLib::PackageExtended lastPdbPackage;
-    GpsMeasurement_t lastGpsMeasurement;
-    rcLib::PackageExtended lastBasePackage;
-    rcLib::PackageExtended lastTaranisPackage;
-    rcLib::PackageExtended lastRemotePackage;
-    bool pdbRecv = false, gpsRecv = false, baseRecv = false, taranisRecv = false, remoteRecv = false;
+        InputChannel<rcLib::PackageExtended> &getFlightControllerIn();
 
-    State_t process();
-    int normalizeTaranis(int input);
+        InputChannel<rcLib::PackageExtended> &getBaseIn();
 
-    InputChannel<rcLib::PackageExtended> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
-    InputChannel<GpsMeasurement_t> gpsIn;
-    OutputChannel<State_t> out;
-};
+        InputChannel<rcLib::PackageExtended> &getRemoteIn();
 
+        InputChannel<rcLib::PackageExtended> &getTaranisIn();
+
+        InputChannel<rcLib::PackageExtended> &getPdbIn();
+
+        InputChannel<GpsMeasurement_t> &getGpsIn();
+
+        OutputChannel<State_t> &getChannelOut();
+
+    private:
+        rcLib::PackageExtended lastFcPackage;
+        rcLib::PackageExtended lastPdbPackage;
+        GpsMeasurement_t lastGpsMeasurement;
+        rcLib::PackageExtended lastBasePackage;
+        rcLib::PackageExtended lastTaranisPackage;
+        rcLib::PackageExtended lastRemotePackage;
+        bool pdbRecv = false, gpsRecv = false, baseRecv = false, taranisRecv = false, remoteRecv = false;
+
+        State_t process();
+
+        int normalizeTaranis(int input);
+
+        InputChannel<rcLib::PackageExtended> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
+        InputChannel<GpsMeasurement_t> gpsIn;
+        OutputChannel<State_t> out;
+    };
+}
 
 #endif //FLIGHTCOMPUTER_FUSION_HPP

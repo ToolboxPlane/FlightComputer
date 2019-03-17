@@ -9,20 +9,23 @@
 #include <gps.h>
 
 #include "GpsMeasurement_t.hpp"
-#include "../../Filter.hpp"
+#include "../../Node.hpp"
 #include "../../InputChannel.hpp"
 #include "../../OutputChannel.hpp"
 
-class Gps : public Filter{
-public:
-    Gps();
+namespace device {
+    class Gps : public Node {
+    public:
+        Gps();
 
-    OutputChannel<GpsMeasurement_t> &getChannelOut();
-private:
-    void run() override;
-    OutputChannel<GpsMeasurement_t> out;
-    gps_data_t gps_data;
-};
+        OutputChannel<GpsMeasurement_t> &getChannelOut();
 
+    private:
+        void run() override;
+
+        OutputChannel<GpsMeasurement_t> out;
+        gps_data_t gps_data;
+    };
+}
 
 #endif //FLIGHTCOMPUTER_GPS_HPP

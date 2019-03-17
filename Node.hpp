@@ -8,11 +8,11 @@
 
 #include <thread>
 
-class Filter {
+class Node {
 protected:
     virtual void run()= 0;
     void start() {
-        std::thread t(&Filter::run, this);
+        std::thread t(&Node::run, this);
         t.detach();
     }
 };
