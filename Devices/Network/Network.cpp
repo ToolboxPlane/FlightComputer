@@ -35,7 +35,7 @@ void device::Network::run() {
         auto received = recv(this->fd, buffer.data(), buffer.size(), 0);
         if (received > 0) {
             auto *ipHeader = reinterpret_cast<iphdr*>(buffer.data());
-            for (auto c = ipHeader->ihl*4; c < received - ipHeader->ihl*4; c++) {
+            for (auto c = ipHeader->ihl*4; c < received; c++) {
                 if (pkgIn.decode(buffer[c])) {
                     out.put(pkgIn);
                 }
@@ -44,6 +44,7 @@ void device::Network::run() {
 
         while (in.get(pkgOut, false)) {
             auto len = pkgOut.encode();
+            std::cout << (int)len << std::endl;
             sendto(this->fd, pkgOut.getEncodedData(), len, 0,
                     reinterpret_cast<sockaddr*>(&sockaddrIn), sizeof(sockaddrIn));
         }

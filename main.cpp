@@ -60,13 +60,15 @@ int main() {
 
     lora.getChannelOut() >> meshManager.getLoraIn();
     meshManager.getLoraOut() >> lora.getChannelIn();
-    meshManager.getLoraOut() >> network.getChannelIn();
 
     meshManager.getFlightControllerOut() >> fusion.getFlightControllerIn();
     meshManager.getPdbOut() >> fusion.getPdbIn();
     meshManager.getTaranisOut() >> fusion.getTaranisIn();
     meshManager.getRemoteOut() >> fusion.getRemoteIn();
     meshManager.getBaseOut() >> fusion.getBaseIn();
+
+    serial.getChannelOut() >> network.getChannelIn();
+    lora.getChannelOut() >> network.getChannelIn();
 
     /*
      * Internal connection
