@@ -21,4 +21,4 @@ WORKDIR /src/build
 RUN mkdir logs
 RUN cmake -DCMAKE_BUILD_TYPE=Release .. && make -j$(nproc) FlightComputer
 
-CMD ["Tests/Tests", "--gtest_repeat=10", "--gtest_shuffle", "--gtest_color=yes"]
+CMD ["FlightComputer"]
