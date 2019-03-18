@@ -37,8 +37,8 @@ namespace device {
         tty.c_iflag &= ~IGNBRK;         // disable break processing
         tty.c_lflag = 0;                // no signaling chars, no echo, no canonical processing
         tty.c_oflag = 0;                // no remapping, no delays
-        tty.c_cc[VMIN] = 1;            // read requires at least one character @TODO
-        tty.c_cc[VTIME] = 0;            // read is  blocking
+        tty.c_cc[VMIN] = 0;            // polling read
+        tty.c_cc[VTIME] = 0;            // read is non blocking
         tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
         tty.c_cflag |= (CLOCAL | CREAD);// ignore modem controls, enable reading
 
