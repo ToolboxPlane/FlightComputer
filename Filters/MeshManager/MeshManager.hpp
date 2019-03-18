@@ -29,8 +29,6 @@ namespace filter {
 
         InputChannel<rcLib::PackageExtended> &getRemoteIn();
 
-        InputChannel<rcLib::PackageExtended> &getTcpIn();
-
         OutputChannel<rcLib::PackageExtended> &getFlightControllerOut();
 
         OutputChannel<rcLib::PackageExtended> &getRemoteOut();
@@ -41,12 +39,10 @@ namespace filter {
 
         OutputChannel<rcLib::PackageExtended> &getTaranisOut();
 
-        OutputChannel<rcLib::PackageExtended> &getTcpOut();
-
     private:
-        InputChannel<rcLib::PackageExtended> loraIn, serialIn, tcpIn;
+        InputChannel<rcLib::PackageExtended> loraIn, serialIn;
         InputChannel<rcLib::PackageExtended> flightControllerIn, remoteIn, baseIn;
-        OutputChannel<rcLib::PackageExtended> loraOut, serialOut, tcpOut;
+        OutputChannel<rcLib::PackageExtended> loraOut, serialOut;
         OutputChannel<rcLib::PackageExtended> flightControllerOut, remoteOut, baseOut, pdbOut, taranisOut;
 
         void propagateInternal(rcLib::PackageExtended pkg);

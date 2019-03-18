@@ -20,5 +20,6 @@ WORKDIR /src/build
 
 RUN mkdir logs
 RUN cmake -DCMAKE_BUILD_TYPE=Release .. && make -j$(nproc) FlightComputer
+RUN setcap cap_net_raw+ep FlightComputer
 
-CMD ["FlightComputer"]
+CMD ["./FlightComputer"]

@@ -14,17 +14,16 @@ endif ()
 
 set(SOURCES
         main.cpp
-        Devices/Stream/Serial/Serial.cpp
-        Devices/Stream/Tcp/TcpServer.cpp
-        Devices/Stream/StreamDevice.cpp
         Devices/rcLib/RadioControlProtocol/rcLib.cpp
         Devices/rcLib/RcLibSimulator.cpp
+        Devices/GPS/GpsSimulator.cpp
+        Devices/GPS/Gps.cpp
+        Devices/Network/Network.cpp
+        Devices/Serial/SerialPosix.cpp
         Filters/Fusion/Fusion.cpp
         Filters/Navigation/Navigation.cpp
         Filters/MeshManager/MeshManager.cpp
         Filters/OutputFilter/OutputFilter.cpp
-        Devices/GPS/GpsSimulator.cpp
-        Devices/GPS/Gps.cpp
         Filters/FeedbackControl/FeedbackControl.cpp)
 
 set(SOURCES_PI ${SOURCES}
@@ -32,12 +31,14 @@ set(SOURCES_PI ${SOURCES}
 
 set(SOURCES_NO_PI ${SOURCES})
 
+set(LIBS gps pthread stdc++fs)
+
 IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
     add_definitions(-DRASPBERRY_PI)
     add_executable(FlightComputer ${SOURCES_PI})
-    target_link_libraries(FlightComputer gps pthread wiringPi)
+    target_link_libraries(FlightComputer ${LIBS} wiringPi)
 ELSE(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
     add_executable(FlightComputer ${SOURCES_NO_PI})
-    target_link_libraries(${PROJECT_NAME} pthread gps)
+    target_link_libraries(${PROJECT_NAME} ${LIBS})
 ENDIF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
 

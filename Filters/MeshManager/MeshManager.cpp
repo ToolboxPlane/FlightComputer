@@ -64,14 +64,6 @@ namespace filter {
         return taranisOut;
     }
 
-    InputChannel<rcLib::PackageExtended> &MeshManager::getTcpIn() {
-        return tcpIn;
-    }
-
-    OutputChannel<rcLib::PackageExtended> &MeshManager::getTcpOut() {
-        return tcpOut;
-    }
-
     void MeshManager::run() {
         rcLib::PackageExtended pkg{};
         while (!serialIn.isClosed()) {
@@ -80,22 +72,12 @@ namespace filter {
                     pkg.countNode();
                     serialOut.put(pkg);
                 }
-                tcpOut.put(pkg);
                 propagateInternal(pkg);
             }
             if (serialIn.get(pkg, false)) {
                 if (pkg.needsForwarding()) {
                     pkg.countNode();
                     loraOut.put(pkg);
-                }
-                tcpOut.put(pkg);
-                propagateInternal(pkg);
-            }
-            if (tcpIn.get(pkg, false)) {
-                if (pkg.needsForwarding()) {
-                    pkg.countNode();
-                    loraOut.put(pkg);
-                    serialOut.put(pkg);
                 }
                 propagateInternal(pkg);
             }
@@ -113,7 +95,6 @@ namespace filter {
                 pkg.setMeshProperties(static_cast<uint8_t>(true), 2);
                 pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
                 loraOut.put(pkg);
-                tcpOut.put(pkg);
             }
             std::this_thread::yield();
         }
@@ -139,6 +120,7 @@ namespace filter {
                 break;
             case RCLIB_DEVICE_ID::FLIGHT_COMPUTER:
                 // We routed in a loop...
+                std::cerr << "[MeshManager]: Some external device creates loops in the network";
                 break;
         }
     }

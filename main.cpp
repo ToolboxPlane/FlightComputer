@@ -1,8 +1,6 @@
 #include <fstream>
 #include <iomanip>
 #include <cassert>
-#include "Devices/Stream/Serial/Serial.hpp"
-#include "Devices/Stream/Tcp/TcpServer.hpp"
 #include "Devices/rcLib/RcLibSimulator.hpp"
 #include "Filters/Fusion/Fusion.hpp"
 #include "Filters/Navigation/Navigation.hpp"
@@ -15,6 +13,8 @@
 #include "Devices/GPS/Gps.hpp"
 #include "OutputChannel.hpp"
 #include "Filters/FeedbackControl/FeedbackControl.hpp"
+#include "Devices/Network/Network.hpp"
+#include "Devices/Serial/SerialPosix.hpp"
 
 #ifdef RASPBERRY_PI
 #include "Devices/LoRa/LoRa.hpp"
@@ -25,11 +25,11 @@ int main() {
     /*
      * I/O-Modules
      */
-    //Serial serial{"/dev/ttyACM0", B9600};
-    //LoRa lora;
-    //Gps gps;
+    device::SerialPosix serial{"/dev/ttyACM0", 9600};
+    //device::LoRa lora{};
+    //device::Gps gps{};
 
-    device::RcLibSimulator serial{23, 50};
+    //device::RcLibSimulator serial{23, 50};
     device::RcLibSimulator lora{17, 60000};
     device::GpsSimulator gps{5000};
 
@@ -41,7 +41,7 @@ int main() {
     assert(waypointFile.is_open());
     recording::ChannelReplay<Waypoint_t> waypointReader{waypointFile};
 
-    device::TcpServer tcpServer{61888};
+    device::Network network{"127.0.0.1"};
 
     /*
      * Filters
@@ -57,10 +57,10 @@ int main() {
      */
     serial.getChannelOut() >> meshManager.getSerialIn();
     meshManager.getSerialOut() >> serial.getChannelIn();
-    meshManager.getTcpOut() >> tcpServer.getChannelIn();
 
     lora.getChannelOut() >> meshManager.getLoraIn();
     meshManager.getLoraOut() >> lora.getChannelIn();
+    meshManager.getLoraOut() >> network.getChannelIn();
 
     meshManager.getFlightControllerOut() >> fusion.getFlightControllerIn();
     meshManager.getPdbOut() >> fusion.getPdbIn();
