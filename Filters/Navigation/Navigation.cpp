@@ -64,7 +64,7 @@ namespace filter {
         nav.heading = currentState.position.location.angleTo(nextWaypoint.location);
         nav.altitude = nextWaypoint.location.altitude;
 
-        nav.speed = currentState.lora.isArmed ? CRUISE_SPEED : 0;
+        nav.speed = CRUISE_SPEED;
 
         nav.stateMajor = 4;
         nav.stateMinor = waypointIndex;
@@ -115,7 +115,7 @@ namespace filter {
                 }
                 break;
             case THROWN:
-                nav.speed = state.lora.isArmed ? std::numeric_limits<double>::max() : 0.0;
+                nav.speed = std::numeric_limits<double>::max();
                 nav.altitude = altitudeTarget;
                 nav.heading = headingTarget;
                 if (state.airspeed >= CRUISE_SPEED) {
@@ -123,7 +123,7 @@ namespace filter {
                 }
                 break;
             case CLIMB:
-                nav.speed = state.lora.isArmed ? CRUISE_SPEED : 0;
+                nav.speed = CRUISE_SPEED;
                 nav.altitude = altitudeTarget;
                 nav.heading = headingTarget;
                 break;
@@ -157,7 +157,7 @@ namespace filter {
             targetAltitude = state.heightAboveSeaLevel;
         }
 
-        nav.speed = state.lora.isArmed ? CRUISE_SPEED : 0;
+        nav.speed = CRUISE_SPEED;
         nav.heading = targetHeading;
         nav.altitude = targetAltitude;
 
