@@ -25,17 +25,19 @@ int main() {
     /*
      * I/O-Modules
      */
-    device::SerialPosix serial{"/dev/ttyACM0", 9600};
-    //device::LoRa lora{};
-    //device::Gps gps{};
-
-    //device::RcLibSimulator serial{23, 50};
-    device::RcLibSimulator lora{17, 60000};
-    device::GpsSimulator gps{5000};
-
+    //device::SerialPosix serial{"/dev/ttyACM0", 9600};
+    device::RcLibSimulator serial{23, 1000};
     //std::ifstream serialFile("logs/serial_18_06_27_19_43.csv");
     //assert(serialFile.is_open());
     //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
+
+#ifdef RASPBERRY_PI
+    device::LoRa lora{};
+    device::Gps gps{};
+#else
+    device::RcLibSimulator lora{17, 60000};
+    device::GpsSimulator gps{5000};
+#endif
 
     std::ifstream waypointFile("missions/waypoints.csv");
     assert(waypointFile.is_open());
@@ -89,8 +91,9 @@ int main() {
     debug::Logger<rcLib::PackageExtended> loraReceiveDebug{"Lora-Recv", false};
     debug::Logger<rcLib::PackageExtended> loraSendDebug{"Lora-Send", false};
     debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
-    debug::Logger<Nav_t> navDebug{"Nav", false};
     debug::Logger<State_t> fusionDebug{"Fusion", false};
+    debug::Logger<Nav_t> navDebug{"Nav", false};
+    debug::Logger<Control_t> controlDebug{"Control", false};
 
 
     serial.getChannelOut() >> serialReceiveDebug.getChannelIn();
@@ -100,7 +103,9 @@ int main() {
     gps.getChannelOut() >> gpsDebug.getChannelIn();
     fusion.getChannelOut() >> fusionDebug.getChannelIn();
     navigation.getChannelOut() >> navDebug.getChannelIn();
+    feedbackControl.getChannelOut() >> controlDebug.getChannelIn();
 
+#ifdef RASPBERRY_PI
     /*
      * Recorder
      */
@@ -119,6 +124,7 @@ int main() {
 
     serial.getChannelOut() >> serialRecorder.getChannelIn();
     gps.getChannelOut() >> gpsRecorder.getChannelIn();
+#endif
 
     std::cout << "Started all modules!" << "\n";
     while(!serial.getChannelIn().isClosed()) {

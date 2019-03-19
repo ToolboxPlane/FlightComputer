@@ -44,10 +44,11 @@ void device::Network::run() {
 
         while (in.get(pkgOut, false)) {
             auto len = pkgOut.encode();
-            std::cout << (int)len << std::endl;
             sendto(this->fd, pkgOut.getEncodedData(), len, 0,
-                    reinterpret_cast<sockaddr*>(&sockaddrIn), sizeof(sockaddrIn));
+                   reinterpret_cast<sockaddr*>(&sockaddrIn), sizeof(sockaddrIn));
         }
+
+        std::this_thread::yield();
     }
 }
 

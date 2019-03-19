@@ -57,7 +57,7 @@ namespace device {
         std::array<uint8_t, BUF_SIZE> buffer{};
         rcLib::PackageExtended pkgIn, pkgOut;
 
-        while (!in.isClosed()) { // @TODO maybe should use notify
+        while (!in.isClosed()) {
             /*
              * Go fix your language (en). "read" needs to get a decent past tense form,
              * i decided on "readed" instead of the phonetically incorrect and irregular
@@ -76,6 +76,7 @@ namespace device {
                 auto len = pkgIn.encode();
                 this->sendBuff({pkgIn.getEncodedData(), pkgIn.getEncodedData() + len});
             }
+            std::this_thread::yield();
         }
     }
 

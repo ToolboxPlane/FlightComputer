@@ -17,6 +17,7 @@
 namespace filter {
     class FeedbackControl : public Node {
     public:
+        FeedbackControl();
         auto getChannelIn() -> InputChannel<Nav_t>&;
         auto getChannelOut() -> OutputChannel<Control_t>&;
     private:

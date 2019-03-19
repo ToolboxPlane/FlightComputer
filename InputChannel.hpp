@@ -24,8 +24,9 @@ public:
     }
     void put(const T i) {
         std::unique_lock<std::mutex> lock(m);
-        if(closed)
+        if(closed) {
             throw std::logic_error("put to closed channel");
+        }
         queue.push_back(i);
         cv.notify_one();
         //std::cerr << this->queue.size() << "\t" << typeid(T).name() << std::endl;

@@ -9,6 +9,10 @@
 #include "FeedbackControl.hpp"
 
 namespace filter {
+    FeedbackControl::FeedbackControl() {
+        this->start();
+    }
+
     void FeedbackControl::run() {
         while (!channelIn.isClosed()) {
             Nav_t nav{};
@@ -82,5 +86,4 @@ namespace filter {
             return val;
         }
     }
-
 }
