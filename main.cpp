@@ -16,12 +16,18 @@
 #include "Devices/Network/Network.hpp"
 #include "Devices/Serial/SerialPosix.hpp"
 
+#include "Utilities/Si.hpp"
+
 #ifdef RASPBERRY_PI
 #include "Devices/LoRa/LoRa.hpp"
 #endif
 
 int main() {
     using namespace std::chrono_literals;
+    using namespace si::literals;
+
+    auto twokilometer = 2.0_k * meter + meter;
+    twokilometer += meter * 1.0_M;
     /*
      * I/O-Modules
      */
