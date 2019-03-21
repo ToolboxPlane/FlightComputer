@@ -25,9 +25,12 @@
 int main() {
     using namespace std::chrono_literals;
     using namespace si::literals;
+    using namespace si::base;
 
-    auto twokilometer = 2.0_k * meter + meter;
+    auto twokilometer = 2.0_meter + meter;
     twokilometer += meter * 1.0_M;
+
+    MeterType<long double> time = static_cast<long double>(2.0) * second;
     /*
      * I/O-Modules
      */
