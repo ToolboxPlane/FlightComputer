@@ -113,7 +113,7 @@ namespace si {
     template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T_, typename T__>
     constexpr auto operator/(T__ lhs, Si<m, kg, s, A, K, MOL, CD, T_> rhs)
     -> Si<-m, -kg, -s, -A, -K, -MOL, -CD, T_> {
-        return Si<-m,-kg,-s,-A,-K,-MOL,-CD,T_>{static_cast<T_>(lhs) / rhs.val};
+        return Si<-m,-kg,-s,-A,-K,-MOL,-CD,T_>{static_cast<T_>(lhs) / static_cast<T_>(rhs)};
     }
 
     // Multiply with different type
@@ -121,7 +121,7 @@ namespace si {
     template<int m_, int kg_, int s_, int A_, int K_, int MOL_, int CD_>
     constexpr auto Si<m, kg, s, A, K, MOL, CD, T>::operator*(Si<m_, kg_, s_, A_, K_, MOL_, CD_, T> rhs) const
             -> Si<m + m_, kg + kg_, s + s_, A + A_, K + K_, MOL + MOL_, CD + CD_, T> {
-        return Si<m+m_,kg+kg_,s+s_,A+A_,K+K_,MOL+MOL_,CD+CD_,T>{this->val * rhs.val};
+        return Si<m+m_,kg+kg_,s+s_,A+A_,K+K_,MOL+MOL_,CD+CD_,T>{this->val * static_cast<T>(rhs)};
     }
 
     // Divide by different type
@@ -129,7 +129,7 @@ namespace si {
     template<int m_, int kg_, int s_, int A_, int K_, int MOL_, int CD_>
     constexpr auto Si<m, kg, s, A, K, MOL, CD, T>::operator/(Si<m_, kg_, s_, A_, K_, MOL_, CD_, T> rhs) const
             -> Si<m - m_, kg - kg_, s - s_, A - A_, K - K_, MOL - MOL_, CD - CD_, T> {
-        return {this->val / rhs.val};
+        return Si<m-m_,kg-kg_,s-s_,A-A_,K-K_,MOL-MOL_,CD-CD_,T>{this->val / static_cast<T>(rhs)};
     }
 
 }

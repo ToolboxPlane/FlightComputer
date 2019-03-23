@@ -17,8 +17,8 @@
 #include "Devices/Serial/SerialPosix.hpp"
 
 #include "Utilities/Si/Si.hpp"
-#include "Utilities/Si/SiBase.hpp"
 #include "Utilities/Si/SiLiterals.hpp"
+#include "Utilities/Si/SiExtended.hpp"
 
 #ifdef RASPBERRY_PI
 #include "Devices/LoRa/LoRa.hpp"
@@ -27,7 +27,9 @@
 int main() {
     using namespace std::chrono_literals;
     using namespace si::literals;
-    using namespace si::base;
+
+    auto c = 1/(1_k_meter + 1_M_meter) / si::base::meter;
+    std::cout << c << std::endl;
 
     /*
      * I/O-Modules
