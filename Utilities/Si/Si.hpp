@@ -28,17 +28,19 @@ namespace si {
 
         // Multiply with Unitless
         template<typename T_>
-        constexpr auto operator*(T_ rhs) const -> Si<m,kg,s,A,K,MOL,CD,T>;
+        constexpr auto operator*(T_ rhs) const -> Si<m,kg,s,A,K,MOL,CD, decltype(static_cast<T>(*this)*rhs)>;
+
         template<int m_, int kg_, int s_, int A_, int K_, int MOL_, int CD_, typename T_, typename T__>
         friend constexpr auto operator*(T__ lhs, Si<m_,kg_,s_,A_,K_,MOL_,CD_,T_> rhs)
-            -> Si<m_,kg_,s_,A_,K_,MOL_,CD_,T_>;
+            -> Si<m_,kg_,s_,A_,K_,MOL_,CD_, decltype(lhs * rhs.val)>;
 
         // Divide by Unitless
         template<typename T_>
-        constexpr auto operator/(T_ rhs) const -> Si<m,kg,s,A,K,MOL,CD,T>;
+        constexpr auto operator/(T_ rhs) const -> Si<m,kg,s,A,K,MOL,CD, decltype(static_cast<T>(*this)*rhs)>;
+
         template<int m_, int kg_, int s_, int A_, int K_, int MOL_, int CD_, typename T_, typename T__>
         friend constexpr auto operator/(T__ lhs, Si<m_,kg_,s_,A_,K_,MOL_,CD_,T_> rhs)
-        -> Si<-m_,-kg_,-s_,-A_,-K_,-MOL_,-CD_,T_>;
+        -> Si<-m_,-kg_,-s_,-A_,-K_,-MOL_,-CD_, decltype(lhs*rhs.val)>;
 
         // Multiply with Unit
         template<int m_, int kg_, int s_, int A_, int K_, int MOL_, int CD_>
@@ -93,27 +95,29 @@ namespace si {
     // Multiply by scalar
     template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T>
     template<typename T_>
-    constexpr auto Si<m, kg, s, A, K, MOL, CD, T>::operator*(T_ rhs) const -> Si<m, kg, s, A, K, MOL, CD, T> {
-        return ThisT{this->val * static_cast<T>(rhs)};
+    constexpr auto Si<m, kg, s, A, K, MOL, CD, T>::operator*(T_ rhs) const
+            -> Si<m, kg, s, A, K, MOL, CD, decltype(static_cast<T>(*this) * rhs)> {
+        return Si<m, kg, s, A, K, MOL, CD, decltype(this->val * rhs)>{this->val * rhs};
     }
 
     template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T_, typename T__>
     constexpr auto operator*(T__ lhs, Si<m, kg, s, A, K, MOL, CD, T_> rhs)
-        -> Si<m, kg, s, A, K, MOL, CD, T_> {
-        return Si<m,kg,s,A,K,MOL,CD,T_>{static_cast<T_>(lhs) * rhs.val};
+        -> Si<m, kg, s, A, K, MOL, CD, decltype(lhs * rhs.val)> {
+        return Si<m,kg,s,A,K,MOL,CD, decltype(lhs * rhs.val)>{lhs * rhs.val};
     }
 
     // Divide by scalar
     template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T>
     template<typename T_>
-    constexpr auto Si<m, kg, s, A, K, MOL, CD, T>::operator/(T_ rhs) const -> Si<m, kg, s, A, K, MOL, CD, T> {
-        return ThisT{this->val / static_cast<T>(rhs)};
+    constexpr auto Si<m, kg, s, A, K, MOL, CD, T>::operator/(T_ rhs) const
+            -> Si<m, kg, s, A, K, MOL, CD, decltype(static_cast<T>(*this) * rhs)> {
+        return Si<m,kg,s,A,K,MOL,CD, decltype(this->val * rhs)>{this->val / rhs};
     }
 
     template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T_, typename T__>
     constexpr auto operator/(T__ lhs, Si<m, kg, s, A, K, MOL, CD, T_> rhs)
-    -> Si<-m, -kg, -s, -A, -K, -MOL, -CD, T_> {
-        return Si<-m,-kg,-s,-A,-K,-MOL,-CD,T_>{static_cast<T_>(lhs) / static_cast<T_>(rhs)};
+            -> Si<-m, -kg, -s, -A, -K, -MOL, -CD, decltype(lhs * rhs.val)> {
+        return Si<-m,-kg,-s,-A,-K,-MOL,-CD, decltype(lhs * rhs.val)>{lhs / static_cast<T_>(rhs)};
     }
 
     // Multiply with different type
@@ -131,6 +135,7 @@ namespace si {
             -> Si<m - m_, kg - kg_, s - s_, A - A_, K - K_, MOL - MOL_, CD - CD_, T> {
         return Si<m-m_,kg-kg_,s-s_,A-A_,K-K_,MOL-MOL_,CD-CD_,T>{this->val / static_cast<T>(rhs)};
     }
+
 
 }
 
