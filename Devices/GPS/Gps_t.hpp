@@ -7,43 +7,45 @@
 
 
 #include <cmath>
+#include "../../Utilities/Si/SiLiterals.hpp"
 
 class Gps_t {
 public:
     Gps_t(double lat, double lon, double altitude = 0) : lat(lat), lon(lon), altitude(altitude){};
     double lat, lon;
-    double altitude;
+    si::base::MeterType<> altitude;
 
-    double distanceTo(const Gps_t &gps) const {
-        double phi1 = this->lon / 180 * M_PI;
-        double sigma1 = M_PI/2 - (this->lat / 180 * M_PI);
-        double r1 = EARTH_RADIUS + this->altitude;
-        double x1 = r1 * std::sin(sigma1) * std::cos(phi1);
-        double y1 = r1 * std::sin(sigma1) * std::sin(phi1);
-        double z1 = r1 * std::cos(sigma1);
+    si::base::MeterType<> distanceTo(const Gps_t &gps) const {
+        auto phi1 = this->lon / 180 * M_PI;
+        auto sigma1 = M_PI/2 - (this->lat / 180 * M_PI);
+        auto r1 = EARTH_RADIUS + this->altitude;
+        auto x1 = r1 * std::sin(sigma1) * std::cos(phi1);
+        auto y1 = r1 * std::sin(sigma1) * std::sin(phi1);
+        auto z1 = r1 * std::cos(sigma1);
 
         double phi2 = gps.lon / 180 * M_PI;
         double sigma2 = M_PI/2 - (gps.lat / 180 * M_PI);
-        double r2 = EARTH_RADIUS + gps.altitude;
-        double x2 = r2 * std::sin(sigma2) * std::cos(phi2);
-        double y2 = r2 * std::sin(sigma2) * std::sin(phi2);
-        double z2 = r2 * std::cos(sigma2);
+        auto r2 = EARTH_RADIUS + gps.altitude;
+        auto x2 = r2 * std::sin(sigma2) * std::cos(phi2);
+        auto y2 = r2 * std::sin(sigma2) * std::sin(phi2);
+        auto z2 = r2 * std::cos(sigma2);
 
-        double dx = x1 - x2;
-        double dy = y1 - y2;
-        double dz = z1 - z2;
+        auto dx = x1 - x2;
+        auto dy = y1 - y2;
+        auto dz = z1 - z2;
 
-        return std::sqrt(dx*dx + dy*dy + dz*dz);
+        return std::sqrt(static_cast<decltype(dx)::type>(dx*dx + dy*dy + dz*dz)) * si::base::meter;
     }
 
     double angleTo(const Gps_t &gps) const {
         Gps_t supportPoint(this->lat, gps.lon);
-        double xDiff = this->distanceTo(supportPoint);
-        double yDiff = supportPoint.distanceTo(gps);
-        return -std::atan2(yDiff, xDiff) * 180.0 / M_PI + 90;
+        auto xDiff = this->distanceTo(supportPoint);
+        auto yDiff = supportPoint.distanceTo(gps);
+        return static_cast<double>(-std::atan2(static_cast<decltype(yDiff)::type>(yDiff),
+                                               static_cast<decltype(xDiff)::type>(xDiff)) * 180.0 / M_PI + 90);
     }
 
-    static constexpr double EARTH_RADIUS = 6371300;
+    static constexpr si::base::MeterType<> EARTH_RADIUS{6371300};
 };
 
 

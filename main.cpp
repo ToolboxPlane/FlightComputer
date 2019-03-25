@@ -16,12 +16,18 @@
 #include "Devices/Network/Network.hpp"
 #include "Devices/Serial/SerialPosix.hpp"
 
+#include "Utilities/Si/Si.hpp"
+#include "Utilities/Si/SiLiterals.hpp"
+#include "Utilities/Si/SiExtended.hpp"
+
 #ifdef RASPBERRY_PI
 #include "Devices/LoRa/LoRa.hpp"
 #endif
 
 int main() {
     using namespace std::chrono_literals;
+    using namespace si::literals;
+
     /*
      * I/O-Modules
      */

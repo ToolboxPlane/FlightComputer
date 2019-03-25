@@ -20,7 +20,7 @@ public:
                                                                   landingAllowed(landingAllowed) {};
 
     Gps_t location;
-    double maxDelta;
+    si::base::MeterType<> maxDelta;
     bool landingAllowed;
 };
 
