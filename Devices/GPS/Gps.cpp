@@ -34,10 +34,10 @@ namespace device {
 
                         gps.location.lat = gps_data.fix.latitude;
                         gps.location.lon = gps_data.fix.longitude;
-                        gps.timestamp = gps_data.fix.time;
-                        gps.speed = gps_data.fix.speed;
-                        gps.climb = gps_data.fix.climb;
-                        gps.location.altitude = gps_data.fix.altitude;
+                        gps.timestamp = gps_data.fix.time * si::base::second;
+                        gps.speed = gps_data.fix.speed * si::extended::speed;
+                        gps.climb = gps_data.fix.climb * si::extended::speed;
+                        gps.location.altitude = gps_data.fix.altitude * si::base::meter;
 
                         out.put(gps);
                     } else {

@@ -135,5 +135,5 @@ namespace si::literals {
     constexpr long double operator "" _y(unsigned long long t) { return t * 1E-24; }
 }
 
-#undef CREATE_ALL_PREFIX
+//#undef CREATE_ALL_PREFIX
 #endif //FLIGHTCOMPUTER_SIBASE_HPP

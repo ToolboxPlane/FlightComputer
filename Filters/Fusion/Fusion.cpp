@@ -7,6 +7,9 @@
 #include "State_t.hpp"
 
 namespace filter {
+    using namespace si::extended;
+    using namespace si::literals;
+
     Fusion::Fusion() {
         this->start();
     }
@@ -63,19 +66,19 @@ namespace filter {
         res.heading = lastFcPackage.getChannel(0);
         res.roll = lastFcPackage.getChannel(1) - 180;
         res.pitch = lastFcPackage.getChannel(2) - 180;
-        res.heightAboveSeaLevel = lastFcPackage.getChannel(4);
+        res.heightAboveSeaLevel = lastFcPackage.getChannel(4) * si::base::meter;
         res.heightAboveGround = res.heightAboveSeaLevel; // Waiting for some kind of distance sensor
-        res.airspeed = lastFcPackage.getChannel(5);
-        res.accForward = lastFcPackage.getChannel(6) - 500;
-        res.accSide = lastFcPackage.getChannel(7) - 500;
-        res.accUpdown = lastFcPackage.getChannel(8) - 500;
+        res.airspeed = lastFcPackage.getChannel(5) * si::extended::speed;
+        res.accForward = (lastFcPackage.getChannel(6) - 500) * si::extended::acceleration;
+        res.accSide = (lastFcPackage.getChannel(7) - 500) * si::extended::acceleration;
+        res.accUpdown = (lastFcPackage.getChannel(8) - 500) * si::extended::acceleration;
 
         // Gps
         if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired) {
             res.position = lastGpsMeasurement.value();
-            if (res.position.timestamp > lastState.position.timestamp) {
+            if (lastState.position.timestamp < res.position.timestamp) {
                 res.groundSpeed = res.position.location.distanceTo(lastState.position.location) /
-                                  (res.position.timestamp - lastState.position.timestamp);
+                        (res.position.timestamp - lastState.position.timestamp);
                 //@TODO maybe res.position.speed is the better choice, requires testing
             } else {
                 res.groundSpeed = lastState.groundSpeed;
@@ -87,9 +90,9 @@ namespace filter {
 
         // PDB
         if (lastPdbPackage.has_value()) {
-            res.voltage = (lastPdbPackage.value().getChannel(1) * 128) / 1000.0;
+            res.voltage = (lastPdbPackage.value().getChannel(1) * 128) / 1000.0 * si::extended::volt;
         } else {
-            res.voltage = 16.8;
+            res.voltage = 16.8_volt;
         }
 
         // Taranis

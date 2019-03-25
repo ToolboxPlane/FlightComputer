@@ -13,10 +13,16 @@ namespace si {
     class Si {
         using ThisT = Si<m,kg,s,A,K,MOL,CD,T>;
     public:
+        using type = T;
+
+        constexpr Si() noexcept = default;
         constexpr explicit Si(T val) noexcept;
         constexpr explicit operator T() const;
         template <typename T_>
         constexpr explicit operator Si<m,kg,s,A,K,MOL,CD,T_>() const;
+
+        // Size relation
+        constexpr auto operator<(ThisT rhs) const -> bool;
 
         // Add (only same units)
         constexpr auto operator+(ThisT rhs) const -> ThisT;
@@ -68,6 +74,12 @@ namespace si {
     template<typename T_>
     constexpr Si<m, kg, s, A, K, MOL, CD, T>::operator Si<m, kg, s, A, K, MOL, CD, T_>() const {
         return Si<m,kg,s,A,K,MOL,CD,T_>{static_cast<T_>(this->val)};
+    }
+
+    // Size comparison
+    template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T>
+    constexpr auto Si<m, kg, s, A, K, MOL, CD, T>::operator<(Si::ThisT rhs) const -> bool {
+        return this->val < static_cast<T>(rhs);
     }
 
     // Add
@@ -135,6 +147,7 @@ namespace si {
             -> Si<m - m_, kg - kg_, s - s_, A - A_, K - K_, MOL - MOL_, CD - CD_, T> {
         return Si<m-m_,kg-kg_,s-s_,A-A_,K-K_,MOL-MOL_,CD-CD_,T>{this->val / static_cast<T>(rhs)};
     }
+
 
 
 }

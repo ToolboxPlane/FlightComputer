@@ -7,6 +7,7 @@
 
 #include <ostream>
 #include "../../Devices/GPS/GpsMeasurement_t.hpp"
+#include "../../Utilities/Si/SiExtended.hpp"
 
 enum class FlightMode{
     ANGLE = 0, LAUNCH = 1, LAND = 2, HOLD = 3, WAYPOINT = 4
@@ -15,11 +16,11 @@ enum class FlightMode{
 class State_t {
 public:
     GpsMeasurement_t position;
-    double heightAboveGround, heightAboveSeaLevel;
+    si::base::MeterType<> heightAboveGround, heightAboveSeaLevel;
     double pitch, roll, heading;
-    double airspeed, groundSpeed;
-    double voltage;
-    double accForward, accSide, accUpdown;
+    si::extended::SpeedType<> airspeed, groundSpeed;
+    si::extended::VoltageType<> voltage;
+    si::extended::AccelerationType<> accForward, accSide, accUpdown;
 
     struct {
         int throttle, yaw, pitch, roll;

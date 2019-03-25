@@ -28,9 +28,6 @@ int main() {
     using namespace std::chrono_literals;
     using namespace si::literals;
 
-    auto c = 1/(1_k_meter + 1_M_meter) / si::base::meter;
-    std::cout << c << std::endl;
-
     /*
      * I/O-Modules
      */

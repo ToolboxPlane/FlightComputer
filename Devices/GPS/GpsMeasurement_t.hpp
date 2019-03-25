@@ -11,6 +11,7 @@
 #include <vector>
 #include <sstream>
 #include "Gps_t.hpp"
+#include "../../Utilities/Si/SiExtended.hpp"
 
 class GpsMeasurement_t {
 public:
@@ -18,10 +19,10 @@ public:
         this->fixAquired = static_cast<bool>(std::stoi(items[0]));
         this->location.lat = std::stod(items[1]);
         this->location.lon = std::stod(items[2]);
-        this->speed = std::stod(items[3]);
-        this->timestamp = std::stoi(items[4]);
-        this->location.altitude = std::stod(items[5]);
-        this->climb = std::stod(items[6]);
+        this->speed = std::stod(items[3]) * si::extended::speed;
+        this->timestamp = std::stoi(items[4]) * si::base::second;
+        this->location.altitude = std::stod(items[5]) * si::base::meter;
+        this->climb = std::stod(items[6]) * si::extended::speed;
     }
 
     GpsMeasurement_t(double lat, double lon) :
@@ -63,9 +64,9 @@ public:
     bool fixAquired;
 
     Gps_t location;
-    double speed;
-    double timestamp;
-    double climb;
+    si::extended::SpeedType<> speed;
+    si::base::SecondType<> timestamp;
+    si::extended::SpeedType<> climb;
 };
 
 #endif //FLIGHTCOMPUTER_GPS_MEASUREMENT_T_HPP

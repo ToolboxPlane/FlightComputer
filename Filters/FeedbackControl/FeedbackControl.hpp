@@ -23,9 +23,9 @@ namespace filter {
     private:
         void run() override;
 
-        auto speedControl(State_t state, double target) const -> double;
+        auto speedControl(State_t state, si::extended::SpeedType<> target) const -> double;
         auto headingControl(State_t state, double target) const -> double;
-        auto altitudeControl(State_t state, double target) const -> double;
+        auto altitudeControl(State_t state, si::base::MeterType<> target) const -> double;
 
         template <typename T>
         static auto clamp(T val, T min, T max) -> T;
@@ -33,12 +33,12 @@ namespace filter {
         InputChannel<Nav_t> channelIn;
         OutputChannel<Control_t> channelOut;
 
-        static constexpr auto SPEED_P = 1.0;
-        static constexpr auto PITCH_P = 1.0;
+        static constexpr auto SPEED_P = 1.0 / si::extended::speed;
+        static constexpr auto PITCH_P = 1.0 / si::base::meter;
         static constexpr auto MAX_ROLL = 80.0;
         static constexpr auto MAX_PITCH = 60.0;
         static constexpr auto HEADING_P = 1.0;
-        static constexpr auto SPEED_I = 0.5;
+        static constexpr auto SPEED_I = 0.5 / si::extended::speed;
     };
 }
 

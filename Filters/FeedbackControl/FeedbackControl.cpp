@@ -9,6 +9,9 @@
 #include "FeedbackControl.hpp"
 
 namespace filter {
+    using namespace si::extended;
+    using namespace si::literals;
+
     FeedbackControl::FeedbackControl() {
         this->start();
     }
@@ -27,24 +30,25 @@ namespace filter {
         }
     }
 
-    auto FeedbackControl::speedControl(State_t state, double target) const -> double {
-        if (target == 0) {
+    auto FeedbackControl::speedControl(State_t state, si::extended::SpeedType<> target) const -> double {
+        if (static_cast<decltype(target)::type>(target) == 0) {
             return 0;
         }
 
-        static double diffSum = 0;
-        static double lastDiff = target - state.groundSpeed;
-        double deltaSpeed = target - state.groundSpeed;
+        static si::extended::SpeedType<> diffSum = 0_speed;
+        static auto lastDiff = target - state.groundSpeed;
+        auto deltaSpeed = target - state.groundSpeed;
         diffSum += deltaSpeed;
 
         // Change in sign, anti windup
-        if (lastDiff * deltaSpeed < 0) {
-            diffSum = 0;
+        if (0 < static_cast<decltype(lastDiff)::type>(lastDiff * deltaSpeed)) {
+            diffSum = 0_speed;
         }
         lastDiff = deltaSpeed;
 
         // PI-Controller (I necessary to achieve stationary accuracy)
-        double speed = deltaSpeed * FeedbackControl::SPEED_P + diffSum * FeedbackControl::SPEED_I;
+        double speed = static_cast<decltype(deltaSpeed)::type>
+                (deltaSpeed * FeedbackControl::SPEED_P + diffSum * FeedbackControl::SPEED_I);
 
         return clamp(speed, 0.0, 1.0);
     }
@@ -61,9 +65,9 @@ namespace filter {
         return clamp(roll, -MAX_ROLL, MAX_ROLL);
     }
 
-    auto FeedbackControl::altitudeControl(State_t state, double target) const -> double {
-        double deltaHeight = state.heightAboveSeaLevel - target;
-        double pitch = deltaHeight * FeedbackControl::PITCH_P;
+    auto FeedbackControl::altitudeControl(State_t state, si::base::MeterType<> target) const -> double {
+        auto deltaHeight = state.heightAboveSeaLevel - target;
+        double pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::PITCH_P);
 
         return clamp(pitch, -MAX_PITCH, MAX_PITCH);
     }

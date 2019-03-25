@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include "Si.hpp"
+#include "SiLiterals.hpp"
 
 namespace si {
     template <int exp>
@@ -39,6 +40,22 @@ namespace si {
         return ostream;
     }
 
+    namespace extended {
+        template<typename T = long double>
+        using SpeedType = Si<1, 0, -1, 0, 0, 0, 0, T>;
+        constexpr SpeedType<> speed{1};
+        CREATE_ALL_PREFIX(speed,1,0,-1,0,0,0,0)
+
+        template<typename T = long double>
+        using AccelerationType = Si<1, 0, -2, 0, 0, 0, 0, T>;
+        constexpr AccelerationType<> acceleration{1};
+        CREATE_ALL_PREFIX(acceleration,1,0,-2,0,0,0,0)
+
+        template<typename T = long double>
+        using VoltageType = Si<2, 1, -3, -1, 0, 0, 0, T>;
+        constexpr VoltageType<> volt{1};
+        CREATE_ALL_PREFIX(volt,2,1,-3,-1,0,0,0)
+    }
 }
 
 #endif //FLIGHTCOMPUTER_SIEXTENDED_HPP
