@@ -77,6 +77,7 @@ int main() {
 
     serial.getChannelOut() >> network.getChannelIn();
     lora.getChannelOut() >> network.getChannelIn();
+    network.getChannelOut() >> meshManager.getSerialIn();
 
     /*
      * Internal connection

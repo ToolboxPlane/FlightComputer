@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/ToolboxPlane/FlightComputer.svg?branch=master)](https://travis-ci.org/ToolboxPlane/FlightComputer)
 # FlightComputer
 All the modules running on the Raspberry Pi. 
 
