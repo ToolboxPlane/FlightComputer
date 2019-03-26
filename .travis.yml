@@ -1,0 +1,8 @@
+services:
+  - docker
+
+before_install:
+  - docker build -t flightcomputer .
+
+script:
+  - echo "Test"
