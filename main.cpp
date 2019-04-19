@@ -77,7 +77,7 @@ int main() {
 
     serial.getChannelOut() >> network.getChannelIn();
     lora.getChannelOut() >> network.getChannelIn();
-    network.getChannelOut() >> meshManager.getSerialIn();
+    outputFilter.getBaseOut() >> network.getChannelIn();
 
     /*
      * Internal connection
@@ -94,7 +94,7 @@ int main() {
      * Logging
      */
     debug::Logger<rcLib::PackageExtended> serialReceiveDebug{"Serial-Recv", true};
-    debug::Logger<rcLib::PackageExtended> serialSendDebug{"Serial-Send", false};
+    debug::Logger<rcLib::PackageExtended> serialSendDebug{"Serial-Send", true};
     debug::Logger<rcLib::PackageExtended> loraReceiveDebug{"Lora-Recv", false};
     debug::Logger<rcLib::PackageExtended> loraSendDebug{"Lora-Send", false};
     debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};

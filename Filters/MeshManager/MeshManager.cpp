@@ -120,7 +120,7 @@ namespace filter {
                 break;
             case RCLIB_DEVICE_ID::FLIGHT_COMPUTER:
                 // We routed in a loop...
-                std::cerr << "[MeshManager]: Some external device creates loops in the network";
+                std::cerr << "[MeshManager]: Some external device creates loops in the network\n";
                 break;
         }
     }

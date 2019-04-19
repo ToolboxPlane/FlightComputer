@@ -61,7 +61,7 @@ namespace filter {
         } else if (headingDiff < -180) {
             headingDiff += 360;
         }
-        auto roll = -headingDiff * HEADING_P; // sign is a result of compass angles not being mathematically positive
+        auto roll = headingDiff * HEADING_P;
         return clamp(roll, -MAX_ROLL, MAX_ROLL);
     }
 
