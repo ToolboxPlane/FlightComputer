@@ -54,7 +54,7 @@ namespace filter {
     }
 
     auto FeedbackControl::headingControl(State_t state, double target) const -> double {
-        double headingDiff = target - state.heading;
+        double headingDiff = target - state.yaw;
         headingDiff = std::fmod(headingDiff, 360);
         if (headingDiff > 180) {
             headingDiff -= 180;

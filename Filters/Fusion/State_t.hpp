@@ -17,10 +17,10 @@ class State_t {
 public:
     GpsMeasurement_t position;
     si::base::MeterType<> heightAboveGround, heightAboveSeaLevel;
-    double pitch, roll, heading;
+    double pitch, roll, yaw;
+    double pitchDeriv, rollDeriv, yawDeriv;
     si::extended::SpeedType<> airspeed, groundSpeed;
     si::extended::VoltageType<> voltage;
-    si::extended::AccelerationType<> accForward, accSide, accUpdown;
 
     struct {
         int throttle, yaw, pitch, roll;
@@ -37,7 +37,7 @@ public:
     } lora;
 
     friend std::ostream &operator<<(std::ostream &ostream, State_t state) {
-        ostream << "H:" << state.heading;
+        ostream << "H:" << state.yaw;
         ostream << "\tR:" << state.roll;
         ostream << "\tP:" << state.pitch;
         ostream << "\tGnd:" << state.heightAboveGround;
@@ -52,7 +52,6 @@ public:
         ostream << "\tV:" << state.voltage;
         ostream << "\tAr:" << (state.taranis.isArmed?1:0);
         ostream << "\tOr:" << (state.taranis.manualOverrideActive?1:0);
-        ostream << "\tAcc: (" << state.accForward << ","<< state.accSide << "," << state.accUpdown << ")";
         return ostream;
     }
 };

@@ -77,10 +77,10 @@ namespace filter {
     }
 
     void Navigation::land(State_t state, bool reset) {
-        static auto targetHeading = state.heading;
+        static auto targetHeading = state.yaw;
         static auto targetAltitude = state.heightAboveSeaLevel;
         if (reset) {
-            targetHeading = state.heading;
+            targetHeading = state.yaw;
             targetAltitude = state.heightAboveSeaLevel;
         }
 
@@ -111,10 +111,10 @@ namespace filter {
         switch (launchState) {
             case IN_HAND:
                 nav.speed = 0.0_speed;
-                nav.heading = state.heading;
+                nav.heading = state.yaw;
                 nav.altitude = state.heightAboveSeaLevel;
-                if (THROW_THRESH < state.accForward) {
-                    headingTarget = state.heading;
+                if (THROW_THRESH < 0 * si::extended::acceleration) { //@TODO fixme
+                    headingTarget = state.yaw;
                     altitudeTarget = state.heightAboveSeaLevel + POST_LAUNCH_ALTITUDE;
                     launchState = THROWN;
                 }
@@ -155,10 +155,10 @@ namespace filter {
 
     void Navigation::hold(State_t state, bool reset) {
         Nav_t nav{};
-        static auto targetHeading = state.heading;
+        static auto targetHeading = state.yaw;
         static auto targetAltitude = state.heightAboveSeaLevel;
         if (reset) {
-            targetHeading = state.heading;
+            targetHeading = state.yaw;
             targetAltitude = state.heightAboveSeaLevel;
         }
 

@@ -63,15 +63,15 @@ namespace filter {
         static State_t lastState;
 
         // Flightcontroller Data
-        res.heading = lastFcPackage.getChannel(0);
-        res.roll = lastFcPackage.getChannel(1) - 180;
-        res.pitch = lastFcPackage.getChannel(2) - 180;
-        res.heightAboveSeaLevel = lastFcPackage.getChannel(4) * si::base::meter;
+        res.roll = lastFcPackage.getChannel(1) - 500;
+        res.pitch = lastFcPackage.getChannel(2) - 500;
+        res.yaw = lastFcPackage.getChannel(3) - 500;
+        res.rollDeriv = lastFcPackage.getChannel(4) - 500;
+        res.pitchDeriv = lastFcPackage.getChannel(5) - 500;
+        res.yawDeriv = lastFcPackage.getChannel(6) - 500;
+        res.heightAboveSeaLevel = 0 * si::base::meter;
         res.heightAboveGround = res.heightAboveSeaLevel; // Waiting for some kind of distance sensor
-        res.airspeed = lastFcPackage.getChannel(5) * si::extended::speed;
-        res.accForward = (lastFcPackage.getChannel(6) - 500) * si::extended::acceleration;
-        res.accSide = (lastFcPackage.getChannel(7) - 500) * si::extended::acceleration;
-        res.accUpdown = (lastFcPackage.getChannel(8) - 500) * si::extended::acceleration;
+        res.airspeed = 0 * si::extended::speed;
 
         // Gps
         if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired) {
