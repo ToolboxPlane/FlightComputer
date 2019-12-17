@@ -7,10 +7,10 @@
 #include "Filters/MeshManager/MeshManager.hpp"
 #include "Utilities/Logger.hpp"
 #include "Filters/OutputFilter/OutputFilter.hpp"
-#include "Devices/GPS/GpsSimulator.hpp"
+#include "Devices/GPS/Sim/GpsSimulator.hpp"
 #include "Utilities/ChannelRecorder.hpp"
 #include "Utilities/ChannelReplay.hpp"
-#include "Devices/GPS/Gps.hpp"
+#include "Devices/GPS/Node/Gps.hpp"
 #include "OutputChannel.hpp"
 #include "Filters/FeedbackControl/FeedbackControl.hpp"
 #include "Devices/Network/Network.hpp"
@@ -31,8 +31,8 @@ int main() {
     /*
      * I/O-Modules
      */
-    //device::SerialPosix serial{"/dev/ttyACM0", 9600};
-    device::RcLibSimulator serial{23, 1000};
+    device::SerialPosix serial{"/dev/ttyUSB0", 115200};
+    //device::RcLibSimulator serial{23, 1000};
     //std::ifstream serialFile("logs/serial_18_06_27_19_43.csv");
     //assert(serialFile.is_open());
     //ChannelReplay<rcLib::PackageExtended> serial(serialFile);

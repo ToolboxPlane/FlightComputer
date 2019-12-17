@@ -8,11 +8,12 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <cstring>
+#include <utility>
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include "Network.hpp"
 
-device::Network::Network(const std::string &address) : address{address} {
+device::Network::Network(std::string address) : address{std::move(address)} {
     this->fd = socket(AF_INET, SOCK_RAW | SOCK_NONBLOCK, PROTOCOL_ID);
     if (this->fd < 0) {
         throw std::runtime_error(strerror(errno));

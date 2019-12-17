@@ -6,10 +6,10 @@
 #define FLIGHTCOMPUTER_GPSSIMULATOR_HPP
 
 
-#include "../../Node.hpp"
-#include "../../InputChannel.hpp"
-#include "GpsMeasurement_t.hpp"
-#include "../../OutputChannel.hpp"
+#include "../../../Node.hpp"
+#include "../../../InputChannel.hpp"
+#include "../Type/GpsMeasurement_t.hpp"
+#include "../../../OutputChannel.hpp"
 
 namespace device {
     class GpsSimulator : public Node {

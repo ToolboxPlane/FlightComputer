@@ -23,7 +23,8 @@ namespace device {
         while (true) {
             if (gps_waiting(&gps_data, 60000000)) {
                 if (gps_read(&gps_data) == -1) {
-                    fprintf(stderr, "error occured reading gps data, reason: %s\n", gps_errstr(errno));
+                    throw std::runtime_error{
+                        std::string{"error occured reading gps data, reason: "} + gps_errstr(errno)};
                 } else {
                     if ((gps_data.status == STATUS_FIX) &&
                         (gps_data.fix.mode == MODE_2D || gps_data.fix.mode == MODE_3D) &&

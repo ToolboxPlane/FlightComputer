@@ -6,7 +6,7 @@
 #define FLIGHTCOMPUTER_STATE_T_HPP
 
 #include <ostream>
-#include "../../Devices/GPS/GpsMeasurement_t.hpp"
+#include "../../Devices/GPS/Type/GpsMeasurement_t.hpp"
 #include "../../Utilities/Si/SiExtended.hpp"
 
 enum class FlightMode{

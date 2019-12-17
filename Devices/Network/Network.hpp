@@ -17,7 +17,7 @@
 namespace device {
     class Network : public Node {
     public:
-        explicit Network(const std::string &address);
+        explicit Network(std::string address);
 
         auto getChannelIn() -> InputChannel<rcLib::PackageExtended>&;
         auto getChannelOut() -> OutputChannel<rcLib::PackageExtended>&;

@@ -8,10 +8,10 @@
 #include <string>
 #include <gps.h>
 
-#include "GpsMeasurement_t.hpp"
-#include "../../Node.hpp"
-#include "../../InputChannel.hpp"
-#include "../../OutputChannel.hpp"
+#include "../Type/GpsMeasurement_t.hpp"
+#include "../../../Node.hpp"
+#include "../../../InputChannel.hpp"
+#include "../../../OutputChannel.hpp"
 
 namespace device {
     class Gps : public Node {
