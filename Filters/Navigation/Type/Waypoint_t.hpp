@@ -5,7 +5,7 @@
 #ifndef FLIGHTCOMPUTER_WAYPOINT_T_HPP
 #define FLIGHTCOMPUTER_WAYPOINT_T_HPP
 
-#include "../../Devices/GPS/Type/Gps_t.hpp"
+#include "../../../Devices/GPS/Type/Gps_t.hpp"
 
 class Waypoint_t {
 public:

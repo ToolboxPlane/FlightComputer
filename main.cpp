@@ -2,8 +2,8 @@
 #include <iomanip>
 #include <cassert>
 #include "Devices/rcLib/RcLibSimulator.hpp"
-#include "Filters/Fusion/Fusion.hpp"
-#include "Filters/Navigation/Navigation.hpp"
+#include "Filters/Fusion/Node/Fusion.hpp"
+#include "Filters/Navigation/Node/Navigation.hpp"
 #include "Filters/MeshManager/MeshManager.hpp"
 #include "Utilities/Logger.hpp"
 #include "Filters/OutputFilter/OutputFilter.hpp"
@@ -12,7 +12,7 @@
 #include "Utilities/ChannelReplay.hpp"
 #include "Devices/GPS/Node/Gps.hpp"
 #include "OutputChannel.hpp"
-#include "Filters/FeedbackControl/FeedbackControl.hpp"
+#include "Filters/FeedbackControl/Node/FeedbackControl.hpp"
 #include "Devices/Network/Network.hpp"
 #include "Devices/Serial/SerialPosix.hpp"
 

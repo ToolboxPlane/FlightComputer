@@ -3,7 +3,7 @@
 //
 
 #include "Navigation.hpp"
-#include "../Fusion/State_t.hpp"
+#include "../../Fusion/Type/State_t.hpp"
 #include <limits>
 
 namespace filter {

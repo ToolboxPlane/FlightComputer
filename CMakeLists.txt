@@ -24,11 +24,11 @@ set(SOURCES
         Devices/GPS/Node/Gps.cpp
         Devices/Network/Network.cpp
         Devices/Serial/SerialPosix.cpp
-        Filters/Fusion/Fusion.cpp
-        Filters/Navigation/Navigation.cpp
+        Filters/Fusion/Node/Fusion.cpp
+        Filters/Navigation/Node/Navigation.cpp
         Filters/MeshManager/MeshManager.cpp
         Filters/OutputFilter/OutputFilter.cpp
-        Filters/FeedbackControl/FeedbackControl.cpp)
+        Filters/FeedbackControl/Node/FeedbackControl.cpp)
 
 set(SOURCES_PI ${SOURCES}
         Devices/LoRa/LoRa.cpp)

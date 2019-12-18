@@ -8,11 +8,11 @@
 #ifndef FLIGHTCOMPUTER_FEEDBACKCONTROL_HPP
 #define FLIGHTCOMPUTER_FEEDBACKCONTROL_HPP
 
-#include "../../Node.hpp"
-#include "../../InputChannel.hpp"
-#include "../Navigation/Nav_t.hpp"
-#include "../../OutputChannel.hpp"
-#include "Control_t.hpp"
+#include "../../../Node.hpp"
+#include "../../../InputChannel.hpp"
+#include "../../Navigation/Type/Nav_t.hpp"
+#include "../../../OutputChannel.hpp"
+#include "../Type/Control_t.hpp"
 
 namespace filter {
     class FeedbackControl : public Node {

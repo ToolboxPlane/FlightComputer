@@ -8,7 +8,7 @@
 
 #include "../../Node.hpp"
 #include "../../Devices/rcLib/PackageExtended.hpp"
-#include "../FeedbackControl/Control_t.hpp"
+#include "../FeedbackControl/Type/Control_t.hpp"
 #include "../../InputChannel.hpp"
 #include "../../OutputChannel.hpp"
 

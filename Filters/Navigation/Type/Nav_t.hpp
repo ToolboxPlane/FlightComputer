@@ -6,7 +6,7 @@
 #define FLIGHTCOMPUTER_NAV_T_HPP
 
 #include <ostream>
-#include "../Fusion/State_t.hpp"
+#include "../../Fusion/Type/State_t.hpp"
 
 class Nav_t {
 public:

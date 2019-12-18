@@ -6,10 +6,10 @@
 #define FLIGHTCOMPUTER_NAVIGATION_HPP
 
 
-#include "../../Node.hpp"
-#include "../Fusion/Fusion.hpp"
-#include "Nav_t.hpp"
-#include "Waypoint_t.hpp"
+#include "../../../Node.hpp"
+#include "../../Fusion/Node/Fusion.hpp"
+#include "../Type/Nav_t.hpp"
+#include "../Type/Waypoint_t.hpp"
 
 namespace filter {
     class Navigation : public Node {

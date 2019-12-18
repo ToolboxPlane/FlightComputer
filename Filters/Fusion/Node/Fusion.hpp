@@ -5,13 +5,12 @@
 #ifndef FLIGHTCOMPUTER_FUSION_HPP
 #define FLIGHTCOMPUTER_FUSION_HPP
 
-
-#include "../../InputChannel.hpp"
-#include "../../Devices/rcLib/PackageExtended.hpp"
-#include "../../Node.hpp"
-#include "../../Devices/GPS/Type/GpsMeasurement_t.hpp"
-#include "State_t.hpp"
-#include "../../OutputChannel.hpp"
+#include "../../../InputChannel.hpp"
+#include "../../../Devices/rcLib/PackageExtended.hpp"
+#include "../../../Node.hpp"
+#include "../../../Devices/GPS/Type/GpsMeasurement_t.hpp"
+#include "../Type/State_t.hpp"
+#include "../../../OutputChannel.hpp"
 #include <optional>
 
 namespace filter {
