@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Fusion.hpp"
 #include "../Type/State_t.hpp"
+#include "../Lib/DecodePackage.hpp"
 
 namespace filter {
     using namespace si::extended;
@@ -22,23 +23,23 @@ namespace filter {
         return gpsIn;
     }
 
-    InputChannel<rcLib::PackageExtended> &Fusion::getFlightControllerIn() {
+    InputChannel<rcLib::Package> &Fusion::getFlightControllerIn() {
         return flightControllerIn;
     }
 
-    InputChannel<rcLib::PackageExtended> &Fusion::getBaseIn() {
+    InputChannel<rcLib::Package> &Fusion::getBaseIn() {
         return baseIn;
     }
 
-    InputChannel<rcLib::PackageExtended> &Fusion::getRemoteIn() {
+    InputChannel<rcLib::Package> &Fusion::getRemoteIn() {
         return remoteIn;
     }
 
-    InputChannel<rcLib::PackageExtended> &Fusion::getPdbIn() {
+    InputChannel<rcLib::Package> &Fusion::getPdbIn() {
         return pdbIn;
     }
 
-    InputChannel<rcLib::PackageExtended> &Fusion::getTaranisIn() {
+    InputChannel<rcLib::Package> &Fusion::getTaranisIn() {
         return taranisIn;
     }
 
@@ -62,6 +63,7 @@ namespace filter {
         State_t res{};
         static State_t lastState;
 
+        //auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
         // Flightcontroller Data
         res.roll = lastFcPackage.getChannel(1) - 500;
         res.pitch = lastFcPackage.getChannel(2) - 500;

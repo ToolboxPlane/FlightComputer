@@ -7,7 +7,7 @@
 
 
 #include "../../InputChannel.hpp"
-#include "PackageExtended.hpp"
+#include "RadioControlProtocolCpp/rcLib.hpp"
 #include "../../Node.hpp"
 #include "../../OutputChannel.hpp"
 
@@ -18,13 +18,13 @@ namespace device {
 
         void run() override;
 
-        auto getChannelIn() -> InputChannel<rcLib::PackageExtended>&;
+        auto getChannelIn() -> InputChannel<rcLib::Package>&;
 
-        auto getChannelOut() -> OutputChannel<rcLib::PackageExtended>&;
+        auto getChannelOut() -> OutputChannel<rcLib::Package>&;
 
     private:
-        InputChannel<rcLib::PackageExtended> in;
-        OutputChannel<rcLib::PackageExtended> out;
+        InputChannel<rcLib::Package> in;
+        OutputChannel<rcLib::Package> out;
         const uint8_t deviceId;
         const int intervalMs;
     };

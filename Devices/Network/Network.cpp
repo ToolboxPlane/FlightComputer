@@ -24,8 +24,8 @@ device::Network::Network(std::string address) : address{std::move(address)} {
 
 void device::Network::run() {
     std::array<uint8_t, 512> buffer{};
-    rcLib::PackageExtended pkgIn{};
-    rcLib::PackageExtended pkgOut{};
+    rcLib::Package pkgIn{};
+    rcLib::Package pkgOut{};
     sockaddr_in sockaddrIn{};
     sockaddrIn.sin_family = AF_INET;
     if (inet_pton(AF_INET, this->address.c_str(), &sockaddrIn.sin_addr) != 1) {
@@ -36,7 +36,7 @@ void device::Network::run() {
         auto received = recv(this->fd, buffer.data(), buffer.size(), 0);
         if (received > 0) {
             auto *ipHeader = reinterpret_cast<iphdr*>(buffer.data());
-            for (auto c = ipHeader->ihl*4; c < received; c++) {
+            for (long c = ipHeader->ihl*4u; c < received; c++) {
                 if (pkgIn.decode(buffer[c])) {
                     out.put(pkgIn);
                 }
@@ -53,10 +53,10 @@ void device::Network::run() {
     }
 }
 
-auto device::Network::getChannelIn() -> InputChannel<rcLib::PackageExtended> & {
+auto device::Network::getChannelIn() -> InputChannel<rcLib::Package> & {
     return in;
 }
 
-auto device::Network::getChannelOut() -> OutputChannel<rcLib::PackageExtended> & {
+auto device::Network::getChannelOut() -> OutputChannel<rcLib::Package> & {
     return out;
 }

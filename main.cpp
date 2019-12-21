@@ -11,14 +11,10 @@
 #include "Utilities/ChannelRecorder.hpp"
 #include "Utilities/ChannelReplay.hpp"
 #include "Devices/GPS/Node/Gps.hpp"
-#include "OutputChannel.hpp"
 #include "Filters/FeedbackControl/Node/FeedbackControl.hpp"
 #include "Devices/Network/Network.hpp"
 #include "Devices/Serial/SerialPosix.hpp"
-
-#include "Utilities/Si/Si.hpp"
-#include "Utilities/Si/SiLiterals.hpp"
-#include "Utilities/Si/SiExtended.hpp"
+#include "Devices/rcLib/PackageOstream.hpp"
 
 #ifdef RASPBERRY_PI
 #include "Devices/LoRa/LoRa.hpp"
@@ -93,10 +89,10 @@ int main() {
     /*
      * Logging
      */
-    debug::Logger<rcLib::PackageExtended> serialReceiveDebug{"Serial-Recv", false};
-    debug::Logger<rcLib::PackageExtended> serialSendDebug{"Serial-Send", false};
-    debug::Logger<rcLib::PackageExtended> loraReceiveDebug{"Lora-Recv", false};
-    debug::Logger<rcLib::PackageExtended> loraSendDebug{"Lora-Send", false};
+    debug::Logger<rcLib::Package> serialReceiveDebug{"Serial-Recv", false};
+    debug::Logger<rcLib::Package> serialSendDebug{"Serial-Send", false};
+    debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", false};
+    debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", false};
     debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
     debug::Logger<State_t> fusionDebug{"Fusion", true};
     debug::Logger<Nav_t> navDebug{"Nav", false};

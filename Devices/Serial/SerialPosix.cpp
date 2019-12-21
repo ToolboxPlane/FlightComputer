@@ -55,7 +55,7 @@ namespace device {
 
     void SerialPosix::run() {
         std::array<uint8_t, BUF_SIZE> buffer{};
-        rcLib::PackageExtended pkgIn, pkgOut;
+        rcLib::Package pkgIn, pkgOut;
 
         while (!in.isClosed()) {
             /*
@@ -315,11 +315,11 @@ namespace device {
         return results;
     }
 
-    auto SerialPosix::getChannelIn() -> InputChannel<rcLib::PackageExtended> & {
+    auto SerialPosix::getChannelIn() -> InputChannel<rcLib::Package> & {
         return in;
     }
 
-    auto SerialPosix::getChannelOut() -> OutputChannel<rcLib::PackageExtended> & {
+    auto SerialPosix::getChannelOut() -> OutputChannel<rcLib::Package> & {
         return out;
     }
 }

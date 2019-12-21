@@ -6,7 +6,7 @@
 #define FLIGHTCOMPUTER_FUSION_HPP
 
 #include "../../../InputChannel.hpp"
-#include "../../../Devices/rcLib/PackageExtended.hpp"
+#include "../../../Devices/rcLib/RadioControlProtocolCpp/rcLib.hpp"
 #include "../../../Node.hpp"
 #include "../../../Devices/GPS/Type/GpsMeasurement_t.hpp"
 #include "../Type/State_t.hpp"
@@ -20,33 +20,33 @@ namespace filter {
 
         void run() override;
 
-        InputChannel<rcLib::PackageExtended> &getFlightControllerIn();
+        InputChannel<rcLib::Package> &getFlightControllerIn();
 
-        InputChannel<rcLib::PackageExtended> &getBaseIn();
+        InputChannel<rcLib::Package> &getBaseIn();
 
-        InputChannel<rcLib::PackageExtended> &getRemoteIn();
+        InputChannel<rcLib::Package> &getRemoteIn();
 
-        InputChannel<rcLib::PackageExtended> &getTaranisIn();
+        InputChannel<rcLib::Package> &getTaranisIn();
 
-        InputChannel<rcLib::PackageExtended> &getPdbIn();
+        InputChannel<rcLib::Package> &getPdbIn();
 
         InputChannel<GpsMeasurement_t> &getGpsIn();
 
         OutputChannel<State_t> &getChannelOut();
 
     private:
-        rcLib::PackageExtended lastFcPackage;
-        std::optional<rcLib::PackageExtended> lastPdbPackage;
+        rcLib::Package lastFcPackage;
+        std::optional<rcLib::Package> lastPdbPackage;
         std::optional<GpsMeasurement_t> lastGpsMeasurement;
-        std::optional<rcLib::PackageExtended> lastBasePackage;
-        std::optional<rcLib::PackageExtended> lastTaranisPackage;
-        std::optional<rcLib::PackageExtended> lastRemotePackage;
+        std::optional<rcLib::Package> lastBasePackage;
+        std::optional<rcLib::Package> lastTaranisPackage;
+        std::optional<rcLib::Package> lastRemotePackage;
 
         State_t process();
 
         static int normalizeTaranis(int input);
 
-        InputChannel<rcLib::PackageExtended> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
+        InputChannel<rcLib::Package> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
         InputChannel<GpsMeasurement_t> gpsIn;
         OutputChannel<State_t> out;
     };

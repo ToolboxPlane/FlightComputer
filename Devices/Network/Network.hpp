@@ -11,7 +11,7 @@
 
 #include "../../Node.hpp"
 #include "../../InputChannel.hpp"
-#include "../rcLib/PackageExtended.hpp"
+#include "../rcLib/RadioControlProtocolCpp/rcLib.hpp"
 #include "../../OutputChannel.hpp"
 
 namespace device {
@@ -19,15 +19,15 @@ namespace device {
     public:
         explicit Network(std::string address);
 
-        auto getChannelIn() -> InputChannel<rcLib::PackageExtended>&;
-        auto getChannelOut() -> OutputChannel<rcLib::PackageExtended>&;
+        auto getChannelIn() -> InputChannel<rcLib::Package>&;
+        auto getChannelOut() -> OutputChannel<rcLib::Package>&;
     private:
         void run() override;
 
         std::string address;
         int fd;
-        InputChannel<rcLib::PackageExtended> in;
-        OutputChannel<rcLib::PackageExtended> out;
+        InputChannel<rcLib::Package> in;
+        OutputChannel<rcLib::Package> out;
 
         static constexpr auto PROTOCOL_ID = 253;
     };

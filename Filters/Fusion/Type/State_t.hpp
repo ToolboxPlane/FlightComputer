@@ -13,6 +13,16 @@ enum class FlightMode{
     ANGLE = 0, LAUNCH = 1, LAND = 2, HOLD = 3, WAYPOINT = 4
 };
 
+class FlightControllerPackage {
+public:
+    uint8_t bnoState;
+    float roll, pitch, yaw;
+    float rollDeriv, pitchDeriv, yawDeriv;
+    float aileronRight, vtailRight;
+    float aileronLeft, vtailLeft;
+    float motor;
+};
+
 class State_t {
 public:
     GpsMeasurement_t position;

@@ -16,56 +16,56 @@ namespace filter {
         this->start();
     }
 
-    InputChannel<rcLib::PackageExtended> &MeshManager::getLoraIn() {
+    InputChannel<rcLib::Package> &MeshManager::getLoraIn() {
         return loraIn;
     }
 
-    InputChannel<rcLib::PackageExtended> &MeshManager::getSerialIn() {
+    InputChannel<rcLib::Package> &MeshManager::getSerialIn() {
         return serialIn;
     }
 
-    OutputChannel<rcLib::PackageExtended> &MeshManager::getLoraOut() {
+    OutputChannel<rcLib::Package> &MeshManager::getLoraOut() {
         return loraOut;
     }
 
-    OutputChannel<rcLib::PackageExtended> &MeshManager::getSerialOut() {
+    OutputChannel<rcLib::Package> &MeshManager::getSerialOut() {
         return serialOut;
     }
 
-    InputChannel<rcLib::PackageExtended> &MeshManager::getFlightControllerIn() {
+    InputChannel<rcLib::Package> &MeshManager::getFlightControllerIn() {
         return flightControllerIn;
     }
 
-    InputChannel<rcLib::PackageExtended> &MeshManager::getBaseIn() {
+    InputChannel<rcLib::Package> &MeshManager::getBaseIn() {
         return baseIn;
     }
 
-    InputChannel<rcLib::PackageExtended> &MeshManager::getRemoteIn() {
+    InputChannel<rcLib::Package> &MeshManager::getRemoteIn() {
         return remoteIn;
     }
 
-    OutputChannel<rcLib::PackageExtended> &MeshManager::getFlightControllerOut() {
+    OutputChannel<rcLib::Package> &MeshManager::getFlightControllerOut() {
         return flightControllerOut;
     }
 
-    OutputChannel<rcLib::PackageExtended> &MeshManager::getRemoteOut() {
+    OutputChannel<rcLib::Package> &MeshManager::getRemoteOut() {
         return remoteOut;
     }
 
-    OutputChannel<rcLib::PackageExtended> &MeshManager::getBaseOut() {
+    OutputChannel<rcLib::Package> &MeshManager::getBaseOut() {
         return baseOut;
     }
 
-    OutputChannel<rcLib::PackageExtended> &MeshManager::getPdbOut() {
+    OutputChannel<rcLib::Package> &MeshManager::getPdbOut() {
         return pdbOut;
     }
 
-    OutputChannel<rcLib::PackageExtended> &MeshManager::getTaranisOut() {
+    OutputChannel<rcLib::Package> &MeshManager::getTaranisOut() {
         return taranisOut;
     }
 
     void MeshManager::run() {
-        rcLib::PackageExtended pkg{};
+        rcLib::Package pkg{};
         while (!serialIn.isClosed()) {
             if (loraIn.get(pkg, false)) {
                 if (pkg.needsForwarding()) {
@@ -101,7 +101,7 @@ namespace filter {
     }
 
 
-    void MeshManager::propagateInternal(rcLib::PackageExtended pkg) {
+    void MeshManager::propagateInternal(rcLib::Package pkg) {
         switch ((RCLIB_DEVICE_ID) pkg.getDeviceId()) {
             case RCLIB_DEVICE_ID::REMOTE:
                 remoteOut.put(pkg);

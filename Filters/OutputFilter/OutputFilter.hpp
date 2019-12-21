@@ -7,7 +7,7 @@
 
 
 #include "../../Node.hpp"
-#include "../../Devices/rcLib/PackageExtended.hpp"
+#include "../../Devices/rcLib/RadioControlProtocolCpp/rcLib.hpp"
 #include "../FeedbackControl/Type/Control_t.hpp"
 #include "../../InputChannel.hpp"
 #include "../../OutputChannel.hpp"
@@ -17,16 +17,16 @@ namespace filter {
     public:
         OutputFilter();
 
-        OutputChannel<rcLib::PackageExtended> &getBaseOut();
+        OutputChannel<rcLib::Package> &getBaseOut();
 
-        OutputChannel<rcLib::PackageExtended> &getFlightControllerOut();
+        OutputChannel<rcLib::Package> &getFlightControllerOut();
 
         InputChannel<Control_t> &getChannelIn();
 
     private:
         void run() override;
 
-        OutputChannel<rcLib::PackageExtended> flightControllerOut, baseOut;
+        OutputChannel<rcLib::Package> flightControllerOut, baseOut;
         InputChannel<Control_t> in;
     };
 }

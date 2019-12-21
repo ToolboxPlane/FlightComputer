@@ -8,6 +8,8 @@
 #ifndef FLIGHTCOMPUTER_CONTROL_T_HPP
 #define FLIGHTCOMPUTER_CONTROL_T_HPP
 
+#include <ostream>
+
 class Control_t {
 public:
     double pitch, roll, power;

@@ -11,7 +11,7 @@ namespace device {
     }
 
     void RcLibSimulator::run() {
-        rcLib::PackageExtended pkg(256, 16);
+        rcLib::Package pkg(256, 16);
         pkg.setMeshProperties(static_cast<uint8_t>(true));
         pkg.setDeviceId(deviceId);
         while (!in.isClosed()) {
@@ -23,11 +23,11 @@ namespace device {
         }
     }
 
-    auto RcLibSimulator::getChannelIn() -> InputChannel<rcLib::PackageExtended> & {
+    auto RcLibSimulator::getChannelIn() -> InputChannel<rcLib::Package> & {
         return in;
     }
 
-    auto RcLibSimulator::getChannelOut() -> OutputChannel<rcLib::PackageExtended> & {
+    auto RcLibSimulator::getChannelOut() -> OutputChannel<rcLib::Package> & {
         return out;
     }
 }

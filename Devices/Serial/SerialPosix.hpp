@@ -15,7 +15,7 @@
 #include <mutex>
 #include "../../Node.hpp"
 #include "../../InputChannel.hpp"
-#include "../rcLib/PackageExtended.hpp"
+#include "../rcLib/RadioControlProtocolCpp/rcLib.hpp"
 #include "../../OutputChannel.hpp"
 
 namespace device {
@@ -41,9 +41,9 @@ namespace device {
 
         void setStopBits(int stopBits);
 
-        auto getChannelIn() -> InputChannel<rcLib::PackageExtended>&;
+        auto getChannelIn() -> InputChannel<rcLib::Package>&;
 
-        auto getChannelOut() -> OutputChannel<rcLib::PackageExtended>&;
+        auto getChannelOut() -> OutputChannel<rcLib::Package>&;
 
         static auto getAvailablePorts() -> std::vector<std::string>;
     private:
@@ -51,8 +51,8 @@ namespace device {
         void sendBuff(const std::vector<uint8_t> &buffer) const;
         int fd;
 
-        InputChannel<rcLib::PackageExtended> in;
-        OutputChannel<rcLib::PackageExtended> out;
+        InputChannel<rcLib::Package> in;
+        OutputChannel<rcLib::Package> out;
 
         static constexpr std::size_t BUF_SIZE = 512;
     };

@@ -7,7 +7,7 @@
 
 
 #include "../../Node.hpp"
-#include "../../Devices/rcLib/PackageExtended.hpp"
+#include "../../Devices/rcLib/RadioControlProtocolCpp/rcLib.hpp"
 #include "../../InputChannel.hpp"
 #include "../../OutputChannel.hpp"
 namespace filter {
@@ -15,37 +15,37 @@ namespace filter {
     public:
         MeshManager();
 
-        InputChannel<rcLib::PackageExtended> &getLoraIn();
+        InputChannel<rcLib::Package> &getLoraIn();
 
-        InputChannel<rcLib::PackageExtended> &getSerialIn();
+        InputChannel<rcLib::Package> &getSerialIn();
 
-        OutputChannel<rcLib::PackageExtended> &getLoraOut();
+        OutputChannel<rcLib::Package> &getLoraOut();
 
-        OutputChannel<rcLib::PackageExtended> &getSerialOut();
+        OutputChannel<rcLib::Package> &getSerialOut();
 
-        InputChannel<rcLib::PackageExtended> &getFlightControllerIn();
+        InputChannel<rcLib::Package> &getFlightControllerIn();
 
-        InputChannel<rcLib::PackageExtended> &getBaseIn();
+        InputChannel<rcLib::Package> &getBaseIn();
 
-        InputChannel<rcLib::PackageExtended> &getRemoteIn();
+        InputChannel<rcLib::Package> &getRemoteIn();
 
-        OutputChannel<rcLib::PackageExtended> &getFlightControllerOut();
+        OutputChannel<rcLib::Package> &getFlightControllerOut();
 
-        OutputChannel<rcLib::PackageExtended> &getRemoteOut();
+        OutputChannel<rcLib::Package> &getRemoteOut();
 
-        OutputChannel<rcLib::PackageExtended> &getBaseOut();
+        OutputChannel<rcLib::Package> &getBaseOut();
 
-        OutputChannel<rcLib::PackageExtended> &getPdbOut();
+        OutputChannel<rcLib::Package> &getPdbOut();
 
-        OutputChannel<rcLib::PackageExtended> &getTaranisOut();
+        OutputChannel<rcLib::Package> &getTaranisOut();
 
     private:
-        InputChannel<rcLib::PackageExtended> loraIn, serialIn;
-        InputChannel<rcLib::PackageExtended> flightControllerIn, remoteIn, baseIn;
-        OutputChannel<rcLib::PackageExtended> loraOut, serialOut;
-        OutputChannel<rcLib::PackageExtended> flightControllerOut, remoteOut, baseOut, pdbOut, taranisOut;
+        InputChannel<rcLib::Package> loraIn, serialIn;
+        InputChannel<rcLib::Package> flightControllerIn, remoteIn, baseIn;
+        OutputChannel<rcLib::Package> loraOut, serialOut;
+        OutputChannel<rcLib::Package> flightControllerOut, remoteOut, baseOut, pdbOut, taranisOut;
 
-        void propagateInternal(rcLib::PackageExtended pkg);
+        void propagateInternal(rcLib::Package pkg);
 
         void run() override;
     };

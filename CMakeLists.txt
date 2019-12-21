@@ -18,7 +18,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=unused-but-set-parameter")
 
 set(SOURCES
         main.cpp
-        Devices/rcLib/RadioControlProtocol/rcLib.cpp
+        Devices/rcLib/RadioControlProtocolCpp/rcLib.cpp
+        Devices/rcLib/RadioControlProtocolCpp/RadioControlProtocolC/rc_lib.c
+        Devices/rcLib/PackageOstream.cpp
         Devices/rcLib/RcLibSimulator.cpp
         Devices/GPS/Sim/GpsSimulator.cpp
         Devices/GPS/Node/Gps.cpp
