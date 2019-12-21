@@ -30,12 +30,12 @@ namespace filter {
         }
     }
 
-    auto FeedbackControl::speedControl(State_t state, si::extended::SpeedType<> target) const -> double {
+    auto FeedbackControl::speedControl(State_t state, si::extended::Speed<> target) const -> double {
         if (static_cast<decltype(target)::type>(target) == 0) {
             return 0;
         }
 
-        static si::extended::SpeedType<> diffSum = 0_speed;
+        static si::extended::Speed<> diffSum = 0_speed;
         static auto lastDiff = target - state.groundSpeed;
         auto deltaSpeed = target - state.groundSpeed;
         diffSum += deltaSpeed;
@@ -65,7 +65,7 @@ namespace filter {
         return clamp(roll, -MAX_ROLL, MAX_ROLL);
     }
 
-    auto FeedbackControl::altitudeControl(State_t state, si::base::MeterType<> target) const -> double {
+    auto FeedbackControl::altitudeControl(State_t state, si::base::Meter<> target) const -> double {
         auto deltaHeight = state.heightAboveSeaLevel - target;
         double pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::PITCH_P);
 

@@ -63,17 +63,8 @@ namespace filter {
         State_t res{};
         static State_t lastState;
 
-        //auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
         // Flightcontroller Data
-        res.roll = lastFcPackage.getChannel(1) - 500;
-        res.pitch = lastFcPackage.getChannel(2) - 500;
-        res.yaw = lastFcPackage.getChannel(3) - 500;
-        res.rollDeriv = lastFcPackage.getChannel(4) - 500;
-        res.pitchDeriv = lastFcPackage.getChannel(5) - 500;
-        res.yawDeriv = lastFcPackage.getChannel(6) - 500;
-        res.heightAboveSeaLevel = 0 * si::base::meter;
-        res.heightAboveGround = res.heightAboveSeaLevel; // Waiting for some kind of distance sensor
-        res.airspeed = 0 * si::extended::speed;
+        auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
 
         // Gps
         if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired) {
@@ -90,34 +81,16 @@ namespace filter {
             res.position.fixAquired = false;
         }
 
-        // PDB
         if (lastPdbPackage.has_value()) {
-            res.voltage = (lastPdbPackage.value().getChannel(1) * 128) / 1000.0 * si::extended::volt;
-        } else {
-            res.voltage = 16.8_volt;
+            res.pdbPackage = fusion::decodePackage<PdbPackage>(lastPdbPackage.value());
         }
 
-        // Taranis
         if (lastTaranisPackage.has_value()) {
-            auto pkg = lastTaranisPackage.value();
-            res.taranis.throttle = normalizeTaranis(pkg.getChannel(5));
-            res.taranis.yaw = normalizeTaranis(pkg.getChannel(6));
-            res.taranis.pitch = normalizeTaranis(pkg.getChannel(7));
-            res.taranis.roll = normalizeTaranis(pkg.getChannel(8));
-            res.taranis.isArmed = normalizeTaranis(pkg.getChannel(9)) > 250;
-            res.taranis.manualOverrideActive = normalizeTaranis(pkg.getChannel(10)) < 250;
+            res.taranisPackage = fusion::decodePackage<TaranisPackage>(lastTaranisPackage.value());
         }
 
         if (lastRemotePackage.has_value()) {
-            auto pkg = lastRemotePackage.value();
-            res.lora.joyRight.x = (pkg.getChannel(0) - 127) / 127.0;
-            res.lora.joyRight.y = (pkg.getChannel(1) - 127) / 127.0;
-            res.lora.joyLeft.x = (pkg.getChannel(2) - 127) / 127.0;
-            res.lora.joyLeft.y = (pkg.getChannel(3) - 127) / 127.0;
-            res.lora.flightMode = static_cast<FlightMode>(pkg.getChannel(4));
-            res.lora.isArmed = static_cast<bool>(pkg.getChannel(5));
-        } else {
-            res.lora.flightMode = FlightMode::HOLD;
+            res.loraRemote = fusion::decodePackage<LoraPackage>(lastRemotePackage.value());
         }
 
         //@TODO handle base, discuss which data to send. ATM not necessary due to non functioning lora tx
@@ -127,7 +100,4 @@ namespace filter {
         return res;
     }
 
-    int Fusion::normalizeTaranis(int input) {
-        return (input - 172) * 1000 / (1811 - 172);
-    }
 }
