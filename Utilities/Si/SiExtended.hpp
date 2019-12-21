@@ -59,7 +59,7 @@ namespace si {
         template<typename T = long double>
         using Frequency = Si<0, 0, -1, 0, 0, 0, 0, T>;
         constexpr Frequency<> hertz{1};
-        CREATE_ALL_PREFIX(hertz,0,0,-1,0,0,0,0);
+        CREATE_ALL_PREFIX(hertz,0,0,-1,0,0,0,0)
     }
 }
 
