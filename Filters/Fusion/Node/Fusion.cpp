@@ -45,11 +45,11 @@ namespace filter {
 
     void Fusion::run() {
         while (!flightControllerIn.isClosed()) {
-            lastGpsMeasurement = gpsIn.get();
-            lastPdbPackage = pdbIn.get();
-            lastTaranisPackage = taranisIn.get();
-            lastBasePackage = baseIn.get();
-            lastRemotePackage = remoteIn.get();
+            gpsIn.get(lastGpsMeasurement);
+            pdbIn.get(lastPdbPackage);
+            taranisIn.get(lastTaranisPackage);
+            baseIn.get(lastBasePackage);
+            remoteIn.get(lastRemotePackage);
 
             if (flightControllerIn.get(lastFcPackage)) {
                 out.put(process());
@@ -64,7 +64,7 @@ namespace filter {
         static State_t lastState;
 
         // Flightcontroller Data
-        auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
+        //auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
 
         // Gps
         if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired) {

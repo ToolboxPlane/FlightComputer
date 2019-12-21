@@ -46,12 +46,10 @@ public:
         return true;
     }
 
-    std::optional<T> get() {
-        T t;
-        if (this->get(t, false)) {
-            return t;
-        } else {
-            return std::nullopt;
+    void get(std::optional<T> &t) {
+        T newT;
+        if (this->get(newT, false)) {
+            t = std::move(newT);
         }
     }
 private:
