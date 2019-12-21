@@ -5,4 +5,11 @@
  * @brief StateEstimate @TODO
  */
 
+#include <cstdlib>
+#include <ctime>
 #include "StateEstimate.hpp"
+
+StateEstimate::StateEstimate(std::size_t numberOfParticles) {
+    srand(time(nullptr));
+    particles.resize(numberOfParticles);
+}

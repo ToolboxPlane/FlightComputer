@@ -27,6 +27,9 @@ set(SOURCES
         Devices/Network/Network.cpp
         Devices/Serial/SerialPosix.cpp
         Filters/Fusion/Node/Fusion.cpp
+        Filters/Fusion/Lib/StateEstimate.cpp
+        Filters/Fusion/Lib/system.c
+        Filters/Fusion/Lib/random_util.c
         Filters/Navigation/Node/Navigation.cpp
         Filters/MeshManager/MeshManager.cpp
         Filters/OutputFilter/OutputFilter.cpp
