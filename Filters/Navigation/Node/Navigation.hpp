@@ -39,9 +39,9 @@ namespace filter {
 
         void hold(State_t state, bool reset = false);
 
-        static constexpr si::extended::SpeedType<> CRUISE_SPEED{20.0};
-        static constexpr si::base::MeterType<> POST_LAUNCH_ALTITUDE{10.0};
-        static constexpr si::extended::AccelerationType<> THROW_THRESH{2.0};
+        static constexpr si::extended::Speed<> CRUISE_SPEED{20.0};
+        static constexpr si::base::Meter<> POST_LAUNCH_ALTITUDE{10.0};
+        static constexpr si::extended::Acceleration<> THROW_THRESH{2.0};
     };
 }
 

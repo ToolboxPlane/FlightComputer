@@ -33,24 +33,24 @@ namespace filter {
 
         while (!stateIn.isClosed()) {
             if (stateIn.get(currentState)) {
-                switch (currentState.lora.flightMode) {
+                switch (currentState.loraRemote.flightMode) {
                     case FlightMode::LAUNCH:
-                        launch(currentState, lastFLightMode != currentState.lora.flightMode);
+                        launch(currentState, lastFLightMode != currentState.loraRemote.flightMode);
                         break;
                     case FlightMode::LAND:
-                        land(currentState, lastFLightMode != currentState.lora.flightMode);
+                        land(currentState, lastFLightMode != currentState.loraRemote.flightMode);
                         break;
                     case FlightMode::ANGLE:
-                        angle(currentState, lastFLightMode != currentState.lora.flightMode);
+                        angle(currentState, lastFLightMode != currentState.loraRemote.flightMode);
                         break;
                     case FlightMode::HOLD:
-                        hold(currentState, lastFLightMode != currentState.lora.flightMode);
+                        hold(currentState, lastFLightMode != currentState.loraRemote.flightMode);
                         break;
                     case FlightMode::WAYPOINT:
-                        waypoints(currentState, lastFLightMode != currentState.lora.flightMode);
+                        waypoints(currentState, lastFLightMode != currentState.loraRemote.flightMode);
                         break;
                 }
-                lastFLightMode = currentState.lora.flightMode;
+                lastFLightMode = currentState.loraRemote.flightMode;
             }
         }
     }
@@ -104,7 +104,7 @@ namespace filter {
             launchState = IN_HAND;
         }
         static double headingTarget;
-        static si::base::MeterType<> altitudeTarget;
+        static si::base::Meter<> altitudeTarget;
 
         Nav_t nav{};
 
@@ -142,9 +142,9 @@ namespace filter {
 
     void Navigation::angle(State_t , bool ) {
         /*Nav_t nav{};
-        nav.pitch = state.lora.joyRight.y * MAX_PITCH;
-        nav.roll = state.lora.joyRight.x * MAX_ROLL;
-        nav.power = state.lora.isArmed ? speedControl(state.airspeed) : 0;
+        nav.pitch = state.loraRemote.joyRight.y * MAX_PITCH;
+        nav.roll = state.loraRemote.joyRight.x * MAX_ROLL;
+        nav.power = state.loraRemote.isArmed ? speedControl(state.airspeed) : 0;
 
         nav.stateMajor = 0;
         nav.stateMinor = 0;

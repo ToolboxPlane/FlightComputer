@@ -17,34 +17,46 @@ class FlightControllerPackage {
 public:
     uint8_t bnoState;
     float roll, pitch, yaw;
-    float rollDeriv, pitchDeriv, yawDeriv;
+    si::extended::Frequency<> rollDeriv, pitchDeriv, yawDeriv;
     float aileronRight, vtailRight;
     float aileronLeft, vtailLeft;
     float motor;
 };
 
+class PdbPackage {
+public:
+    uint8_t status;
+    si::extended::Voltage<> voltageVcc;
+    si::base::Ampere<> currentVcc;
+    si::extended::Voltage<> voltage5V;
+    si::base::Ampere<> current5V;
+};
+
+class TaranisPackage {
+public:
+    float throttle, yaw, pitch, roll;
+    bool isArmed, manualOverrideActive;
+};
+
+class LoraPackage {
+public:
+    float joyLeftX, joyRightX, joyLeftY, joyRightY;
+    FlightMode flightMode;
+    bool isArmed;
+};
+
+
 class State_t {
 public:
     GpsMeasurement_t position;
-    si::base::MeterType<> heightAboveGround, heightAboveSeaLevel;
-    double pitch, roll, yaw;
-    double pitchDeriv, rollDeriv, yawDeriv;
-    si::extended::SpeedType<> airspeed, groundSpeed;
-    si::extended::VoltageType<> voltage;
+    si::base::Meter<> heightAboveGround{}, heightAboveSeaLevel{};
+    double pitch{}, roll{}, yaw{};
+    si::extended::Speed<> airspeed{}, groundSpeed{};
 
-    struct {
-        int throttle, yaw, pitch, roll;
-        bool isArmed, manualOverrideActive;
-    } taranis;
-
-    struct {
-        struct {
-            double x,y;
-        }joyLeft, joyRight;
-
-        bool isArmed;
-        FlightMode flightMode;
-    } lora;
+    FlightControllerPackage rawFlightControllerData{};
+    PdbPackage pdbPackage{};
+    TaranisPackage taranisPackage{};
+    LoraPackage loraRemote{};
 
     friend std::ostream &operator<<(std::ostream &ostream, State_t state) {
         ostream << "H:" << state.yaw;
@@ -59,9 +71,9 @@ public:
         } else {
             ostream << "\t No Fix";
         }
-        ostream << "\tV:" << state.voltage;
-        ostream << "\tAr:" << (state.taranis.isArmed?1:0);
-        ostream << "\tOr:" << (state.taranis.manualOverrideActive?1:0);
+        ostream << "\tV:" << state.pdbPackage.voltageVcc;
+        ostream << "\tAr:" << (state.taranisPackage.isArmed?1:0);
+        ostream << "\tOr:" << (state.taranisPackage.manualOverrideActive?1:0);
         return ostream;
     }
 };

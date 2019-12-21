@@ -13,9 +13,9 @@ class Gps_t {
 public:
     Gps_t(double lat, double lon, double altitude = 0) : lat(lat), lon(lon), altitude(altitude){};
     double lat, lon;
-    si::base::MeterType<> altitude;
+    si::base::Meter<> altitude;
 
-    si::base::MeterType<> distanceTo(const Gps_t &gps) const {
+    si::base::Meter<> distanceTo(const Gps_t &gps) const {
         auto phi1 = this->lon / 180 * M_PI;
         auto sigma1 = M_PI/2 - (this->lat / 180 * M_PI);
         auto r1 = EARTH_RADIUS + this->altitude;
@@ -45,7 +45,7 @@ public:
                                                static_cast<decltype(xDiff)::type>(xDiff)) * 180.0 / M_PI + 90);
     }
 
-    static constexpr si::base::MeterType<> EARTH_RADIUS{6371300};
+    static constexpr si::base::Meter<> EARTH_RADIUS{6371300};
 };
 
 
