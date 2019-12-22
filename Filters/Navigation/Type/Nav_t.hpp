@@ -11,8 +11,8 @@
 class Nav_t {
 public:
     double heading;
-    si::extended::SpeedType<> speed;
-    si::base::MeterType<> altitude;
+    si::extended::Speed<> speed;
+    si::base::Meter<> altitude;
     uint16_t stateMajor, stateMinor;
     State_t state;
 

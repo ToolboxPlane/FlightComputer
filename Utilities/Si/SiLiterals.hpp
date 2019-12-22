@@ -58,28 +58,28 @@ constexpr Si<a,b,c,d,e,f,g> operator "" _y_##BASE_NAME(unsigned long long t) { r
 namespace si::base {
     // Base types
     template<typename T = long double>
-    using MeterType = Si<1, 0, 0, 0, 0, 0, 0, T>;
+    using Meter = Si<1, 0, 0, 0, 0, 0, 0, T>;
     template<typename T = long double>
-    using KilogramType = Si<0, 1, 0, 0, 0, 0, 0, T>;
+    using Kilogram = Si<0, 1, 0, 0, 0, 0, 0, T>;
     template<typename T = long double>
-    using SecondType = Si<0, 0, 1, 0, 0, 0, 0, T>;
+    using Second = Si<0, 0, 1, 0, 0, 0, 0, T>;
     template<typename T = long double>
-    using AmpereType = Si<0, 0, 0, 1, 0, 0, 0, T>;
+    using Ampere = Si<0, 0, 0, 1, 0, 0, 0, T>;
     template<typename T = long double>
-    using KelvinType = Si<0, 0, 0, 0, 1, 0, 0, T>;
+    using Kelvin = Si<0, 0, 0, 0, 1, 0, 0, T>;
     template<typename T = long double>
-    using MoleType = Si<0, 0, 0, 0, 0, 1, 0, T>;
+    using Mole = Si<0, 0, 0, 0, 0, 1, 0, T>;
     template<typename T = long double>
-    using CandelaType = Si<0, 0, 0, 0, 0, 0, 1, T>;
+    using Candela = Si<0, 0, 0, 0, 0, 0, 1, T>;
 
     // Base units
-    constexpr MeterType<> meter{1};
-    constexpr KilogramType<> kilogram{1};
-    constexpr SecondType<> second{1};
-    constexpr AmpereType<> ampere{1};
-    constexpr KelvinType<> kelvin{1};
-    constexpr MoleType<> mole{1};
-    constexpr CandelaType<> candela{1};
+    constexpr Meter<> meter{1};
+    constexpr Kilogram<> kilogram{1};
+    constexpr Second<> second{1};
+    constexpr Ampere<> ampere{1};
+    constexpr Kelvin<> kelvin{1};
+    constexpr Mole<> mole{1};
+    constexpr Candela<> candela{1};
 }
 
 namespace si::literals {

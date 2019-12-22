@@ -64,9 +64,9 @@ public:
     bool fixAquired;
 
     Gps_t location;
-    si::extended::SpeedType<> speed;
-    si::base::SecondType<> timestamp;
-    si::extended::SpeedType<> climb;
+    si::extended::Speed<> speed;
+    si::base::Second<> timestamp;
+    si::extended::Speed<> climb;
 };
 
 #endif //FLIGHTCOMPUTER_GPS_MEASUREMENT_T_HPP
