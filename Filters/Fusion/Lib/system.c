@@ -94,7 +94,7 @@ void resample(const weighted_particle_t *old_particles, size_t num_old_particles
             prob += old_particles[p].weight;
             if (prob >= r) {
                 new_particles[c].x = old_particles[p].x;
-                new_particles[c].weight = 1;
+                new_particles[c].weight = 1.0f / num_new_particles;
                 break;
             }
         }

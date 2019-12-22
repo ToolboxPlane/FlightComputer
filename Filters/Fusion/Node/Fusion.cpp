@@ -6,7 +6,7 @@
 #include "../Lib/DecodePackage.hpp"
 
 #ifdef DEBUG
-    constexpr auto NUM_PARTICLES = 100;
+    constexpr auto NUM_PARTICLES = 10000;
 #else
     constexpr auto NUM_PARTICLES = 20000;
 #endif

@@ -11,7 +11,7 @@
 #include "StateEstimate.hpp"
 
 StateEstimate::StateEstimate(std::size_t numberOfParticles)
-    : lastUpdate{getCurrSeconds()} {
+    : lastUpdate{getCurrSeconds()}, resampleStep{0} {
     srand(time(nullptr)); // Required for the process noise
 
     std::random_device rd{};
@@ -36,7 +36,7 @@ StateEstimate::StateEstimate(std::size_t numberOfParticles)
 
         weighted_particle_t weightedParticle{};
         weightedParticle.x = state;
-        weightedParticle.weight = 1.0f;
+        weightedParticle.weight = 1.0f / numberOfParticles;
         particles.emplace_back(weightedParticle);
     }
 }
@@ -77,14 +77,15 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
         weight_sum += particle.weight;
     }
 
-    WeightedParticle winner{{}, -std::numeric_limits<float>::infinity()};
+    WeightedParticle likelihoodWinner{{}, -std::numeric_limits<float>::infinity()};
 
     // Fix PDF (-> Bayes * 1/p(z))
-    for (auto &[particle, weight] : particles) {
+    for (auto &[state, weight] : particles) {
         weight /= weight_sum;
+        weight = std::min(weight, 1.0);
 
-        if (weight > winner.weight) {
-            winner = {particle, weight};
+        if (weight > likelihoodWinner.weight) {
+            likelihoodWinner = {state, weight};
         }
     }
 
@@ -95,17 +96,18 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
 
         resample(particles.data(), particles.size(), newParticles.data(), newParticles.size());
 
-        particles = newParticles;
+        particles = std::move(newParticles);
         resampleStep = 0;
     }
 
     lastUpdate = currTime;
 
-    return winner;
+    return likelihoodWinner;
 }
 
 auto StateEstimate::getCurrSeconds() -> si::base::Second<> {
     auto tp = std::chrono::high_resolution_clock::now().time_since_epoch();
-    auto nanos = static_cast<long double>(std::chrono::duration_cast<std::chrono::microseconds>(tp).count());
+    auto nanos = static_cast<long double>(
+            std::chrono::duration_cast<std::chrono::microseconds>(tp).count());
     return nanos / 10e6 * si::base::second;
 }
