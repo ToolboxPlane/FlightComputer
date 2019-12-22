@@ -56,16 +56,18 @@ namespace filter {
     }
 
     void Navigation::waypoints(State_t currentState, bool) {
-        static Waypoint_t nextWaypoint(currentState.position.location, std::numeric_limits<double>::max(), false);
+        static Waypoint_t nextWaypoint({currentState.lat, currentState.lon}, std::numeric_limits<double>::max(), false);
         static uint16_t waypointIndex = 0;
         Nav_t nav{};
 
-        if (currentState.position.location.distanceTo(nextWaypoint.location) < nextWaypoint.maxDelta) {
+        Gps_t position{currentState.lat, currentState.lon};
+
+        if (position.distanceTo(nextWaypoint.location) < nextWaypoint.maxDelta) {
             waypointIn.get(nextWaypoint);
             waypointIndex++;
         }
 
-        nav.heading = currentState.position.location.angleTo(nextWaypoint.location);
+        nav.heading = position.angleTo(nextWaypoint.location);
         nav.altitude = nextWaypoint.location.altitude;
 
         nav.speed = CRUISE_SPEED;
@@ -78,10 +80,10 @@ namespace filter {
 
     void Navigation::land(State_t state, bool reset) {
         static auto targetHeading = state.yaw;
-        static auto targetAltitude = state.heightAboveSeaLevel;
+        static auto targetAltitude = state.altitude;
         if (reset) {
             targetHeading = state.yaw;
-            targetAltitude = state.heightAboveSeaLevel;
+            targetAltitude = state.altitude;
         }
 
         Nav_t nav{};
@@ -112,10 +114,10 @@ namespace filter {
             case IN_HAND:
                 nav.speed = 0.0_speed;
                 nav.heading = state.yaw;
-                nav.altitude = state.heightAboveSeaLevel;
+                nav.altitude = state.altitude;
                 if (THROW_THRESH < 0 * si::extended::acceleration) { //@TODO fixme
                     headingTarget = state.yaw;
-                    altitudeTarget = state.heightAboveSeaLevel + POST_LAUNCH_ALTITUDE;
+                    altitudeTarget = state.altitude + POST_LAUNCH_ALTITUDE;
                     launchState = THROWN;
                 }
                 break;
@@ -123,7 +125,7 @@ namespace filter {
                 nav.speed = std::numeric_limits<double>::max() * si::extended::speed;
                 nav.altitude = altitudeTarget;
                 nav.heading = headingTarget;
-                if (CRUISE_SPEED < state.airspeed) {
+                if (CRUISE_SPEED < state.speed) {
                     launchState = CLIMB;
                 }
                 break;
@@ -156,10 +158,10 @@ namespace filter {
     void Navigation::hold(State_t state, bool reset) {
         Nav_t nav{};
         static auto targetHeading = state.yaw;
-        static auto targetAltitude = state.heightAboveSeaLevel;
+        static auto targetAltitude = state.altitude;
         if (reset) {
             targetHeading = state.yaw;
-            targetAltitude = state.heightAboveSeaLevel;
+            targetAltitude = state.altitude;
         }
 
         nav.speed = CRUISE_SPEED;

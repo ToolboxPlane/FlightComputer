@@ -48,10 +48,16 @@ public:
 
 class State_t {
 public:
-    GpsMeasurement_t position;
-    si::base::Meter<> heightAboveGround{}, heightAboveSeaLevel{};
-    double pitch{}, roll{}, yaw{};
-    si::extended::Speed<> airspeed{}, groundSpeed{};
+    float roll{};
+    si::extended::Frequency<> rollDiff{};
+    float pitch{};
+    si::extended::Frequency<> pitchDiff{};
+    float yaw{};
+    si::extended::Frequency<> yawDiff{};
+    si::extended::Speed<> speed{};
+    si::base::Meter<> altitude{};
+    si::base::Meter<> altitudeAboveGround{};
+    float lat{}, lon{};
 
     FlightControllerPackage rawFlightControllerData{};
     PdbPackage pdbPackage{};
@@ -62,15 +68,10 @@ public:
         ostream << "H:" << state.yaw;
         ostream << "\tR:" << state.roll;
         ostream << "\tP:" << state.pitch;
-        ostream << "\tGnd:" << state.heightAboveGround;
-        ostream << "\tSea:" << state.heightAboveSeaLevel;
-        ostream << "\tAirs:" << state.airspeed;
-        ostream << "\tGnds:" << state.groundSpeed;
-        if(state.position.fixAquired) {
-            ostream << "\tPos:(" << state.position.location.lat << "," << state.position.location.lon << ")";
-        } else {
-            ostream << "\t No Fix";
-        }
+        ostream << "\tGnd:" << state.altitudeAboveGround;
+        ostream << "\tSea:" << state.altitude;
+        ostream << "\tSpeed:" << state.speed;
+        ostream << "\tPos:(" << state.lat << "," << state.lon << ")";
         ostream << "\tV:" << state.pdbPackage.voltageVcc;
         ostream << "\tAr:" << (state.taranisPackage.isArmed?1:0);
         ostream << "\tOr:" << (state.taranisPackage.manualOverrideActive?1:0);

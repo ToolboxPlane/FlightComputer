@@ -11,6 +11,7 @@
 #include "../../../Devices/GPS/Type/GpsMeasurement_t.hpp"
 #include "../Type/State_t.hpp"
 #include "../../../OutputChannel.hpp"
+#include "../Lib/StateEstimate.hpp"
 #include <optional>
 
 namespace filter {
@@ -44,11 +45,11 @@ namespace filter {
 
         State_t process();
 
-        static int normalizeTaranis(int input);
-
         InputChannel<rcLib::Package> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
         InputChannel<GpsMeasurement_t> gpsIn;
         OutputChannel<State_t> out;
+
+        StateEstimate particleFilter;
     };
 }
 

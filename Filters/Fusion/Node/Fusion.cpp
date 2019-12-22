@@ -2,16 +2,14 @@
 // Created by paul on 14.03.18.
 //
 
-#include <iostream>
 #include "Fusion.hpp"
-#include "../Type/State_t.hpp"
 #include "../Lib/DecodePackage.hpp"
 
 namespace filter {
     using namespace si::extended;
     using namespace si::literals;
 
-    Fusion::Fusion() {
+    Fusion::Fusion() : particleFilter{1000} {
         this->start();
     }
 
@@ -63,22 +61,22 @@ namespace filter {
         State_t res{};
         static State_t lastState;
 
-        // Flightcontroller Data
-        //auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
-
         // Gps
         if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired) {
-            res.position = lastGpsMeasurement.value();
-            if (lastState.position.timestamp < res.position.timestamp) {
-                res.groundSpeed = res.position.location.distanceTo(lastState.position.location) /
-                        (res.position.timestamp - lastState.position.timestamp);
-                //@TODO maybe res.position.speed is the better choice, requires testing
-            } else {
-                res.groundSpeed = lastState.groundSpeed;
-            }
-        } else {
-            res.groundSpeed = res.airspeed;
-            res.position.fixAquired = false;
+            auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
+            auto [state, likelihood] = particleFilter.update(flightControllerData, lastGpsMeasurement.value());
+
+            res.roll = state.roll_angle;
+            res.rollDiff = state.roll_rate * hertz;
+            res.pitch = state.pitch_angle;
+            res.pitchDiff = state.pitch_rate * hertz;
+            res.yaw = state.yaw_angle;
+            res.yawDiff = state.yaw_rate * hertz;
+            res.speed = state.speed * speed;
+            res.altitude = state.altitude * meter;
+            res.altitudeAboveGround = state.altitude_above_ground * meter;
+            res.lat = state.lat;
+            res.lon = state.lon;
         }
 
         if (lastPdbPackage.has_value()) {

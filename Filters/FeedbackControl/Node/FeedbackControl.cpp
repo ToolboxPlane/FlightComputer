@@ -36,8 +36,8 @@ namespace filter {
         }
 
         static si::extended::Speed<> diffSum = 0_speed;
-        static auto lastDiff = target - state.groundSpeed;
-        auto deltaSpeed = target - state.groundSpeed;
+        static auto lastDiff = target - state.speed;
+        auto deltaSpeed = target - state.speed;
         diffSum += deltaSpeed;
 
         // Change in sign, anti windup
@@ -66,7 +66,7 @@ namespace filter {
     }
 
     auto FeedbackControl::altitudeControl(State_t state, si::base::Meter<> target) const -> double {
-        auto deltaHeight = state.heightAboveSeaLevel - target;
+        auto deltaHeight = state.altitude - target;
         double pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::PITCH_P);
 
         return clamp(pitch, -MAX_PITCH, MAX_PITCH);
