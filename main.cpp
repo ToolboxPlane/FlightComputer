@@ -92,7 +92,7 @@ int main() {
     /*
      * Logging
      */
-    debug::Logger<rcLib::Package> serialReceiveDebug{"Serial-Recv", true};
+    debug::Logger<rcLib::Package> serialReceiveDebug{"Serial-Recv", false};
     debug::Logger<rcLib::Package> serialSendDebug{"Serial-Send", false};
     debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", false};
     debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", false};

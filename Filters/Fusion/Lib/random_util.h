@@ -11,7 +11,9 @@
 #include "config.h"
 
 /**
- * Draw a number from a gaussian distribution (stolen from: https://stackoverflow.com/questions/5817490/implementing-box-mueller-random-number-generator-in-c-sharp)
+ * Draw a number from a gaussian distribution
+ * (stolen from:
+ * https://stackoverflow.com/questions/5817490/implementing-box-mueller-random-number-generator-in-c-sharp)
  * @param mu the mean of the distribution
  * @param sigma the standard deviation of the distribution
  * @return the number
@@ -52,6 +54,13 @@ void draw_gaussian_2d(real_t sigma11, real_t sigma12, real_t sigma22, real_t *x_
  */
 void constant_velo_awgn(real_t sigma, real_t dt, real_t *x, real_t *x_diff);
 
+/**
+ * Calculates the value of the gaussian probability density function at a position
+ * @param mu the mean of the gaussian distribution
+ * @param sigma2 the variance (sigma^2)
+ * @param x the position at which to calculate the likelihood
+ * @return the value of the pdf at the given location
+ */
 real_t gaussian(real_t mu, real_t sigma2, real_t x);
 
 #endif //FLIGHTCOMPUTER_RANDOM_UTIL_H

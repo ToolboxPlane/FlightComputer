@@ -5,11 +5,17 @@
 #include "Fusion.hpp"
 #include "../Lib/DecodePackage.hpp"
 
+#ifdef DEBUG
+    constexpr auto NUM_PARTICLES = 100;
+#else
+    constexpr auto NUM_PARTICLES = 500000;
+#endif
+
 namespace filter {
     using namespace si::extended;
     using namespace si::literals;
 
-    Fusion::Fusion() : particleFilter{10} {
+    Fusion::Fusion() : particleFilter{NUM_PARTICLES} {
         this->start();
     }
 
@@ -74,7 +80,10 @@ namespace filter {
 
         if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired) {
             auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
+            auto start = StateEstimate::getCurrSeconds();
             auto [state, likelihood] = particleFilter.update(flightControllerData, lastGpsMeasurement.value());
+            auto dur = StateEstimate::getCurrSeconds() - start;
+            std::cout << "PF (" << NUM_PARTICLES << " Particles): " << dur << std::endl;
 
             res.roll = state.roll_angle;
             res.rollDiff = state.roll_rate * hertz;

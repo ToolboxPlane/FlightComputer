@@ -32,7 +32,7 @@ real_t gaussian_box_muller(real_t mu, real_t sigma) {
 }
 
 void get_cov_trans_mat_2d(real_t sigma11, real_t sigma12, real_t sigma22, real_t out[2][2]) {
-    assert(fabs(sigma12) <= sqrt(sigma11 * sigma22));
+    assert(fabs(sigma12) <= sqrt(sigma11 * sigma22) + FLT_EPSILON);
     /*
      * \Sigma = [sigma11, sigma12; sigma12; sigma22]
      * -> Eigenvalues \lambda_1, \lambda_2
@@ -62,7 +62,7 @@ void get_cov_trans_mat_2d(real_t sigma11, real_t sigma12, real_t sigma22, real_t
 }
 
 void draw_gaussian_2d(real_t sigma11, real_t sigma12, real_t sigma22, real_t *x_1, real_t *x_2) {
-    assert(fabs(sigma12) <= sqrt(sigma11 * sigma22));
+    assert(fabs(sigma12) <= sqrt(sigma11 * sigma22) + FLT_EPSILON);
     real_t trans_mat[2][2];
     get_cov_trans_mat_2d(sigma11, sigma12, sigma22, trans_mat);
     real_t x_normal_1 = gaussian_box_muller(0, 1);
@@ -78,7 +78,7 @@ void constant_velo_awgn(real_t sigma, real_t dt, real_t *x, real_t *x_diff) {
         real_t dt4 = dt2 * dt2;
         real_t x_noise, x_diff_noise;
         real_t sigma2 = sigma * sigma;
-        draw_gaussian_2d(dt4 / 4.f * sigma2, dt3 / 2.f * sigma2, dt2 * sigma2, &x_noise, &x_diff_noise);
+        draw_gaussian_2d(dt4 / 4.f * sigma2, dt3 / 2.f * sigma2 * 0.99, dt2 * sigma2, &x_noise, &x_diff_noise);
         *x += x_noise;
         *x_diff += x_diff_noise;
     }
@@ -91,4 +91,3 @@ real_t gaussian(real_t mu, real_t sigma2, real_t x) {
     }
     return res;
 }
-

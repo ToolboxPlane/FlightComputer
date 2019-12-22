@@ -17,18 +17,18 @@ StateEstimate::StateEstimate(std::size_t numberOfParticles)
     std::random_device rd{};
     std::mt19937 gen{rd()};
 
-    std::normal_distribution<> gaussian{0, 10};
+    std::uniform_real_distribution<> dist{-180, 180};
 
     particles.reserve(numberOfParticles);
 
     for (std::size_t c = 0; c < numberOfParticles; ++c) {
         system_state_t state{};
-        state.roll_angle = gaussian(gen);
-        state.roll_rate = gaussian(gen);
-        state.yaw_angle = gaussian(gen);
-        state.yaw_rate = gaussian(gen);
-        state.pitch_angle = gaussian(gen);
-        state.pitch_rate = gaussian(gen);
+        state.roll_angle = dist(gen);
+        state.roll_rate = dist(gen);
+        state.yaw_angle = dist(gen);
+        state.yaw_rate = dist(gen);
+        state.pitch_angle = dist(gen);
+        state.pitch_rate = dist(gen);
         state.altitude_above_ground = 0;
         state.altitude = 0;
         state.lon = 0;
