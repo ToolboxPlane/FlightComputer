@@ -77,8 +77,16 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
         weight_sum += weight;
     }
 
+    WeightedParticle winner{{}, -std::numeric_limits<float>::infinity()};
+
     // Fix PDF (-> Bayes * 1/p(z))
     for (auto &[particle, weight] : particles) {
         weight /= weight_sum;
+
+        if (weight > winner.second) {
+            winner = {particle, weight};
+        }
     }
+
+    return winner;
 }
