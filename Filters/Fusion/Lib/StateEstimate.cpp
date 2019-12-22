@@ -11,15 +11,13 @@
 #include "StateEstimate.hpp"
 
 StateEstimate::StateEstimate(std::size_t numberOfParticles)
-    : lastUpdate{std::chrono::system_clock::now().time_since_epoch().count() * si::base::second} {
+    : lastUpdate{getCurrSeconds()} {
     srand(time(nullptr)); // Required for the process noise
 
     std::random_device rd{};
     std::mt19937 gen{rd()};
 
-    // values near the mean are the most likely
-    // standard deviation affects the dispersion of generated values from the mean
-    std::normal_distribution<> gaussian{0, 1};
+    std::normal_distribution<> gaussian{0, 10};
 
     particles.reserve(numberOfParticles);
 
@@ -66,9 +64,8 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
     input.vtail_r = flightControllerPackage.vtailRight;
     input.motor = flightControllerPackage.motor;
 
-    const auto currTime = std::chrono::system_clock::now().time_since_epoch().count() * si::base::second;
+    const auto currTime = getCurrSeconds();
     const auto dt = currTime - lastUpdate;
-    lastUpdate = currTime;
 
     // Update step @TODO parallelize
     float weight_sum = 0;
@@ -88,5 +85,13 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
         }
     }
 
+    lastUpdate = currTime;
+
     return winner;
+}
+
+auto StateEstimate::getCurrSeconds() -> si::base::Second<> {
+    auto tp = std::chrono::high_resolution_clock::now().time_since_epoch();
+    auto nanos = static_cast<long double>(std::chrono::duration_cast<std::chrono::microseconds>(tp).count());
+    return nanos / 10e6 * si::base::second;
 }

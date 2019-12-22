@@ -8,13 +8,15 @@
 #ifndef FLIGHTCOMPUTER_RANDOM_UTIL_H
 #define FLIGHTCOMPUTER_RANDOM_UTIL_H
 
+#include "config.h"
+
 /**
- * Draw a number from a gaussian distribution (stolen from wikipedia: https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform)
+ * Draw a number from a gaussian distribution (stolen from: https://stackoverflow.com/questions/5817490/implementing-box-mueller-random-number-generator-in-c-sharp)
  * @param mu the mean of the distribution
  * @param sigma the standard deviation of the distribution
  * @return the number
  */
-float gaussian_box_muller(float mu, float sigma);
+real_t gaussian_box_muller(real_t mu, real_t sigma);
 
 /**
  * Calculates the transformation matrix to transform two standard normal distributed
@@ -28,7 +30,7 @@ float gaussian_box_muller(float mu, float sigma);
  * @param sigma22 the variance of x_2
  * @param out the output matrix
  */
-void get_cov_trans_mat_2d(float sigma11, float sigma12, float sigma22, float out[2][2]);
+void get_cov_trans_mat_2d(real_t sigma11, real_t sigma12, real_t sigma22, real_t out[2][2]);
 
 /**
  * Draw a vector from a two dimensional multivariate gaussian distribution
@@ -38,7 +40,7 @@ void get_cov_trans_mat_2d(float sigma11, float sigma12, float sigma22, float out
  * @param x_1 the first component of the output
  * @param x_2 the second component of the output
  */
-void draw_gaussian_2d(float sigma11, float sigma12, float sigma22, float *x_1, float *x_2);
+void draw_gaussian_2d(real_t sigma11, real_t sigma12, real_t sigma22, real_t *x_1, real_t *x_2);
 
 /**
  * Add additive white gaussian noise to the two state vectors of a constant
@@ -48,8 +50,8 @@ void draw_gaussian_2d(float sigma11, float sigma12, float sigma22, float *x_1, f
  * @param x the first state component ("position")
  * @param x_diff the second state component ("velocity")
  */
-void constant_velo_awgn(float sigma, float dt, float *x, float *x_diff);
+void constant_velo_awgn(real_t sigma, real_t dt, real_t *x, real_t *x_diff);
 
-float gaussian(float mu, float sigma2, float x);
+real_t gaussian(real_t mu, real_t sigma2, real_t x);
 
 #endif //FLIGHTCOMPUTER_RANDOM_UTIL_H

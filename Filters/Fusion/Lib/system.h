@@ -9,35 +9,36 @@
 #define FLIGHTCOMPUTER_SYSTEM_H
 
 #include <stdbool.h>
+#include "config.h"
 
 typedef struct {
-    float roll_angle, roll_rate;
-    float pitch_angle, pitch_rate;
-    float yaw_angle, yaw_rate;
-    float speed;
-    float altitude;
-    float altitude_above_ground;
-    float lat, lon;
+    real_t roll_angle, roll_rate;
+    real_t pitch_angle, pitch_rate;
+    real_t yaw_angle, yaw_rate;
+    real_t speed;
+    real_t altitude;
+    real_t altitude_above_ground;
+    real_t lat, lon;
 } system_state_t;
 
 typedef struct {
-    float roll_angle, roll_rate;
-    float pitch_angle, pitch_rate;
-    float yaw_angle, yaw_rate;
-    float air_speed;
-    float ground_speed;
-    float altitude_baro;
-    float altitude_gps;
-    float distance_ground;
-    float lat, lon;
+    real_t roll_angle, roll_rate;
+    real_t pitch_angle, pitch_rate;
+    real_t yaw_angle, yaw_rate;
+    real_t air_speed;
+    real_t ground_speed;
+    real_t altitude_baro;
+    real_t altitude_gps;
+    real_t distance_ground;
+    real_t lat, lon;
 } measurement_t;
 
 typedef struct {
-    float aileron_l, aileron_r;
-    float vtail_l, vtail_r;
-    float motor;
+    real_t aileron_l, aileron_r;
+    real_t vtail_l, vtail_r;
+    real_t motor;
 } input_t;
 
-float update_particle(system_state_t *x, const input_t *u, const measurement_t *z, float dt);
+real_t update_particle(system_state_t *x, const input_t *u, const measurement_t *z, real_t dt);
 
 #endif //FLIGHTCOMPUTER_SYSTEM_H

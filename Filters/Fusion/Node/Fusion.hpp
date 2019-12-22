@@ -43,7 +43,7 @@ namespace filter {
         std::optional<rcLib::Package> lastTaranisPackage;
         std::optional<rcLib::Package> lastRemotePackage;
 
-        State_t process();
+        void process();
 
         InputChannel<rcLib::Package> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
         InputChannel<GpsMeasurement_t> gpsIn;

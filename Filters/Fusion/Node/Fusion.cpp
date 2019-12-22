@@ -9,7 +9,7 @@ namespace filter {
     using namespace si::extended;
     using namespace si::literals;
 
-    Fusion::Fusion() : particleFilter{1000} {
+    Fusion::Fusion() : particleFilter{10} {
         this->start();
     }
 
@@ -50,18 +50,28 @@ namespace filter {
             remoteIn.get(lastRemotePackage);
 
             if (flightControllerIn.get(lastFcPackage)) {
-                out.put(process());
+                process();
             } else {
                 std::this_thread::yield();
             }
         }
     }
 
-    State_t Fusion::process() {
+    void Fusion::process() {
         State_t res{};
-        static State_t lastState;
 
-        // Gps
+        if (lastPdbPackage.has_value()) {
+            res.pdbPackage = fusion::decodePackage<PdbPackage>(lastPdbPackage.value());
+        }
+
+        if (lastTaranisPackage.has_value()) {
+            res.taranisPackage = fusion::decodePackage<TaranisPackage>(lastTaranisPackage.value());
+        }
+
+        if (lastRemotePackage.has_value()) {
+            res.loraRemote = fusion::decodePackage<LoraPackage>(lastRemotePackage.value());
+        }
+
         if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired) {
             auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
             auto [state, likelihood] = particleFilter.update(flightControllerData, lastGpsMeasurement.value());
@@ -77,25 +87,8 @@ namespace filter {
             res.altitudeAboveGround = state.altitude_above_ground * meter;
             res.lat = state.lat;
             res.lon = state.lon;
+
+            out.put(res);
         }
-
-        if (lastPdbPackage.has_value()) {
-            res.pdbPackage = fusion::decodePackage<PdbPackage>(lastPdbPackage.value());
-        }
-
-        if (lastTaranisPackage.has_value()) {
-            res.taranisPackage = fusion::decodePackage<TaranisPackage>(lastTaranisPackage.value());
-        }
-
-        if (lastRemotePackage.has_value()) {
-            res.loraRemote = fusion::decodePackage<LoraPackage>(lastRemotePackage.value());
-        }
-
-        //@TODO handle base, discuss which data to send. ATM not necessary due to non functioning lora tx
-
-        lastState = res;
-
-        return res;
     }
-
 }

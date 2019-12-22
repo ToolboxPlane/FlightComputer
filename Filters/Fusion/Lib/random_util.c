@@ -1,56 +1,58 @@
 #include "random_util.h"
 
 #include <stdlib.h>
-#include <stdbool.h>
-#include <float.h>
 #include <math.h>
+#include <assert.h>
+#include <values.h>
 
-float gaussian_box_muller(float mu, float sigma) {
-    static const float epsilon = FLT_MAX;
-    static const float two_pi = 2.0f*3.14159265358979323846f;
+real_t gaussian_box_muller(real_t mu, real_t sigma) {
+    static real_t v, fac;
+    static int phase = 0;
+    real_t S, Z, U1, U2, u;
 
-    static float z1;
-    static bool generate;
-    generate = !generate;
+    if (phase) {
+        Z = v * fac;
+    } else {
+        do {
+            U1 = (real_t)rand() / RAND_MAX;
+            U2 = (real_t)rand() / RAND_MAX;
 
-    if (!generate) {
-        return z1 * sigma + mu;
+            u = 2.f * U1 - 1.f;
+            v = 2.f * U2 - 1.f;
+            S = u * u + v * v;
+        } while (S >= 1);
+
+        fac = sqrtf (-2.f * logf(S) / S);
+        Z = u * fac;
     }
 
-    float u1, u2;
-    do
-    {
-        u1 = (float)rand() * (1.0f / RAND_MAX);
-        u2 = (float)rand() * (1.0f / RAND_MAX);
-    }
-    while ( u1 <= epsilon );
+    phase = 1 - phase;
 
-    float z0;
-    z0 = sqrtf(-2.0f * logf(u1)) * cosf(two_pi * u2);
-    z1 = sqrtf(-2.0f * logf(u1)) * sinf(two_pi * u2);
-    return z0 * sigma + mu;
+    return Z * sigma + mu;
 }
 
-void get_cov_trans_mat_2d(float sigma11, float sigma12, float sigma22, float out[2][2]) {
+void get_cov_trans_mat_2d(real_t sigma11, real_t sigma12, real_t sigma22, real_t out[2][2]) {
+    assert(fabs(sigma12) <= sqrt(sigma11 * sigma22));
     /*
      * \Sigma = [sigma11, sigma12; sigma12; sigma22]
      * -> Eigenvalues \lambda_1, \lambda_2
      */
-    float tmp = sqrtf(sigma11 * sigma11 + sigma22 * sigma22 - 2 * sigma11 * sigma22 + 4 * sigma12);
-    float lambda_1 = (sigma11 + sigma22 + tmp) / 2.0f; // First eigenvalue
-    float lambda_2 = (sigma11 + sigma22 - tmp) / 2.0f; // Second eigenvalue
+    real_t sigma_diff = sigma11 - sigma22;
+    real_t tmp = sqrt(sigma_diff * sigma_diff + 4 * sigma12 * sigma12);
+    real_t lambda_1 = (sigma11 + sigma22 + tmp) / 2.0; // First eigenvalue
+    real_t lambda_2 = (sigma11 + sigma22 - tmp) / 2.0; // Second eigenvalue
 
     // First eigenvector
-    float v11 = 1;
-    float v21 = v11 * (lambda_1 - sigma11) / sigma12;
+    real_t v11 = 1;
+    real_t v21 = v11 * (lambda_1 - sigma11) / sigma12;
 
     // Second eigenvector
-    float v12 = 1;
-    float v22 = v12 * (lambda_2 - sigma11) / sigma12;
+    real_t v12 = 1;
+    real_t v22 = v12 * (lambda_2 - sigma11) / sigma12;
 
     // Calculate sqrt(D) (D is diagonal)
-    float sigma_1 = sqrtf(lambda_1);
-    float sigma_2 = sqrtf(lambda_2);
+    real_t sigma_1 = sqrtf(lambda_1);
+    real_t sigma_2 = sqrtf(lambda_2);
 
     // Calculate V * sqrt(D)
     out[0][0] = v11 * sigma_1;
@@ -59,27 +61,34 @@ void get_cov_trans_mat_2d(float sigma11, float sigma12, float sigma22, float out
     out[1][1] = v22 * sigma_2;
 }
 
-void draw_gaussian_2d(float sigma11, float sigma12, float sigma22, float *x_1, float *x_2) {
-    float trans_mat[2][2];
+void draw_gaussian_2d(real_t sigma11, real_t sigma12, real_t sigma22, real_t *x_1, real_t *x_2) {
+    assert(fabs(sigma12) <= sqrt(sigma11 * sigma22));
+    real_t trans_mat[2][2];
     get_cov_trans_mat_2d(sigma11, sigma12, sigma22, trans_mat);
-    float x_normal_1 = gaussian_box_muller(0, 1);
-    float x_normal_2 = gaussian_box_muller(0, 1);
+    real_t x_normal_1 = gaussian_box_muller(0, 1);
+    real_t x_normal_2 = gaussian_box_muller(0, 1);
     *x_1 = trans_mat[0][0] * x_normal_1 + trans_mat[0][1] * x_normal_2;
     *x_2 = trans_mat[1][0] * x_normal_1 + trans_mat[1][1] * x_normal_2;
 }
 
-void constant_velo_awgn(float sigma, float dt, float *x, float *x_diff) {
-    float dt2 = dt*dt;
-    float dt3 = dt2 * dt;
-    float dt4 = dt2 * dt2;
-    float x_noise, x_diff_noise;
-    float sigma2 = sigma * sigma;
-    draw_gaussian_2d(dt4 * sigma2 / 4, dt3 * sigma2 / 2, dt2, &x_noise, &x_diff_noise);
-    *x += x_noise;
-    *x_diff += x_diff_noise;
+void constant_velo_awgn(real_t sigma, real_t dt, real_t *x, real_t *x_diff) {
+    if (dt > 0) {
+        real_t dt2 = dt * dt;
+        real_t dt3 = dt2 * dt;
+        real_t dt4 = dt2 * dt2;
+        real_t x_noise, x_diff_noise;
+        real_t sigma2 = sigma * sigma;
+        draw_gaussian_2d(dt4 / 4.f * sigma2, dt3 / 2.f * sigma2, dt2 * sigma2, &x_noise, &x_diff_noise);
+        *x += x_noise;
+        *x_diff += x_diff_noise;
+    }
 }
 
-float gaussian(float mu, float sigma2, float x) {
-    return 1.0f / sqrtf(2.0f * (float)M_PI * sigma2) * expf(-(x-mu)*(x-mu)/(2.0f * sigma2));
+real_t gaussian(real_t mu, real_t sigma2, real_t x) {
+    real_t res = 1.0f / sqrt(2.0 * (real_t)M_PI * sigma2) * exp(-(x-mu)*(x-mu)/(2.0 * sigma2));
+    if (res <= FLT_EPSILON) {
+        res = FLT_EPSILON;
+    }
+    return res;
 }
 

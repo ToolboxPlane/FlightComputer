@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iomanip>
 #include <cassert>
+#include <cfenv>
 #include "Devices/rcLib/RcLibSimulator.hpp"
 #include "Filters/Fusion/Node/Fusion.hpp"
 #include "Filters/Navigation/Node/Navigation.hpp"
@@ -24,6 +25,8 @@ int main() {
     using namespace std::chrono_literals;
     using namespace si::literals;
 
+    feenableexcept(FE_INVALID | FE_OVERFLOW); // Floating point exceptions
+
     /*
      * I/O-Modules
      */
@@ -38,14 +41,14 @@ int main() {
     device::Gps gps{};
 #else
     device::RcLibSimulator lora{17, 60000};
-    device::GpsSimulator gps{5000};
+    device::GpsSimulator gps{10};
 #endif
 
     std::ifstream waypointFile("missions/waypoints.csv");
     assert(waypointFile.is_open());
     recording::ChannelReplay<Waypoint_t> waypointReader{waypointFile};
 
-    device::Network network{"127.0.0.1"};
+    //device::Network network{"127.0.0.1"};
 
     /*
      * Filters
@@ -71,9 +74,9 @@ int main() {
     meshManager.getRemoteOut() >> fusion.getRemoteIn();
     meshManager.getBaseOut() >> fusion.getBaseIn();
 
-    serial.getChannelOut() >> network.getChannelIn();
+    /*serial.getChannelOut() >> network.getChannelIn();
     lora.getChannelOut() >> network.getChannelIn();
-    outputFilter.getBaseOut() >> network.getChannelIn();
+    outputFilter.getBaseOut() >> network.getChannelIn();*/
 
     /*
      * Internal connection

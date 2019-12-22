@@ -24,6 +24,8 @@ public:
 
     auto update(const FlightControllerPackage &flightControllerPackage, const GpsMeasurement_t &gpsMeasurement)
         -> WeightedParticle;
+
+    static auto getCurrSeconds() -> si::base::Second<>;
 private:
     std::vector<WeightedParticle> particles;
     si::base::Second<> lastUpdate;
