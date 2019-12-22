@@ -34,7 +34,10 @@ StateEstimate::StateEstimate(std::size_t numberOfParticles)
         state.lon = 0;
         state.lat = 0;
 
-        particles.emplace_back(std::make_pair(state, 1.0f));
+        weighted_particle_t weightedParticle{};
+        weightedParticle.x = state;
+        weightedParticle.weight = 1.0f;
+        particles.emplace_back(weightedParticle);
     }
 }
 
@@ -69,9 +72,9 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
 
     // Update step @TODO parallelize
     float weight_sum = 0;
-    for (auto &[particle, weight] : particles) {
-        weight *= update_particle(&particle, &input, &measurement, static_cast<float>(dt));
-        weight_sum += weight;
+    for (auto &particle : particles) {
+        update_particle(&particle, &input, &measurement, static_cast<float>(dt));
+        weight_sum += particle.weight;
     }
 
     WeightedParticle winner{{}, -std::numeric_limits<float>::infinity()};
@@ -80,9 +83,20 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
     for (auto &[particle, weight] : particles) {
         weight /= weight_sum;
 
-        if (weight > winner.second) {
+        if (weight > winner.weight) {
             winner = {particle, weight};
         }
+    }
+
+    resampleStep += 1;
+    if (resampleStep > 10) {
+        std::vector<weighted_particle_t> newParticles;
+        newParticles.resize(particles.size());
+
+        resample(particles.data(), particles.size(), newParticles.data(), newParticles.size());
+
+        particles = newParticles;
+        resampleStep = 0;
     }
 
     lastUpdate = currTime;

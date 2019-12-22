@@ -8,7 +8,7 @@
 #ifdef DEBUG
     constexpr auto NUM_PARTICLES = 100;
 #else
-    constexpr auto NUM_PARTICLES = 500000;
+    constexpr auto NUM_PARTICLES = 20000;
 #endif
 
 namespace filter {

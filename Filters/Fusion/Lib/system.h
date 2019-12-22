@@ -9,6 +9,7 @@
 #define FLIGHTCOMPUTER_SYSTEM_H
 
 #include <stdbool.h>
+#include <glob.h>
 #include "config.h"
 
 typedef struct {
@@ -20,6 +21,11 @@ typedef struct {
     real_t altitude_above_ground;
     real_t lat, lon;
 } system_state_t;
+
+typedef struct {
+    system_state_t x;
+    real_t weight;
+} weighted_particle_t;
 
 typedef struct {
     real_t roll_angle, roll_rate;
@@ -39,6 +45,9 @@ typedef struct {
     real_t motor;
 } input_t;
 
-real_t update_particle(system_state_t *x, const input_t *u, const measurement_t *z, real_t dt);
+void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, real_t dt);
+
+void resample(const weighted_particle_t* old_particles, size_t num_old_particles,
+              weighted_particle_t* new_particles, size_t num_new_particles);
 
 #endif //FLIGHTCOMPUTER_SYSTEM_H

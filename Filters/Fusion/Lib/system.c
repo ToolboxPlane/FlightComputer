@@ -9,6 +9,7 @@
 #include "random_util.h"
 
 #include <math.h>
+#include <stdlib.h>
 
 real_t normalize_angle(real_t angle) {
     int sign = 1;
@@ -78,8 +79,24 @@ real_t likelihood(const measurement_t *measurement, const measurement_t *estimat
     return p_roll_angle * p_roll_rate * p_pitch_angle * p_pitch_rate * p_yaw_angle * p_yaw_rate;
 }
 
-real_t update_particle(system_state_t *x, const input_t *u, const measurement_t *z, real_t dt) {
-    *x = predict(x, u, dt, true);
-    measurement_t z_hat = measure(x);
-    return likelihood(z, &z_hat);
+void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, real_t dt) {
+    particle->x = predict(&particle->x, u, dt, true);
+    measurement_t z_hat = measure(&particle->x);
+    particle->weight *= likelihood(z, &z_hat);
+}
+
+void resample(const weighted_particle_t *old_particles, size_t num_old_particles, weighted_particle_t *new_particles,
+              size_t num_new_particles) {
+    for (size_t c=0; c<num_new_particles; ++c) { //@TODO parallelize
+        real_t r = (real_t)rand() / RAND_MAX;
+        real_t prob = 0;
+        for (size_t p=0; p<num_old_particles; ++p) {
+            prob += old_particles[p].weight;
+            if (prob >= r) {
+                new_particles[c].x = old_particles[p].x;
+                new_particles[c].weight = 1;
+                break;
+            }
+        }
+    }
 }
