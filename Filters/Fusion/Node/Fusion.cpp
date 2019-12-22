@@ -8,7 +8,7 @@
 #ifdef DEBUG
     constexpr auto NUM_PARTICLES = 10000;
 #else
-    constexpr auto NUM_PARTICLES = 20000;
+    constexpr auto NUM_PARTICLES = 10000;
 #endif
 
 namespace filter {
@@ -80,10 +80,7 @@ namespace filter {
 
         if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired) {
             auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
-            auto start = StateEstimate::getCurrSeconds();
             auto [state, likelihood] = particleFilter.update(flightControllerData, lastGpsMeasurement.value());
-            auto dur = StateEstimate::getCurrSeconds() - start;
-            std::cout << "PF (" << NUM_PARTICLES << " Particles): " << dur << std::endl;
 
             res.roll = state.roll_angle;
             res.rollDiff = state.roll_rate * hertz;

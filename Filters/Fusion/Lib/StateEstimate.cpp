@@ -11,7 +11,7 @@
 #include "StateEstimate.hpp"
 
 StateEstimate::StateEstimate(std::size_t numberOfParticles)
-    : lastUpdate{getCurrSeconds()}, resampleStep{0} {
+    : lastUpdate{getCurrSeconds()} {
     srand(time(nullptr)); // Required for the process noise
 
     std::random_device rd{};
@@ -43,7 +43,7 @@ StateEstimate::StateEstimate(std::size_t numberOfParticles)
 
 auto
 StateEstimate::update(const FlightControllerPackage &flightControllerPackage, const GpsMeasurement_t &gpsMeasurement)
-    -> WeightedParticle {
+    -> weighted_particle_t {
 
     measurement_t measurement{};
     measurement.roll_angle = flightControllerPackage.roll;
@@ -77,7 +77,7 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
         weight_sum += particle.weight;
     }
 
-    WeightedParticle likelihoodWinner{{}, -std::numeric_limits<float>::infinity()};
+    weighted_particle_t likelihoodWinner{{}, -std::numeric_limits<float>::infinity()};
 
     // Fix PDF (-> Bayes * 1/p(z))
     for (auto &[state, weight] : particles) {
@@ -89,16 +89,12 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
         }
     }
 
-    resampleStep += 1;
-    if (resampleStep > 10) {
-        std::vector<weighted_particle_t> newParticles;
-        newParticles.resize(particles.size());
+    std::vector<weighted_particle_t> newParticles;
+    newParticles.resize(particles.size());
 
-        resample(particles.data(), particles.size(), newParticles.data(), newParticles.size());
+    resample(particles.data(), particles.size(), newParticles.data(), newParticles.size());
 
-        particles = std::move(newParticles);
-        resampleStep = 0;
-    }
+    particles = std::move(newParticles);
 
     lastUpdate = currTime;
 

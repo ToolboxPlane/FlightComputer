@@ -17,9 +17,9 @@ namespace si {
     constexpr void printHelper(std::ostream &ostream, const char *name) {
         if constexpr (exp != 0) {
             if constexpr (exp == -1) {
-                ostream << " /" << name;
+                ostream << "/" << name;
             } else if constexpr (exp == 1) {
-                ostream << " " << name;
+                ostream << name;
             } else {
                 ostream << " " << name << "^" << exp;
             }

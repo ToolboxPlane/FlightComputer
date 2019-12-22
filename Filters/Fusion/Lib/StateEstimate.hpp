@@ -19,17 +19,15 @@ extern "C" {
 
 class StateEstimate {
 public:
-    using WeightedParticle = weighted_particle_t;
     explicit StateEstimate(std::size_t numberOfParticles);
 
     auto update(const FlightControllerPackage &flightControllerPackage, const GpsMeasurement_t &gpsMeasurement)
-        -> WeightedParticle;
+        -> weighted_particle_t;
 
     static auto getCurrSeconds() -> si::base::Second<>;
 private:
-    std::vector<WeightedParticle> particles;
+    std::vector<weighted_particle_t> particles;
     si::base::Second<> lastUpdate;
-    std::size_t resampleStep;
 };
 
 
