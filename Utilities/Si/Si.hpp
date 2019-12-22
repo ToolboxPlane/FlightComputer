@@ -18,6 +18,10 @@ namespace si {
         constexpr Si() noexcept = default;
         constexpr explicit Si(T val) noexcept;
         constexpr explicit operator T() const;
+
+        template <typename T_>
+        constexpr explicit operator T_() const;
+
         template <typename T_>
         constexpr explicit operator Si<m,kg,s,A,K,MOL,CD,T_>() const;
 
@@ -148,6 +152,11 @@ namespace si {
         return Si<m-m_,kg-kg_,s-s_,A-A_,K-K_,MOL-MOL_,CD-CD_,T>{this->val / static_cast<T>(rhs)};
     }
 
+    template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T>
+    template<typename T_>
+    constexpr Si<m, kg, s, A, K, MOL, CD, T>::operator T_() const {
+        return static_cast<T_>(val);
+    }
 
 
 }

@@ -79,3 +79,7 @@ void constant_velo_awgn(float sigma, float dt, float *x, float *x_diff) {
     *x_diff += x_diff_noise;
 }
 
+float gaussian(float mu, float sigma2, float x) {
+    return 1.0f / sqrtf(2.0f * (float)M_PI * sigma2) * expf(-(x-mu)*(x-mu)/(2.0f * sigma2));
+}
+

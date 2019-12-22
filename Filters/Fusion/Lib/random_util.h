@@ -50,5 +50,6 @@ void draw_gaussian_2d(float sigma11, float sigma12, float sigma22, float *x_1, f
  */
 void constant_velo_awgn(float sigma, float dt, float *x, float *x_diff);
 
+float gaussian(float mu, float sigma2, float x);
 
 #endif //FLIGHTCOMPUTER_RANDOM_UTIL_H

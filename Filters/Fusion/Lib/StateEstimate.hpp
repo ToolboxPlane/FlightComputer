@@ -9,16 +9,24 @@
 #define FLIGHTCOMPUTER_STATEESTIMATE_HPP
 
 #include <vector>
+#include <chrono>
+
 extern "C" {
     #include "system.h"
 }
 
+#include "../Type/State_t.hpp"
+
 class StateEstimate {
 public:
+    using WeightedParticle = std::pair<system_state_t, float>;
     explicit StateEstimate(std::size_t numberOfParticles);
 
+    auto update(const FlightControllerPackage &flightControllerPackage, const GpsMeasurement_t &gpsMeasurement)
+        -> WeightedParticle;
 private:
-    std::vector<system_state_t> particles;
+    std::vector<WeightedParticle> particles;
+    si::base::Second<> lastUpdate;
 };
 
 

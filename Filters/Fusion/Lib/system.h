@@ -26,7 +26,8 @@ typedef struct {
     float yaw_angle, yaw_rate;
     float air_speed;
     float ground_speed;
-    float altitude;
+    float altitude_baro;
+    float altitude_gps;
     float distance_ground;
     float lat, lon;
 } measurement_t;
