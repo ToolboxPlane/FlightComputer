@@ -13,13 +13,13 @@
 #include "config.h"
 
 typedef struct {
-    real_t roll_angle, roll_rate;
-    real_t pitch_angle, pitch_rate;
-    real_t yaw_angle, yaw_rate;
-    real_t speed;
-    real_t altitude;
-    real_t altitude_above_ground;
-    real_t lat, lon;
+    real_t roll_angle, roll_rate; // Orientation and speed of the plane around the roll (forward) axis (degree)
+    real_t pitch_angle, pitch_rate; // Orientation and speed of the plane around the pitch (right) axis (degree)
+    real_t yaw_angle, yaw_rate; // Orientation and speed of the plane around the yaw (down) axis (degree)
+    real_t speed; // The absolute speed of the plane
+    real_t altitude; // The absolute altitude of the plane
+    real_t altitude_above_ground; // The altitude above ground
+    real_t lat, lon; // The global position of the plane
 } system_state_t;
 
 typedef struct {
@@ -28,15 +28,15 @@ typedef struct {
 } weighted_particle_t;
 
 typedef struct {
-    real_t roll_angle, roll_rate;
-    real_t pitch_angle, pitch_rate;
-    real_t yaw_angle, yaw_rate;
-    real_t air_speed;
-    real_t ground_speed;
-    real_t altitude_baro;
-    real_t altitude_gps;
-    real_t distance_ground;
-    real_t lat, lon;
+    real_t roll_angle, roll_rate; // see system_state_t
+    real_t pitch_angle, pitch_rate; // see system_state_t
+    real_t yaw_angle, yaw_rate; // see system_state_t
+    real_t air_speed; // The airspeed as measured by the pivot tube
+    real_t ground_speed; // The ground speed of the plane
+    real_t altitude_baro; // The absolute altitude, as measured by the barometer
+    real_t altitude_gps; // The absolute altitude, as measured by the gps
+    real_t distance_ground; // The distance to the ground, as measured by the distance sensor
+    real_t lat, lon; // The position, acquired by the GPS
 } measurement_t;
 
 typedef struct {
