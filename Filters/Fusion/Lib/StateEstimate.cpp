@@ -10,8 +10,8 @@
 #include <random>
 #include "StateEstimate.hpp"
 
-StateEstimate::StateEstimate(std::size_t numberOfParticles)
-    : lastUpdate{getCurrSeconds()} {
+StateEstimate::StateEstimate(std::size_t numberOfParticles, std::size_t resamplePeriod)
+    : lastUpdate{getCurrSeconds()}, resamplePeriod{resamplePeriod}, resampleStep{0} {
     srand(time(nullptr)); // Required for the process noise
 
     std::random_device rd{};
@@ -89,12 +89,17 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
         }
     }
 
-    std::vector<weighted_particle_t> newParticles;
-    newParticles.resize(particles.size());
+    resampleStep += 1;
+    if (resampleStep >= resamplePeriod) {
+        resampleStep = 0;
 
-    resample(particles.data(), particles.size(), newParticles.data(), newParticles.size());
+        std::vector<weighted_particle_t> newParticles;
+        newParticles.resize(particles.size());
 
-    particles = std::move(newParticles);
+        resample(particles.data(), particles.size(), newParticles.data(), newParticles.size());
+
+        particles = std::move(newParticles);
+    }
 
     lastUpdate = currTime;
 

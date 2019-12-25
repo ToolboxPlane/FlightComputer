@@ -27,11 +27,11 @@ real_t normalize_angle(real_t angle) {
 
 system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, bool apply_noise) {
     system_state_t ret;
-    ret.roll_angle = normalize_angle(x->roll_angle + dt * x->roll_rate);
+    ret.roll_angle = x->roll_angle + dt * x->roll_rate;
     ret.roll_rate = x->roll_rate;
-    ret.pitch_angle = normalize_angle(x->pitch_angle + dt * x->pitch_angle);
+    ret.pitch_angle = x->pitch_angle + dt * x->pitch_angle;
     ret.pitch_rate = x->pitch_rate;
-    ret.yaw_angle = normalize_angle(x->yaw_angle + dt * x->yaw_rate);
+    ret.yaw_angle = x->yaw_angle + dt * x->yaw_rate;
     ret.yaw_rate = x->yaw_rate;
     ret.speed = x->speed;
     ret.altitude = x->altitude;
@@ -46,6 +46,10 @@ system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, boo
         constant_velo_awgn(STDDEV_PROCESS_PITCH, dt, &ret.pitch_angle, &ret.pitch_rate);
         constant_velo_awgn(STDDEV_PROCESS_YAW, dt, &ret.yaw_angle, &ret.yaw_rate);
     }
+
+    ret.roll_angle = normalize_angle(ret.roll_angle);
+    ret.pitch_angle = normalize_angle(ret.pitch_angle);
+    ret.yaw_angle = normalize_angle(ret.yaw_angle);
 
     return ret;
 }
