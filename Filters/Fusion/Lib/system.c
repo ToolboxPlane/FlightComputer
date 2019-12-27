@@ -28,8 +28,8 @@ real_t normalize_angle(real_t angle) {
 system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, bool apply_noise) {
     real_t vert_dist = sin(x->pitch_angle / 180 * M_PI) * x->speed * dt; // Vertical distance between in dt
     real_t horiz_dist = cos(x->pitch_angle / 180 * M_PI) * x->speed * dt; // Horizontal distance between in dt
-    real_t lat_dist = vert_dist * cos(x->yaw_angle / 180 * M_PI); // Distance north in dt (along latitude)
-    real_t lon_dist = vert_dist * sin(x->yaw_angle / 180 * M_PI); // Distance east in dt (along longitude)
+    real_t lat_dist = horiz_dist * cos(x->yaw_angle / 180 * M_PI); // Distance north in dt (along latitude)
+    real_t lon_dist = horiz_dist * sin(x->yaw_angle / 180 * M_PI); // Distance east in dt (along longitude)
 
     system_state_t ret;
     ret.roll_angle = x->roll_angle + dt * x->roll_rate;
@@ -95,20 +95,34 @@ real_t likelihood(const measurement_t *measurement, const measurement_t *estimat
 void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, real_t dt) {
     particle->x = predict(&particle->x, u, dt, true);
     measurement_t z_hat = measure(&particle->x);
-    particle->weight *= likelihood(z, &z_hat);
+    //particle->weight *= likelihood(z, &z_hat);
 }
 
 void resample(const weighted_particle_t *old_particles, size_t num_old_particles, weighted_particle_t *new_particles,
               size_t num_new_particles) {
+    real_t cdf[num_old_particles];
+    real_t sum = 0;
+
+    for (size_t c=0; c<num_new_particles; ++c) {
+        sum += old_particles[c].weight;
+        cdf[c] = sum;
+    }
+
     for (size_t c=0; c<num_new_particles; ++c) { //@TODO parallelize
         real_t r = (real_t)rand() / RAND_MAX;
-        real_t prob = 0;
-        for (size_t p=0; p<num_old_particles; ++p) {
-            prob += old_particles[p].weight;
-            if (prob >= r) {
-                new_particles[c].x = old_particles[p].x;
+
+        size_t lower_bound = 0;
+        size_t upper_bound = num_old_particles - 1;
+        while (lower_bound <= upper_bound) {
+            size_t middle = lower_bound + (upper_bound - lower_bound) / 2;
+            if (upper_bound - lower_bound < 2) {
+                new_particles[c].x = old_particles[upper_bound].x;
                 new_particles[c].weight = 1.0f / num_new_particles;
                 break;
+            } else if (cdf[middle] < r) {
+                lower_bound = middle;
+            } else {
+                upper_bound = middle;
             }
         }
     }

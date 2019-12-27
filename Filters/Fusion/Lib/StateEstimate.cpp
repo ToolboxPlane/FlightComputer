@@ -91,6 +91,7 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
 
     resampleStep += 1;
     if (resampleStep >= resamplePeriod) {
+        auto start = getCurrSeconds();
         resampleStep = 0;
 
         std::vector<weighted_particle_t> newParticles;
@@ -99,6 +100,8 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
         resample(particles.data(), particles.size(), newParticles.data(), newParticles.size());
 
         particles = std::move(newParticles);
+        auto diff = getCurrSeconds() - start;
+        std::cout << diff << std::endl;
     }
 
     lastUpdate = currTime;
