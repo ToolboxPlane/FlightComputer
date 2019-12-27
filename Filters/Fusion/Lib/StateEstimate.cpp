@@ -10,8 +10,11 @@
 #include <random>
 #include "StateEstimate.hpp"
 
-StateEstimate::StateEstimate(std::size_t numberOfParticles, std::size_t resamplePeriod)
-    : lastUpdate{getCurrSeconds()}, resamplePeriod{resamplePeriod}, resampleStep{0} {
+static constexpr auto INITIAL_PARTICLES = 10000;
+
+StateEstimate::StateEstimate(std::size_t resamplePeriod)
+    : lastUpdate{getCurrSeconds()}, resamplePeriod{resamplePeriod}, resampleStep{0},
+        newParticleNum{INITIAL_PARTICLES} {
     srand(time(nullptr)); // Required for the process noise
 
     std::random_device rd{};
@@ -19,9 +22,9 @@ StateEstimate::StateEstimate(std::size_t numberOfParticles, std::size_t resample
 
     std::uniform_real_distribution<> dist{-180, 180};
 
-    particles.reserve(numberOfParticles);
+    particles.reserve(INITIAL_PARTICLES);
 
-    for (std::size_t c = 0; c < numberOfParticles; ++c) {
+    for (std::size_t c = 0; c < INITIAL_PARTICLES; ++c) {
         system_state_t state{};
         state.roll_angle = dist(gen);
         state.roll_rate = dist(gen);
@@ -36,7 +39,7 @@ StateEstimate::StateEstimate(std::size_t numberOfParticles, std::size_t resample
 
         weighted_particle_t weightedParticle{};
         weightedParticle.x = state;
-        weightedParticle.weight = 1.0f / numberOfParticles;
+        weightedParticle.weight = 1.0f / INITIAL_PARTICLES;
         particles.emplace_back(weightedParticle);
     }
 }
@@ -67,10 +70,11 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
     input.vtail_r = flightControllerPackage.vtailRight;
     input.motor = flightControllerPackage.motor;
 
-    const auto currTime = getCurrSeconds();
-    const auto dt = currTime - lastUpdate;
+    const auto startTime = getCurrSeconds();
+    const auto dt = startTime - lastUpdate;
+    lastUpdate = startTime;
 
-    // Update step @TODO parallelize
+    // Predict + Weight
     float weight_sum = 0;
     for (auto &particle : particles) {
         update_particle(&particle, &input, &measurement, static_cast<float>(dt));
@@ -89,29 +93,37 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
         }
     }
 
+    // Resample
     resampleStep += 1;
     if (resampleStep >= resamplePeriod) {
-        auto start = getCurrSeconds();
         resampleStep = 0;
 
         std::vector<weighted_particle_t> newParticles;
-        newParticles.resize(particles.size());
+        newParticles.resize(newParticleNum);
 
         resample(particles.data(), particles.size(), newParticles.data(), newParticles.size());
 
         particles = std::move(newParticles);
-        auto diff = getCurrSeconds() - start;
-        std::cout << diff << std::endl;
     }
 
-    lastUpdate = currTime;
+    // Controller for dynamic number of particles
+    auto runtime = getCurrSeconds() - startTime;
+    auto targetTime = dt * 0.8;
+    if (runtime * 2 < targetTime) {
+        newParticleNum *= 2;
+    } else if (2 * targetTime < runtime) {
+        newParticleNum /= 2;
+    } else {
+        auto factor = std::pow(static_cast<si::base::Second<>::type>(targetTime / runtime), 0.8);
+        newParticleNum *= factor;
+    }
 
     return likelihoodWinner;
 }
 
 auto StateEstimate::getCurrSeconds() -> si::base::Second<> {
     auto tp = std::chrono::high_resolution_clock::now().time_since_epoch();
-    auto nanos = static_cast<long double>(
+    auto microseconds = static_cast<long double>(
             std::chrono::duration_cast<std::chrono::microseconds>(tp).count());
-    return nanos / 10e6 * si::base::second;
+    return microseconds / 10e6 * si::base::second;
 }

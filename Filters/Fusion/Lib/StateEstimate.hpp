@@ -19,7 +19,7 @@ extern "C" {
 
 class StateEstimate {
 public:
-    explicit StateEstimate(std::size_t numberOfParticles, std::size_t resamplePeriod=1);
+    explicit StateEstimate(std::size_t resamplePeriod=1);
 
     auto update(const FlightControllerPackage &flightControllerPackage, const GpsMeasurement_t &gpsMeasurement)
         -> weighted_particle_t;
@@ -30,6 +30,7 @@ private:
     si::base::Second<> lastUpdate;
     std::size_t resamplePeriod;
     std::size_t resampleStep;
+    std::size_t newParticleNum;
 };
 
 

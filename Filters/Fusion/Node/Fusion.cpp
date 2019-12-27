@@ -5,17 +5,11 @@
 #include "Fusion.hpp"
 #include "../Lib/DecodePackage.hpp"
 
-#ifdef DEBUG
-    constexpr auto NUM_PARTICLES = 10000;
-#else
-    constexpr auto NUM_PARTICLES = 50000;
-#endif
-
 namespace filter {
     using namespace si::extended;
     using namespace si::literals;
 
-    Fusion::Fusion() : particleFilter{NUM_PARTICLES} {
+    Fusion::Fusion() : particleFilter{} {
         this->start();
     }
 

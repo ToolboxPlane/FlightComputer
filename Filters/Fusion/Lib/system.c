@@ -95,7 +95,7 @@ real_t likelihood(const measurement_t *measurement, const measurement_t *estimat
 void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, real_t dt) {
     particle->x = predict(&particle->x, u, dt, true);
     measurement_t z_hat = measure(&particle->x);
-    //particle->weight *= likelihood(z, &z_hat);
+    particle->weight *= likelihood(z, &z_hat);
 }
 
 void resample(const weighted_particle_t *old_particles, size_t num_old_particles, weighted_particle_t *new_particles,
@@ -103,7 +103,7 @@ void resample(const weighted_particle_t *old_particles, size_t num_old_particles
     real_t cdf[num_old_particles];
     real_t sum = 0;
 
-    for (size_t c=0; c<num_new_particles; ++c) {
+    for (size_t c=0; c<num_old_particles; ++c) {
         sum += old_particles[c].weight;
         cdf[c] = sum;
     }
