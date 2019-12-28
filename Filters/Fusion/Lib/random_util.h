@@ -10,6 +10,14 @@
 
 #include "config.h"
 
+#define FAST_RAND_MAX 15485867
+#define __FAST_RAND_PERIOD 15485863
+
+int fast_rand(void);
+
+#define RAND_IMPL fast_rand
+#define RAND_IMPL_MAX FAST_RAND_MAX
+
 /**
  * Draw a number from a gaussian distribution
  * (stolen from:
@@ -44,6 +52,8 @@ void get_cov_trans_mat_2d(real_t sigma11, real_t sigma12, real_t sigma22, real_t
  */
 void draw_gaussian_2d(real_t sigma11, real_t sigma12, real_t sigma22, real_t *x_1, real_t *x_2);
 
+void draw_gaussian_2d_cov(real_t trans_mat[2][2], real_t *x_1, real_t *x_2);
+
 /**
  * Add additive white gaussian noise to the two state vectors of a constant
  * velocity model
@@ -53,6 +63,8 @@ void draw_gaussian_2d(real_t sigma11, real_t sigma12, real_t sigma22, real_t *x_
  * @param x_diff the second state component ("velocity")
  */
 void constant_velo_awgn(real_t sigma, real_t dt, real_t *x, real_t *x_diff);
+
+void constant_velo_awgn_cov(real_t sigma, real_t cov[2][2], real_t *x, real_t *x_diff);
 
 /**
  * Calculates the value of the gaussian probability density function at a position

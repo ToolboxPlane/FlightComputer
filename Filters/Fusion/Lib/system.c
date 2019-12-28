@@ -11,18 +11,27 @@
 #include <math.h>
 #include <stdlib.h>
 
-real_t normalize_angle(real_t angle) {
-    int sign = 1;
-    if (angle < 0) {
-        sign = -1;
-        angle = -angle;
-    }
+static real_t cv_trans_mat[2][2];
 
-    while (angle > 180) { //@TODO not very efficient...
+real_t normalize_angle(real_t angle) {
+    fmodf(angle, 360);
+    if (angle > 180) {
         angle -= 360;
     }
 
-    return angle * (real_t)sign;
+    return angle;
+}
+
+void update_cov_matrices(real_t dt) {
+    real_t dt2 = dt * dt;
+    real_t dt3 = dt2 * dt;
+    real_t dt4 = dt2 * dt2;
+    real_t cv_cov[2][2];
+    cv_cov[0][0] = dt4 / 4;
+    cv_cov[0][1] = cv_cov[1][0] = dt3 / 2 * 0.99f;
+    cv_cov[1][1] = dt2;
+
+    get_cov_trans_mat_2d(dt4/4, dt3/2 * 0.99f, dt2, cv_trans_mat);
 }
 
 system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, bool apply_noise) {
@@ -47,9 +56,9 @@ system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, boo
     // @ TODO input
 
     if (apply_noise) {
-        constant_velo_awgn(STDDEV_PROCESS_ROLL, dt, &ret.roll_angle, &ret.roll_rate);
-        constant_velo_awgn(STDDEV_PROCESS_PITCH, dt, &ret.pitch_angle, &ret.pitch_rate);
-        constant_velo_awgn(STDDEV_PROCESS_YAW, dt, &ret.yaw_angle, &ret.yaw_rate);
+        constant_velo_awgn_cov(STDDEV_PROCESS_ROLL, cv_trans_mat, &ret.roll_angle, &ret.roll_rate);
+        constant_velo_awgn_cov(STDDEV_PROCESS_PITCH, cv_trans_mat, &ret.pitch_angle, &ret.pitch_rate);
+        constant_velo_awgn_cov(STDDEV_PROCESS_YAW, cv_trans_mat, &ret.yaw_angle, &ret.yaw_rate);
         //@TODO noise
     }
 
@@ -109,7 +118,7 @@ void resample(const weighted_particle_t *old_particles, size_t num_old_particles
     }
 
     for (size_t c=0; c<num_new_particles; ++c) { //@TODO parallelize
-        real_t r = (real_t)rand() / RAND_MAX;
+        real_t r = (real_t)RAND_IMPL() / RAND_IMPL_MAX;
 
         size_t lower_bound = 0;
         size_t upper_bound = num_old_particles - 1;
@@ -127,3 +136,4 @@ void resample(const weighted_particle_t *old_particles, size_t num_old_particles
         }
     }
 }
+

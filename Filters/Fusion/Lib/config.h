@@ -8,7 +8,7 @@
 #ifndef FLIGHTCOMPUTER_CONFIG_H
 #define FLIGHTCOMPUTER_CONFIG_H
 
-typedef double real_t;
+typedef float real_t;
 
 #define STDDEV_PROCESS_ROLL 500
 #define STDDEV_PROCESS_PITCH 500

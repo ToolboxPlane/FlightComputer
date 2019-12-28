@@ -9,7 +9,7 @@ namespace filter {
     using namespace si::extended;
     using namespace si::literals;
 
-    Fusion::Fusion() : particleFilter{} {
+    Fusion::Fusion() {
         this->start();
     }
 

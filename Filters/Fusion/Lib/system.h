@@ -45,6 +45,8 @@ typedef struct {
     real_t motor;
 } input_t;
 
+void update_cov_matrices(real_t dt);
+
 void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, real_t dt);
 
 void resample(const weighted_particle_t* old_particles, size_t num_old_particles,

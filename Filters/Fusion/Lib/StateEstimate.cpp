@@ -12,9 +12,8 @@
 
 static constexpr auto INITIAL_PARTICLES = 100000;
 
-StateEstimate::StateEstimate(std::size_t resamplePeriod)
-    : lastUpdate{getCurrSeconds()}, resamplePeriod{resamplePeriod}, resampleStep{0},
-        newParticleNum{INITIAL_PARTICLES} {
+StateEstimate::StateEstimate()
+    : lastUpdate{getCurrSeconds()}, newParticleNum{INITIAL_PARTICLES} {
     srand(time(nullptr)); // Required for the process noise
 
     std::random_device rd{};
@@ -75,36 +74,38 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
     lastUpdate = startTime;
 
     // Predict + Weight
+    update_cov_matrices(static_cast<float>(dt));
     float weight_sum = 0;
     for (auto &particle : particles) {
         update_particle(&particle, &input, &measurement, static_cast<float>(dt));
         weight_sum += particle.weight;
     }
 
+    std::cout << "Predict: " << getCurrSeconds() - startTime << std::endl;
+
     weighted_particle_t likelihoodWinner{{}, -std::numeric_limits<float>::infinity()};
 
     // Fix PDF (-> Bayes * 1/p(z)) and determine most likely particle
     for (auto &[state, weight] : particles) {
         weight /= weight_sum;
-        weight = std::min(weight, 1.0);
+        weight = std::min<real_t>(weight, 1.0);
 
         if (weight > likelihoodWinner.weight) {
             likelihoodWinner = {state, weight};
         }
     }
 
+    std::cout << "Winner: " << getCurrSeconds() - startTime << std::endl;
+
     // Resample
-    resampleStep += 1;
-    if (resampleStep >= resamplePeriod) {
-        resampleStep = 0;
+    std::vector<weighted_particle_t> newParticles;
+    newParticles.resize(newParticleNum);
 
-        std::vector<weighted_particle_t> newParticles;
-        newParticles.resize(newParticleNum);
+    resample(particles.data(), particles.size(), newParticles.data(), newParticles.size());
 
-        resample(particles.data(), particles.size(), newParticles.data(), newParticles.size());
+    particles = std::move(newParticles);
 
-        particles = std::move(newParticles);
-    }
+    std::cout << "Resample: " << getCurrSeconds() - startTime << std::endl;
 
     // Controller for dynamic number of particles
     auto runtime = getCurrSeconds() - startTime;
@@ -117,6 +118,7 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
         auto factor = std::pow(static_cast<si::base::Second<>::type>(targetTime / runtime), 0.8);
         newParticleNum *= factor;
     }
+    std::cout << "Particles: " << newParticleNum << std::endl;
 
     return likelihoodWinner;
 }
