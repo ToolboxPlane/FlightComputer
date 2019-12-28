@@ -10,7 +10,7 @@
 #include <random>
 #include "StateEstimate.hpp"
 
-static constexpr auto INITIAL_PARTICLES = 10000;
+static constexpr auto INITIAL_PARTICLES = 100000;
 
 StateEstimate::StateEstimate(std::size_t resamplePeriod)
     : lastUpdate{getCurrSeconds()}, resamplePeriod{resamplePeriod}, resampleStep{0},
@@ -83,7 +83,7 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
 
     weighted_particle_t likelihoodWinner{{}, -std::numeric_limits<float>::infinity()};
 
-    // Fix PDF (-> Bayes * 1/p(z))
+    // Fix PDF (-> Bayes * 1/p(z)) and determine most likely particle
     for (auto &[state, weight] : particles) {
         weight /= weight_sum;
         weight = std::min(weight, 1.0);

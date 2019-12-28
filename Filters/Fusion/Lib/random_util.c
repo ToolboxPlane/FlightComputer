@@ -85,7 +85,7 @@ void constant_velo_awgn(real_t sigma, real_t dt, real_t *x, real_t *x_diff) {
 }
 
 real_t gaussian(real_t mu, real_t sigma2, real_t x) {
-    real_t res = 1.0f / sqrt(2.0 * (real_t)M_PI * sigma2) * exp(-(x-mu)*(x-mu)/(2.0 * sigma2));
+    real_t res = 1.0f / sqrt(2.0 * M_PI * sigma2) * exp(-(x-mu)*(x-mu)/(2.0 * sigma2));
     if (res <= FLT_EPSILON) {
         res = FLT_EPSILON;
     }
