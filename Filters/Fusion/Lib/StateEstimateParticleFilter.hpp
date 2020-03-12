@@ -1,12 +1,12 @@
 /**
- * @file StateEstimate.hpp
+ * @file StateEstimateParticleFilter.hpp
  * @author paul
  * @date 21.12.19
- * @brief StateEstimate @TODO
+ * @brief StateEstimateParticleFilter @TODO
  */
 
-#ifndef FLIGHTCOMPUTER_STATEESTIMATE_HPP
-#define FLIGHTCOMPUTER_STATEESTIMATE_HPP
+#ifndef FLIGHTCOMPUTER_STATEESTIMATEPARTICLEFILTER_HPP
+#define FLIGHTCOMPUTER_STATEESTIMATEPARTICLEFILTER_HPP
 
 #include <vector>
 #include <chrono>
@@ -17,9 +17,9 @@ extern "C" {
 
 #include "../Type/State_t.hpp"
 
-class StateEstimate {
+class StateEstimateParticleFilter {
 public:
-    StateEstimate();
+    StateEstimateParticleFilter();
 
     auto update(const FlightControllerPackage &flightControllerPackage, const GpsMeasurement_t &gpsMeasurement)
         -> weighted_particle_t;
@@ -32,4 +32,4 @@ private:
 };
 
 
-#endif //FLIGHTCOMPUTER_STATEESTIMATE_HPP
+#endif //FLIGHTCOMPUTER_STATEESTIMATEPARTICLEFILTER_HPP

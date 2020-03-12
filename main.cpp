@@ -44,9 +44,9 @@ int main() {
     device::GpsSimulator gps{10};
 #endif
 
-    std::ifstream waypointFile("missions/waypoints.csv");
-    assert(waypointFile.is_open());
-    recording::ChannelReplay<Waypoint_t> waypointReader{waypointFile};
+    //std::ifstream waypointFile("missions/waypoints.csv");
+    //assert(waypointFile.is_open());
+    //recording::ChannelReplay<Waypoint_t> waypointReader{waypointFile};
 
     //device::Network network{"127.0.0.1"};
 
@@ -83,7 +83,7 @@ int main() {
      */
     gps.getChannelOut() >> fusion.getGpsIn();
     fusion.getChannelOut() >> navigation.getChannelStateIn();
-    waypointReader.getChannelOut() >> navigation.getChannelWaypointIn();
+    //waypointReader.getChannelOut() >> navigation.getChannelWaypointIn();
     navigation.getChannelOut() >> feedbackControl.getChannelIn();
     feedbackControl.getChannelOut() >> outputFilter.getChannelIn();
     outputFilter.getBaseOut() >> meshManager.getBaseIn();

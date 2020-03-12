@@ -11,7 +11,7 @@
 #include "../../../Devices/GPS/Type/GpsMeasurement_t.hpp"
 #include "../Type/State_t.hpp"
 #include "../../../OutputChannel.hpp"
-#include "../Lib/StateEstimate.hpp"
+#include "../Lib/StateEstimateParticleFilter.hpp"
 #include <optional>
 
 namespace filter {
@@ -49,7 +49,7 @@ namespace filter {
         InputChannel<GpsMeasurement_t> gpsIn;
         OutputChannel<State_t> out;
 
-        StateEstimate particleFilter;
+        StateEstimateParticleFilter particleFilter;
     };
 }
 

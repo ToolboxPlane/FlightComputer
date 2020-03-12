@@ -1,18 +1,18 @@
 /**
- * @file StateEstimate.cpp
+ * @file StateEstimateParticleFilter.cpp
  * @author paul
  * @date 21.12.19
- * @brief StateEstimate @TODO
+ * @brief StateEstimateParticleFilter @TODO
  */
 
 #include <cstdlib>
 #include <ctime>
 #include <random>
-#include "StateEstimate.hpp"
+#include "StateEstimateParticleFilter.hpp"
 
 static constexpr auto INITIAL_PARTICLES = 100000;
 
-StateEstimate::StateEstimate()
+StateEstimateParticleFilter::StateEstimateParticleFilter()
     : lastUpdate{getCurrSeconds()}, newParticleNum{INITIAL_PARTICLES} {
     srand(time(nullptr)); // Required for the process noise
 
@@ -44,7 +44,7 @@ StateEstimate::StateEstimate()
 }
 
 auto
-StateEstimate::update(const FlightControllerPackage &flightControllerPackage, const GpsMeasurement_t &gpsMeasurement)
+StateEstimateParticleFilter::update(const FlightControllerPackage &flightControllerPackage, const GpsMeasurement_t &gpsMeasurement)
     -> weighted_particle_t {
 
     measurement_t measurement{};
@@ -84,6 +84,9 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
     std::cout << "Predict: " << getCurrSeconds() - startTime << std::endl;
 
     weighted_particle_t likelihoodWinner{{}, -std::numeric_limits<float>::infinity()};
+    weighted_particle_t estimate{{}, 0};
+
+    double nEffInv = 0;
 
     // Fix PDF (-> Bayes * 1/p(z)) and determine most likely particle
     for (auto &[state, weight] : particles) {
@@ -93,6 +96,16 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
         if (weight > likelihoodWinner.weight) {
             likelihoodWinner = {state, weight};
         }
+        estimate.x.roll_angle += state.roll_angle * weight;
+        estimate.x.roll_rate += state.roll_rate * weight;
+        estimate.x.pitch_angle += state.pitch_angle * weight;
+        estimate.x.pitch_rate += state.pitch_rate * weight;
+        estimate.x.yaw_angle += state.yaw_angle * weight;
+        estimate.x.yaw_rate += state.yaw_rate * weight;
+        estimate.weight += weight;
+        //@TODO complete state
+
+        nEffInv += weight * weight;
     }
 
     std::cout << "Winner: " << getCurrSeconds() - startTime << std::endl;
@@ -119,11 +132,12 @@ StateEstimate::update(const FlightControllerPackage &flightControllerPackage, co
         newParticleNum *= factor;
     }
     std::cout << "Particles: " << newParticleNum << std::endl;
+    std::cout << "N_Eff: " << 1/nEffInv << std::endl;
 
-    return likelihoodWinner;
+    return estimate;
 }
 
-auto StateEstimate::getCurrSeconds() -> si::base::Second<> {
+auto StateEstimateParticleFilter::getCurrSeconds() -> si::base::Second<> {
     auto tp = std::chrono::high_resolution_clock::now().time_since_epoch();
     auto microseconds = static_cast<long double>(
             std::chrono::duration_cast<std::chrono::microseconds>(tp).count());
