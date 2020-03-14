@@ -15,6 +15,7 @@
 #include "Devices/Network/Network.hpp"
 #include "Devices/Serial/SerialPosix.hpp"
 #include "Devices/rcLib/PackageOstream.hpp"
+#include "Devices/SRF02/SRF02.hpp"
 
 #ifdef RASPBERRY_PI
 #include "Devices/LoRa/LoRa.hpp"
@@ -27,8 +28,9 @@ int main() {
     /*
      * I/O-Modules
      */
-    device::SerialPosix serial{"/dev/ttyUSB0", 115200};
-    //device::RcLibSimulator serial{23, 1000};
+    //device::SerialPosix serial{"/dev/ttyUSB0", 115200};
+    device::RcLibSimulator serial{23, 1000};
+    device::SRF02 srf02{"/dev/ttyUSB0"};
     //std::ifstream serialFile("logs/serial_18_06_27_19_43.csv");
     //assert(serialFile.is_open());
     //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
@@ -41,11 +43,11 @@ int main() {
     device::GpsSimulator gps{5000};
 #endif
 
-    std::ifstream waypointFile("missions/waypoints.csv");
-    assert(waypointFile.is_open());
-    recording::ChannelReplay<Waypoint_t> waypointReader{waypointFile};
+    //std::ifstream waypointFile("missions/waypoints.csv");
+    //assert(waypointFile.is_open());
+    //recording::ChannelReplay<Waypoint_t> waypointReader{waypointFile};
 
-    device::Network network{"127.0.0.1"};
+    //device::Network network{"127.0.0.1"};
 
     /*
      * Filters
@@ -71,16 +73,16 @@ int main() {
     meshManager.getRemoteOut() >> fusion.getRemoteIn();
     meshManager.getBaseOut() >> fusion.getBaseIn();
 
-    serial.getChannelOut() >> network.getChannelIn();
+    /*serial.getChannelOut() >> network.getChannelIn();
     lora.getChannelOut() >> network.getChannelIn();
-    outputFilter.getBaseOut() >> network.getChannelIn();
+    outputFilter.getBaseOut() >> network.getChannelIn();*/
 
     /*
      * Internal connection
      */
     gps.getChannelOut() >> fusion.getGpsIn();
     fusion.getChannelOut() >> navigation.getChannelStateIn();
-    waypointReader.getChannelOut() >> navigation.getChannelWaypointIn();
+    //waypointReader.getChannelOut() >> navigation.getChannelWaypointIn();
     navigation.getChannelOut() >> feedbackControl.getChannelIn();
     feedbackControl.getChannelOut() >> outputFilter.getChannelIn();
     outputFilter.getBaseOut() >> meshManager.getBaseIn();
