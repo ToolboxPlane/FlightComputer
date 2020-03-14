@@ -81,6 +81,7 @@ int main() {
      * Internal connection
      */
     gps.getChannelOut() >> fusion.getGpsIn();
+    srf02.getChannelOut() >> fusion.getUltrasonicIn();
     fusion.getChannelOut() >> navigation.getChannelStateIn();
     //waypointReader.getChannelOut() >> navigation.getChannelWaypointIn();
     navigation.getChannelOut() >> feedbackControl.getChannelIn();
