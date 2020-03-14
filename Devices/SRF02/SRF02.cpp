@@ -34,7 +34,7 @@ namespace device {
         start();
     }
 
-    auto SRF02::getChannelOut() -> OutputChannel<si::base::Meter<float>> {
+    auto SRF02::getChannelOut() -> OutputChannel<si::base::Meter<>> {
         return out;
     }
 
@@ -55,7 +55,8 @@ namespace device {
             std::array<uint8_t, 2> data{};
             if (read(this->fd, data.data(), data.size()) == data.size()) {
                 float distance = data[0] << 8u | data[1];
-                std::cout << distance << std::endl;
+
+                out.put(distance/100.0F * si::base::meter);
             }
         }
     }

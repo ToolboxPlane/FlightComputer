@@ -15,14 +15,14 @@ namespace device {
         public:
             explicit SRF02(const std::string &port);
 
-            auto getChannelOut() -> OutputChannel<si::base::Meter<float>>;
+            auto getChannelOut() -> OutputChannel<si::base::Meter<>>;
 
         private:
             void run() override;
 
             void sendBuff(const std::vector<uint8_t> &buf);
 
-            OutputChannel<si::base::Meter<float>> out;
+            OutputChannel<si::base::Meter<>> out;
             int fd;
     };
 }
