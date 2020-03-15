@@ -25,12 +25,6 @@ StateEstimateParticleFilter::StateEstimateParticleFilter()
 
     for (std::size_t c = 0; c < INITIAL_PARTICLES; ++c) {
         system_state_t state{};
-        state.roll_angle = dist(gen);
-        state.roll_rate = dist(gen);
-        state.yaw_angle = dist(gen);
-        state.yaw_rate = dist(gen);
-        state.pitch_angle = dist(gen);
-        state.pitch_rate = dist(gen);
         state.altitude_above_ground = 0;
         state.altitude = 0;
         state.lon = 0;
@@ -50,11 +44,8 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
 
     measurement_t measurement{};
     measurement.roll_angle = flightControllerPackage.roll;
-    measurement.roll_rate = static_cast<float>(flightControllerPackage.rollDeriv);
     measurement.pitch_angle = flightControllerPackage.pitch;
-    measurement.pitch_rate = static_cast<float>(flightControllerPackage.pitchDeriv);
     measurement.yaw_angle = flightControllerPackage.yaw;
-    measurement.yaw_rate = static_cast<float>(flightControllerPackage.yawDeriv);
     measurement.air_speed = 0; // @TODO
     measurement.ground_speed = static_cast<float>(gpsMeasurement.speed);
     measurement.altitude_baro = 0; // @TODO navboard
@@ -94,12 +85,13 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
         weight = std::min<real_t>(weight, 1.0);
 
         estimate.roll_angle += state.roll_angle * weight;
-        estimate.roll_rate += state.roll_rate * weight;
         estimate.pitch_angle += state.pitch_angle * weight;
-        estimate.pitch_rate += state.pitch_rate * weight;
         estimate.yaw_angle += state.yaw_angle * weight;
-        estimate.yaw_rate += state.yaw_rate * weight;
-        //@TODO complete state
+        estimate.speed += state.speed * weight;
+        estimate.altitude += state.altitude;
+        estimate.altitude_above_ground += state.altitude_above_ground * weight;
+        estimate.lat += state.lat * weight;
+        estimate.lon += state.lon * weight;
 
         nEffInv += weight * weight;
     }

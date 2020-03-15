@@ -11,13 +11,17 @@
 template<typename T>
 class OutputChannel {
 public:
+    OutputChannel() = default;
+    OutputChannel(const OutputChannel<T> &) = delete;
+    OutputChannel& operator=(const OutputChannel<T> &) = delete;
+
     void put(T item) {
         for(auto &channel: outputChannelList) {
             channel.get().put(item);
         }
     }
 
-    void operator>>(InputChannel<T> & channel) {
+    void operator>>(InputChannel<T> &channel) {
         outputChannelList.emplace_back(channel);
     }
 private:

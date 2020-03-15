@@ -83,11 +83,8 @@ namespace filter {
                     lastUltrasonicDistance.value());
 
             res.roll = state.roll_angle;
-            res.rollDiff = state.roll_rate * hertz;
             res.pitch = state.pitch_angle;
-            res.pitchDiff = state.pitch_rate * hertz;
             res.yaw = state.yaw_angle;
-            res.yawDiff = state.yaw_rate * hertz;
             res.speed = state.speed * speed;
             res.altitude = state.altitude * meter;
             res.altitudeAboveGround = state.altitude_above_ground * meter;

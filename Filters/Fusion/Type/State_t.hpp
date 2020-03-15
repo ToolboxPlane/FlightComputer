@@ -49,11 +49,8 @@ public:
 class State_t {
 public:
     float roll{};
-    si::extended::Frequency<> rollDiff{};
     float pitch{};
-    si::extended::Frequency<> pitchDiff{};
     float yaw{};
-    si::extended::Frequency<> yawDiff{};
     si::extended::Speed<> speed{};
     si::base::Meter<> altitude{};
     si::base::Meter<> altitudeAboveGround{};

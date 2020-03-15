@@ -12,6 +12,8 @@ template<typename T>
 class InputChannel {
 public:
     InputChannel() : closed{false} {}
+    InputChannel(const InputChannel<T> &) = delete;
+    InputChannel& operator=(const InputChannel<T> &) = delete;
 
     void close() {
         std::unique_lock<std::mutex> lock(m);

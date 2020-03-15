@@ -13,9 +13,9 @@
 #include "config.h"
 
 typedef struct {
-    real_t roll_angle, roll_rate; // Orientation and speed of the plane around the roll (forward) axis (degree)
-    real_t pitch_angle, pitch_rate; // Orientation and speed of the plane around the pitch (right) axis (degree)
-    real_t yaw_angle, yaw_rate; // Orientation and speed of the plane around the yaw (down) axis (degree)
+    real_t roll_angle; // Orientation and speed of the plane around the roll (forward) axis (degree)
+    real_t pitch_angle; // Orientation and speed of the plane around the pitch (right) axis (degree)
+    real_t yaw_angle; // Orientation and speed of the plane around the yaw (down) axis (degree)
     real_t speed; // The absolute speed of the plane
     real_t altitude; // The absolute altitude of the plane
     real_t altitude_above_ground; // The altitude above ground
@@ -28,9 +28,9 @@ typedef struct {
 } weighted_particle_t;
 
 typedef struct {
-    real_t roll_angle, roll_rate; // see system_state_t
-    real_t pitch_angle, pitch_rate; // see system_state_t
-    real_t yaw_angle, yaw_rate; // see system_state_t
+    real_t roll_angle; // Orientation and speed of the plane around the roll (forward) axis (degree)
+    real_t pitch_angle; // Orientation and speed of the plane around the pitch (right) axis (degree)
+    real_t yaw_angle; // Orientation and speed of the plane around the yaw (down) axis (degree)
     real_t air_speed; // The airspeed as measured by the pivot tube
     real_t ground_speed; // The ground speed of the plane
     real_t altitude_baro; // The absolute altitude, as measured by the barometer

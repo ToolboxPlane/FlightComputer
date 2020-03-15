@@ -41,12 +41,6 @@ system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, boo
     real_t lon_dist = horiz_dist * sin(x->yaw_angle / 180 * M_PI); // Distance east in dt (along longitude)
 
     system_state_t ret;
-    ret.roll_angle = x->roll_angle + dt * x->roll_rate;
-    ret.roll_rate = x->roll_rate;
-    ret.pitch_angle = x->pitch_angle + dt * x->pitch_angle;
-    ret.pitch_rate = x->pitch_rate;
-    ret.yaw_angle = x->yaw_angle + dt * x->yaw_rate;
-    ret.yaw_rate = x->yaw_rate;
     ret.speed = x->speed;
     ret.altitude = x->altitude + vert_dist;
     ret.altitude_above_ground = x->altitude_above_ground + vert_dist;
@@ -56,15 +50,9 @@ system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, boo
     // @ TODO input
 
     if (apply_noise) {
-        constant_velo_awgn_cov(STDDEV_PROCESS_ROLL, cv_trans_mat, &ret.roll_angle, &ret.roll_rate);
-        constant_velo_awgn_cov(STDDEV_PROCESS_PITCH, cv_trans_mat, &ret.pitch_angle, &ret.pitch_rate);
-        constant_velo_awgn_cov(STDDEV_PROCESS_YAW, cv_trans_mat, &ret.yaw_angle, &ret.yaw_rate);
         //@TODO noise
+        ret.altitude_above_ground += gaussian_box_muller(0, dt * 0.5);
     }
-
-    ret.roll_angle = normalize_angle(ret.roll_angle);
-    ret.pitch_angle = normalize_angle(ret.pitch_angle);
-    ret.yaw_angle = normalize_angle(ret.yaw_angle);
 
     return ret;
 }
@@ -72,16 +60,13 @@ system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, boo
 measurement_t measure(const system_state_t *x) {
     measurement_t ret;
     ret.roll_angle = x->roll_angle;
-    ret.roll_rate = x->roll_rate;
     ret.pitch_angle = x->pitch_angle;
-    ret.pitch_rate = x->pitch_rate;
     ret.yaw_angle = x->yaw_angle;
-    ret.yaw_rate = x->yaw_rate;
     ret.air_speed = x->speed;
     ret.ground_speed = x->speed * cos(x->pitch_angle / 180 * M_PI);
     ret.altitude_baro = x->altitude;
     ret.distance_ground = x->altitude_above_ground /
-            (cos(x->roll_rate / 180 * M_PI) * cos(x->pitch_angle / 180 * M_PI));
+            (cos(x->roll_angle / 180 * M_PI) * cos(x->pitch_angle / 180 * M_PI));
     ret.lat = x->lat;
     ret.lon = x->lon;
 
@@ -89,19 +74,24 @@ measurement_t measure(const system_state_t *x) {
 }
 
 real_t likelihood(const measurement_t *measurement, const measurement_t *estimate) {
-    real_t p_roll_angle = gaussian(measurement->roll_angle, VAR_MEASURE_ROLL_ANGLE, estimate->roll_angle);
-    real_t p_roll_rate = gaussian(measurement->roll_rate, VAR_MEASURE_ROLL_RATE, estimate->roll_rate);
-    real_t p_pitch_angle = gaussian(measurement->pitch_angle, VAR_MEASURE_PITCH_ANGLE, estimate->pitch_angle);
-    real_t p_pitch_rate = gaussian(measurement->pitch_rate, VAR_MEASURE_PITCH_RATE, estimate->pitch_rate);
-    real_t p_yaw_angle = gaussian(measurement->yaw_angle, VAR_MEASURE_YAW_ANGLE, estimate->yaw_angle);
-    real_t p_yaw_rate = gaussian(measurement->yaw_rate, VAR_MEASURE_YAW_RATE, estimate->yaw_rate);
+    real_t p_distance_measure;
+    if (estimate->distance_ground < 0) {
+        p_distance_measure = 0;
+    } else if (measurement->distance_ground < SRF02_MAX_DIST) {
+        p_distance_measure = gaussian(measurement->distance_ground, VAR_SRF02, estimate->distance_ground);
+    } else {
+        p_distance_measure = 1 / (100.0 - SRF02_MAX_DIST);
+    }
 
     // GPS: normal distribution with accuracy = 2 * sigma
 
-    return p_roll_angle * p_roll_rate * p_pitch_angle * p_pitch_rate * p_yaw_angle * p_yaw_rate;
+    return p_distance_measure;
 }
 
 void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, real_t dt) {
+    particle->x.pitch_angle = z->pitch_angle;
+    particle->x.roll_angle = z->roll_angle;
+    particle->x.yaw_angle = z->yaw_angle;
     particle->x = predict(&particle->x, u, dt, true);
     measurement_t z_hat = measure(&particle->x);
     particle->weight *= likelihood(z, &z_hat);

@@ -34,7 +34,7 @@ namespace device {
         start();
     }
 
-    auto SRF02::getChannelOut() -> OutputChannel<si::base::Meter<>> {
+    auto SRF02::getChannelOut() -> OutputChannel<si::base::Meter<>>& {
         return out;
     }
 
