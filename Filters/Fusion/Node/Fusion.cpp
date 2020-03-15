@@ -43,6 +43,10 @@ namespace filter {
         return taranisIn;
     }
 
+    InputChannel<si::base::Meter<>> &Fusion::getUltrasonicIn() {
+        return ultrasonicIn;
+    }
+
     void Fusion::run() {
         while (!flightControllerIn.isClosed()) {
             gpsIn.get(lastGpsMeasurement);
@@ -50,6 +54,7 @@ namespace filter {
             taranisIn.get(lastTaranisPackage);
             baseIn.get(lastBasePackage);
             remoteIn.get(lastRemotePackage);
+            ultrasonicIn.get(lastUltrasonicDistance);
 
             if (flightControllerIn.get(lastFcPackage)) {
                 out.put(process());

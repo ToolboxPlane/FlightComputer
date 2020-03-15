@@ -61,14 +61,12 @@ namespace device {
             /*
              * Go fix your language (en). "read" needs to get a decent past tense form,
              * i decided on "readed" instead of the phonetically incorrect and irregular
-             * "reed" (https://www.youtube.com/watch?v=A8zWWp0akUU).
+             * "read" (https://www.youtube.com/watch?v=A8zWWp0akUU).
              */
             auto readed = read(this->fd, buffer.data(), BUF_SIZE);
-            if (readed > 0) {
-                for (auto c=0; c < readed; c++) {
-                    if (pkgIn.decode(buffer[c])) {
-                        out.put(pkgIn);
-                    }
+            for (auto c=0; c < readed; c++) {
+                if (pkgIn.decode(buffer[c])) {
+                    out.put(pkgIn);
                 }
             }
 
@@ -210,7 +208,7 @@ namespace device {
 
         this->fd = open(port.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
         if (this->fd < 0) {
-            throw std::runtime_error(strerror(errno));
+            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
         }
     }
 
