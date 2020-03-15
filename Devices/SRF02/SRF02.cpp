@@ -54,6 +54,7 @@ namespace device {
 
             std::this_thread::sleep_for(75ms);
 
+            // Read 2 bytes from register 0x02 on device at 0xE1 (ranging result)
             sendBuff({0x55, 0xE1, 0x02, 0x02});
             std::array<uint8_t, 2> data{};
             if (read(this->fd, data.data(), data.size()) == data.size()) {
