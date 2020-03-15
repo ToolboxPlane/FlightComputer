@@ -41,6 +41,9 @@ system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, boo
     real_t lon_dist = horiz_dist * sin(x->yaw_angle / 180 * M_PI); // Distance east in dt (along longitude)
 
     system_state_t ret;
+    ret.roll_angle = x->roll_angle;
+    ret.pitch_angle = x->pitch_angle;
+    ret.yaw_angle = x->yaw_angle;
     ret.speed = x->speed;
     ret.altitude = x->altitude + vert_dist;
     ret.altitude_above_ground = x->altitude_above_ground + vert_dist;
@@ -51,7 +54,7 @@ system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, boo
 
     if (apply_noise) {
         //@TODO noise
-        ret.altitude_above_ground += gaussian_box_muller(0, dt * 0.5);
+        ret.altitude_above_ground += gaussian_box_muller(0, dt * SIGMA_ABOVE_GROUND);
     }
 
     return ret;

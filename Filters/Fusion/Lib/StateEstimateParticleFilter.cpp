@@ -16,16 +16,11 @@ StateEstimateParticleFilter::StateEstimateParticleFilter()
     : lastUpdate{getCurrSeconds()}, newParticleNum{INITIAL_PARTICLES} {
     srand(time(nullptr)); // Required for the process noise
 
-    std::random_device rd{};
-    std::mt19937 gen{rd()};
-
-    std::uniform_real_distribution<> dist{-180, 180};
-
     particles.reserve(INITIAL_PARTICLES);
 
     for (std::size_t c = 0; c < INITIAL_PARTICLES; ++c) {
         system_state_t state{};
-        state.altitude_above_ground = 0;
+        state.altitude_above_ground = 0.0;
         state.altitude = 0;
         state.lon = 0;
         state.lat = 0;
@@ -73,8 +68,6 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
         weight_sum += particle.weight;
     }
 
-    std::cout << "Predict: " << getCurrSeconds() - startTime << std::endl;
-
     system_state_t estimate{};
 
     double nEffInv = 0;
@@ -96,8 +89,6 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
         nEffInv += weight * weight;
     }
 
-    std::cout << "Winner: " << getCurrSeconds() - startTime << std::endl;
-
     // Resample
     std::vector<weighted_particle_t> newParticles;
     newParticles.resize(newParticleNum);
@@ -105,8 +96,6 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
     resample(particles.data(), particles.size(), newParticles.data(), newParticles.size());
 
     particles = std::move(newParticles);
-
-    std::cout << "Resample: " << getCurrSeconds() - startTime << std::endl;
 
     // Controller for dynamic number of particles
     auto runtime = getCurrSeconds() - startTime;
