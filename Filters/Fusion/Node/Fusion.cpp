@@ -77,9 +77,10 @@ namespace filter {
             res.loraRemote = fusion::decodePackage<LoraPackage>(lastRemotePackage.value());
         }
 
-        if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired) {
+        if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired && lastUltrasonicDistance.has_value()) {
             auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
-            auto [state, likelihood] = particleFilter.update(flightControllerData, lastGpsMeasurement.value());
+            auto state  = particleFilter.update(flightControllerData, lastGpsMeasurement.value(),
+                    lastUltrasonicDistance.value());
 
             res.roll = state.roll_angle;
             res.rollDiff = state.roll_rate * hertz;

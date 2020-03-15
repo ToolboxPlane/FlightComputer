@@ -44,8 +44,9 @@ StateEstimateParticleFilter::StateEstimateParticleFilter()
 }
 
 auto
-StateEstimateParticleFilter::update(const FlightControllerPackage &flightControllerPackage, const GpsMeasurement_t &gpsMeasurement)
-    -> weighted_particle_t {
+StateEstimateParticleFilter::update(const FlightControllerPackage &flightControllerPackage,
+        const GpsMeasurement_t &gpsMeasurement, si::base::Meter<> distanceGround)
+    -> system_state_t {
 
     measurement_t measurement{};
     measurement.roll_angle = flightControllerPackage.roll;
@@ -57,7 +58,7 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
     measurement.air_speed = 0; // @TODO
     measurement.ground_speed = static_cast<float>(gpsMeasurement.speed);
     measurement.altitude_baro = 0; // @TODO navboard
-    measurement.distance_ground = 0; // @TODO navboard
+    measurement.distance_ground = static_cast<float>(distanceGround);
     measurement.altitude_gps = static_cast<float>(gpsMeasurement.location.altitude);
     measurement.lat = static_cast<float>(gpsMeasurement.location.lat);
     measurement.lon = static_cast<float>(gpsMeasurement.location.lon);
@@ -83,8 +84,7 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
 
     std::cout << "Predict: " << getCurrSeconds() - startTime << std::endl;
 
-    weighted_particle_t likelihoodWinner{{}, -std::numeric_limits<float>::infinity()};
-    weighted_particle_t estimate{{}, 0};
+    system_state_t estimate{};
 
     double nEffInv = 0;
 
@@ -93,16 +93,12 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
         weight /= weight_sum;
         weight = std::min<real_t>(weight, 1.0);
 
-        if (weight > likelihoodWinner.weight) {
-            likelihoodWinner = {state, weight};
-        }
-        estimate.x.roll_angle += state.roll_angle * weight;
-        estimate.x.roll_rate += state.roll_rate * weight;
-        estimate.x.pitch_angle += state.pitch_angle * weight;
-        estimate.x.pitch_rate += state.pitch_rate * weight;
-        estimate.x.yaw_angle += state.yaw_angle * weight;
-        estimate.x.yaw_rate += state.yaw_rate * weight;
-        estimate.weight += weight;
+        estimate.roll_angle += state.roll_angle * weight;
+        estimate.roll_rate += state.roll_rate * weight;
+        estimate.pitch_angle += state.pitch_angle * weight;
+        estimate.pitch_rate += state.pitch_rate * weight;
+        estimate.yaw_angle += state.yaw_angle * weight;
+        estimate.yaw_rate += state.yaw_rate * weight;
         //@TODO complete state
 
         nEffInv += weight * weight;
