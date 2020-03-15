@@ -11,29 +11,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-static real_t cv_trans_mat[2][2];
-
-real_t normalize_angle(real_t angle) {
-    fmodf(angle, 360);
-    if (angle > 180) {
-        angle -= 360;
-    }
-
-    return angle;
-}
-
-void update_cov_matrices(real_t dt) {
-    real_t dt2 = dt * dt;
-    real_t dt3 = dt2 * dt;
-    real_t dt4 = dt2 * dt2;
-    real_t cv_cov[2][2];
-    cv_cov[0][0] = dt4 / 4;
-    cv_cov[0][1] = cv_cov[1][0] = dt3 / 2 * 0.99f;
-    cv_cov[1][1] = dt2;
-
-    get_cov_trans_mat_2d(dt4/4, dt3/2 * 0.99f, dt2, cv_trans_mat);
-}
-
 system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, bool apply_noise) {
     real_t vert_dist = sin(x->pitch_angle / 180 * M_PI) * x->speed * dt; // Vertical distance between in dt
     real_t horiz_dist = cos(x->pitch_angle / 180 * M_PI) * x->speed * dt; // Horizontal distance between in dt
@@ -54,6 +31,18 @@ system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, boo
 
     if (apply_noise) {
         //@TODO noise
+        /*
+         * Noise gain:
+         * For x = [altitude, lat, lon, v]^T
+         * Gamma = [
+         *      0.5 * dt^2 * sin(pitch);
+         *      0.5 * dt^2 * cos(pitch) * cos(yaw);
+         *      0.5 * dt^2 * cos(pitch) * sin(yaw);
+         *      dt]
+         *
+         * Sigma = Gamma * Gamma^T * sigma_alt
+         * v ~ No(0, Sigma)
+         */
         ret.altitude_above_ground += gaussian_box_muller(0, dt * SIGMA_ABOVE_GROUND);
     }
 
@@ -110,7 +99,7 @@ void resample(const weighted_particle_t *old_particles, size_t num_old_particles
         cdf[c] = sum;
     }
 
-    for (size_t c=0; c<num_new_particles; ++c) { //@TODO parallelize
+    for (size_t c=0; c<num_new_particles; ++c) {
         real_t r = (real_t)RAND_IMPL() / RAND_IMPL_MAX;
 
         size_t lower_bound = 0;

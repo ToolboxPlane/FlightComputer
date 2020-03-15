@@ -61,7 +61,6 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
     lastUpdate = startTime;
 
     // Predict + Weight
-    update_cov_matrices(static_cast<float>(dt));
     float weight_sum = 0;
     for (auto &particle : particles) {
         update_particle(&particle, &input, &measurement, static_cast<float>(dt));

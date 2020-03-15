@@ -53,19 +53,6 @@ void get_cov_trans_mat_2d(real_t sigma11, real_t sigma12, real_t sigma22, real_t
 void draw_gaussian_2d(real_t sigma11, real_t sigma12, real_t sigma22, real_t *x_1, real_t *x_2);
 
 void draw_gaussian_2d_cov(real_t trans_mat[2][2], real_t *x_1, real_t *x_2);
-
-/**
- * Add additive white gaussian noise to the two state vectors of a constant
- * velocity model
- * @param sigma the standard deviation used for the process noise
- * @param dt the timestep
- * @param x the first state component ("position")
- * @param x_diff the second state component ("velocity")
- */
-void constant_velo_awgn(real_t sigma, real_t dt, real_t *x, real_t *x_diff);
-
-void constant_velo_awgn_cov(real_t sigma, real_t cov[2][2], real_t *x, real_t *x_diff);
-
 /**
  * Calculates the value of the gaussian probability density function at a position
  * @param mu the mean of the gaussian distribution

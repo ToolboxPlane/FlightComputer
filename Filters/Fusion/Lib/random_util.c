@@ -80,27 +80,6 @@ void draw_gaussian_2d_cov(real_t trans_mat[2][2], real_t *x_1, real_t *x_2) {
     *x_2 = trans_mat[1][0] * x_normal_1 + trans_mat[1][1] * x_normal_2;
 }
 
-void constant_velo_awgn(real_t sigma, real_t dt, real_t *x, real_t *x_diff) {
-    if (dt > 0) {
-        real_t dt2 = dt * dt;
-        real_t dt3 = dt2 * dt;
-        real_t dt4 = dt2 * dt2;
-        real_t x_noise, x_diff_noise;
-        real_t sigma2 = sigma * sigma;
-        // Lets just assume 0.99 = 1, else our eigenvalues are negative (because of ieee754)
-        draw_gaussian_2d(dt4 / 4.f * sigma2, dt3 / 2.f * sigma2 * 0.99f, dt2 * sigma2, &x_noise, &x_diff_noise);
-        *x += x_noise;
-        *x_diff += x_diff_noise;
-    }
-}
-
-void constant_velo_awgn_cov(real_t sigma, real_t cov[2][2], real_t *x, real_t *x_diff) {
-    real_t x_noise, x_diff_noise;
-    draw_gaussian_2d_cov(cov, &x_noise, &x_diff_noise);
-    *x += x_noise * sigma;
-    *x_diff += x_diff_noise * sigma;
-}
-
 real_t gaussian(real_t mu, real_t sigma2, real_t x) {
     real_t res = 1.0f / sqrtf(2.0f * (float)M_PI * sigma2) * expf(-(x-mu)*(x-mu)/(2.0f * sigma2));
     if (res <= FLT_EPSILON) {
