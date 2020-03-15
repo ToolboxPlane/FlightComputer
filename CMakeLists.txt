@@ -26,6 +26,7 @@ set(SOURCES
         Devices/GPS/Node/Gps.cpp
         Devices/Network/Network.cpp
         Devices/Serial/SerialPosix.cpp
+        Devices/SRF02/SRF02.cpp
         Filters/Fusion/Node/Fusion.cpp
         Filters/Fusion/Lib/StateEstimateParticleFilter.cpp
         Filters/Fusion/Lib/system.c

@@ -16,6 +16,7 @@
 #include "Devices/Network/Network.hpp"
 #include "Devices/Serial/SerialPosix.hpp"
 #include "Devices/rcLib/PackageOstream.hpp"
+#include "Devices/SRF02/SRF02.hpp"
 
 #ifdef RASPBERRY_PI
 #include "Devices/LoRa/LoRa.hpp"
@@ -30,8 +31,9 @@ int main() {
     /*
      * I/O-Modules
      */
-    device::SerialPosix serial{"/dev/ttyUSB0", 115200};
-    //device::RcLibSimulator serial{23, 1000};
+    //device::SerialPosix serial{"/dev/ttyUSB0", 115200};
+    device::RcLibSimulator serial{23, 1000};
+    device::SRF02 srf02{"/dev/ttyUSB0"};
     //std::ifstream serialFile("logs/serial_18_06_27_19_43.csv");
     //assert(serialFile.is_open());
     //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
@@ -82,6 +84,7 @@ int main() {
      * Internal connection
      */
     gps.getChannelOut() >> fusion.getGpsIn();
+    srf02.getChannelOut() >> fusion.getUltrasonicIn();
     fusion.getChannelOut() >> navigation.getChannelStateIn();
     //waypointReader.getChannelOut() >> navigation.getChannelWaypointIn();
     navigation.getChannelOut() >> feedbackControl.getChannelIn();

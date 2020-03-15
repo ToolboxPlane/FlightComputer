@@ -33,6 +33,8 @@ namespace filter {
 
         InputChannel<GpsMeasurement_t> &getGpsIn();
 
+        InputChannel<si::base::Meter<>> &getUltrasonicIn();
+
         OutputChannel<State_t> &getChannelOut();
 
     private:
@@ -42,10 +44,12 @@ namespace filter {
         std::optional<rcLib::Package> lastBasePackage;
         std::optional<rcLib::Package> lastTaranisPackage;
         std::optional<rcLib::Package> lastRemotePackage;
+        std::optional<si::base::Meter<>> lastUltrasonicDistance;
 
         void process();
 
         InputChannel<rcLib::Package> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
+        InputChannel<si::base::Meter<>> ultrasonicIn;
         InputChannel<GpsMeasurement_t> gpsIn;
         OutputChannel<State_t> out;
 
