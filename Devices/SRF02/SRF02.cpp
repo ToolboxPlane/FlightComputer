@@ -57,7 +57,7 @@ namespace device {
             // Read 2 bytes from register 0x02 on device at 0xE1 (ranging result)
             sendBuff({0x55, 0xE1, 0x02, 0x02});
             std::array<uint8_t, 2> data{};
-            if (read(this->fd, data.data(), data.size()) == data.size()) {
+            if (read(this->fd, data.data(), data.size()) == static_cast<ssize_t>(data.size())) {
                 float distance = data[0] << 8u | data[1];
 
                 out.put(distance/100.0F * si::base::meter);
