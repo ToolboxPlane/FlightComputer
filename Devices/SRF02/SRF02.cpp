@@ -41,6 +41,9 @@ namespace device {
     void SRF02::run() {
         using namespace std::chrono_literals;
         while (true) {
+            // USB-I2C Adapter documentation: http://www.robot-electronics.co.uk/htm/usb_i2c_tech.htm
+            // SRF02 I2C Mode documentation: https://www.robot-electronics.co.uk/htm/srf02techI2C.htm
+            // Write byte 0x51 to register 0x00 on device at I2C address 0xE0 ("start ranging in cm")
             sendBuff({0x55, 0xE0, 0x00, 0x01, 0x51});
             uint8_t confirmation = 0;
             if (read(this->fd, &confirmation, 1) != 1 || confirmation == 0) {
