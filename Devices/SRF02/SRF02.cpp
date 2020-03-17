@@ -22,10 +22,11 @@ namespace device {
         if (tcgetattr(fd, &tty) != 0) {
             throw std::runtime_error(strerror(errno));
         }
-        cfsetospeed(&tty, B19200);
-        cfsetispeed(&tty, B19200);
-        tty.c_cflag = (tty.c_cflag & ~CSIZE) | CS8;     // 8-bit chars
-        tty.c_cflag |= CSTOPB; // Two stop bits
+
+        cfsetispeed(&tty, B19200);					// Set the baud rates to 19200
+        cfmakeraw(&tty);
+        tty.c_cc[VMIN]  = 1;
+        tty.c_cc[VTIME] = 50;
 
         if (tcsetattr(fd, TCSANOW, &tty) != 0) {
             throw std::runtime_error(strerror(errno));
@@ -52,12 +53,13 @@ namespace device {
                 continue;
             }
 
-            std::this_thread::sleep_for(75ms);
+            std::this_thread::sleep_for(66ms);
 
             // Read 2 bytes from register 0x02 on device at 0xE1 (ranging result)
             sendBuff({0x55, 0xE1, 0x02, 0x02});
             std::array<uint8_t, 2> data{};
-            if (read(this->fd, data.data(), data.size()) == static_cast<ssize_t>(data.size())) {
+            auto readed = read(this->fd, data.data(), data.size());
+            if (readed == static_cast<ssize_t>(data.size())) {
                 float distance = data[0] << 8u | data[1];
 
                 out.put(distance/100.0F * si::base::meter);

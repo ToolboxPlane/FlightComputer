@@ -31,9 +31,9 @@ int main() {
     /*
      * I/O-Modules
      */
-    device::SerialPosix serial{"/dev/ttyUSB1", 115200};
+    device::SerialPosix serial{"/dev/ttyUSB0", 115200};
     //device::RcLibSimulator serial{23, 1000};
-    device::SRF02 srf02{"/dev/ttyUSB0"};
+    device::SRF02 srf02{"/dev/ttyUSB1"};
     //std::ifstream serialFile("logs/serial_18_06_27_19_43.csv");
     //assert(serialFile.is_open());
     //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
@@ -100,7 +100,7 @@ int main() {
     debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", false};
     debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", false};
     debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
-    debug::Logger<si::base::Meter<>> srf02Debug{"SRF02", false};
+    debug::Logger<si::base::Meter<>> srf02Debug{"SRF02", true};
     debug::Logger<State_t> fusionDebug{"Fusion", true};
     debug::Logger<Nav_t> navDebug{"Nav", false};
     debug::Logger<Control_t> controlDebug{"Control", false};
