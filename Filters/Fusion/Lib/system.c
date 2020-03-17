@@ -30,7 +30,6 @@ system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, boo
     // @ TODO input
 
     if (apply_noise) {
-        //@TODO noise
         /*
          * Noise gain:
          * For x = [altitude, lat, lon, v]^T
@@ -39,11 +38,25 @@ system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, boo
          *      0.5 * dt^2 * cos(pitch) * cos(yaw);
          *      0.5 * dt^2 * cos(pitch) * sin(yaw);
          *      dt]
-         *
-         * Sigma = Gamma * Gamma^T * sigma_alt
-         * v ~ No(0, Sigma)
          */
-        ret.altitude_above_ground += gaussian_box_muller(0, dt * SIGMA_ABOVE_GROUND);
+        real_t gamma[4] = {
+                0.5 * dt * dt * sin(x->pitch_angle / 180 * M_PI),
+                0.5 * dt * dt * cos (x->pitch_angle / 180 * M_PI) * cos(x->yaw_angle / 180 * M_PI),
+                0.5 * dt * dt * cos (x->pitch_angle / 180 * M_PI) * sin(x->yaw_angle / 180 * M_PI),
+                dt
+        };
+
+        do {
+            float noise = gaussian_box_muller(0, SIGMA_V);
+            ret.altitude += noise * gamma[0];
+            ret.altitude_above_ground += noise * gamma[0];
+            ret.lat += noise * gamma[1];
+            ret.lat += noise * gamma[2];
+            ret.speed += noise * gamma[3];
+
+            // Additional noise as ground is not static
+            ret.altitude_above_ground += gaussian_box_muller(0, dt * SIGMA_GND);
+        } while (ret.altitude_above_ground < 0);
     }
 
     return ret;
@@ -67,9 +80,7 @@ measurement_t measure(const system_state_t *x) {
 
 real_t likelihood(const measurement_t *measurement, const measurement_t *estimate) {
     real_t p_distance_measure;
-    if (estimate->distance_ground < 0) {
-        p_distance_measure = 0;
-    } else if (measurement->distance_ground < SRF02_MAX_DIST) {
+    if (measurement->distance_ground > 0) {
         p_distance_measure = gaussian(measurement->distance_ground, VAR_SRF02, estimate->distance_ground);
     } else {
         p_distance_measure = 1 / (100.0 - SRF02_MAX_DIST);

@@ -29,7 +29,6 @@ public:
 private:
     std::vector<weighted_particle_t> particles;
     si::base::Second<> lastUpdate;
-    std::size_t newParticleNum;
 };
 
 

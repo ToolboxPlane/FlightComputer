@@ -10,9 +10,11 @@
 
 typedef float real_t;
 
-#define VAR_SRF02 (0.01*0.01)
-#define SRF02_MAX_DIST 2.5
-#define SIGMA_ABOVE_GROUND 1
+#define VAR_SRF02 (0.001)
+#define SRF02_MAX_DIST 5
+#define SIGMA_GND 1
+#define SIGMA_V 1
+
 
 
 #endif //FLIGHTCOMPUTER_CONFIG_H

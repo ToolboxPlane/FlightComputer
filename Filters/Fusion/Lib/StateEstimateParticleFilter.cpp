@@ -10,15 +10,15 @@
 #include <random>
 #include "StateEstimateParticleFilter.hpp"
 
-static constexpr auto INITIAL_PARTICLES = 100000;
+static constexpr auto PARTICLES = 10000;
 
 StateEstimateParticleFilter::StateEstimateParticleFilter()
-    : lastUpdate{getCurrSeconds()}, newParticleNum{INITIAL_PARTICLES} {
+    : lastUpdate{getCurrSeconds()} {
     srand(time(nullptr)); // Required for the process noise
 
-    particles.reserve(INITIAL_PARTICLES);
+    particles.reserve(PARTICLES);
 
-    for (std::size_t c = 0; c < INITIAL_PARTICLES; ++c) {
+    for (std::size_t c = 0; c < PARTICLES; ++c) {
         system_state_t state{};
         state.altitude_above_ground = 0.0;
         state.altitude = 0;
@@ -27,7 +27,7 @@ StateEstimateParticleFilter::StateEstimateParticleFilter()
 
         weighted_particle_t weightedParticle{};
         weightedParticle.x = state;
-        weightedParticle.weight = 1.0f / INITIAL_PARTICLES;
+        weightedParticle.weight = 1.0f / PARTICLES;
         particles.emplace_back(weightedParticle);
     }
 }
@@ -76,6 +76,8 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
         weight /= weight_sum;
         weight = std::min<real_t>(weight, 1.0);
 
+        //std::cout << "(" << state.altitude_above_ground << ", " << estimate.speed << "):\t" << weight << "\n";
+
         estimate.roll_angle += state.roll_angle * weight;
         estimate.pitch_angle += state.pitch_angle * weight;
         estimate.yaw_angle += state.yaw_angle * weight;
@@ -90,24 +92,12 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
 
     // Resample
     std::vector<weighted_particle_t> newParticles;
-    newParticles.resize(newParticleNum);
+    newParticles.resize(PARTICLES);
 
     resample(particles.data(), particles.size(), newParticles.data(), newParticles.size());
 
     particles = std::move(newParticles);
 
-    // Controller for dynamic number of particles
-    auto runtime = getCurrSeconds() - startTime;
-    auto targetTime = dt * 0.8;
-    if (runtime * 2 < targetTime) {
-        newParticleNum *= 2;
-    } else if (2 * targetTime < runtime) {
-        newParticleNum /= 2;
-    } else {
-        auto factor = std::pow(static_cast<si::base::Second<>::type>(targetTime / runtime), 0.8);
-        newParticleNum *= factor;
-    }
-    std::cout << "Particles: " << newParticleNum << std::endl;
     std::cout << "N_Eff: " << 1/nEffInv << std::endl;
 
     return estimate;

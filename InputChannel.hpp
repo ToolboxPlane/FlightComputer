@@ -48,10 +48,13 @@ public:
         return true;
     }
 
-    void get(std::optional<T> &t) {
+    auto get(std::optional<T> &t) -> bool {
         T newT;
         if (this->get(newT, false)) {
             t = std::move(newT);
+            return true;
+        } else {
+            return false;
         }
     }
 private:

@@ -47,12 +47,12 @@ namespace filter {
 
     void Fusion::run() {
         while (!flightControllerIn.isClosed()) {
-            gpsIn.get(lastGpsMeasurement);
-            pdbIn.get(lastPdbPackage);
-            taranisIn.get(lastTaranisPackage);
-            baseIn.get(lastBasePackage);
-            remoteIn.get(lastRemotePackage);
-            ultrasonicIn.get(lastUltrasonicDistance);
+            while (gpsIn.get(lastGpsMeasurement));
+            while (pdbIn.get(lastPdbPackage));
+            while (taranisIn.get(lastTaranisPackage));
+            while (baseIn.get(lastBasePackage));
+            while (remoteIn.get(lastRemotePackage));
+            while (ultrasonicIn.get(lastUltrasonicDistance));
 
             if (flightControllerIn.get(lastFcPackage)) {
                 process();
