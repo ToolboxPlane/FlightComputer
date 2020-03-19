@@ -18,8 +18,7 @@ public:
     uint8_t bnoState;
     float roll, pitch, yaw;
     si::extended::Frequency<> rollDeriv, pitchDeriv, yawDeriv;
-    float aileronRight, vtailRight;
-    float aileronLeft, vtailLeft;
+    float elevonLeft, elevonRight;
     float motor;
 };
 
@@ -34,7 +33,7 @@ public:
 
 class TaranisPackage {
 public:
-    float throttle, yaw, pitch, roll;
+    float throttle, pitch, roll;
     bool isArmed, manualOverrideActive;
 };
 

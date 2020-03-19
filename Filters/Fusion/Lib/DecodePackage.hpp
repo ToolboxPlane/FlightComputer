@@ -36,11 +36,9 @@ namespace fusion {
         flightControllerPackage.yawDeriv = (static_cast<float>(pkg.getChannel(6)) - 500) * hertz;
 
         // @TODO fix scaling
-        flightControllerPackage.aileronRight = static_cast<float>(pkg.getChannel(11)) -  500;
-        flightControllerPackage.vtailRight = static_cast<float>(pkg.getChannel(12)) - 500;
         flightControllerPackage.motor = pkg.getChannel(13);
-        flightControllerPackage.vtailLeft = static_cast<float>(pkg.getChannel(14)) - 500;
-        flightControllerPackage.aileronLeft = static_cast<float>(pkg.getChannel(15)) - 500;
+        flightControllerPackage.elevonLeft = static_cast<float>(pkg.getChannel(14)) -  500;
+        flightControllerPackage.elevonRight = static_cast<float>(pkg.getChannel(15)) - 500;
 
         return flightControllerPackage;
     }
@@ -60,12 +58,11 @@ namespace fusion {
     template<>
     auto decodePackage<TaranisPackage>(const rcLib::Package &pkg) -> TaranisPackage {
         TaranisPackage taranisPackage{};
-        taranisPackage.throttle = normalizeTaranis(pkg.getChannel(5));
-        taranisPackage.yaw = normalizeTaranis(pkg.getChannel(6));
-        taranisPackage.pitch = normalizeTaranis(pkg.getChannel(7));
-        taranisPackage.roll = normalizeTaranis(pkg.getChannel(8));
-        taranisPackage.isArmed = normalizeTaranis(pkg.getChannel(9)) > 0.25f;
-        taranisPackage.manualOverrideActive = normalizeTaranis(pkg.getChannel(10)) < 0.25f;
+        taranisPackage.throttle = normalizeTaranis(pkg.getChannel(3));
+        taranisPackage.pitch = normalizeTaranis(pkg.getChannel(4));
+        taranisPackage.roll = normalizeTaranis(pkg.getChannel(5));
+        taranisPackage.isArmed = normalizeTaranis(pkg.getChannel(6)) > 0.25f;
+        taranisPackage.manualOverrideActive = normalizeTaranis(pkg.getChannel(7)) < 0.25f;
 
         return taranisPackage;
     }

@@ -33,7 +33,7 @@ int main() {
      */
     device::SerialPosix serial{"/dev/ttyUSB0", 115200};
     //device::RcLibSimulator serial{23, 1000};
-    device::SRF02 srf02{"/dev/ttyUSB1"};
+    //device::SRF02 srf02{"/dev/ttyUSB1"};
     //std::ifstream serialFile("logs/serial_18_06_27_19_43.csv");
     //assert(serialFile.is_open());
     //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
@@ -84,7 +84,7 @@ int main() {
      * Internal connection
      */
     gps.getChannelOut() >> fusion.getGpsIn();
-    srf02.getChannelOut() >> fusion.getUltrasonicIn();
+    //srf02.getChannelOut() >> fusion.getUltrasonicIn();
     fusion.getChannelOut() >> navigation.getChannelStateIn();
     //waypointReader.getChannelOut() >> navigation.getChannelWaypointIn();
     navigation.getChannelOut() >> feedbackControl.getChannelIn();
@@ -95,12 +95,12 @@ int main() {
     /*
      * Logging
      */
-    debug::Logger<rcLib::Package> serialReceiveDebug{"Serial-Recv", false};
+    debug::Logger<rcLib::Package> serialReceiveDebug{"Serial-Recv", true};
     debug::Logger<rcLib::Package> serialSendDebug{"Serial-Send", false};
     debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", false};
     debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", false};
     debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
-    debug::Logger<si::base::Meter<>> srf02Debug{"SRF02", true};
+    debug::Logger<si::base::Meter<>> srf02Debug{"SRF02", false};
     debug::Logger<State_t> fusionDebug{"Fusion", true};
     debug::Logger<Nav_t> navDebug{"Nav", false};
     debug::Logger<Control_t> controlDebug{"Control", false};
@@ -111,7 +111,7 @@ int main() {
     lora.getChannelOut() >> loraReceiveDebug.getChannelIn();
     meshManager.getLoraOut() >> loraSendDebug.getChannelIn();
     gps.getChannelOut() >> gpsDebug.getChannelIn();
-    srf02.getChannelOut() >> srf02Debug.getChannelIn();
+    //srf02.getChannelOut() >> srf02Debug.getChannelIn();
     fusion.getChannelOut() >> fusionDebug.getChannelIn();
     navigation.getChannelOut() >> navDebug.getChannelIn();
     feedbackControl.getChannelOut() >> controlDebug.getChannelIn();

@@ -40,8 +40,7 @@ typedef struct {
 } measurement_t;
 
 typedef struct {
-    real_t aileron_l, aileron_r;
-    real_t vtail_l, vtail_r;
+    real_t elevon_l, elevon_r;
     real_t motor;
 } input_t;
 

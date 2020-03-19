@@ -50,10 +50,8 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
     measurement.lon = static_cast<float>(gpsMeasurement.location.lon);
 
     input_t input{};
-    input.aileron_l = flightControllerPackage.aileronLeft;
-    input.aileron_r = flightControllerPackage.aileronRight;
-    input.vtail_l = flightControllerPackage.vtailLeft;
-    input.vtail_r = flightControllerPackage.vtailRight;
+    input.elevon_l = flightControllerPackage.elevonLeft;
+    input.elevon_r = flightControllerPackage.elevonRight;
     input.motor = flightControllerPackage.motor;
 
     const auto startTime = getCurrSeconds();
