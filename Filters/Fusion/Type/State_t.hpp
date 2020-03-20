@@ -22,6 +22,7 @@ public:
     uint8_t bnoState;
     float roll, pitch, yaw;
     si::extended::Frequency<> rollDeriv, pitchDeriv, yawDeriv;
+    si::extended::Acceleration<> accX, accY, accZ;
     float elevonLeft, elevonRight;
     float motor;
 };
@@ -59,6 +60,7 @@ public:
     si::base::Meter<> altitude{};
     si::base::Meter<> altitudeAboveGround{};
     float lat{}, lon{};
+    si::extended::Acceleration<> accX, accY, accZ;
 
     FlightControllerPackage rawFlightControllerData{};
     PdbPackage pdbPackage{};
@@ -72,6 +74,7 @@ public:
         ostream << "\tGnd:" << state.altitudeAboveGround;
         ostream << "\tSea:" << state.altitude;
         ostream << "\tSpeed:" << state.speed;
+        ostream << "\tAcc:(" << state.accX << "," << state.accY << "," << state.accZ << ")";
         ostream << "\tPos:(" << state.lat << "," << state.lon << ")";
         ostream << "\tV:" << state.pdbPackage.voltageVcc;
         ostream << "\tAr:" << (state.taranisPackage.isArmed?1:0);

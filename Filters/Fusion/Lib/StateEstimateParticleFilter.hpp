@@ -21,14 +21,12 @@ class StateEstimateParticleFilter {
 public:
     StateEstimateParticleFilter();
 
-    auto update(const FlightControllerPackage &flightControllerPackage, const GpsMeasurement_t &gpsMeasurement,
-            si::base::Meter<> distanceGround)
+    auto update(si::base::Second<> dt, const FlightControllerPackage &flightControllerPackage,
+            const GpsMeasurement_t &gpsMeasurement, si::base::Meter<> distanceGround)
         -> system_state_t;
 
-    static auto getCurrSeconds() -> si::base::Second<>;
 private:
     std::vector<weighted_particle_t> particles;
-    si::base::Second<> lastUpdate;
 };
 
 

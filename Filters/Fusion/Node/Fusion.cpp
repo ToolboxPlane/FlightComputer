@@ -9,7 +9,11 @@ namespace filter {
     using namespace si::extended;
     using namespace si::literals;
 
-    Fusion::Fusion() {
+    constexpr auto ACC_SIGMA_V = 1.0 * si::extended::acceleration / si::base::second;
+    constexpr auto ACC_SIGMA_W = 1.0 * si::extended::acceleration;
+
+    Fusion::Fusion() : lastUpdate{getCurrSeconds()}, accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
+        accYFilter{ACC_SIGMA_V, ACC_SIGMA_W}, accZFilter{ACC_SIGMA_V, ACC_SIGMA_W} {
         this->start();
     }
 
@@ -78,9 +82,17 @@ namespace filter {
         }
 
         if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired && lastUltrasonicDistance.has_value()) {
+            const auto startTime = getCurrSeconds();
+            const auto dt = startTime - lastUpdate;
+            lastUpdate = startTime;
+
             auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
-            auto state  = particleFilter.update(flightControllerData, lastGpsMeasurement.value(),
+            auto state  = particleFilter.update(dt, flightControllerData, lastGpsMeasurement.value(),
                     lastUltrasonicDistance.value());
+
+            accXFilter.addMeasurement(flightControllerData.accX, dt);
+            accYFilter.addMeasurement(flightControllerData.accY, dt);
+            accZFilter.addMeasurement(flightControllerData.accZ, dt);
 
             res.roll = state.roll_angle;
             res.pitch = state.pitch_angle;
@@ -90,8 +102,18 @@ namespace filter {
             res.altitudeAboveGround = state.altitude_above_ground * meter;
             res.lat = state.lat;
             res.lon = state.lon;
+            res.accX = accXFilter.getMeasurementEstimate();
+            res.accY = accYFilter.getMeasurementEstimate();
+            res.accZ = accZFilter.getMeasurementEstimate();
 
             out.put(res);
         }
+    }
+
+    auto Fusion::getCurrSeconds() -> si::base::Second<> {
+        auto tp = std::chrono::high_resolution_clock::now().time_since_epoch();
+        auto microseconds = static_cast<long double>(
+                std::chrono::duration_cast<std::chrono::microseconds>(tp).count());
+        return microseconds / 10e6 * si::base::second;
     }
 }

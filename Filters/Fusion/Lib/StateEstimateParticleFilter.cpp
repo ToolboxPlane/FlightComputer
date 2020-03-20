@@ -12,8 +12,7 @@
 
 static constexpr auto PARTICLES = 10000;
 
-StateEstimateParticleFilter::StateEstimateParticleFilter()
-    : lastUpdate{getCurrSeconds()} {
+StateEstimateParticleFilter::StateEstimateParticleFilter() {
     srand(time(nullptr)); // Required for the process noise
 
     particles.reserve(PARTICLES);
@@ -33,7 +32,7 @@ StateEstimateParticleFilter::StateEstimateParticleFilter()
 }
 
 auto
-StateEstimateParticleFilter::update(const FlightControllerPackage &flightControllerPackage,
+StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControllerPackage &flightControllerPackage,
         const GpsMeasurement_t &gpsMeasurement, si::base::Meter<> distanceGround)
     -> system_state_t {
 
@@ -53,10 +52,6 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
     input.elevon_l = flightControllerPackage.elevonLeft;
     input.elevon_r = flightControllerPackage.elevonRight;
     input.motor = flightControllerPackage.motor;
-
-    const auto startTime = getCurrSeconds();
-    const auto dt = startTime - lastUpdate;
-    lastUpdate = startTime;
 
     // Predict + Weight
     float weight_sum = 0;
@@ -99,9 +94,3 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
     return estimate;
 }
 
-auto StateEstimateParticleFilter::getCurrSeconds() -> si::base::Second<> {
-    auto tp = std::chrono::high_resolution_clock::now().time_since_epoch();
-    auto microseconds = static_cast<long double>(
-            std::chrono::duration_cast<std::chrono::microseconds>(tp).count());
-    return microseconds / 10e6 * si::base::second;
-}

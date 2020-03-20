@@ -12,6 +12,7 @@
 #include "../Type/State_t.hpp"
 #include "../../../OutputChannel.hpp"
 #include "../Lib/StateEstimateParticleFilter.hpp"
+#include "../Lib/AlphaBetaTracker.hpp"
 #include <optional>
 
 namespace filter {
@@ -38,6 +39,16 @@ namespace filter {
         OutputChannel<State_t> &getChannelOut();
 
     private:
+        InputChannel<rcLib::Package> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
+        InputChannel<si::base::Meter<>> ultrasonicIn;
+        InputChannel<GpsMeasurement_t> gpsIn;
+        OutputChannel<State_t> out;
+
+        static auto getCurrSeconds() -> si::base::Second<>;
+        void process();
+
+        si::base::Second<> lastUpdate;
+
         rcLib::Package lastFcPackage;
         std::optional<rcLib::Package> lastPdbPackage;
         std::optional<GpsMeasurement_t> lastGpsMeasurement;
@@ -46,14 +57,9 @@ namespace filter {
         std::optional<rcLib::Package> lastRemotePackage;
         std::optional<si::base::Meter<>> lastUltrasonicDistance;
 
-        void process();
-
-        InputChannel<rcLib::Package> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
-        InputChannel<si::base::Meter<>> ultrasonicIn;
-        InputChannel<GpsMeasurement_t> gpsIn;
-        OutputChannel<State_t> out;
-
         StateEstimateParticleFilter particleFilter;
+        AlphaBetaTracker<si::extended::Acceleration<>> accXFilter, accYFilter,
+            accZFilter;
     };
 }
 
