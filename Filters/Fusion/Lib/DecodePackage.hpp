@@ -15,8 +15,19 @@ using namespace si::base;
 using namespace si::extended;
 
 namespace fusion {
-    float normalizeTaranis(int input) {
+    auto normalizeTaranis(int input) -> float {
         return (static_cast<float>(input) - 172) / (1811 - 172);
+    }
+
+    auto getSwitchPos(int input) -> SwitchPos {
+        auto val = normalizeTaranis(input);
+        if (val < 1.0/3.0) {
+            return SwitchPos::UP;
+        } else if (val < 2.0/3.0) {
+            return SwitchPos::CENTRE;
+        } else {
+            return SwitchPos::DOWN;
+        }
     }
 
     template<typename T>
@@ -61,8 +72,9 @@ namespace fusion {
         taranisPackage.throttle = normalizeTaranis(pkg.getChannel(3));
         taranisPackage.pitch = normalizeTaranis(pkg.getChannel(4));
         taranisPackage.roll = normalizeTaranis(pkg.getChannel(5));
-        taranisPackage.isArmed = normalizeTaranis(pkg.getChannel(6)) > 0.25f;
-        taranisPackage.manualOverrideActive = normalizeTaranis(pkg.getChannel(7)) < 0.25f;
+        taranisPackage.isArmed = getSwitchPos(pkg.getChannel(6)) == SwitchPos::DOWN;
+        taranisPackage.manualOverrideActive = getSwitchPos(pkg.getChannel(7)) != SwitchPos::DOWN;
+        taranisPackage.rssi = normalizeTaranis(pkg.getChannel(15));
 
         return taranisPackage;
     }

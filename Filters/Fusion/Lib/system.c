@@ -46,17 +46,15 @@ system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, boo
                 dt
         };
 
-        do {
-            float noise = gaussian_box_muller(0, SIGMA_V);
-            ret.altitude += noise * gamma[0];
-            ret.altitude_above_ground += noise * gamma[0];
-            ret.lat += noise * gamma[1];
-            ret.lat += noise * gamma[2];
-            ret.speed += noise * gamma[3];
+        float noise = gaussian_box_muller(0, SIGMA_V);
+        ret.altitude += noise * gamma[0];
+        ret.altitude_above_ground += noise * gamma[0];
+        ret.lat += noise * gamma[1];
+        ret.lat += noise * gamma[2];
+        ret.speed += noise * gamma[3];
 
-            // Additional noise as ground is not static
-            ret.altitude_above_ground += gaussian_box_muller(0, dt * SIGMA_GND);
-        } while (ret.altitude_above_ground < 0);
+        // Additional noise as ground is not static
+        ret.altitude_above_ground += gaussian_box_muller(0, dt * SIGMA_GND);
     }
 
     return ret;

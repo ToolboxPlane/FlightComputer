@@ -9,8 +9,12 @@
 #include "../../../Devices/GPS/Type/GpsMeasurement_t.hpp"
 #include "../../../Utilities/Si/SiExtended.hpp"
 
-enum class FlightMode{
+enum class FlightMode {
     ANGLE = 0, LAUNCH = 1, LAND = 2, HOLD = 3, WAYPOINT = 4
+};
+
+enum class SwitchPos {
+    UP, CENTRE, DOWN
 };
 
 class FlightControllerPackage {
@@ -35,6 +39,7 @@ class TaranisPackage {
 public:
     float throttle, pitch, roll;
     bool isArmed, manualOverrideActive;
+    float rssi;
 };
 
 class LoraPackage {

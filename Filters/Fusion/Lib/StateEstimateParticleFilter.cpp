@@ -96,8 +96,6 @@ StateEstimateParticleFilter::update(const FlightControllerPackage &flightControl
 
     particles = std::move(newParticles);
 
-    std::cout << "N_Eff: " << 1/nEffInv << std::endl;
-
     return estimate;
 }
 
