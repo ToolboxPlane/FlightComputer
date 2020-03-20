@@ -45,9 +45,9 @@ namespace fusion {
         flightControllerPackage.rollDeriv = (static_cast<float>(pkg.getChannel(4)) - 500) * hertz;
         flightControllerPackage.pitchDeriv = (static_cast<float>(pkg.getChannel(5)) -500) * hertz;
         flightControllerPackage.yawDeriv = (static_cast<float>(pkg.getChannel(6)) - 500) * hertz;
-        flightControllerPackage.accX = (static_cast<float>(pkg.getChannel(7)) - 500) * acceleration;
-        flightControllerPackage.accY = (static_cast<float>(pkg.getChannel(8)) - 500) * acceleration;
-        flightControllerPackage.accZ = (static_cast<float>(pkg.getChannel(9)) - 500) * acceleration;
+        flightControllerPackage.accX = (static_cast<float>((pkg.getChannel(7)) - 500) / 100) * acceleration;
+        flightControllerPackage.accY = (static_cast<float>((pkg.getChannel(8)) - 500) / 100) * acceleration;
+        flightControllerPackage.accZ = (static_cast<float>((pkg.getChannel(9)) - 500) / 100) * acceleration;
 
         // @TODO fix scaling
         flightControllerPackage.motor = pkg.getChannel(13);

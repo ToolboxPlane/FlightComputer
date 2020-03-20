@@ -2,6 +2,7 @@
 // Created by paul on 14.03.18.
 //
 
+#include <numeric>
 #include "Fusion.hpp"
 #include "../Lib/DecodePackage.hpp"
 
@@ -9,8 +10,8 @@ namespace filter {
     using namespace si::extended;
     using namespace si::literals;
 
-    constexpr auto ACC_SIGMA_V = 1.0 * si::extended::acceleration / si::base::second;
-    constexpr auto ACC_SIGMA_W = 1.0 * si::extended::acceleration;
+    constexpr auto ACC_SIGMA_V = 400 * si::extended::acceleration / si::base::second;
+    constexpr auto ACC_SIGMA_W = 0.0135 * si::extended::acceleration; // Measurement noise
 
     Fusion::Fusion() : lastUpdate{getCurrSeconds()}, accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
         accYFilter{ACC_SIGMA_V, ACC_SIGMA_W}, accZFilter{ACC_SIGMA_V, ACC_SIGMA_W} {

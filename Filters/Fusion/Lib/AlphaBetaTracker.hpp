@@ -15,8 +15,9 @@
 template<typename T>
 class AlphaBetaTracker {
     public:
+        using f_type = typename T::type;
         using x_type = T;
-        using v_type = decltype(T{}/si::base::second);
+        using v_type = decltype(T{}/si::base::Second<f_type>{});
         using z_type = x_type;
         using sigma_v_type = v_type;
         using sigma_w_type = z_type;
@@ -28,11 +29,15 @@ class AlphaBetaTracker {
         auto getStateEstimate() const -> std::pair<x_type, v_type>;
         auto getMeasurementEstimate() const -> z_type;
 
+        auto getNIS() const -> f_type;
+        constexpr auto getNIS95Bound() const -> f_type;
+
     private:
         sigma_v_type sigma_v;
         sigma_w_type sigma_w;
         x_type x_hat;
         v_type v_hat;
+        f_type nis;
 };
 
 template<typename T>
@@ -42,7 +47,7 @@ AlphaBetaTracker<T>::AlphaBetaTracker(sigma_v_type sigma_v, sigma_w_type sigma_w
 template<typename T>
 void AlphaBetaTracker<T>::addMeasurement(z_type z, si::base::Second<> dt) {
     // Calculate Kalman Gain
-    const auto lambda = static_cast<typename T::type>(sigma_v * dt * dt / sigma_w);
+    const auto lambda = static_cast<f_type >(sigma_v * dt * dt / sigma_w);
     const auto lambda2 = lambda * lambda;
     const auto alpha = -0.125 * (lambda2 + 8 * lambda - (lambda + 4) * (std::sqrt(lambda2 + 8 * lambda)));
     const auto beta = 0.25 * (lambda2 + 4 * lambda - lambda * std::sqrt(lambda2 + 8 * lambda));
@@ -57,6 +62,21 @@ void AlphaBetaTracker<T>::addMeasurement(z_type z, si::base::Second<> dt) {
     const auto gamma = z - z_hat;
     x_hat = x_hat + k1 * gamma;
     v_hat = v_hat + k2 * gamma;
+
+    // NIS Calculation
+    /*
+     *      \alpha = m_{11} / (m_{11} + \sigma_w^2)
+     * <=>  m_{11} = \alpha m_{11} + \sigma_w^2 * \alpha
+     * <=>  m_{11} * (1 - \alpha) = \sigma_w^2 * \alpha
+     * <=>  m_{11} = \sigma_w^2 / (1 - \alpha)
+     *      S = s_{11} = m_{11} + \sigma_w^2
+     *        = \sigma_w^2 * (1/(1-\alpha) + 1)
+     *        = \sigma_w^2 * (2-\alpha)/(1-\alpha)
+     *      NIS = \sqrt{\T{\hat{z}} * S^{-1} * \hat{z}}
+     *          = \abs{hat{z}} / \sqrt{s_{11}}
+     */
+    const auto s = sigma_w * sigma_w * (2-alpha)/(1-alpha);
+    nis = std::abs(static_cast<f_type>(z_hat)) / std::sqrt(static_cast<f_type>(s));
 }
 
 template<typename T>
@@ -67,6 +87,16 @@ auto AlphaBetaTracker<T>::getStateEstimate() const -> std::pair<x_type, v_type> 
 template<typename T>
 auto AlphaBetaTracker<T>::getMeasurementEstimate() const -> z_type {
     return x_hat;
+}
+
+template<typename T>
+auto AlphaBetaTracker<T>::getNIS() const -> f_type {
+    return nis;
+}
+
+template<typename T>
+constexpr auto AlphaBetaTracker<T>::getNIS95Bound() const -> f_type {
+    return 3.84; // Chi^2 0.95 bound
 }
 
 
