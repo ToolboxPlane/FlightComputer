@@ -39,6 +39,11 @@ namespace device {
                         gps.speed = gps_data.fix.speed * si::extended::speed;
                         gps.climb = gps_data.fix.climb * si::extended::speed;
                         gps.location.altitude = gps_data.fix.altitude * si::base::meter;
+                        gps.epLat = gps_data.fix.epy;
+                        gps.epLon = gps_data.fix.epx;
+                        gps.epVert = gps_data.fix.epv;
+                        gps.epSpeed = gps_data.fix.eps;
+                        gps.epClimb = gps_data.fix.epc;
 
                         out.put(gps);
                     } else {

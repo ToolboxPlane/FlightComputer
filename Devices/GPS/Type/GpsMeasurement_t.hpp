@@ -28,9 +28,14 @@ public:
     GpsMeasurement_t(double lat, double lon) :
             fixAquired{false}, location{lat, lon,0}, speed{0}, timestamp{0}, climb{0} {};
 
-    GpsMeasurement_t() : fixAquired{false}, location{0,0}, speed{0}, timestamp{0}, climb{0} {};
+    GpsMeasurement_t() : fixAquired{false}, location{0, 0}, speed{0}, timestamp{0}, climb{0},
+                         epLat{std::numeric_limits<double>::infinity()},
+                         epLon{std::numeric_limits<double>::infinity()},
+                         epVert{std::numeric_limits<double>::infinity()},
+                         epSpeed{std::numeric_limits<double>::infinity()},
+                         epClimb{std::numeric_limits<double>::infinity()} {};
 
-    friend std::ostream &operator<<(std::ostream &ostream, GpsMeasurement_t gps) {
+        friend std::ostream &operator<<(std::ostream &ostream, GpsMeasurement_t gps) {
         if(!gps.fixAquired) {
             ostream << "No fix";
         } else {
@@ -67,6 +72,7 @@ public:
     si::extended::Speed<> speed;
     si::base::Second<> timestamp;
     si::extended::Speed<> climb;
+    double epLat, epLon, epVert, epSpeed, epClimb;
 };
 
 #endif //FLIGHTCOMPUTER_GPS_MEASUREMENT_T_HPP

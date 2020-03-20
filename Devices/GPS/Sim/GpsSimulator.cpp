@@ -22,8 +22,13 @@ namespace device {
             gps.timestamp = 24_second;
             gps.location.altitude = 500_meter;
             gps.fixAquired = true;
-            gps.speed = 40_speed;
+            gps.speed = 0_speed;
             gps.climb = 0_speed;
+            gps.epLat = 10;
+            gps.epLon = 10;
+            gps.epVert = 10;
+            gps.epSpeed = 10;
+            gps.epVert = 10;
             out.put(gps);
             std::this_thread::sleep_for(std::chrono::milliseconds(intervalMs));
         }

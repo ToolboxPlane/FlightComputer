@@ -33,6 +33,7 @@ typedef struct {
     real_t yaw_angle; // Orientation and speed of the plane around the yaw (down) axis (degree)
     real_t air_speed; // The airspeed as measured by the pivot tube
     real_t ground_speed; // The ground speed of the plane
+    real_t vertical_speed; // The vertical speed (climb) of the plane
     real_t altitude_baro; // The absolute altitude, as measured by the barometer
     real_t altitude_gps; // The absolute altitude, as measured by the gps
     real_t distance_ground; // The distance to the ground, as measured by the distance sensor
@@ -40,11 +41,16 @@ typedef struct {
 } measurement_t;
 
 typedef struct {
+    real_t expected_error_lat, expected_error_lon, expected_error_vert, expected_error_speed, expected_error_climb;
+} measurement_info_t;
+
+typedef struct {
     real_t elevon_l, elevon_r;
     real_t motor;
 } input_t;
 
-void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, real_t dt);
+void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, real_t dt,
+        const measurement_info_t *measurement_info);
 
 void resample(const weighted_particle_t* old_particles, size_t num_old_particles,
               weighted_particle_t* new_particles, size_t num_new_particles);

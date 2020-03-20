@@ -11,6 +11,8 @@
 #include <math.h>
 #include <stdlib.h>
 
+#define EARTH_DIAMETER 40000000
+
 system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, bool apply_noise) {
     real_t vert_dist = sin(x->pitch_angle / 180 * M_PI) * x->speed * dt; // Vertical distance between in dt
     real_t horiz_dist = cos(x->pitch_angle / 180 * M_PI) * x->speed * dt; // Horizontal distance between in dt
@@ -24,8 +26,8 @@ system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, boo
     ret.speed = x->speed;
     ret.altitude = x->altitude + vert_dist;
     ret.altitude_above_ground = x->altitude_above_ground + vert_dist;
-    ret.lat = x->lat + lat_dist * 360 / 40000.0;
-    ret.lon = x->lon + lon_dist * 360 / 40000.0 * cos(x->lat / 180 * M_PI);
+    ret.lat = x->lat + lat_dist * 360 / EARTH_DIAMETER;
+    ret.lon = x->lon + lon_dist * 360 / EARTH_DIAMETER / cos(x->lat / 180 * M_PI);
 
     // @ TODO input
 
@@ -67,7 +69,9 @@ measurement_t measure(const system_state_t *x) {
     ret.yaw_angle = x->yaw_angle;
     ret.air_speed = x->speed;
     ret.ground_speed = x->speed * cos(x->pitch_angle / 180 * M_PI);
+    ret.vertical_speed = x->speed * sin(x->pitch_angle / 180 * M_PI);
     ret.altitude_baro = x->altitude;
+    ret.altitude_gps = x->altitude;
     ret.distance_ground = x->altitude_above_ground /
             (cos(x->roll_angle / 180 * M_PI) * cos(x->pitch_angle / 180 * M_PI));
     ret.lat = x->lat;
@@ -76,7 +80,8 @@ measurement_t measure(const system_state_t *x) {
     return ret;
 }
 
-real_t likelihood(const measurement_t *measurement, const measurement_t *estimate) {
+real_t likelihood(const measurement_t *measurement, const measurement_t *estimate,
+        const measurement_info_t *measurement_info) {
     real_t p_distance_measure;
     if (measurement->distance_ground > 0) {
         p_distance_measure = gaussian(measurement->distance_ground, VAR_SRF02, estimate->distance_ground);
@@ -85,17 +90,35 @@ real_t likelihood(const measurement_t *measurement, const measurement_t *estimat
     }
 
     // GPS: normal distribution with accuracy = 2 * sigma
+    real_t sigma2_lat = (measurement_info->expected_error_lat / 2) *  (measurement_info->expected_error_lat / 2);
+    real_t sigma2_lon = (measurement_info->expected_error_lon / 2) *  (measurement_info->expected_error_lon / 2);
+    real_t sigma2_vert = (measurement_info->expected_error_vert / 2) *  (measurement_info->expected_error_vert / 2);
+    real_t sigma2_speed = (measurement_info->expected_error_speed / 2) *  (measurement_info->expected_error_speed / 2);
+    real_t sigma2_climb = (measurement_info->expected_error_climb / 2) * (measurement_info->expected_error_climb / 2);
 
-    return p_distance_measure;
+    real_t lat_dist = (measurement->lat - estimate->lat) / 360 * EARTH_DIAMETER;
+    real_t lon_dist = (measurement->lon - estimate->lon) / 360 * EARTH_DIAMETER *
+            cos((measurement->lat + estimate->lat) / 2 / 180 * M_PI);
+    real_t p_lat = gaussian(0, sigma2_lat, lat_dist);
+    real_t p_lon = gaussian(0, sigma2_lon, lon_dist);
+    real_t p_vert = gaussian(measurement->altitude_gps, sigma2_vert, estimate->altitude_gps);
+    real_t p_speed = gaussian(measurement->ground_speed, sigma2_speed, estimate->ground_speed);
+    real_t p_climb = gaussian(measurement->vertical_speed, sigma2_climb, estimate->vertical_speed);
+
+    // @TODO Airspeed
+    // @TODO Barometer
+
+    return p_distance_measure * p_lat * p_lon * p_vert * p_speed * p_climb;
 }
 
-void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, real_t dt) {
+void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, real_t dt,
+        const measurement_info_t *measurement_info) {
     particle->x.pitch_angle = z->pitch_angle;
     particle->x.roll_angle = z->roll_angle;
     particle->x.yaw_angle = z->yaw_angle;
     particle->x = predict(&particle->x, u, dt, true);
     measurement_t z_hat = measure(&particle->x);
-    particle->weight *= likelihood(z, &z_hat);
+    particle->weight *= likelihood(z, &z_hat, measurement_info);
 }
 
 void resample(const weighted_particle_t *old_particles, size_t num_old_particles, weighted_particle_t *new_particles,

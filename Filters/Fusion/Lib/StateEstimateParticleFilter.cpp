@@ -28,11 +28,19 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
     measurement.yaw_angle = flightControllerPackage.yaw;
     measurement.air_speed = 0; // @TODO
     measurement.ground_speed = static_cast<float>(gpsMeasurement.speed);
+    measurement.vertical_speed = static_cast<float>(gpsMeasurement.climb);
     measurement.altitude_baro = 0; // @TODO navboard
     measurement.distance_ground = static_cast<float>(distanceGround);
     measurement.altitude_gps = static_cast<float>(gpsMeasurement.location.altitude);
     measurement.lat = static_cast<float>(gpsMeasurement.location.lat);
     measurement.lon = static_cast<float>(gpsMeasurement.location.lon);
+
+    measurement_info_t measurementInfo{};
+    measurementInfo.expected_error_lat = gpsMeasurement.epLat;
+    measurementInfo.expected_error_lon = gpsMeasurement.epLon;
+    measurementInfo.expected_error_vert = gpsMeasurement.epVert;
+    measurementInfo.expected_error_speed = gpsMeasurement.epSpeed;
+    measurementInfo.expected_error_climb = gpsMeasurement.epClimb;
 
     input_t input{};
     input.elevon_l = flightControllerPackage.elevonLeft;
@@ -42,7 +50,7 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
     // Predict + Weight
     float weight_sum = 0;
     for (auto &particle : particles) {
-        update_particle(&particle, &input, &measurement, static_cast<float>(dt));
+        update_particle(&particle, &input, &measurement, static_cast<float>(dt), &measurementInfo);
         weight_sum += particle.weight;
     }
 
