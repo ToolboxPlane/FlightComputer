@@ -18,15 +18,17 @@ extern "C" {
 #include "../Type/State_t.hpp"
 
 class StateEstimateParticleFilter {
-public:
-    StateEstimateParticleFilter();
+    public:
+        StateEstimateParticleFilter();
 
-    auto update(si::base::Second<> dt, const FlightControllerPackage &flightControllerPackage,
-            const GpsMeasurement_t &gpsMeasurement, si::base::Meter<> distanceGround)
+        auto update(si::base::Second<> dt, const FlightControllerPackage &flightControllerPackage,
+                    const GpsMeasurement_t &gpsMeasurement, si::base::Meter<> distanceGround)
         -> system_state_t;
 
-private:
-    std::vector<weighted_particle_t> particles;
+    private:
+        void init(std::size_t numberOfParticles, const GpsMeasurement_t &gpsMeasurement,
+                si::base::Meter<> distanceGround);
+        std::vector<weighted_particle_t> particles;
 };
 
 

@@ -10,31 +10,17 @@
 #include <random>
 #include "StateEstimateParticleFilter.hpp"
 
-static constexpr auto PARTICLES = 10000;
-
 StateEstimateParticleFilter::StateEstimateParticleFilter() {
     srand(time(nullptr)); // Required for the process noise
-
-    particles.reserve(PARTICLES);
-
-    for (std::size_t c = 0; c < PARTICLES; ++c) {
-        system_state_t state{};
-        state.altitude_above_ground = 0.0;
-        state.altitude = 0;
-        state.lon = 0;
-        state.lat = 0;
-
-        weighted_particle_t weightedParticle{};
-        weightedParticle.x = state;
-        weightedParticle.weight = 1.0f / PARTICLES;
-        particles.emplace_back(weightedParticle);
-    }
 }
 
 auto
 StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControllerPackage &flightControllerPackage,
         const GpsMeasurement_t &gpsMeasurement, si::base::Meter<> distanceGround)
     -> system_state_t {
+    if (particles.empty()) {
+        init(32768, gpsMeasurement, distanceGround);
+    }
 
     measurement_t measurement{};
     measurement.roll_angle = flightControllerPackage.roll;
@@ -75,7 +61,7 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
         estimate.pitch_angle += state.pitch_angle * weight;
         estimate.yaw_angle += state.yaw_angle * weight;
         estimate.speed += state.speed * weight;
-        estimate.altitude += state.altitude;
+        estimate.altitude += state.altitude * weight;
         estimate.altitude_above_ground += state.altitude_above_ground * weight;
         estimate.lat += state.lat * weight;
         estimate.lon += state.lon * weight;
@@ -85,12 +71,35 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
 
     // Resample
     std::vector<weighted_particle_t> newParticles;
-    newParticles.resize(PARTICLES);
+    newParticles.resize(particles.size());
 
     resample(particles.data(), particles.size(), newParticles.data(), newParticles.size());
 
     particles = std::move(newParticles);
 
     return estimate;
+}
+
+void
+StateEstimateParticleFilter::init(std::size_t numberOfParticles, const GpsMeasurement_t &gpsMeasurement,
+        si::base::Meter<> distanceGround) {
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::normal_distribution<real_t> altDist(0, 50);
+    std::normal_distribution<real_t> altGroundDist(0, 0.5);
+    std::normal_distribution<real_t> latLonDist(0, 0.0001);
+
+    for (std::size_t c = 0; c < numberOfParticles; ++c) {
+        system_state_t state{};
+        state.altitude_above_ground = static_cast<real_t>(distanceGround) + altGroundDist(rng);
+        state.altitude = 450 + altDist(rng);
+        state.lon = gpsMeasurement.location.lat + latLonDist(rng);
+        state.lat = gpsMeasurement.location.lon + latLonDist(rng);
+
+        weighted_particle_t weightedParticle{};
+        weightedParticle.x = state;
+        weightedParticle.weight = 1.0f / numberOfParticles;
+        particles.emplace_back(weightedParticle);
+    }
 }
 
