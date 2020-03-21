@@ -8,6 +8,7 @@
 
 #include <cmath>
 #include "../../../Utilities/Si/SiLiterals.hpp"
+#include "../../../constants.hpp"
 
 class Gps_t {
 public:
@@ -45,7 +46,7 @@ public:
                                                static_cast<decltype(xDiff)::type>(xDiff)) * 180.0 / M_PI + 90);
     }
 
-    static constexpr si::base::Meter<> EARTH_RADIUS{6371300};
+    static constexpr si::base::Meter<> EARTH_RADIUS{EARTH_DIAMETER / (2 * M_PI)};
 };
 
 

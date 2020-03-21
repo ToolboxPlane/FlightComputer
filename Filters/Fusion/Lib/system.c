@@ -11,7 +11,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#define EARTH_DIAMETER 40000000
+#include "../../../constants.hpp"
 
 system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, bool apply_noise) {
     real_t vert_dist = sin(x->pitch_angle / 180 * M_PI) * x->speed * dt; // Vertical distance between in dt
@@ -106,6 +106,9 @@ real_t likelihood(const measurement_t *measurement, const measurement_t *estimat
     real_t p_climb = gaussian(measurement->vertical_speed, sigma2_climb, estimate->vertical_speed);
 
     // @TODO Airspeed
+
+    // Barometer: Resolution, typical 0.3m;
+    // Pressure noise: 19 PA RMS = sigma
     // @TODO Barometer
 
     return p_distance_measure * p_lat * p_lon * p_vert * p_speed * p_climb;
