@@ -8,21 +8,21 @@
 #include "../../Node.hpp"
 #include "../../InputChannel.hpp"
 #include <unistd.h>
-#include "../rcLib/PackageExtended.hpp"
+#include "../rcLib/RadioControlProtocolCpp/rcLib.hpp"
 #include "../../OutputChannel.hpp"
 
 namespace device {
-    class LoRa : public Filter {
+    class LoRa : public Node {
     public:
         LoRa();
 
-        MultipleOutputChannel <rcLib::PackageExtended> &getChannelOut();
+        OutputChannel<rcLib::Package> &getChannelOut();
 
-        Channel <rcLib::PackageExtended> &getChannelIn();
+        InputChannel<rcLib::Package> &getChannelIn();
 
     private:
-        Channel <rcLib::PackageExtended> in;
-        MultipleOutputChannel <rcLib::PackageExtended> out;
+        InputChannel<rcLib::Package> in;
+        OutputChannel<rcLib::Package> out;
 
         void run() override;
 

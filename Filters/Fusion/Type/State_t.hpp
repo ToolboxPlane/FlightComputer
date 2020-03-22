@@ -46,7 +46,7 @@ public:
 class LoraPackage {
 public:
     float joyLeftX, joyRightX, joyLeftY, joyRightY;
-    FlightMode flightMode;
+    FlightMode flightMode = FlightMode::WAYPOINT;
     bool isArmed;
 };
 

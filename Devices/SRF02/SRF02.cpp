@@ -20,7 +20,7 @@ namespace device {
         termios tty{};
         memset(&tty, 0, sizeof tty);
         if (tcgetattr(fd, &tty) != 0) {
-            throw std::runtime_error(strerror(errno));
+            throw std::runtime_error(std::string{"SRF02:\t"} + strerror(errno));
         }
 
         cfsetispeed(&tty, B19200);					// Set the baud rates to 19200
@@ -29,7 +29,7 @@ namespace device {
         tty.c_cc[VTIME] = 50;
 
         if (tcsetattr(fd, TCSANOW, &tty) != 0) {
-            throw std::runtime_error(strerror(errno));
+            throw std::runtime_error(std::string{"SRF02:\t"} + strerror(errno));
         }
 
         start();
@@ -72,7 +72,7 @@ namespace device {
         do {
             auto result = write(this->fd, buffer.data() + written, buffer.size() - written);
             if (result < 0) {
-                throw std::runtime_error(strerror(errno));
+                throw std::runtime_error(std::string{"SRF02:\t"} + strerror(errno));
             }
             written += static_cast<std::size_t>(result);
         } while (written < buffer.size());

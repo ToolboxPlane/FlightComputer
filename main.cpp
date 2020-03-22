@@ -27,7 +27,7 @@ int main() {
     using namespace si::literals;
 
     feenableexcept(FE_INVALID | FE_OVERFLOW); // Floating point exceptions
-    std::cout << std::setprecision(3);
+    std::cout << std::setprecision(4);
 
     /*
      * I/O-Modules
@@ -47,9 +47,9 @@ int main() {
     device::GpsSimulator gps{1000};
 #endif
 
-    //std::ifstream waypointFile("missions/waypoints.csv");
-    //assert(waypointFile.is_open());
-    //recording::ChannelReplay<Waypoint_t> waypointReader{waypointFile};
+    std::ifstream waypointFile("Missions/mission.csv");
+    assert(waypointFile.is_open());
+    recording::ChannelReplay<Waypoint_t> waypointReader{waypointFile};
 
     //device::Network network{"127.0.0.1"};
 
@@ -87,7 +87,7 @@ int main() {
     gps.getChannelOut() >> fusion.getGpsIn();
     srf02.getChannelOut() >> fusion.getUltrasonicIn();
     fusion.getChannelOut() >> navigation.getChannelStateIn();
-    //waypointReader.getChannelOut() >> navigation.getChannelWaypointIn();
+    waypointReader.getChannelOut() >> navigation.getChannelWaypointIn();
     navigation.getChannelOut() >> feedbackControl.getChannelIn();
     feedbackControl.getChannelOut() >> outputFilter.getChannelIn();
     outputFilter.getBaseOut() >> meshManager.getBaseIn();
@@ -96,8 +96,8 @@ int main() {
     /*
      * Logging
      */
-    debug::Logger<rcLib::Package> serialReceiveDebug{"Serial-Recv", false};
-    debug::Logger<rcLib::Package> serialSendDebug{"Serial-Send", false};
+    debug::Logger<rcLib::Package> serialReceiveDebug{"Serial-Recv", true};
+    debug::Logger<rcLib::Package> serialSendDebug{"Serial-Send", true};
     debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", false};
     debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", false};
     debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
@@ -121,13 +121,13 @@ int main() {
     /*
      * Recorder
      */
-    auto time = std::time(nullptr);
+    /*auto time = std::time(nullptr);
     auto localTime = std::localtime(&time);
 
     std::stringstream serialFileNameStream;
     serialFileNameStream << "logs/serial_" << std::put_time(localTime,"%y_%m_%d_%H_%M") << ".csv";
     std::ofstream fileSerialRecord(serialFileNameStream.str());
-    recording::ChannelRecorder<rcLib::PackageExtended> serialRecorder(fileSerialRecord);
+    recording::ChannelRecorder<rcLib::Package> serialRecorder(fileSerialRecord);
 
     std::stringstream gpsFileNameStream;
     gpsFileNameStream << "logs/gps_" << std::put_time(localTime, "%y_%m_%d_%H_%M") << ".csv";
@@ -135,7 +135,7 @@ int main() {
     recording::ChannelRecorder<GpsMeasurement_t> gpsRecorder(fileGpsRecord);
 
     serial.getChannelOut() >> serialRecorder.getChannelIn();
-    gps.getChannelOut() >> gpsRecorder.getChannelIn();
+    gps.getChannelOut() >> gpsRecorder.getChannelIn();*/
 #endif
 
     std::cout << "Started all modules!" << "\n";

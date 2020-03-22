@@ -16,7 +16,7 @@
 device::Network::Network(std::string address) : address{std::move(address)} {
     this->fd = socket(AF_INET, SOCK_RAW | SOCK_NONBLOCK, PROTOCOL_ID);
     if (this->fd < 0) {
-        throw std::runtime_error(strerror(errno));
+        throw std::runtime_error(std::string{"Network: "} + strerror(errno));
     }
 
     this->start();
@@ -29,7 +29,7 @@ void device::Network::run() {
     sockaddr_in sockaddrIn{};
     sockaddrIn.sin_family = AF_INET;
     if (inet_pton(AF_INET, this->address.c_str(), &sockaddrIn.sin_addr) != 1) {
-        throw std::runtime_error(strerror(errno));
+        throw std::runtime_error(std::string{"Network: "} + strerror(errno));
     }
 
     while (!in.isClosed()) {

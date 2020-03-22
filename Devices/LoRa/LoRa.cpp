@@ -333,7 +333,7 @@ namespace device {
     }
 
 
-    LoRa::LoRa() : Filter() {
+    LoRa::LoRa() : Node() {
         wiringPiSetup();
         pinMode(ssPin, OUTPUT);
         pinMode(dio0, INPUT);
@@ -355,22 +355,22 @@ namespace device {
         this->start();
     }
 
-    MultipleOutputChannel <rcLib::PackageExtended> &LoRa::getChannelOut() {
+    OutputChannel <rcLib::Package> &LoRa::getChannelOut() {
         return out;
     }
 
-    Channel <rcLib::PackageExtended> &LoRa::getChannelIn() {
+    InputChannel <rcLib::Package> &LoRa::getChannelIn() {
         return in;
     }
 
     void LoRa::run() {
-        rcLib::PackageExtended pkgIn, pkgOut;
-        long int SNR;
-        int rssicorr;
-        while (true) {
+        rcLib::Package pkgIn;//, pkgOut;
+        /*long int SNR;
+        int rssicorr;*/
+        while (!in.isClosed()) {
             if (digitalRead(dio0) == 1) {
                 if (receive(message)) {
-                    unsigned char value = readRegister(REG_PKT_SNR_VALUE);
+                    /*unsigned char value = readRegister(REG_PKT_SNR_VALUE);
                     if (value & 0x80) // The SNR sign bit is 1
                     {
                         // Invert and divide by 4
@@ -385,7 +385,7 @@ namespace device {
                         rssicorr = 139;
                     } else {
                         rssicorr = 157;
-                    }
+                    }*/
 
                     //printf("Packet RSSI: %d, ", readRegister(0x1A)-rssicorr);
                     //printf("RSSI: %d, ", readRegister(0x1B)-rssicorr);

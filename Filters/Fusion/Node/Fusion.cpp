@@ -59,11 +59,11 @@ namespace filter {
             while (remoteIn.get(lastRemotePackage));
             while (ultrasonicIn.get(lastUltrasonicDistance));
 
-            if (flightControllerIn.get(lastFcPackage)) {
-                process();
-            } else {
-                std::this_thread::yield();
-            }
+            do {
+                flightControllerIn.get(lastFcPackage);
+            } while (flightControllerIn.numAvailable() > 0);
+
+            process();
         }
     }
 
@@ -108,6 +108,17 @@ namespace filter {
             res.accZ = accZFilter.getMeasurementEstimate();
 
             out.put(res);
+        } else {
+            std::cerr << "Fusion not running, reason:";
+            if (!lastGpsMeasurement.has_value()) {
+                std::cerr << "No GPS Measurement" << std::endl;
+            } else if (!lastGpsMeasurement.value().fixAquired) {
+                std::cerr << "No GPS Fix" << std::endl;
+            } else if (!lastUltrasonicDistance.has_value()) {
+                std::cerr << "No Ultrasonic Measurement" << std::endl;
+            } else {
+                std::cerr << "Everything is fucked" << std::endl;
+            }
         }
     }
 

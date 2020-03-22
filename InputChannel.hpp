@@ -57,6 +57,14 @@ public:
             return false;
         }
     }
+
+    auto numAvailable() const -> std::size_t {
+        if (closed) {
+            return 0;
+        } else {
+            return queue.size();
+        }
+    }
 private:
     std::list<T> queue;
     std::mutex m;

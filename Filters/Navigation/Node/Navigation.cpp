@@ -29,28 +29,30 @@ namespace filter {
 
     void Navigation::run() {
         State_t currentState{};
-        static FlightMode lastFLightMode;
+        static FlightMode lastFlightMode;
 
         while (!stateIn.isClosed()) {
             if (stateIn.get(currentState)) {
                 switch (currentState.loraRemote.flightMode) {
                     case FlightMode::LAUNCH:
-                        launch(currentState, lastFLightMode != currentState.loraRemote.flightMode);
+                        launch(currentState, lastFlightMode != currentState.loraRemote.flightMode);
                         break;
                     case FlightMode::LAND:
-                        land(currentState, lastFLightMode != currentState.loraRemote.flightMode);
+                        land(currentState, lastFlightMode != currentState.loraRemote.flightMode);
                         break;
                     case FlightMode::ANGLE:
-                        angle(currentState, lastFLightMode != currentState.loraRemote.flightMode);
+                        angle(currentState, lastFlightMode != currentState.loraRemote.flightMode);
                         break;
                     case FlightMode::HOLD:
-                        hold(currentState, lastFLightMode != currentState.loraRemote.flightMode);
+                        hold(currentState, lastFlightMode != currentState.loraRemote.flightMode);
                         break;
                     case FlightMode::WAYPOINT:
-                        waypoints(currentState, lastFLightMode != currentState.loraRemote.flightMode);
+                        waypoints(currentState, lastFlightMode != currentState.loraRemote.flightMode);
                         break;
+                    default:
+                        std::cerr << "FlightMode not valid!" << std::endl;
                 }
-                lastFLightMode = currentState.loraRemote.flightMode;
+                lastFlightMode = currentState.loraRemote.flightMode;
             }
         }
     }
