@@ -35,6 +35,7 @@ int main() {
     device::SerialPosix serial{"/dev/ttyUSB0", 115200};
     //device::RcLibSimulator serial{23, 1000};
     device::SRF02 srf02{"/dev/ttyUSB1"};
+    device::SerialPosix pdb{"/dev/ttyUSB2", 115200};
     //std::ifstream serialFile("logs/serial_18_06_27_19_43.csv");
     //assert(serialFile.is_open());
     //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
@@ -66,6 +67,7 @@ int main() {
      * Mesh Manager connections
      */
     serial.getChannelOut() >> meshManager.getSerialIn();
+    pdb.getChannelOut() >> meshManager.getPdbIn();
     meshManager.getSerialOut() >> serial.getChannelIn();
 
     lora.getChannelOut() >> meshManager.getLoraIn();
@@ -96,8 +98,9 @@ int main() {
     /*
      * Logging
      */
-    debug::Logger<rcLib::Package> serialReceiveDebug{"Serial-Recv", true};
-    debug::Logger<rcLib::Package> serialSendDebug{"Serial-Send", true};
+    debug::Logger<rcLib::Package> fcReceiveDebug{"FC-Recv", false};
+    debug::Logger<rcLib::Package> fcSendDebug{"FC-Send", false};
+    debug::Logger<rcLib::Package> pdbReceiveDebug{"PDB-Recv", false};
     debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", false};
     debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", false};
     debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
@@ -106,9 +109,9 @@ int main() {
     debug::Logger<Nav_t> navDebug{"Nav", false};
     debug::Logger<Control_t> controlDebug{"Control", false};
 
-
-    serial.getChannelOut() >> serialReceiveDebug.getChannelIn();
-    meshManager.getSerialOut() >> serialSendDebug.getChannelIn();
+    serial.getChannelOut() >> fcReceiveDebug.getChannelIn();
+    pdb.getChannelOut() >> pdbReceiveDebug.getChannelIn();
+    meshManager.getSerialOut() >> fcSendDebug.getChannelIn();
     lora.getChannelOut() >> loraReceiveDebug.getChannelIn();
     meshManager.getLoraOut() >> loraSendDebug.getChannelIn();
     gps.getChannelOut() >> gpsDebug.getChannelIn();

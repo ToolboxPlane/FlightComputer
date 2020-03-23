@@ -3,6 +3,7 @@
 //
 
 #include "Gps.hpp"
+#include "../../../../../../../../usr/include/gps.h"
 #include <unistd.h>
 #include <gps.h>
 
@@ -14,7 +15,7 @@ namespace device {
     void Gps::run() {
         gps_data_t gps_data{};
 
-        if (gps_open("localhost", "2947", &gps_data) == -1) {
+        if (gps_open("localhost", "3000", &gps_data) == -1) {
             throw std::runtime_error(std::string{"GPS: "} + gps_errstr(errno));
         }
         gps_stream(&gps_data, WATCH_ENABLE | WATCH_JSON, nullptr);
@@ -26,7 +27,7 @@ namespace device {
                     throw std::runtime_error{
                         std::string{"error occured reading gps data, reason: "} + gps_errstr(errno)};
                 } else {
-                    if ((gps_data.status == STATUS_FIX) &&
+                    if ((gps_data.status == STATUS_FIX || gps_data.status == STATUS_DGPS_FIX) &&
                         (gps_data.fix.mode == MODE_2D || gps_data.fix.mode == MODE_3D) &&
                         !std::isnan(gps_data.fix.latitude) &&
                         !std::isnan(gps_data.fix.longitude)) {

@@ -43,7 +43,8 @@ public:
                     "\tLat: " << gps.location.lat <<
                     "\tLon: " << gps.location.lon <<
                     "\tAlt: " << gps.location.altitude <<
-                    "\tClimb: " << gps.climb;
+                    "\tClimb: " << gps.climb <<
+                    "\tSpeed: " << gps.speed;
         }
         return ostream;
     }

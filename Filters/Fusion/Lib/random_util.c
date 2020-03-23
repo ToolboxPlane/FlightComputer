@@ -5,12 +5,6 @@
 #include <assert.h>
 #include <values.h>
 
-int fast_rand(void) {
-    static int c = 1;
-    c = (c * __FAST_RAND_PERIOD) % FAST_RAND_MAX;
-    return c;
-}
-
 real_t gaussian_box_muller(real_t mu, real_t sigma) {
     static real_t v, fac;
     static int phase = 0;
@@ -20,8 +14,8 @@ real_t gaussian_box_muller(real_t mu, real_t sigma) {
         Z = v * fac;
     } else {
         do {
-            U1 = (real_t)RAND_IMPL() / RAND_IMPL_MAX;
-            U2 = (real_t)RAND_IMPL() / RAND_IMPL_MAX;
+            U1 = (real_t)rand() / RAND_MAX;
+            U2 = (real_t)rand() / RAND_MAX;
 
             u = 2.f * U1 - 1.f;
             v = 2.f * U2 - 1.f;

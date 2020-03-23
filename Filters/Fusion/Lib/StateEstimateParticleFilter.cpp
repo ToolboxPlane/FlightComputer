@@ -10,6 +10,7 @@
 #include <random>
 #include "StateEstimateParticleFilter.hpp"
 
+
 StateEstimateParticleFilter::StateEstimateParticleFilter() {
     srand(time(nullptr)); // Required for the process noise
 }
@@ -19,7 +20,7 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
         const GpsMeasurement_t &gpsMeasurement, si::base::Meter<> distanceGround)
     -> system_state_t {
     if (particles.empty()) {
-        init(1000, gpsMeasurement, distanceGround);
+        init(20000, gpsMeasurement, distanceGround);
     }
 
     measurement_t measurement{};
@@ -52,6 +53,13 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
     for (auto &particle : particles) {
         update_particle(&particle, &input, &measurement, static_cast<float>(dt), &measurementInfo);
         weight_sum += particle.weight;
+    }
+
+    if (weight_sum < std::numeric_limits<float>::epsilon()) {
+        std::cerr << "weight_sum = 0" << std::endl;
+    }
+    if(std::isnan(weight_sum)) {
+        std::cerr << "weight_sum = NaN" << std::endl;
     }
 
     system_state_t estimate{};
@@ -93,16 +101,17 @@ StateEstimateParticleFilter::init(std::size_t numberOfParticles, const GpsMeasur
         si::base::Meter<> distanceGround) {
     std::random_device dev;
     std::mt19937 rng(dev());
-    std::normal_distribution<real_t> altDist(0, 50);
-    std::normal_distribution<real_t> altGroundDist(0, 0.5);
-    std::normal_distribution<real_t> latLonDist(0, 0.0001);
+    std::normal_distribution<real_t> altDist(0, 10);
+    std::normal_distribution<real_t> altGroundDist(0, 0.1);
+    std::normal_distribution<real_t> latLonDist(0, 0.00001);
 
     for (std::size_t c = 0; c < numberOfParticles; ++c) {
         system_state_t state{};
         state.altitude_above_ground = static_cast<real_t>(distanceGround) + altGroundDist(rng);
-        state.altitude = 450 + altDist(rng);
+        state.altitude = static_cast<real_t>(gpsMeasurement.location.altitude) + altDist(rng);
         state.lon = gpsMeasurement.location.lat + latLonDist(rng);
         state.lat = gpsMeasurement.location.lon + latLonDist(rng);
+        state.speed = 0;
 
         weighted_particle_t weightedParticle{};
         weightedParticle.x = state;

@@ -27,6 +27,8 @@ namespace filter {
 
         InputChannel<rcLib::Package> &getBaseIn();
 
+        InputChannel<rcLib::Package> &getPdbIn();
+
         InputChannel<rcLib::Package> &getRemoteIn();
 
         OutputChannel<rcLib::Package> &getFlightControllerOut();
@@ -40,7 +42,7 @@ namespace filter {
         OutputChannel<rcLib::Package> &getTaranisOut();
 
     private:
-        InputChannel<rcLib::Package> loraIn, serialIn;
+        InputChannel<rcLib::Package> loraIn, serialIn, pdbIn;
         InputChannel<rcLib::Package> flightControllerIn, remoteIn, baseIn;
         OutputChannel<rcLib::Package> loraOut, serialOut;
         OutputChannel<rcLib::Package> flightControllerOut, remoteOut, baseOut, pdbOut, taranisOut;

@@ -107,6 +107,8 @@ namespace filter {
             res.accY = accYFilter.getMeasurementEstimate();
             res.accZ = accZFilter.getMeasurementEstimate();
 
+            //std::cout << getCurrSeconds() - startTime << std::endl;
+
             out.put(res);
         } else {
             std::cerr << "Fusion not running, reason:";

@@ -70,14 +70,18 @@ namespace filter {
             if (loraIn.get(pkg, false)) {
                 if (pkg.needsForwarding()) {
                     pkg.countNode();
-                    serialOut.put(pkg);
                 }
                 propagateInternal(pkg);
             }
             if (serialIn.get(pkg, false)) {
                 if (pkg.needsForwarding()) {
                     pkg.countNode();
-                    loraOut.put(pkg);
+                }
+                propagateInternal(pkg);
+            }
+            if (pdbIn.get(pkg, false))  {
+                if (pkg.needsForwarding()) {
+                    pkg.countNode();
                 }
                 propagateInternal(pkg);
             }
@@ -123,5 +127,9 @@ namespace filter {
                 std::cerr << "[MeshManager]: Some external device creates loops in the network\n";
                 break;
         }
+    }
+
+    InputChannel<rcLib::Package> &MeshManager::getPdbIn() {
+        return pdbIn;
     }
 }

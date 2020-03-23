@@ -10,14 +10,6 @@
 
 #include "config.h"
 
-#define FAST_RAND_MAX 15485867
-#define __FAST_RAND_PERIOD 15485863
-
-int fast_rand(void);
-
-#define RAND_IMPL fast_rand
-#define RAND_IMPL_MAX FAST_RAND_MAX
-
 /**
  * Draw a number from a gaussian distribution
  * (stolen from:

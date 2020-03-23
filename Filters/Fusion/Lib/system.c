@@ -13,6 +13,8 @@
 
 #include "../../../constants.hpp"
 
+#define VALUE_OR(var, val) (isnan(var)?val:var)
+
 system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, bool apply_noise) {
     real_t vert_dist = sin(x->pitch_angle / 180 * M_PI) * x->speed * dt; // Vertical distance between in dt
     real_t horiz_dist = cos(x->pitch_angle / 180 * M_PI) * x->speed * dt; // Horizontal distance between in dt
@@ -51,8 +53,8 @@ system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, boo
         float noise = gaussian_box_muller(0, SIGMA_V);
         ret.altitude += noise * gamma[0];
         ret.altitude_above_ground += noise * gamma[0];
-        ret.lat += noise * gamma[1];
-        ret.lat += noise * gamma[2];
+        ret.lat += noise * gamma[1] * 360 / EARTH_DIAMETER;
+        ret.lon += noise * gamma[2] * 360 / EARTH_DIAMETER / cos(ret.lat / 180 * M_PI);
         ret.speed += noise * gamma[3];
 
         // Additional noise as ground is not static
@@ -90,20 +92,30 @@ real_t likelihood(const measurement_t *measurement, const measurement_t *estimat
     }
 
     // GPS: normal distribution with accuracy = 2 * sigma
-    real_t sigma2_lat = (measurement_info->expected_error_lat / 2) *  (measurement_info->expected_error_lat / 2);
-    real_t sigma2_lon = (measurement_info->expected_error_lon / 2) *  (measurement_info->expected_error_lon / 2);
-    real_t sigma2_vert = (measurement_info->expected_error_vert / 2) *  (measurement_info->expected_error_vert / 2);
-    real_t sigma2_speed = (measurement_info->expected_error_speed / 2) *  (measurement_info->expected_error_speed / 2);
-    real_t sigma2_climb = (measurement_info->expected_error_climb / 2) * (measurement_info->expected_error_climb / 2);
+    real_t sigma_lat = VALUE_OR(measurement_info->expected_error_lat, 10) / 2;
+    real_t sigma_lon = VALUE_OR(measurement_info->expected_error_lon, 10) / 2;
+    real_t sigma_vert = VALUE_OR(measurement_info->expected_error_vert, 10) / 2;
+    real_t sigma_speed = VALUE_OR(measurement_info->expected_error_speed, 10) / 2;
+    real_t sigma_climb = VALUE_OR(measurement_info->expected_error_climb, 10) / 2;
 
-    real_t lat_dist = (measurement->lat - estimate->lat) / 360 * EARTH_DIAMETER;
-    real_t lon_dist = (measurement->lon - estimate->lon) / 360 * EARTH_DIAMETER *
-            cos((measurement->lat + estimate->lat) / 2 / 180 * M_PI);
-    real_t p_lat = gaussian(0, sigma2_lat, lat_dist);
-    real_t p_lon = gaussian(0, sigma2_lon, lon_dist);
-    real_t p_vert = gaussian(measurement->altitude_gps, sigma2_vert, estimate->altitude_gps);
-    real_t p_speed = gaussian(measurement->ground_speed, sigma2_speed, estimate->ground_speed);
-    real_t p_climb = gaussian(measurement->vertical_speed, sigma2_climb, estimate->vertical_speed);
+
+    real_t p_lat = 1, p_lon = 1, p_vert = 1, p_speed = 1, p_climb = 1;
+    if (!isnan(measurement->lat) && !isnan(measurement->lon)) {
+        real_t lat_dist = (measurement->lat - estimate->lat) / 360 * EARTH_DIAMETER;
+        p_lat = gaussian(0, sigma_lat * sigma_lat, lat_dist) * 1000;
+        real_t lon_dist = (measurement->lon - estimate->lon) / 360 * EARTH_DIAMETER *
+                          cos((measurement->lat + estimate->lat) / 2 / 180 * M_PI);
+        p_lon = gaussian(0, sigma_lon * sigma_lon, lon_dist) * 1000;
+    }
+    if (!isnan(measurement->altitude_gps)) {
+        p_vert = gaussian(measurement->altitude_gps, sigma_vert * sigma_vert, estimate->altitude_gps) * 1000;
+    }
+    if (!isnan(measurement->ground_speed)) {
+        p_speed = gaussian(measurement->ground_speed, sigma_speed * sigma_speed, estimate->ground_speed) * 1000;
+    }
+    if (!isnan(measurement->vertical_speed)) {
+        p_climb = gaussian(measurement->vertical_speed, sigma_climb * sigma_climb, estimate->vertical_speed) * 1000;
+    }
 
     // @TODO Airspeed
 
@@ -135,7 +147,7 @@ void resample(const weighted_particle_t *old_particles, size_t num_old_particles
     }
 
     for (size_t c=0; c<num_new_particles; ++c) {
-        real_t r = (real_t)RAND_IMPL() / RAND_IMPL_MAX;
+        real_t r = (real_t)rand() / RAND_MAX;
 
         size_t lower_bound = 0;
         size_t upper_bound = num_old_particles - 1;
