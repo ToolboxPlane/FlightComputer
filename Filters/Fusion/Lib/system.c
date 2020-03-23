@@ -15,6 +15,8 @@
 
 #define VALUE_OR(var, val) (isnan(var)?val:var)
 
+#define IEEE754_FIX_FACTOR 10000
+
 system_state_t predict(const system_state_t *x, const input_t *u, real_t dt, bool apply_noise) {
     real_t vert_dist = sin(x->pitch_angle / 180 * M_PI) * x->speed * dt; // Vertical distance between in dt
     real_t horiz_dist = cos(x->pitch_angle / 180 * M_PI) * x->speed * dt; // Horizontal distance between in dt
@@ -102,28 +104,39 @@ real_t likelihood(const measurement_t *measurement, const measurement_t *estimat
     real_t p_lat = 1, p_lon = 1, p_vert = 1, p_speed = 1, p_climb = 1;
     if (!isnan(measurement->lat) && !isnan(measurement->lon)) {
         real_t lat_dist = (measurement->lat - estimate->lat) / 360 * EARTH_DIAMETER;
-        p_lat = gaussian(0, sigma_lat * sigma_lat, lat_dist) * 1000;
+        p_lat = gaussian(0, sigma_lat * sigma_lat, lat_dist);
         real_t lon_dist = (measurement->lon - estimate->lon) / 360 * EARTH_DIAMETER *
                           cos((measurement->lat + estimate->lat) / 2 / 180 * M_PI);
-        p_lon = gaussian(0, sigma_lon * sigma_lon, lon_dist) * 1000;
+        p_lon = gaussian(0, sigma_lon * sigma_lon, lon_dist);
     }
     if (!isnan(measurement->altitude_gps)) {
-        p_vert = gaussian(measurement->altitude_gps, sigma_vert * sigma_vert, estimate->altitude_gps) * 1000;
+        p_vert = gaussian(measurement->altitude_gps, sigma_vert * sigma_vert, estimate->altitude_gps);
     }
     if (!isnan(measurement->ground_speed)) {
-        p_speed = gaussian(measurement->ground_speed, sigma_speed * sigma_speed, estimate->ground_speed) * 1000;
+        p_speed = gaussian(measurement->ground_speed, sigma_speed * sigma_speed, estimate->ground_speed);
     }
     if (!isnan(measurement->vertical_speed)) {
-        p_climb = gaussian(measurement->vertical_speed, sigma_climb * sigma_climb, estimate->vertical_speed) * 1000;
+        p_climb = gaussian(measurement->vertical_speed, sigma_climb * sigma_climb, estimate->vertical_speed);
     }
 
     // @TODO Airspeed
+    real_t p_airspeed = 1;
 
     // Barometer: Resolution, typical 0.3m;
     // Pressure noise: 19 PA RMS = sigma
     // @TODO Barometer
+    real_t p_baro = 1;
 
-    return p_distance_measure * p_lat * p_lon * p_vert * p_speed * p_climb;
+    // These factors are not weights (in an non IEEE-754 world they would not change a thing),
+    // they simply reduce numerical problems due to low likelihoods when they are multiplied together.
+    return (p_distance_measure * IEEE754_FIX_FACTOR)
+        * (p_lat * IEEE754_FIX_FACTOR)
+        * (p_lon * IEEE754_FIX_FACTOR)
+        * (p_vert * IEEE754_FIX_FACTOR)
+        * (p_speed * IEEE754_FIX_FACTOR)
+        * (p_climb * IEEE754_FIX_FACTOR)
+        * (p_airspeed * IEEE754_FIX_FACTOR)
+        * (p_baro * IEEE754_FIX_FACTOR);
 }
 
 void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, real_t dt,
