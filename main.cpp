@@ -32,13 +32,9 @@ int main() {
     /*
      * I/O-Modules
      */
-    device::SerialPosix serial{"/dev/ttyUSB0", 115200};
-    //device::RcLibSimulator serial{23, 1000};
-    device::SRF02 srf02{"/dev/ttyUSB1"};
-    device::SerialPosix pdb{"/dev/ttyUSB2", 115200};
-    //std::ifstream serialFile("logs/serial_18_06_27_19_43.csv");
-    //assert(serialFile.is_open());
-    //ChannelReplay<rcLib::PackageExtended> serial(serialFile);
+    device::SerialPosix fc{"/dev/ttyFC", 115200};
+    device::SerialPosix pdb{"/dev/ttyPDB", 115200};
+    device::SRF02 srf02{"/dev/ttyUS"};
 
 #ifdef RASPBERRY_PI
     device::LoRa lora{};
@@ -66,9 +62,9 @@ int main() {
     /*
      * Mesh Manager connections
      */
-    serial.getChannelOut() >> meshManager.getSerialIn();
+    fc.getChannelOut() >> meshManager.getSerialIn();
     pdb.getChannelOut() >> meshManager.getPdbIn();
-    meshManager.getSerialOut() >> serial.getChannelIn();
+    meshManager.getSerialOut() >> fc.getChannelIn();
 
     lora.getChannelOut() >> meshManager.getLoraIn();
     meshManager.getLoraOut() >> lora.getChannelIn();
@@ -79,7 +75,7 @@ int main() {
     meshManager.getRemoteOut() >> fusion.getRemoteIn();
     meshManager.getBaseOut() >> fusion.getBaseIn();
 
-    /*serial.getChannelOut() >> network.getChannelIn();
+    /*fc.getChannelOut() >> network.getChannelIn();
     lora.getChannelOut() >> network.getChannelIn();
     outputFilter.getBaseOut() >> network.getChannelIn();*/
 
@@ -109,7 +105,7 @@ int main() {
     debug::Logger<Nav_t> navDebug{"Nav", false};
     debug::Logger<Control_t> controlDebug{"Control", false};
 
-    serial.getChannelOut() >> fcReceiveDebug.getChannelIn();
+    fc.getChannelOut() >> fcReceiveDebug.getChannelIn();
     pdb.getChannelOut() >> pdbReceiveDebug.getChannelIn();
     meshManager.getSerialOut() >> fcSendDebug.getChannelIn();
     lora.getChannelOut() >> loraReceiveDebug.getChannelIn();
@@ -137,12 +133,12 @@ int main() {
     std::ofstream fileGpsRecord(gpsFileNameStream.str());
     recording::ChannelRecorder<GpsMeasurement_t> gpsRecorder(fileGpsRecord);
 
-    serial.getChannelOut() >> serialRecorder.getChannelIn();
+    fc.getChannelOut() >> serialRecorder.getChannelIn();
     gps.getChannelOut() >> gpsRecorder.getChannelIn();*/
 #endif
 
     std::cout << "Started all modules!" << "\n";
-    while(!serial.getChannelIn().isClosed()) {
+    while(!fc.getChannelIn().isClosed()) {
         std::this_thread::sleep_for(24h);
     }
 }

@@ -12,8 +12,8 @@ typedef float real_t;
 
 #define VAR_SRF02 (0.001)
 #define SRF02_MAX_DIST 5
-#define SIGMA_GND 1
-#define SIGMA_V 3
+#define SIGMA_GND 2
+#define SIGMA_V 5
 
 
 
