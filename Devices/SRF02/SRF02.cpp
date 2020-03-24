@@ -48,7 +48,7 @@ namespace device {
             sendBuff({0x55, 0xE0, 0x00, 0x01, 0x51});
             uint8_t confirmation = 0;
             if (read(this->fd, &confirmation, 1) != 1 || confirmation == 0) {
-                std::cerr << "Invalid confirmation (" << static_cast<int>(confirmation) << ")" << std::endl;
+                std::cerr << "SRF02:\tInvalid confirmation (" << static_cast<int>(confirmation) << ")" << std::endl;
                 std::this_thread::sleep_for(1.0s);
                 continue;
             }
@@ -63,6 +63,8 @@ namespace device {
                 float distance = data[0] << 8u | data[1];
 
                 out.put(distance/100.0F * si::base::meter);
+            } else {
+                std::cerr << "SRF02:\tread: invalid response" << std::endl;
             }
         }
     }

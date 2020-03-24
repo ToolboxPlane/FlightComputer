@@ -24,7 +24,6 @@ namespace filter {
     void OutputFilter::run() {
         Control_t control{};
         rcLib::Package serialOutPkg(1024, 4), loraOutPkg(1024, 4);
-        rcLib::Package::setTransmitterId(38);
 
         loraOutPkg.setMeshProperties(static_cast<uint8_t>(true), 2);
 

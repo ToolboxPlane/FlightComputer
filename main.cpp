@@ -26,6 +26,8 @@ int main() {
 
     feenableexcept(FE_INVALID | FE_OVERFLOW); // Floating point exceptions
 
+    rcLib::Package::setTransmitterId(38);
+
     /*
      * I/O-Modules
      */
@@ -47,7 +49,7 @@ int main() {
     }
     recording::ChannelReplay<Waypoint_t> waypointReader{waypointFile};
 
-    device::Network network{"127.0.0.1"};
+    device::Network network{"192.168.0.120"};
 
     /*
      * Filters
@@ -74,10 +76,10 @@ int main() {
     meshManager.getRemoteOut() >> fusion.getRemoteIn();
     meshManager.getBaseOut() >> fusion.getBaseIn();
 
-    fc.getChannelOut() >> network.getChannelIn();
     pdb.getChannelOut() >> network.getChannelIn();
     lora.getChannelOut() >> network.getChannelIn();
     outputFilter.getBaseOut() >> network.getChannelIn();
+    fc.getChannelOut() >> network.getChannelIn();
 
     /*
      * Internal connection

@@ -91,17 +91,14 @@ namespace filter {
             }
             if (flightControllerIn.get(pkg, false)) {
                 pkg.setMeshProperties(static_cast<uint8_t>(false));
-                pkg.setDeviceId(static_cast<uint8_t>(DeviceId::FLIGHT_COMPUTER));
                 serialOut.put(pkg);
             }
             if (remoteIn.get(pkg, false)) {
                 pkg.setMeshProperties(static_cast<uint8_t>(false));
-                pkg.setDeviceId(static_cast<uint8_t>(DeviceId::FLIGHT_COMPUTER));
                 loraOut.put(pkg);
             }
             if (baseIn.get(pkg, false)) {
                 pkg.setMeshProperties(static_cast<uint8_t>(true), 2);
-                pkg.setDeviceId(static_cast<uint8_t>(DeviceId::FLIGHT_COMPUTER));
                 loraOut.put(pkg);
             }
             std::this_thread::yield();
