@@ -45,6 +45,7 @@ namespace device {
 
         auto getChannelOut() -> OutputChannel<rcLib::Package>&;
 
+        ~SerialPosix();
     private:
         void run() override;
         void sendBuff(const uint8_t *buffer, std::size_t len) const;

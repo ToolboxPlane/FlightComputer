@@ -12,7 +12,7 @@
 #include "../InputChannel.hpp"
 
 namespace debug {
-    static std::mutex lock; // Not in the class because of template fuckups
+    std::mutex _lock; // Not in the class because of template fuckups
 
     template<typename T>
     class Logger : public Node {
@@ -31,12 +31,12 @@ namespace debug {
             T item;
             while (enabled && !in.isClosed()) {
                 if (in.get(item)) {
-                    lock.lock();
                     auto time = std::chrono::duration_cast<std::chrono::milliseconds>(
                             std::chrono::system_clock::now().time_since_epoch()
                     ).count();
+                    _lock.lock();
                     stream << "[" << tag << " " << time << "]\t" << item << "\n";
-                    lock.unlock();
+                    _lock.unlock();
                 }
             }
         }

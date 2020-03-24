@@ -1,6 +1,3 @@
-#include <fstream>
-#include <iomanip>
-#include <cassert>
 #include <cfenv>
 #include "Devices/rcLib/RcLibSimulator.hpp"
 #include "Filters/Fusion/Node/Fusion.hpp"
@@ -13,13 +10,14 @@
 #include "Utilities/ChannelReplay.hpp"
 #include "Devices/GPS/Node/Gps.hpp"
 #include "Filters/FeedbackControl/Node/FeedbackControl.hpp"
-#include "Devices/Network/Network.hpp"
 #include "Devices/Serial/SerialPosix.hpp"
 #include "Devices/rcLib/PackageOstream.hpp"
 #include "Devices/SRF02/SRF02.hpp"
+#include "Devices/Network/Network.hpp"
 
 #ifdef RASPBERRY_PI
 #include "Devices/LoRa/LoRa.hpp"
+
 #endif
 
 int main() {
@@ -27,7 +25,6 @@ int main() {
     using namespace si::literals;
 
     feenableexcept(FE_INVALID | FE_OVERFLOW); // Floating point exceptions
-    std::cout << std::setprecision(4);
 
     /*
      * I/O-Modules
@@ -45,10 +42,12 @@ int main() {
 #endif
 
     std::ifstream waypointFile("Missions/mission.csv");
-    assert(waypointFile.is_open());
+    if (!waypointFile.is_open()) {
+        throw std::runtime_error{"Could not open waypoint file!"};
+    }
     recording::ChannelReplay<Waypoint_t> waypointReader{waypointFile};
 
-    //device::Network network{"127.0.0.1"};
+    device::Network network{"127.0.0.1"};
 
     /*
      * Filters
@@ -75,9 +74,10 @@ int main() {
     meshManager.getRemoteOut() >> fusion.getRemoteIn();
     meshManager.getBaseOut() >> fusion.getBaseIn();
 
-    /*fc.getChannelOut() >> network.getChannelIn();
+    fc.getChannelOut() >> network.getChannelIn();
+    pdb.getChannelOut() >> network.getChannelIn();
     lora.getChannelOut() >> network.getChannelIn();
-    outputFilter.getBaseOut() >> network.getChannelIn();*/
+    outputFilter.getBaseOut() >> network.getChannelIn();
 
     /*
      * Internal connection
@@ -94,12 +94,12 @@ int main() {
     /*
      * Logging
      */
-    debug::Logger<rcLib::Package> fcReceiveDebug{"FC-Recv", false};
+    debug::Logger<rcLib::Package> fcReceiveDebug{"FC-Recv", true};
     debug::Logger<rcLib::Package> fcSendDebug{"FC-Send", false};
-    debug::Logger<rcLib::Package> pdbReceiveDebug{"PDB-Recv", false};
+    debug::Logger<rcLib::Package> pdbReceiveDebug{"PDB-Recv", true};
     debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", false};
     debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", false};
-    debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
+    debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", true};
     debug::Logger<si::base::Meter<>> srf02Debug{"SRF02", false};
     debug::Logger<State_t> fusionDebug{"Fusion", true};
     debug::Logger<Nav_t> navDebug{"Nav", false};
@@ -141,4 +141,5 @@ int main() {
     while(!fc.getChannelIn().isClosed()) {
         std::this_thread::sleep_for(24h);
     }
+    return 0;
 }

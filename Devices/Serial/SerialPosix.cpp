@@ -19,7 +19,7 @@
 
 namespace device {
 
-    SerialPosix::SerialPosix(const std::string &port, int baud) {
+    SerialPosix::SerialPosix(const std::string &port, int baud) : fd{-1} {
         this->setPort(port);
         this->setBaud(baud);
         this->setParity(Parity::NONE);
@@ -304,5 +304,9 @@ namespace device {
 
     auto SerialPosix::getChannelOut() -> OutputChannel<rcLib::Package> & {
         return out;
+    }
+
+    SerialPosix::~SerialPosix() {
+        close(this->fd);
     }
 }
