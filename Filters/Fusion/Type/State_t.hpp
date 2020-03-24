@@ -59,6 +59,7 @@ public:
     si::extended::Speed<> speed{};
     si::base::Meter<> altitude{};
     si::base::Meter<> altitudeAboveGround{};
+    si::base::Meter<> altitudeGround;
     float lat{}, lon{};
     si::extended::Acceleration<> accX, accY, accZ;
 

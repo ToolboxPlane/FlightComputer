@@ -101,6 +101,7 @@ namespace filter {
             res.speed = state.speed * speed;
             res.altitude = state.altitude * meter;
             res.altitudeAboveGround = state.altitude_above_ground * meter;
+            res.altitudeGround = res.altitude - res.altitudeAboveGround;
             res.lat = state.lat;
             res.lon = state.lon;
             res.accX = accXFilter.getMeasurementEstimate();

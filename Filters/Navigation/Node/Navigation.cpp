@@ -82,16 +82,22 @@ namespace filter {
 
     void Navigation::land(State_t state, bool reset) {
         static auto targetHeading = state.yaw;
-        static auto targetAltitude = state.altitude;
         if (reset) {
             targetHeading = state.yaw;
-            targetAltitude = state.altitude;
         }
 
         Nav_t nav{};
         nav.speed = 0_speed;
         nav.heading = targetHeading;
-        nav.altitude = targetAltitude;
+        if (LANDING_APPROACH_ALT + 0.1_meter < state.altitudeAboveGround) { // Approach
+            nav.altitude = state.altitudeGround + LANDING_APPROACH_ALT;
+        } else if (LANDING_SPEED < state.speed){ // Slow Down
+            nav.altitude = state.altitudeAboveGround + LANDING_APPROACH_ALT;
+        } else if (LANDING_FLARE_ALT < state.altitudeAboveGround) { // Landing
+            nav.altitude = LANDING_FLARE_ALT - 0.1_meter;
+        } else { // Flare
+            nav.altitude = state.altitude + 100_meter;
+        }
 
         nav.stateMajor = 2;
         nav.stateMinor = 0;
@@ -117,7 +123,7 @@ namespace filter {
                 nav.speed = 0.0_speed;
                 nav.heading = state.yaw;
                 nav.altitude = state.altitude;
-                if (THROW_THRESH < 0 * si::extended::acceleration) { //@TODO fixme
+                if (THROW_THRESH < state.accX) {
                     headingTarget = state.yaw;
                     altitudeTarget = state.altitude + POST_LAUNCH_ALTITUDE;
                     launchState = THROWN;
