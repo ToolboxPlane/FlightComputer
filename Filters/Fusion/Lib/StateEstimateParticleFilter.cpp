@@ -20,7 +20,7 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
         const GpsMeasurement_t &gpsMeasurement, si::base::Meter<> distanceGround)
     -> system_state_t {
     if (particles.empty()) {
-        init(20000, gpsMeasurement, distanceGround);
+        init(1000, gpsMeasurement, distanceGround);
     }
 
     measurement_t measurement{};

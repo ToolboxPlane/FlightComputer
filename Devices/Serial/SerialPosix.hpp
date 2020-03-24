@@ -45,7 +45,6 @@ namespace device {
 
         auto getChannelOut() -> OutputChannel<rcLib::Package>&;
 
-        static auto getAvailablePorts() -> std::vector<std::string>;
     private:
         void run() override;
         void sendBuff(const uint8_t *buffer, std::size_t len) const;

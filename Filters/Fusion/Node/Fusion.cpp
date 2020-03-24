@@ -82,7 +82,7 @@ namespace filter {
             res.loraRemote = fusion::decodePackage<LoraPackage>(lastRemotePackage.value());
         }
 
-        if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired && lastUltrasonicDistance.has_value()) {
+        if (lastGpsMeasurement.has_value() /*&& lastGpsMeasurement.value().fixAquired*/ && lastUltrasonicDistance.has_value()) {
             const auto startTime = getCurrSeconds();
             const auto dt = startTime - lastUpdate;
             lastUpdate = startTime;

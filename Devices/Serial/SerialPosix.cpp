@@ -71,8 +71,8 @@ namespace device {
             }
 
             while (in.get(pkgIn, false)) {
-                /*auto len =*/ pkgIn.encode();
-                this->sendBuff(pkgIn.getEncodedData(), 11);
+                auto len = pkgIn.encode();
+                this->sendBuff(pkgIn.getEncodedData(), len);
             }
             std::this_thread::yield();
         }
@@ -296,21 +296,6 @@ namespace device {
         if (tcsetattr(fd, TCSANOW, &tty) != 0) {
             throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
         }
-    }
-
-    auto SerialPosix::getAvailablePorts() -> std::vector<std::string> {
-        std::string path = "/dev/";
-        std::regex deviceRegex{"tty[a-zA-Z]+[0-9]+"};
-        std::vector<std::string> results;
-        for (const auto & entry : std::filesystem::directory_iterator(path)) {
-            if (entry.is_character_file()) {
-                std::string fileName = entry.path().filename();
-                if (std::regex_match(fileName, deviceRegex)) {
-                    results.push_back(entry.path());
-                }
-            }
-        }
-        return results;
     }
 
     auto SerialPosix::getChannelIn() -> InputChannel<rcLib::Package> & {
