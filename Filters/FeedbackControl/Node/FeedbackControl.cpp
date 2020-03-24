@@ -66,7 +66,7 @@ namespace filter {
     }
 
     auto FeedbackControl::altitudeControl(State_t state, si::base::Meter<> target) const -> double {
-        auto deltaHeight = state.altitude - target;
+        auto deltaHeight = target - state.altitude;
         double pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::PITCH_P);
 
         return clamp(pitch, -MAX_PITCH, MAX_PITCH);
@@ -84,7 +84,7 @@ namespace filter {
     auto FeedbackControl::clamp(T val, T min, T max) -> T {
         if (val < min) {
             return min;
-        } else if (val > max) {
+        } else if (max < val) {
             return max;
         } else {
             return val;
