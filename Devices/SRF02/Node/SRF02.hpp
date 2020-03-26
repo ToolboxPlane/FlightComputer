@@ -7,8 +7,8 @@
 #ifndef FLIGHTCOMPUTER_SRF02_HPP
 #define FLIGHTCOMPUTER_SRF02_HPP
 
-#include "../Serial/SerialPosix.hpp"
-#include "../../Utilities/Si/SiLiterals.hpp"
+#include "../../Serial/SerialPosix.hpp"
+#include "../../../Utilities/Si/SiLiterals.hpp"
 
 namespace device {
     class SRF02 : public Node {

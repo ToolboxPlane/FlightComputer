@@ -406,8 +406,6 @@ namespace device {
                 setOpMode(OPMODE_STANDBY);
                 auto len = pkgOut.encode();
                 txLoRa(pkgOut.getEncodedData(), len);
-                //std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-                std::cout << "Sending..." << std::endl;
                 setOpMode(OPMODE_RX);
             }
         }

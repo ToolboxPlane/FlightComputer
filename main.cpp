@@ -12,8 +12,9 @@
 #include "Filters/FeedbackControl/Node/FeedbackControl.hpp"
 #include "Devices/Serial/SerialPosix.hpp"
 #include "Devices/rcLib/PackageOstream.hpp"
-#include "Devices/SRF02/SRF02.hpp"
+#include "Devices/SRF02/Node/SRF02.hpp"
 #include "Devices/Network/Network.hpp"
+#include "Devices/SRF02/Sim/SRF02Sim.hpp"
 
 #ifdef RASPBERRY_PI
 #include "Devices/LoRa/LoRa.hpp"
@@ -31,15 +32,18 @@ int main() {
     /*
      * I/O-Modules
      */
+
+#ifdef RASPBERRY_PI
     device::SerialPosix fc{"/dev/ttyFC", 115200};
     device::SerialPosix pdb{"/dev/ttyPDB", 115200};
     device::SRF02 srf02{"/dev/ttyUS"};
-
-#ifdef RASPBERRY_PI
     device::LoRa lora{};
     device::Gps gps{};
 #else
+    device::SerialPosix fc{"/dev/ttyACM0", 115200};
     device::RcLibSimulator lora{17, 60000};
+    device::RcLibSimulator pdb{17, 60000};
+    device::SRF02Sim srf02{};
     device::GpsSimulator gps{1000};
 #endif
 
@@ -100,7 +104,7 @@ int main() {
     debug::Logger<rcLib::Package> fcSendDebug{"FC-Send", false};
     debug::Logger<rcLib::Package> pdbReceiveDebug{"PDB-Recv", false};
     debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", false};
-    debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", false};
+    debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", true};
     debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
     debug::Logger<si::base::Meter<>> srf02Debug{"SRF02", false};
     debug::Logger<State_t> fusionDebug{"Fusion", true};
