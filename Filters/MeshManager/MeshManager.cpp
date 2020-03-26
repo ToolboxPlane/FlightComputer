@@ -72,21 +72,12 @@ namespace filter {
         rcLib::Package pkg{};
         while (!serialIn.isClosed()) {
             if (loraIn.get(pkg, false)) {
-                if (pkg.needsForwarding()) {
-                    pkg.countNode();
-                }
                 propagateInternal(pkg);
             }
             if (serialIn.get(pkg, false)) {
-                if (pkg.needsForwarding()) {
-                    pkg.countNode();
-                }
                 propagateInternal(pkg);
             }
             if (pdbIn.get(pkg, false))  {
-                if (pkg.needsForwarding()) {
-                    pkg.countNode();
-                }
                 propagateInternal(pkg);
             }
             if (flightControllerIn.get(pkg, false)) {

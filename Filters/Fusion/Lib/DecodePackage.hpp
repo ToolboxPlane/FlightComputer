@@ -40,7 +40,7 @@ namespace fusion {
         FlightControllerPackage flightControllerPackage{};
         flightControllerPackage.bnoState = pkg.getChannel(0);
         flightControllerPackage.roll = (static_cast<float>(pkg.getChannel(1)) - 500) / 2.0f;
-        flightControllerPackage.pitch = (static_cast<float>(pkg.getChannel(2)) -500) / 2.0f;
+        flightControllerPackage.pitch = (static_cast<float>(pkg.getChannel(2)) - 500) / 2.0f;
         flightControllerPackage.yaw = (static_cast<float>(pkg.getChannel(3)) - 500) / 2.0f;
         flightControllerPackage.rollDeriv = (static_cast<float>(pkg.getChannel(4)) - 500) * hertz;
         flightControllerPackage.pitchDeriv = (static_cast<float>(pkg.getChannel(5)) -500) * hertz;

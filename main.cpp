@@ -98,10 +98,10 @@ int main() {
      */
     debug::Logger<rcLib::Package> fcReceiveDebug{"FC-Recv", true};
     debug::Logger<rcLib::Package> fcSendDebug{"FC-Send", false};
-    debug::Logger<rcLib::Package> pdbReceiveDebug{"PDB-Recv", true};
+    debug::Logger<rcLib::Package> pdbReceiveDebug{"PDB-Recv", false};
     debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", false};
     debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", false};
-    debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", true};
+    debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
     debug::Logger<si::base::Meter<>> srf02Debug{"SRF02", false};
     debug::Logger<State_t> fusionDebug{"Fusion", true};
     debug::Logger<Nav_t> navDebug{"Nav", false};

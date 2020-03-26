@@ -115,9 +115,9 @@ namespace filter {
             std::cerr << "Fusion not running, reason:";
             if (!lastGpsMeasurement.has_value()) {
                 std::cerr << "No GPS Measurement" << std::endl;
-            } else if (!lastGpsMeasurement.value().fixAquired) {
+            } /*else if (!lastGpsMeasurement.value().fixAquired) {
                 std::cerr << "No GPS Fix" << std::endl;
-            } else if (!lastUltrasonicDistance.has_value()) {
+            } */ else if (!lastUltrasonicDistance.has_value()) {
                 std::cerr << "No Ultrasonic Measurement" << std::endl;
             } else {
                 std::cerr << "Everything is fucked" << std::endl;

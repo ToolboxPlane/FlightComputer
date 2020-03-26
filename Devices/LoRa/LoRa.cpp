@@ -302,7 +302,7 @@ namespace device {
     }
 
 
-    void LoRa::writeBuf(unsigned char addr, unsigned char *value, unsigned char len) {
+    void LoRa::writeBuf(unsigned char addr, const unsigned char *value, unsigned char len) {
         unsigned char spibuf[256];
         spibuf[0] = addr | 0x80;
         for (int i = 0; i < len; i++) {
@@ -313,7 +313,7 @@ namespace device {
         unselectReceiver();
     }
 
-    void LoRa::txLoRa(unsigned char *frame, unsigned char datalen) {
+    void LoRa::txLoRa(const unsigned char *frame, unsigned char datalen) {
         // set the IRQ mapping DIO0=TxDone DIO1=NOP DIO2=NOP
         writeRegister(RegDioMapping1, MAP_DIO0_LORA_TXDONE | MAP_DIO1_LORA_NOP | MAP_DIO2_LORA_NOP);
         // clear all radio IRQ flags
@@ -364,7 +364,7 @@ namespace device {
     }
 
     void LoRa::run() {
-        rcLib::Package pkgIn;//, pkgOut;
+        rcLib::Package pkgIn, pkgOut;
         /*long int SNR;
         int rssicorr;*/
         while (!in.isClosed()) {
@@ -402,14 +402,14 @@ namespace device {
                 }
             }
 
-/*        if(in.get(pkgOut, false)) {
-//            setOpMode(OPMODE_STANDBY);
-            auto len = pkgOut.encode();
-            txLoRa(pkgOut.getEncodedData(), len);
-            std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-            std::cout << "Sending..." << std::endl;
-//            setOpMode(OPMODE_RX);
-        }*/
+            if(in.get(pkgOut, false)) {
+                setOpMode(OPMODE_STANDBY);
+                auto len = pkgOut.encode();
+                txLoRa(pkgOut.getEncodedData(), len);
+                //std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+                std::cout << "Sending..." << std::endl;
+                setOpMode(OPMODE_RX);
+            }
         }
     }
 }

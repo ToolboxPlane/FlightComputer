@@ -44,9 +44,9 @@ namespace device {
 
         void configPower(int8_t power);
 
-        void writeBuf(unsigned char addr, unsigned char *value, unsigned char len);
+        void writeBuf(unsigned char addr, const unsigned char *value, unsigned char len);
 
-        void txLoRa(unsigned char *frame, unsigned char len);
+        void txLoRa(const unsigned char *frame, unsigned char len);
 
 
         const int CHANNEL = 0;

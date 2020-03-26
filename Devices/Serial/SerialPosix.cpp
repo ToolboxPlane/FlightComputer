@@ -208,7 +208,7 @@ namespace device {
 
         this->fd = open(port.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
         if (this->fd < 0) {
-            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
+            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno) + port);
         }
     }
 
