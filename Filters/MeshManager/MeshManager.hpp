@@ -16,36 +16,33 @@ namespace filter {
         MeshManager();
 
         InputChannel<rcLib::Package> &getLoraIn();
-
         InputChannel<rcLib::Package> &getSerialIn();
+        InputChannel<rcLib::Package> &getPdbIn();
+        InputChannel<rcLib::Package> &getNavIn();
+
 
         OutputChannel<rcLib::Package> &getLoraOut();
-
         OutputChannel<rcLib::Package> &getSerialOut();
 
-        InputChannel<rcLib::Package> &getFlightControllerIn();
 
+        InputChannel<rcLib::Package> &getFlightControllerIn();
         InputChannel<rcLib::Package> &getBaseIn();
 
-        InputChannel<rcLib::Package> &getPdbIn();
-
-        InputChannel<rcLib::Package> &getRemoteIn();
-
         OutputChannel<rcLib::Package> &getFlightControllerOut();
-
         OutputChannel<rcLib::Package> &getRemoteOut();
-
         OutputChannel<rcLib::Package> &getBaseOut();
-
         OutputChannel<rcLib::Package> &getPdbOut();
-
         OutputChannel<rcLib::Package> &getTaranisOut();
+        OutputChannel<rcLib::Package> &getNavOut();
 
     private:
-        InputChannel<rcLib::Package> loraIn, serialIn, pdbIn;
-        InputChannel<rcLib::Package> flightControllerIn, remoteIn, baseIn;
+        // Real output
+        InputChannel<rcLib::Package> loraIn, serialIn, pdbIn, navIn;
         OutputChannel<rcLib::Package> loraOut, serialOut;
-        OutputChannel<rcLib::Package> flightControllerOut, remoteOut, baseOut, pdbOut, taranisOut;
+
+        // Internal
+        InputChannel<rcLib::Package> flightControllerIn, baseIn;
+        OutputChannel<rcLib::Package> flightControllerOut, remoteOut, baseOut, pdbOut, taranisOut, navOut;
 
         void propagateInternal(rcLib::Package pkg);
 

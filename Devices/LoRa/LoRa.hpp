@@ -69,7 +69,7 @@ namespace device {
         int RST = 0;
 
         // Set spreading factor (SF7 - SF12)
-        sf_t sf = SF7;
+        sf_t sf = SF12;
 
         // Set center frequency
         uint32_t freq = 434000000; // in Mhz! (868.1)

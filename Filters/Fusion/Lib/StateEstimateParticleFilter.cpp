@@ -17,10 +17,10 @@ StateEstimateParticleFilter::StateEstimateParticleFilter() {
 
 auto
 StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControllerPackage &flightControllerPackage,
-        const GpsMeasurement_t &gpsMeasurement, si::base::Meter<> distanceGround)
+        const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage)
     -> system_state_t {
     if (particles.empty()) {
-        init(1000, gpsMeasurement, distanceGround);
+        init(1000, gpsMeasurement, navPackage.usDistance);
     }
 
     measurement_t measurement{};
@@ -30,8 +30,8 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
     measurement.air_speed = 0; // @TODO
     measurement.ground_speed = static_cast<float>(gpsMeasurement.speed);
     measurement.vertical_speed = static_cast<float>(gpsMeasurement.climb);
-    measurement.altitude_baro = 0; // @TODO navboard
-    measurement.distance_ground = static_cast<float>(distanceGround);
+    measurement.altitude_baro = static_cast<float>(navPackage.baroAltitude);
+    measurement.distance_ground = static_cast<float>(navPackage.usDistance);
     measurement.altitude_gps = static_cast<float>(gpsMeasurement.location.altitude);
     measurement.lat = static_cast<float>(gpsMeasurement.location.lat);
     measurement.lon = static_cast<float>(gpsMeasurement.location.lon);

@@ -22,7 +22,7 @@ class StateEstimateParticleFilter {
         StateEstimateParticleFilter();
 
         auto update(si::base::Second<> dt, const FlightControllerPackage &flightControllerPackage,
-                    const GpsMeasurement_t &gpsMeasurement, si::base::Meter<> distanceGround)
+                    const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage)
         -> system_state_t;
 
     private:

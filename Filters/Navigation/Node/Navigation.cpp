@@ -76,6 +76,7 @@ namespace filter {
 
         nav.stateMajor = 4;
         nav.stateMinor = waypointIndex;
+        nav.state = currentState;
 
         out.put(nav);
     }
@@ -101,6 +102,7 @@ namespace filter {
 
         nav.stateMajor = 2;
         nav.stateMinor = 0;
+        nav.state = state;
 
         out.put(nav);
     }
@@ -146,21 +148,23 @@ namespace filter {
 
         nav.stateMajor = 1;
         nav.stateMinor = launchState;
+        nav.state = state;
 
         out.put(nav);
     }
 
-    void Navigation::angle(State_t , bool ) {
-        /*Nav_t nav{};
-        nav.pitch = state.loraRemote.joyRight.y * MAX_PITCH;
+    void Navigation::angle(State_t currentState, bool ) {
+        Nav_t nav{};
+        //@TODO
+        /*nav.pitch = state.loraRemote.joyRight.y * MAX_PITCH;
         nav.roll = state.loraRemote.joyRight.x * MAX_ROLL;
-        nav.power = state.loraRemote.isArmed ? speedControl(state.airspeed) : 0;
+        nav.power = state.loraRemote.isArmed ? speedControl(state.airspeed) : 0;*/
 
         nav.stateMajor = 0;
         nav.stateMinor = 0;
+        nav.state = currentState;
 
-        out.put(nav);*/
-        //@TODO
+        out.put(nav);
     }
 
     void Navigation::hold(State_t state, bool reset) {
@@ -178,6 +182,7 @@ namespace filter {
 
         nav.stateMajor = 3;
         nav.stateMinor = 0;
+        nav.state = state;
 
         out.put(nav);
     }

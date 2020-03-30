@@ -34,13 +34,12 @@ namespace filter {
 
         InputChannel<GpsMeasurement_t> &getGpsIn();
 
-        InputChannel<si::base::Meter<>> &getUltrasonicIn();
+        InputChannel<rcLib::Package> &getNavIn();
 
         OutputChannel<State_t> &getChannelOut();
 
     private:
-        InputChannel<rcLib::Package> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
-        InputChannel<si::base::Meter<>> ultrasonicIn;
+        InputChannel<rcLib::Package> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn, navIn;
         InputChannel<GpsMeasurement_t> gpsIn;
         OutputChannel<State_t> out;
 
@@ -55,7 +54,7 @@ namespace filter {
         std::optional<rcLib::Package> lastBasePackage;
         std::optional<rcLib::Package> lastTaranisPackage;
         std::optional<rcLib::Package> lastRemotePackage;
-        std::optional<si::base::Meter<>> lastUltrasonicDistance;
+        std::optional<rcLib::Package> lastNavPackage;
 
         StateEstimateParticleFilter particleFilter;
         AlphaBetaTracker<si::extended::Acceleration<>> accXFilter, accYFilter,

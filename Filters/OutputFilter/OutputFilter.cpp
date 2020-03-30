@@ -34,10 +34,10 @@ namespace filter {
                 serialOutPkg.setChannel(2, static_cast<uint16_t>(control.roll + 180));
                 serialOutPkg.setChannel(3, 0);
 
-                loraOutPkg.setChannel(0, static_cast<uint16_t>(control.power * 1023));
-                loraOutPkg.setChannel(1, static_cast<uint16_t>(control.pitch + 180));
-                loraOutPkg.setChannel(2, static_cast<uint16_t>(control.roll + 180));
-                loraOutPkg.setChannel(3, 0);
+                loraOutPkg.setChannel(0, -control.state.navPackage.rssi);
+                loraOutPkg.setChannel(1, static_cast<uint16_t>(control.state.altitudeAboveGround));
+                loraOutPkg.setChannel(2, static_cast<uint16_t>(control.state.lat * 10));
+                loraOutPkg.setChannel(3, static_cast<uint16_t>(control.state.lon * 10));
 
                 flightControllerOut.put(serialOutPkg);
                 baseOut.put(loraOutPkg);

@@ -94,6 +94,17 @@ namespace fusion {
 
         return loraPackage;
     }
+
+    template<>
+    auto decodePackage<NavPackage>(const rcLib::Package &pkg) -> NavPackage {
+        NavPackage navPackage;
+        navPackage.rssi = -pkg.getChannel(0);
+        navPackage.baroAltitude = pkg.getChannel(1) * si::base::meter;
+        navPackage.pitotVoltage = pkg.getChannel(2) * si::extended::volt;
+        navPackage.usDistance = pkg.getChannel(3) * si::base::meter;
+
+        return navPackage;
+    }
 }
 
 #endif //FLIGHTCOMPUTER_DECODEPACKAGE_HPP

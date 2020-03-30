@@ -46,8 +46,8 @@ namespace filter {
         return taranisIn;
     }
 
-    InputChannel<si::base::Meter<>> &Fusion::getUltrasonicIn() {
-        return ultrasonicIn;
+    InputChannel<rcLib::Package> &Fusion::getNavIn() {
+        return navIn;
     }
 
     void Fusion::run() {
@@ -57,7 +57,7 @@ namespace filter {
             while (taranisIn.get(lastTaranisPackage));
             while (baseIn.get(lastBasePackage));
             while (remoteIn.get(lastRemotePackage));
-            while (ultrasonicIn.get(lastUltrasonicDistance));
+            while (navIn.get(lastNavPackage));
 
             do {
                 flightControllerIn.get(lastFcPackage);
@@ -82,14 +82,15 @@ namespace filter {
             res.loraRemote = fusion::decodePackage<LoraPackage>(lastRemotePackage.value());
         }
 
-        if (lastGpsMeasurement.has_value() /*&& lastGpsMeasurement.value().fixAquired*/ && lastUltrasonicDistance.has_value()) {
+        if (lastGpsMeasurement.has_value() /*&& lastGpsMeasurement.value().fixAquired*/ && lastNavPackage.has_value()) {
             const auto startTime = getCurrSeconds();
             const auto dt = startTime - lastUpdate;
             lastUpdate = startTime;
 
+            auto navData = fusion::decodePackage<NavPackage>(lastNavPackage.value());
             auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
             auto state  = particleFilter.update(dt, flightControllerData, lastGpsMeasurement.value(),
-                    lastUltrasonicDistance.value());
+                    navData);
 
             accXFilter.addMeasurement(flightControllerData.accX, dt);
             accYFilter.addMeasurement(flightControllerData.accY, dt);
@@ -108,6 +109,9 @@ namespace filter {
             res.accY = accYFilter.getMeasurementEstimate();
             res.accZ = accZFilter.getMeasurementEstimate();
 
+            res.rawFlightControllerData = flightControllerData;
+            res.navPackage = navData;
+
             //std::cout << getCurrSeconds() - startTime << std::endl;
 
             out.put(res);
@@ -117,8 +121,8 @@ namespace filter {
                 std::cerr << "No GPS Measurement" << std::endl;
             } /*else if (!lastGpsMeasurement.value().fixAquired) {
                 std::cerr << "No GPS Fix" << std::endl;
-            } */ else if (!lastUltrasonicDistance.has_value()) {
-                std::cerr << "No Ultrasonic Measurement" << std::endl;
+            } */ else if (!lastNavPackage.has_value()) {
+                std::cerr << "No Nav Data" << std::endl;
             } else {
                 std::cerr << "Everything is fucked" << std::endl;
             }

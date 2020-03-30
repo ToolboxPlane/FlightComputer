@@ -50,6 +50,14 @@ public:
     bool isArmed;
 };
 
+class NavPackage {
+    public:
+        int rssi;
+        si::base::Meter<> baroAltitude;
+        si::extended::Voltage<> pitotVoltage;
+        si::base::Meter<> usDistance;
+};
+
 
 class State_t {
 public:
@@ -67,6 +75,7 @@ public:
     PdbPackage pdbPackage{};
     TaranisPackage taranisPackage{};
     LoraPackage loraRemote{};
+    NavPackage navPackage;
 
     friend std::ostream &operator<<(std::ostream &ostream, State_t state) {
         ostream << "H:" << state.yaw;

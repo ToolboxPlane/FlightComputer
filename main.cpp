@@ -36,8 +36,9 @@ int main() {
 #ifdef RASPBERRY_PI
     device::SerialPosix fc{"/dev/ttyFC", 115200};
     device::SerialPosix pdb{"/dev/ttyPDB", 115200};
-    device::SRF02 srf02{"/dev/ttyUS"};
-    device::LoRa lora{};
+    device::SerialPosix nav{"/dev/ttyNav", 115200};
+    //device::SRF02 srf02{"/dev/ttyUS"};
+    //device::LoRa lora{};
     device::Gps gps{};
 #else
     device::SerialPosix fc{"/dev/ttyACM0", 115200};
@@ -71,17 +72,18 @@ int main() {
     pdb.getChannelOut() >> meshManager.getPdbIn();
     meshManager.getSerialOut() >> fc.getChannelIn();
 
-    lora.getChannelOut() >> meshManager.getLoraIn();
-    meshManager.getLoraOut() >> lora.getChannelIn();
+    nav.getChannelOut() >> meshManager.getNavIn();
+    meshManager.getNavOut() >> nav.getChannelIn();
 
     meshManager.getFlightControllerOut() >> fusion.getFlightControllerIn();
     meshManager.getPdbOut() >> fusion.getPdbIn();
     meshManager.getTaranisOut() >> fusion.getTaranisIn();
     meshManager.getRemoteOut() >> fusion.getRemoteIn();
     meshManager.getBaseOut() >> fusion.getBaseIn();
+    meshManager.getNavOut() >> fusion.getNavIn();
 
     pdb.getChannelOut() >> network.getChannelIn();
-    lora.getChannelOut() >> network.getChannelIn();
+    nav.getChannelOut() >> network.getChannelIn();
     outputFilter.getBaseOut() >> network.getChannelIn();
     fc.getChannelOut() >> network.getChannelIn();
 
@@ -89,7 +91,6 @@ int main() {
      * Internal connection
      */
     gps.getChannelOut() >> fusion.getGpsIn();
-    srf02.getChannelOut() >> fusion.getUltrasonicIn();
     fusion.getChannelOut() >> navigation.getChannelStateIn();
     waypointReader.getChannelOut() >> navigation.getChannelWaypointIn();
     navigation.getChannelOut() >> feedbackControl.getChannelIn();
@@ -100,24 +101,22 @@ int main() {
     /*
      * Logging
      */
-    debug::Logger<rcLib::Package> fcReceiveDebug{"FC-Recv", true};
+    debug::Logger<rcLib::Package> fcReceiveDebug{"FC-Recv", false};
     debug::Logger<rcLib::Package> fcSendDebug{"FC-Send", false};
     debug::Logger<rcLib::Package> pdbReceiveDebug{"PDB-Recv", false};
-    debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", false};
+    debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", true};
     debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", true};
     debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
-    debug::Logger<si::base::Meter<>> srf02Debug{"SRF02", false};
-    debug::Logger<State_t> fusionDebug{"Fusion", true};
+    debug::Logger<State_t> fusionDebug{"Fusion", false};
     debug::Logger<Nav_t> navDebug{"Nav", false};
     debug::Logger<Control_t> controlDebug{"Control", false};
 
     fc.getChannelOut() >> fcReceiveDebug.getChannelIn();
     pdb.getChannelOut() >> pdbReceiveDebug.getChannelIn();
+    nav.getChannelOut() >> loraReceiveDebug.getChannelIn();
     meshManager.getSerialOut() >> fcSendDebug.getChannelIn();
-    lora.getChannelOut() >> loraReceiveDebug.getChannelIn();
-    meshManager.getLoraOut() >> loraSendDebug.getChannelIn();
+    meshManager.getNavOut() >> loraSendDebug.getChannelIn();
     gps.getChannelOut() >> gpsDebug.getChannelIn();
-    srf02.getChannelOut() >> srf02Debug.getChannelIn();
     fusion.getChannelOut() >> fusionDebug.getChannelIn();
     navigation.getChannelOut() >> navDebug.getChannelIn();
     feedbackControl.getChannelOut() >> controlDebug.getChannelIn();

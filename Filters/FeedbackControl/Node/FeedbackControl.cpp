@@ -25,6 +25,7 @@ namespace filter {
             control.pitch = headingControl(nav.state, nav.heading);
             control.power = speedControl(nav.state, nav.speed);
             control.roll = altitudeControl(nav.state, nav.altitude);
+            control.state = nav.state;
 
             channelOut.put(control);
         }

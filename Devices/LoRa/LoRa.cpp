@@ -234,7 +234,7 @@ namespace device {
             } else {
                 writeRegister(REG_MODEM_CONFIG3, 0x04);
             }
-            writeRegister(REG_MODEM_CONFIG, 0x72);
+            writeRegister(REG_MODEM_CONFIG, 0b01110010);
             writeRegister(REG_MODEM_CONFIG2, (sf << 4) | 0x04);
         }
 
@@ -365,12 +365,12 @@ namespace device {
 
     void LoRa::run() {
         rcLib::Package pkgIn, pkgOut;
-        /*long int SNR;
-        int rssicorr;*/
+        long int SNR;
+        int rssicorr;
         while (!in.isClosed()) {
             if (digitalRead(dio0) == 1) {
                 if (receive(message)) {
-                    /*unsigned char value = readRegister(REG_PKT_SNR_VALUE);
+                    unsigned char value = readRegister(REG_PKT_SNR_VALUE);
                     if (value & 0x80) // The SNR sign bit is 1
                     {
                         // Invert and divide by 4
@@ -385,13 +385,13 @@ namespace device {
                         rssicorr = 139;
                     } else {
                         rssicorr = 157;
-                    }*/
+                    }
 
-                    //printf("Packet RSSI: %d, ", readRegister(0x1A)-rssicorr);
-                    //printf("RSSI: %d, ", readRegister(0x1B)-rssicorr);
-                    //printf("SNR: %li, ", SNR);
-                    //printf("Length: %i", (int)receivedbytes);
-                    //printf("\n");
+                    printf("Packet RSSI: %d, ", readRegister(0x1A)-rssicorr);
+                    printf("RSSI: %d, ", readRegister(0x1B)-rssicorr);
+                    printf("SNR: %li, ", SNR);
+                    printf("Length: %i", (int)receivedbytes);
+                    printf("\n");
 
                     for (auto c = 0; c < receivedbytes; c++) {
                         if (pkgIn.decode(message[c])) {
@@ -403,9 +403,11 @@ namespace device {
             }
 
             if(in.get(pkgOut, false)) {
+                using namespace std::chrono_literals;
                 setOpMode(OPMODE_STANDBY);
                 auto len = pkgOut.encode();
                 txLoRa(pkgOut.getEncodedData(), len);
+                std::this_thread::sleep_for(100ms);
                 setOpMode(OPMODE_RX);
             }
         }
