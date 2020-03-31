@@ -31,7 +31,7 @@ namespace filter {
         }
     }
 
-    auto FeedbackControl::speedControl(State_t state, si::extended::Speed<> target) const -> float {
+    auto FeedbackControl::speedControl(const State_t &state, si::extended::Speed<> target) const -> float {
         if (static_cast<decltype(target)::type>(target) == 0) {
             return 0;
         }
@@ -57,7 +57,7 @@ namespace filter {
         return clamp(speedFeedback + speedFeedforward, 0.0F, 1.0F);
     }
 
-    auto FeedbackControl::headingControl(State_t state, float target) const -> float {
+    auto FeedbackControl::headingControl(const State_t &state, float target) const -> float {
         float headingDiff = target - state.yaw;
         headingDiff = fmodf(headingDiff, 360);
         if (headingDiff > 180) {
@@ -69,7 +69,7 @@ namespace filter {
         return clamp(roll, -MAX_ROLL, MAX_ROLL);
     }
 
-    auto FeedbackControl::altitudeControl(State_t state, si::base::Meter<> target) const -> float {
+    auto FeedbackControl::altitudeControl(const State_t &state, si::base::Meter<> target) const -> float {
         auto deltaHeight = target - state.altitude;
         float pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::PITCH_P);
 

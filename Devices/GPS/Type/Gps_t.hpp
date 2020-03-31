@@ -38,11 +38,11 @@ public:
         return std::sqrt(static_cast<si::default_type>(dx*dx + dy*dy + dz*dz)) * si::base::meter;
     }
 
-    double angleTo(const Gps_t &gps) const {
+    auto angleTo(const Gps_t &gps) const -> si::default_type {
         Gps_t supportPoint(this->lat, gps.lon);
         auto xDiff = this->distanceTo(supportPoint);
         auto yDiff = supportPoint.distanceTo(gps);
-        return static_cast<double>(-std::atan2(static_cast<decltype(yDiff)::type>(yDiff),
+        return static_cast<si::default_type>(-std::atan2(static_cast<decltype(yDiff)::type>(yDiff),
                                                static_cast<decltype(xDiff)::type>(xDiff)) * 180.0 / M_PI + 90);
     }
 

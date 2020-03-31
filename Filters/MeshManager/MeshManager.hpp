@@ -42,7 +42,7 @@ namespace filter {
         InputChannel<rcLib::Package> flightControllerIn, baseIn;
         OutputChannel<rcLib::Package> flightControllerOut, remoteOut, baseOut, pdbOut, taranisOut, navOut;
 
-        void propagateInternal(rcLib::Package pkg);
+        void propagateInternal(const rcLib::Package &pkg);
 
         void run() override;
     };

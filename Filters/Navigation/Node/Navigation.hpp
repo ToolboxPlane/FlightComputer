@@ -29,15 +29,15 @@ namespace filter {
         InputChannel<Waypoint_t> waypointIn;
         OutputChannel<Nav_t> out;
 
-        void waypoints(State_t state, bool reset = false);
+        void waypoints(const State_t &state, bool reset = false);
 
-        void land(State_t state, bool reset = false);
+        void land(const State_t &state, bool reset = false);
 
-        void launch(State_t state, bool reset = false);
+        void launch(const State_t &state, bool reset = false);
 
-        void angle(State_t state, bool reset = false);
+        void angle(const State_t &state, bool reset = false);
 
-        void hold(State_t state, bool reset = false);
+        void hold(const State_t &state, bool reset = false);
 
         static constexpr si::extended::Speed<> CRUISE_SPEED{20.0};
         static constexpr si::base::Meter<> POST_LAUNCH_ALTITUDE{10.0};

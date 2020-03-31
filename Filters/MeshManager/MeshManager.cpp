@@ -94,7 +94,7 @@ namespace filter {
     }
 
 
-    void MeshManager::propagateInternal(rcLib::Package pkg) {
+    void MeshManager::propagateInternal(const rcLib::Package &pkg) {
         switch (static_cast<DeviceId>(pkg.getDeviceId())) {
             case DeviceId::REMOTE:
                 remoteOut.put(pkg);

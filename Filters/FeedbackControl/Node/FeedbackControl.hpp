@@ -23,9 +23,9 @@ namespace filter {
     private:
         void run() override;
 
-        [[nodiscard]] auto speedControl(State_t state, si::extended::Speed<> target) const -> float;
-        [[nodiscard]] auto headingControl(State_t state, float target) const -> float;
-        [[nodiscard]] auto altitudeControl(State_t state, si::base::Meter<> target) const -> float;
+        [[nodiscard]] auto speedControl(const State_t &state, si::extended::Speed<> target) const -> float;
+        [[nodiscard]] auto headingControl(const State_t &state, float target) const -> float;
+        [[nodiscard]] auto altitudeControl(const State_t &state, si::base::Meter<> target) const -> float;
 
         template <typename T>
         static auto clamp(T val, T min, T max) -> T;

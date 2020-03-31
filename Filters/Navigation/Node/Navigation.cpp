@@ -57,8 +57,8 @@ namespace filter {
         }
     }
 
-    void Navigation::waypoints(State_t currentState, bool) {
-        static Waypoint_t nextWaypoint({currentState.lat, currentState.lon}, std::numeric_limits<double>::max(), false);
+    void Navigation::waypoints(const State_t &currentState, bool) {
+        static Waypoint_t nextWaypoint({currentState.lat, currentState.lon}, std::numeric_limits<si::default_type>::max(), false);
         static uint16_t waypointIndex = 0;
         Nav_t nav{};
 
@@ -81,7 +81,7 @@ namespace filter {
         out.put(nav);
     }
 
-    void Navigation::land(State_t state, bool reset) {
+    void Navigation::land(const State_t &state, bool reset) {
         static auto targetHeading = state.yaw;
         if (reset) {
             targetHeading = state.yaw;
@@ -110,7 +110,7 @@ namespace filter {
         out.put(nav);
     }
 
-    void Navigation::launch(State_t state, bool reset) {
+    void Navigation::launch(const State_t &state, bool reset) {
         static enum {
             IN_HAND, THROWN, CLIMB
         } launchState = IN_HAND;
@@ -118,7 +118,7 @@ namespace filter {
         if (reset) {
             launchState = IN_HAND;
         }
-        static double headingTarget;
+        static si::default_type headingTarget;
         static si::base::Meter<> altitudeTarget;
 
         Nav_t nav{};
@@ -156,7 +156,7 @@ namespace filter {
         out.put(nav);
     }
 
-    void Navigation::angle(State_t currentState, bool ) {
+    void Navigation::angle(const State_t &currentState, bool ) {
         Nav_t nav{};
         //@TODO
         /*nav.pitch = state.loraRemote.joyRight.y * MAX_PITCH;
@@ -170,7 +170,7 @@ namespace filter {
         out.put(nav);
     }
 
-    void Navigation::hold(State_t state, bool reset) {
+    void Navigation::hold(const State_t &state, bool reset) {
         Nav_t nav{};
         static auto targetHeading = state.yaw;
         static auto targetAltitude = state.altitude;
