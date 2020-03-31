@@ -23,9 +23,9 @@ namespace filter {
     private:
         void run() override;
 
-        [[nodiscard]] auto speedControl(State_t state, si::extended::Speed<> target) const -> double;
-        [[nodiscard]] auto headingControl(State_t state, double target) const -> double;
-        [[nodiscard]] auto altitudeControl(State_t state, si::base::Meter<> target) const -> double;
+        [[nodiscard]] auto speedControl(State_t state, si::extended::Speed<> target) const -> float;
+        [[nodiscard]] auto headingControl(State_t state, float target) const -> float;
+        [[nodiscard]] auto altitudeControl(State_t state, si::base::Meter<> target) const -> float;
 
         template <typename T>
         static auto clamp(T val, T min, T max) -> T;
@@ -33,13 +33,13 @@ namespace filter {
         InputChannel<Nav_t> channelIn;
         OutputChannel<Control_t> channelOut;
 
-        static constexpr auto SPEED_P = 1.0 / si::extended::speed;
-        static constexpr auto PITCH_P = 1.0 / si::base::meter;
-        static constexpr auto MAX_ROLL = 80.0;
-        static constexpr auto MAX_PITCH = 30.0;
-        static constexpr auto HEADING_P = 1.0;
-        static constexpr auto SPEED_I = 0.5 / si::extended::speed;
-        static constexpr auto MAX_SPEED = 100/3.6 * si::extended::speed;
+        static constexpr auto SPEED_P = 1.0F / si::extended::speed;
+        static constexpr auto PITCH_P = 1.0F / si::base::meter;
+        static constexpr auto MAX_ROLL = 80.0F;
+        static constexpr auto MAX_PITCH = 30.0F;
+        static constexpr auto HEADING_P = 1.0F;
+        static constexpr auto SPEED_I = 0.5F / si::extended::speed;
+        static constexpr auto MAX_SPEED = 100/3.6F * si::extended::speed;
     };
 }
 

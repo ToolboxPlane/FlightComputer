@@ -9,7 +9,9 @@
 #define FLIGHTCOMPUTER_SI_HPP
 
 namespace si {
-    template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T = long double>
+    using default_type = float;
+
+    template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T = default_type>
     class Si {
         using ThisT = Si<m,kg,s,A,K,MOL,CD,T>;
     public:

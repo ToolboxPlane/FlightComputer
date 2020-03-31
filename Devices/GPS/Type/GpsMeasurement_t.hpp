@@ -19,21 +19,21 @@ public:
         this->fixAquired = static_cast<bool>(std::stoi(items[0]));
         this->location.lat = std::stod(items[1]);
         this->location.lon = std::stod(items[2]);
-        this->speed = std::stod(items[3]) * si::extended::speed;
+        this->speed = std::stol(items[3]) * si::extended::speed;
         this->timestamp = std::stoi(items[4]) * si::base::second;
-        this->location.altitude = std::stod(items[5]) * si::base::meter;
-        this->climb = std::stod(items[6]) * si::extended::speed;
+        this->location.altitude = std::stof(items[5]) * si::base::meter;
+        this->climb = std::stol(items[6]) * si::extended::speed;
     }
 
     GpsMeasurement_t(double lat, double lon) :
             fixAquired{false}, location{lat, lon,0}, speed{0}, timestamp{0}, climb{0} {};
 
     GpsMeasurement_t() : fixAquired{false}, location{0, 0}, speed{0}, timestamp{0}, climb{0},
-                         epLat{std::numeric_limits<double>::infinity()},
-                         epLon{std::numeric_limits<double>::infinity()},
-                         epVert{std::numeric_limits<double>::infinity()},
-                         epSpeed{std::numeric_limits<double>::infinity()},
-                         epClimb{std::numeric_limits<double>::infinity()} {};
+                         epLat{std::numeric_limits<si::default_type>::infinity()},
+                         epLon{std::numeric_limits<si::default_type>::infinity()},
+                         epVert{std::numeric_limits<si::default_type>::infinity()},
+                         epSpeed{std::numeric_limits<si::default_type>::infinity()},
+                         epClimb{std::numeric_limits<si::default_type>::infinity()} {};
 
         friend std::ostream &operator<<(std::ostream &ostream, GpsMeasurement_t gps) {
         if(!gps.fixAquired) {
@@ -73,7 +73,8 @@ public:
     si::extended::Speed<> speed;
     si::base::Second<> timestamp;
     si::extended::Speed<> climb;
-    double epLat, epLon, epVert, epSpeed, epClimb;
+    si::base::Meter<> epLat, epLon, epVert;
+    si::extended::Speed<> epSpeed, epClimb;
 };
 
 #endif //FLIGHTCOMPUTER_GPS_MEASUREMENT_T_HPP

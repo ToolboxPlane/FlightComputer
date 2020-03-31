@@ -31,7 +31,7 @@ namespace filter {
         }
     }
 
-    auto FeedbackControl::speedControl(State_t state, si::extended::Speed<> target) const -> double {
+    auto FeedbackControl::speedControl(State_t state, si::extended::Speed<> target) const -> float {
         if (static_cast<decltype(target)::type>(target) == 0) {
             return 0;
         }
@@ -48,18 +48,18 @@ namespace filter {
         lastDiff = deltaSpeed;
 
         // PI-Controller (I necessary to achieve stationary accuracy)
-        double speedFeedback = static_cast<double>
+        float speedFeedback = static_cast<float>
                 (deltaSpeed * FeedbackControl::SPEED_P + diffSum * FeedbackControl::SPEED_I);
 
         // Feedforward Term
-        double speedFeedforward = static_cast<double>(target / MAX_SPEED);
+        float speedFeedforward = static_cast<float>(target / MAX_SPEED);
 
-        return clamp(speedFeedback + speedFeedforward, 0.0, 1.0);
+        return clamp(speedFeedback + speedFeedforward, 0.0F, 1.0F);
     }
 
-    auto FeedbackControl::headingControl(State_t state, double target) const -> double {
-        double headingDiff = target - state.yaw;
-        headingDiff = std::fmod(headingDiff, 360);
+    auto FeedbackControl::headingControl(State_t state, float target) const -> float {
+        float headingDiff = target - state.yaw;
+        headingDiff = fmodf(headingDiff, 360);
         if (headingDiff > 180) {
             headingDiff -= 180;
         } else if (headingDiff < -180) {
@@ -69,9 +69,9 @@ namespace filter {
         return clamp(roll, -MAX_ROLL, MAX_ROLL);
     }
 
-    auto FeedbackControl::altitudeControl(State_t state, si::base::Meter<> target) const -> double {
+    auto FeedbackControl::altitudeControl(State_t state, si::base::Meter<> target) const -> float {
         auto deltaHeight = target - state.altitude;
-        double pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::PITCH_P);
+        float pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::PITCH_P);
 
         return clamp(pitch, -MAX_PITCH, MAX_PITCH);
     }

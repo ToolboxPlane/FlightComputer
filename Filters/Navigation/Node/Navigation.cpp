@@ -135,7 +135,7 @@ namespace filter {
                 }
                 break;
             case THROWN:
-                nav.speed = std::numeric_limits<double>::max() * si::extended::speed;
+                nav.speed = std::numeric_limits<si::default_type>::max() * si::extended::speed;
                 nav.altitude = altitudeTarget;
                 nav.heading = headingTarget;
                 if (CRUISE_SPEED < state.speed) {

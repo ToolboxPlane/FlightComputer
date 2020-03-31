@@ -12,7 +12,7 @@
 
 class Gps_t {
 public:
-    Gps_t(double lat, double lon, double altitude = 0) : lat(lat), lon(lon), altitude(altitude){};
+    Gps_t(double lat, double lon, float altitude = 0) : lat(lat), lon(lon), altitude(altitude){};
     double lat, lon;
     si::base::Meter<> altitude;
 
@@ -35,7 +35,7 @@ public:
         auto dy = y1 - y2;
         auto dz = z1 - z2;
 
-        return std::sqrt(static_cast<decltype(dx)::type>(dx*dx + dy*dy + dz*dz)) * si::base::meter;
+        return std::sqrt(static_cast<si::default_type>(dx*dx + dy*dy + dz*dz)) * si::base::meter;
     }
 
     double angleTo(const Gps_t &gps) const {

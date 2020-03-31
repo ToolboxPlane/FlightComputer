@@ -37,11 +37,11 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
     measurement.lon = static_cast<float>(gpsMeasurement.location.lon);
 
     measurement_info_t measurementInfo{};
-    measurementInfo.expected_error_lat = gpsMeasurement.epLat;
-    measurementInfo.expected_error_lon = gpsMeasurement.epLon;
-    measurementInfo.expected_error_vert = gpsMeasurement.epVert;
-    measurementInfo.expected_error_speed = gpsMeasurement.epSpeed;
-    measurementInfo.expected_error_climb = gpsMeasurement.epClimb;
+    measurementInfo.expected_error_lat = static_cast<float>(gpsMeasurement.epLat);
+    measurementInfo.expected_error_lon = static_cast<float>(gpsMeasurement.epLon);
+    measurementInfo.expected_error_vert = static_cast<float>(gpsMeasurement.epVert);
+    measurementInfo.expected_error_speed = static_cast<float>(gpsMeasurement.epSpeed);
+    measurementInfo.expected_error_climb = static_cast<float>(gpsMeasurement.epClimb);
 
     input_t input{};
     input.elevon_l = flightControllerPackage.elevonLeft;

@@ -10,7 +10,7 @@
 class Waypoint_t {
 public:
     Waypoint_t() : location(0,0), maxDelta(5), landingAllowed(false) {};
-    Waypoint_t(double lat, double lon, double altitude, double maxDelta = 5, bool landingAllowed = false) :
+    Waypoint_t(double lat, double lon, float altitude, float maxDelta = 5, bool landingAllowed = false) :
             location(lat, lon, altitude), maxDelta(maxDelta), landingAllowed(landingAllowed){};
     Waypoint_t(const std::vector<std::string> &items) :
         location(std::stod(items[0]),std::stod(items[1]),std::stod(items[2])),

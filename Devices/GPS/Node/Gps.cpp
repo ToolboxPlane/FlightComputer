@@ -36,15 +36,15 @@ namespace device {
 
                         gps.location.lat = gps_data.fix.latitude;
                         gps.location.lon = gps_data.fix.longitude;
-                        gps.timestamp = gps_data.fix.time * si::base::second;
-                        gps.speed = gps_data.fix.speed * si::extended::speed;
-                        gps.climb = gps_data.fix.climb * si::extended::speed;
-                        gps.location.altitude = gps_data.fix.altitude * si::base::meter;
-                        gps.epLat = gps_data.fix.epy;
-                        gps.epLon = gps_data.fix.epx;
-                        gps.epVert = gps_data.fix.epv;
-                        gps.epSpeed = gps_data.fix.eps;
-                        gps.epClimb = gps_data.fix.epc;
+                        gps.timestamp = static_cast<si::default_type>(gps_data.fix.time) * si::base::second;
+                        gps.speed = static_cast<si::default_type>(gps_data.fix.speed) * si::extended::speed;
+                        gps.climb = static_cast<si::default_type>(gps_data.fix.climb) * si::extended::speed;
+                        gps.location.altitude = static_cast<si::default_type>(gps_data.fix.altitude) * si::base::meter;
+                        gps.epLat = static_cast<si::default_type>(gps_data.fix.epy) * si::base::meter;
+                        gps.epLon = static_cast<si::default_type>(gps_data.fix.epx) * si::base::meter;
+                        gps.epVert = static_cast<si::default_type>(gps_data.fix.epv) * si::base::meter;
+                        gps.epSpeed = static_cast<si::default_type>(gps_data.fix.eps) * si::extended::speed;
+                        gps.epClimb = static_cast<si::default_type>(gps_data.fix.epc) * si::extended::speed;
 
                         out.put(gps);
                     } else {

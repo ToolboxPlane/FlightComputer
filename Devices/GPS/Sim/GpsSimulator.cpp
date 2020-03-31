@@ -17,8 +17,8 @@ namespace device {
     void GpsSimulator::run() {
         std::random_device dev;
         std::mt19937 rng(dev());
-        std::uniform_real_distribution<double> sigmaDist(3, 50);
-        std::normal_distribution<double> noiseDist;
+        std::uniform_real_distribution<si::default_type> sigmaDist(3, 50);
+        std::normal_distribution<si::default_type> noiseDist;
 
         while (true) {
             auto sigmaLat = sigmaDist(rng);
@@ -38,12 +38,11 @@ namespace device {
             gps.fixAquired = true;
             gps.speed = 0_speed + noiseDist(rng) * sigmaSpeed * speed;
             gps.climb = 0_speed + noiseDist(rng) * sigmaSpeed * speed;
-            gps.epLat = 2 * sigmaLat;
-            gps.epLon = 2 * sigmaLon;
-            gps.epVert = 2 * sigmaVert;
-            gps.epSpeed = 2 * sigmaSpeed;
-            gps.epVert = 2 * sigmaVert;
-            gps.epClimb = 2 * sigmaClimb;
+            gps.epLat = 2_meter * sigmaLat;
+            gps.epLon = 2_meter * sigmaLon;
+            gps.epVert = 2_meter * sigmaVert;
+            gps.epSpeed = 2_speed * sigmaSpeed;
+            gps.epClimb = 2_speed * sigmaClimb;
             out.put(gps);
             std::this_thread::sleep_for(std::chrono::milliseconds(intervalMs));
         }

@@ -24,7 +24,7 @@ class AlphaBetaTracker {
 
         AlphaBetaTracker(sigma_v_type sigma_v, sigma_w_type sigma_w,
                 x_type x_hat = x_type{0}, v_type v_hat = v_type{0});
-        void addMeasurement(x_type z, si::base::Second<> dt);
+        void addMeasurement(z_type z, si::base::Second<> dt);
 
         auto getStateEstimate() const -> std::pair<x_type, v_type>;
         auto getMeasurementEstimate() const -> z_type;
@@ -49,8 +49,8 @@ void AlphaBetaTracker<T>::addMeasurement(z_type z, si::base::Second<> dt) {
     // Calculate Kalman Gain
     const auto lambda = static_cast<f_type >(sigma_v * dt * dt / sigma_w);
     const auto lambda2 = lambda * lambda;
-    const auto alpha = -0.125 * (lambda2 + 8 * lambda - (lambda + 4) * (std::sqrt(lambda2 + 8 * lambda)));
-    const auto beta = 0.25 * (lambda2 + 4 * lambda - lambda * std::sqrt(lambda2 + 8 * lambda));
+    const auto alpha = -0.125F * (lambda2 + 8 * lambda - (lambda + 4) * (std::sqrt(lambda2 + 8 * lambda)));
+    const auto beta = 0.25F * (lambda2 + 4 * lambda - lambda * std::sqrt(lambda2 + 8 * lambda));
 
     // Prediction
     x_hat = x_hat + dt * v_hat;

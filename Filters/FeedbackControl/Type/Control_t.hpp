@@ -14,7 +14,7 @@
 
 class Control_t {
 public:
-    double pitch, roll, power;
+    float pitch, roll, power;
     State_t state;
     friend std::ostream &operator<<(std::ostream &stream, Control_t control) {
         stream << "Pitch: " << control.pitch << "\tRoll: " << control.roll << "\tPower: " << control.power;

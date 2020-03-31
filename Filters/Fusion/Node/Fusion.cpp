@@ -10,8 +10,8 @@ namespace filter {
     using namespace si::extended;
     using namespace si::literals;
 
-    constexpr auto ACC_SIGMA_V = 400 * si::extended::acceleration / si::base::second;
-    constexpr auto ACC_SIGMA_W = 0.0135 * si::extended::acceleration; // Measurement noise
+    constexpr auto ACC_SIGMA_V = 400 * si::extended::acceleration / si::base::second; // Process noise
+    constexpr auto ACC_SIGMA_W = 0.0135F * si::extended::acceleration; // Measurement noise
 
     Fusion::Fusion() : lastUpdate{getCurrSeconds()}, accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
         accYFilter{ACC_SIGMA_V, ACC_SIGMA_W}, accZFilter{ACC_SIGMA_V, ACC_SIGMA_W} {
@@ -118,7 +118,7 @@ namespace filter {
             res.rawFlightControllerData = flightControllerData;
             res.navPackage = navData;
 
-            std::cout << getCurrSeconds() - startTime << std::endl;
+            //std::cout << getCurrSeconds() - startTime << std::endl;
 
             out.put(res);
         } else {
@@ -137,8 +137,8 @@ namespace filter {
 
     auto Fusion::getCurrSeconds() -> si::base::Second<> {
         auto tp = std::chrono::high_resolution_clock::now().time_since_epoch();
-        auto microseconds = static_cast<long double>(
+        auto microseconds = static_cast<si::default_type>(
                 std::chrono::duration_cast<std::chrono::microseconds>(tp).count());
-        return microseconds / 10e6 * si::base::second;
+        return microseconds / 10e6F * si::base::second;
     }
 }
