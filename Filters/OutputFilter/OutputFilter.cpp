@@ -3,6 +3,7 @@
 //
 
 #include "OutputFilter.hpp"
+#include "../../Devices/rcLib/PackageOstream.hpp"
 
 namespace filter {
     OutputFilter::OutputFilter() {
@@ -23,9 +24,10 @@ namespace filter {
 
     void OutputFilter::run() {
         Control_t control{};
-        rcLib::Package serialOutPkg(1024, 4), loraOutPkg(1024, 4);
+        rcLib::Package serialOutPkg(1024, 4);
+        rcLib::Package baseOutPkg(1024, 4);
 
-        loraOutPkg.setMeshProperties(static_cast<uint8_t>(true), 2);
+        baseOutPkg.setMeshProperties(static_cast<uint8_t>(true), 2);
 
         while (!in.isClosed()) {
             if (in.get(control)) {
@@ -34,13 +36,13 @@ namespace filter {
                 serialOutPkg.setChannel(2, static_cast<uint16_t>(control.roll + 180));
                 serialOutPkg.setChannel(3, 0);
 
-                loraOutPkg.setChannel(0, -control.state.navPackage.rssi);
-                loraOutPkg.setChannel(1, static_cast<uint16_t>(control.state.altitudeAboveGround));
-                loraOutPkg.setChannel(2, static_cast<uint16_t>(control.state.lat * 10));
-                loraOutPkg.setChannel(3, static_cast<uint16_t>(control.state.lon * 10));
+                baseOutPkg.setChannel(0, -control.state.navPackage.rssi);
+                baseOutPkg.setChannel(1, static_cast<uint16_t>(control.state.altitudeAboveGround));
+                baseOutPkg.setChannel(2, static_cast<uint16_t>(control.state.lat * 10));
+                baseOutPkg.setChannel(3, static_cast<uint16_t>(control.state.lon * 10));
 
                 flightControllerOut.put(serialOutPkg);
-                baseOut.put(loraOutPkg);
+                baseOut.put(baseOutPkg);
             }
         }
     }

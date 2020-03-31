@@ -66,10 +66,6 @@ namespace filter {
         return taranisOut;
     }
 
-    InputChannel<rcLib::Package> &MeshManager::getNavIn() {
-        return navIn;
-    }
-
     OutputChannel<rcLib::Package> &MeshManager::getNavOut() {
         return navOut;
     }
@@ -86,15 +82,11 @@ namespace filter {
             if (pdbIn.get(pkg, false))  {
                 propagateInternal(pkg);
             }
-            if (navIn.get(pkg, false)) {
-                propagateInternal(pkg);
-            }
 
             if (flightControllerIn.get(pkg, false)) {
                 serialOut.put(pkg);
             }
             if (baseIn.get(pkg, false)) {
-                navOut.put(pkg);
                 loraOut.put(pkg);
             }
             std::this_thread::yield();

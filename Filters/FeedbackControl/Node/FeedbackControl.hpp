@@ -36,9 +36,10 @@ namespace filter {
         static constexpr auto SPEED_P = 1.0 / si::extended::speed;
         static constexpr auto PITCH_P = 1.0 / si::base::meter;
         static constexpr auto MAX_ROLL = 80.0;
-        static constexpr auto MAX_PITCH = 60.0;
+        static constexpr auto MAX_PITCH = 30.0;
         static constexpr auto HEADING_P = 1.0;
         static constexpr auto SPEED_I = 0.5 / si::extended::speed;
+        static constexpr auto MAX_SPEED = 100/3.6 * si::extended::speed;
     };
 }
 

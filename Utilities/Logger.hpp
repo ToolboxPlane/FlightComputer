@@ -19,7 +19,11 @@ namespace debug {
     public:
         explicit Logger(std::string tag, bool enabled = true, std::ostream &stream = std::cout) :
                 tag(std::move(tag)), stream(stream), enabled(enabled) {
-            this->start();
+            if (enabled) {
+                this->start();
+            } else {
+                in.close();
+            }
         }
 
         InputChannel<T> &getChannelIn() {
@@ -29,7 +33,7 @@ namespace debug {
     private:
         void run() override {
             T item;
-            while (enabled && !in.isClosed()) {
+            while (!in.isClosed()) {
                 if (in.get(item)) {
                     auto time = std::chrono::duration_cast<std::chrono::milliseconds>(
                             std::chrono::system_clock::now().time_since_epoch()

@@ -72,14 +72,20 @@ namespace filter {
 
         if (lastPdbPackage.has_value()) {
             res.pdbPackage = fusion::decodePackage<PdbPackage>(lastPdbPackage.value());
+        } else {
+            std::cout << "No PDB Package received!" << std::endl;
         }
 
         if (lastTaranisPackage.has_value()) {
             res.taranisPackage = fusion::decodePackage<TaranisPackage>(lastTaranisPackage.value());
+        } else {
+            std::cout << "No Taranis Package received!" << std::endl;
         }
 
         if (lastRemotePackage.has_value()) {
             res.loraRemote = fusion::decodePackage<LoraPackage>(lastRemotePackage.value());
+        } else {
+            std::cout << "No Lora-Remote Package received!" << std::endl;
         }
 
         if (lastGpsMeasurement.has_value() /*&& lastGpsMeasurement.value().fixAquired*/ && lastNavPackage.has_value()) {

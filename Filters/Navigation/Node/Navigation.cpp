@@ -92,16 +92,19 @@ namespace filter {
         nav.heading = targetHeading;
         if (LANDING_APPROACH_ALT + 0.1_meter < state.altitudeAboveGround) { // Approach
             nav.altitude = state.altitudeGround + LANDING_APPROACH_ALT;
+            nav.stateMinor = 0;
         } else if (LANDING_SPEED < state.speed){ // Slow Down
             nav.altitude = state.altitudeAboveGround + LANDING_APPROACH_ALT;
+            nav.stateMinor = 1;
         } else if (LANDING_FLARE_ALT < state.altitudeAboveGround) { // Landing
             nav.altitude = LANDING_FLARE_ALT - 0.1_meter;
+            nav.stateMinor = 2;
         } else { // Flare
             nav.altitude = state.altitude + 100_meter;
+            nav.stateMinor = 3;
         }
 
         nav.stateMajor = 2;
-        nav.stateMinor = 0;
         nav.state = state;
 
         out.put(nav);

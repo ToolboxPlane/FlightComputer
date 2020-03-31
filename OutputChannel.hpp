@@ -17,7 +17,9 @@ public:
 
     void put(T item) {
         for(auto &channel: outputChannelList) {
-            channel.get().put(item);
+            if (!channel.get().isClosed()) {
+                channel.get().put(item);
+            }
         }
     }
 

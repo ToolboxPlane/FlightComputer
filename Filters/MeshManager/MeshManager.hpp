@@ -18,8 +18,6 @@ namespace filter {
         InputChannel<rcLib::Package> &getLoraIn();
         InputChannel<rcLib::Package> &getSerialIn();
         InputChannel<rcLib::Package> &getPdbIn();
-        InputChannel<rcLib::Package> &getNavIn();
-
 
         OutputChannel<rcLib::Package> &getLoraOut();
         OutputChannel<rcLib::Package> &getSerialOut();
@@ -37,7 +35,7 @@ namespace filter {
 
     private:
         // Real output
-        InputChannel<rcLib::Package> loraIn, serialIn, pdbIn, navIn;
+        InputChannel<rcLib::Package> loraIn, serialIn, pdbIn;
         OutputChannel<rcLib::Package> loraOut, serialOut;
 
         // Internal
