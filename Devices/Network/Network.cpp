@@ -30,8 +30,17 @@ void device::Network::run() {
     while (!in.isClosed()) {
         if (in.get(pkgOut)) {
             auto len = pkgOut.encode();
-            sendto(this->fd, pkgOut.getEncodedData(), len, 0,
-                   reinterpret_cast<sockaddr*>(&sockaddrIn), sizeof(sockaddrIn));
+            std::size_t written = 0;
+            do {
+                auto res = sendto(this->fd, pkgOut.getEncodedData() + written, len - written, 0,
+                       reinterpret_cast<sockaddr *>(&sockaddrIn), sizeof(sockaddrIn));
+
+                if (res < 0) {
+                    std::cerr << "[Network]:\t" << strerror(errno) << std::endl;
+                } else {
+                    written += res;
+                }
+            } while (written < len);
         }
     }
 }

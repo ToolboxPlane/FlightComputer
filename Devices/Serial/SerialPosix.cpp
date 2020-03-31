@@ -83,9 +83,10 @@ namespace device {
         do {
             auto result = write(this->fd, buffer + written, len - written);
             if (result < 0) {
-                throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
+                std::cerr << "SerialPosix:\t" << strerror(errno) << std::endl;
+            } else {
+                written += static_cast<std::size_t>(result);
             }
-            written += static_cast<std::size_t>(result);
         } while (written < len);
     }
 
