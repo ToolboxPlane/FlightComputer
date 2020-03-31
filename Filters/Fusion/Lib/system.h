@@ -13,43 +13,43 @@
 #include "config.h"
 
 typedef struct {
-    real_t roll_angle; // Orientation and speed of the plane around the roll (forward) axis (degree)
-    real_t pitch_angle; // Orientation and speed of the plane around the pitch (right) axis (degree)
-    real_t yaw_angle; // Orientation and speed of the plane around the yaw (down) axis (degree)
-    real_t speed; // The absolute speed of the plane
-    real_t altitude; // The absolute altitude of the plane
-    real_t altitude_above_ground; // The altitude above ground
-    real_t lat, lon; // The global position of the plane
+    float roll_angle; // Orientation and speed of the plane around the roll (forward) axis (degree)
+    float pitch_angle; // Orientation and speed of the plane around the pitch (right) axis (degree)
+    float yaw_angle; // Orientation and speed of the plane around the yaw (down) axis (degree)
+    float speed; // The absolute speed of the plane
+    float altitude; // The absolute altitude of the plane
+    float altitude_above_ground; // The altitude above ground
+    float lat, lon; // The global position of the plane
 } system_state_t;
 
 typedef struct {
     system_state_t x;
-    real_t weight;
+    float weight;
 } weighted_particle_t;
 
 typedef struct {
-    real_t roll_angle; // Orientation and speed of the plane around the roll (forward) axis (degree)
-    real_t pitch_angle; // Orientation and speed of the plane around the pitch (right) axis (degree)
-    real_t yaw_angle; // Orientation and speed of the plane around the yaw (down) axis (degree)
-    real_t air_speed; // The airspeed as measured by the pivot tube
-    real_t ground_speed; // The ground speed of the plane
-    real_t vertical_speed; // The vertical speed (climb) of the plane
-    real_t altitude_baro; // The absolute altitude, as measured by the barometer
-    real_t altitude_gps; // The absolute altitude, as measured by the gps
-    real_t distance_ground; // The distance to the ground, as measured by the distance sensor
-    real_t lat, lon; // The position, acquired by the GPS
+    float roll_angle; // Orientation and speed of the plane around the roll (forward) axis (degree)
+    float pitch_angle; // Orientation and speed of the plane around the pitch (right) axis (degree)
+    float yaw_angle; // Orientation and speed of the plane around the yaw (down) axis (degree)
+    float air_speed; // The airspeed as measured by the pivot tube
+    float ground_speed; // The ground speed of the plane
+    float vertical_speed; // The vertical speed (climb) of the plane
+    float altitude_baro; // The absolute altitude, as measured by the barometer
+    float altitude_gps; // The absolute altitude, as measured by the gps
+    float distance_ground; // The distance to the ground, as measured by the distance sensor
+    float lat, lon; // The position, acquired by the GPS
 } measurement_t;
 
 typedef struct {
-    real_t expected_error_lat, expected_error_lon, expected_error_vert, expected_error_speed, expected_error_climb;
+    float expected_error_lat, expected_error_lon, expected_error_vert, expected_error_speed, expected_error_climb;
 } measurement_info_t;
 
 typedef struct {
-    real_t elevon_l, elevon_r;
-    real_t motor;
+    float elevon_l, elevon_r;
+    float motor;
 } input_t;
 
-void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, real_t dt,
+void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, float dt,
         const measurement_info_t *measurement_info);
 
 void resample(const weighted_particle_t* old_particles, size_t num_old_particles,

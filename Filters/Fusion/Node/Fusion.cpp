@@ -118,19 +118,19 @@ namespace filter {
             res.rawFlightControllerData = flightControllerData;
             res.navPackage = navData;
 
-            //std::cout << getCurrSeconds() - startTime << std::endl;
+            std::cout << getCurrSeconds() - startTime << std::endl;
 
             out.put(res);
         } else {
-            std::cerr << "Fusion not running, reason:";
+            std::cerr << "Fusion not running, reason(s):";
             if (!lastGpsMeasurement.has_value()) {
                 std::cerr << "No GPS Measurement" << std::endl;
-            } /*else if (!lastGpsMeasurement.value().fixAquired) {
+            } else if (!lastGpsMeasurement.value().fixAquired) {
                 std::cerr << "No GPS Fix" << std::endl;
-            } */ else if (!lastNavPackage.has_value()) {
+            }
+
+            if (!lastNavPackage.has_value()) {
                 std::cerr << "No Nav Data" << std::endl;
-            } else {
-                std::cerr << "Everything is fucked" << std::endl;
             }
         }
     }

@@ -20,7 +20,7 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
         const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage)
     -> system_state_t {
     if (particles.empty()) {
-        init(1000, gpsMeasurement, navPackage.usDistance);
+        init(10000, gpsMeasurement, navPackage.usDistance);
     }
 
     measurement_t measurement{};
@@ -64,14 +64,12 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
 
     system_state_t estimate{};
 
-    double nEffInv = 0;
+    float nEffInv = 0;
 
     // Fix PDF (-> Bayes * 1/p(z)) and determine most likely particle
     for (auto &[state, weight] : particles) {
         weight /= weight_sum;
-        weight = std::min<real_t>(weight, 1.0);
-
-        //std::cout << "(" << state.altitude_above_ground << ", " << estimate.speed << "):\t" << weight << "\n";
+        weight = std::min<float>(weight, 1.0);
 
         estimate.roll_angle += state.roll_angle * weight;
         estimate.pitch_angle += state.pitch_angle * weight;
@@ -101,21 +99,19 @@ StateEstimateParticleFilter::init(std::size_t numberOfParticles, const GpsMeasur
         si::base::Meter<> distanceGround) {
     std::random_device dev;
     std::mt19937 rng(dev());
-    std::normal_distribution<real_t> altDist(0, 10);
-    std::normal_distribution<real_t> altGroundDist(0, 0.1);
-    std::normal_distribution<real_t> latLonDist(0, 0.00001);
+    std::normal_distribution<float> altDist(0, 10);
+    std::normal_distribution<float> altGroundDist(0, 0.1);
+    std::normal_distribution<float> latLonDist(0, 0.00001);
 
     for (std::size_t c = 0; c < numberOfParticles; ++c) {
-        system_state_t state{};
-        state.altitude_above_ground = static_cast<real_t>(distanceGround) + altGroundDist(rng);
-        state.altitude = static_cast<real_t>(gpsMeasurement.location.altitude) + altDist(rng);
-        state.lon = gpsMeasurement.location.lat + latLonDist(rng);
-        state.lat = gpsMeasurement.location.lon + latLonDist(rng);
-        state.speed = 0;
-
         weighted_particle_t weightedParticle{};
-        weightedParticle.x = state;
-        weightedParticle.weight = 1.0f / numberOfParticles;
+        weightedParticle.x.altitude_above_ground = static_cast<float>(distanceGround) + altGroundDist(rng);
+        weightedParticle.x.altitude = static_cast<float>(gpsMeasurement.location.altitude) + altDist(rng);
+        weightedParticle.x.lon = static_cast<float>(gpsMeasurement.location.lat) + latLonDist(rng);
+        weightedParticle.x.lat = static_cast<float>(gpsMeasurement.location.lon) + latLonDist(rng);
+        weightedParticle.x.speed = 0;
+
+        weightedParticle.weight = 1.0F / numberOfParticles;
         particles.emplace_back(weightedParticle);
     }
 }
