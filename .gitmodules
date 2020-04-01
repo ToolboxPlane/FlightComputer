@@ -3,4 +3,4 @@
 	url = https://github.com/ToolboxPlane/RadioControlProtocol.git
 [submodule "Devices/rcLib/RadioControlProtocolCpp"]
 	path = Devices/rcLib/RadioControlProtocolCpp
-	url = git@github.com:ToolboxPlane/RadioControlProtocolCpp.git
+	url =  https://github.com/ToolboxPlane/RadioControlProtocolCpp.git
