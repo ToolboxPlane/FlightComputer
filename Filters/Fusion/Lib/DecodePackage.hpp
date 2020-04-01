@@ -45,14 +45,19 @@ namespace fusion {
         flightControllerPackage.rollDeriv = (static_cast<si::default_type>(pkg.getChannel(4)) - 500) * hertz;
         flightControllerPackage.pitchDeriv = (static_cast<si::default_type>(pkg.getChannel(5)) -500) * hertz;
         flightControllerPackage.yawDeriv = (static_cast<si::default_type>(pkg.getChannel(6)) - 500) * hertz;
-        flightControllerPackage.accX = (static_cast<si::default_type>((pkg.getChannel(7)) - 500) / 100) * acceleration;
-        flightControllerPackage.accY = (static_cast<si::default_type>((pkg.getChannel(8)) - 500) / 100) * acceleration;
-        flightControllerPackage.accZ = (static_cast<si::default_type>((pkg.getChannel(9)) - 500) / 100) * acceleration;
+        flightControllerPackage.accX =
+                (static_cast<si::default_type>((pkg.getChannel(7)) - 500) / 100) * acceleration;
+        flightControllerPackage.accY =
+                (static_cast<si::default_type>((pkg.getChannel(8)) - 500) / 100) * acceleration;
+        flightControllerPackage.accZ =
+                (static_cast<si::default_type>((pkg.getChannel(9)) - 500) / 100) * acceleration;
 
         // @TODO fix scaling
-        flightControllerPackage.motor = pkg.getChannel(13);
-        flightControllerPackage.elevonLeft = static_cast<si::default_type>(pkg.getChannel(14)) -  500;
-        flightControllerPackage.elevonRight = static_cast<si::default_type>(pkg.getChannel(15)) - 500;
+        flightControllerPackage.motor = pkg.getChannel(13) / 1000.0f;
+        flightControllerPackage.elevonLeft =
+                (static_cast<si::default_type>(pkg.getChannel(14)) -  500) / 500.0f;
+        flightControllerPackage.elevonRight =
+                (static_cast<si::default_type>(pkg.getChannel(15)) - 500) / 500.0F;
 
         return flightControllerPackage;
     }
@@ -91,6 +96,7 @@ namespace fusion {
         loraPackage.joyLeftY = static_cast<si::default_type>(pkg.getChannel(3) - 127) / 127.0f;
         loraPackage.flightMode = static_cast<FlightMode>(pkg.getChannel(4));
         loraPackage.isArmed = static_cast<bool>(pkg.getChannel(5));
+        loraPackage.rssi = -pkg.getChannel(7);
 
         return loraPackage;
     }

@@ -48,6 +48,7 @@ public:
     si::default_type joyLeftX, joyRightX, joyLeftY, joyRightY;
     FlightMode flightMode = FlightMode::WAYPOINT;
     bool isArmed;
+    int rssi;
 };
 
 class NavPackage {
