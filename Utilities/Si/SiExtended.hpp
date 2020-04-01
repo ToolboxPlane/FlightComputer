@@ -14,17 +14,19 @@
 
 namespace si {
     template <int exp>
-    constexpr void printHelper(std::ostream &ostream, const char *name) {
-        if constexpr (exp != 0) {
-            if constexpr (exp == -1) {
-                ostream << " /" << name;
-            } else if constexpr (exp == 1) {
-                ostream << " " << name;
-            } else {
-                ostream << " " << name << "^" << exp;
-            }
-        }
+    void printHelper(std::ostream &ostream, const char *name) {
+        ostream << " " << name << "^" << exp;
     }
+
+    template <>
+    void printHelper<0>(std::ostream&, const char*);
+
+    template <>
+    void printHelper<-1>(std::ostream &ostream, const char *name);
+
+    template <>
+    void printHelper<1>(std::ostream &ostream, const char *name);
+
 
     template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T>
     std::ostream &operator<<(std::ostream& ostream, const Si<m,kg,s,A,K,MOL,CD,T> &si) {
@@ -41,22 +43,22 @@ namespace si {
     }
 
     namespace extended {
-        template<typename T = long double>
+        template<typename T = si::default_type>
         using Speed = Si<1, 0, -1, 0, 0, 0, 0, T>;
         constexpr Speed<> speed{1};
         CREATE_ALL_PREFIX(speed,1,0,-1,0,0,0,0)
 
-        template<typename T = long double>
+        template<typename T = si::default_type>
         using Acceleration = Si<1, 0, -2, 0, 0, 0, 0, T>;
         constexpr Acceleration<> acceleration{1};
         CREATE_ALL_PREFIX(acceleration,1,0,-2,0,0,0,0)
 
-        template<typename T = long double>
+        template<typename T = si::default_type>
         using Voltage = Si<2, 1, -3, -1, 0, 0, 0, T>;
         constexpr Voltage<> volt{1};
         CREATE_ALL_PREFIX(volt,2,1,-3,-1,0,0,0)
 
-        template<typename T = long double>
+        template<typename T = si::default_type>
         using Frequency = Si<0, 0, -1, 0, 0, 0, 0, T>;
         constexpr Frequency<> hertz{1};
         CREATE_ALL_PREFIX(hertz,0,0,-1,0,0,0,0)

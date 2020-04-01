@@ -9,18 +9,22 @@
 #include "../../../Devices/GPS/Type/GpsMeasurement_t.hpp"
 #include "../../../Utilities/Si/SiExtended.hpp"
 
-enum class FlightMode{
+enum class FlightMode {
     ANGLE = 0, LAUNCH = 1, LAND = 2, HOLD = 3, WAYPOINT = 4
+};
+
+enum class SwitchPos {
+    UP, CENTRE, DOWN
 };
 
 class FlightControllerPackage {
 public:
     uint8_t bnoState;
-    float roll, pitch, yaw;
+    si::default_type roll, pitch, yaw;
     si::extended::Frequency<> rollDeriv, pitchDeriv, yawDeriv;
-    float aileronRight, vtailRight;
-    float aileronLeft, vtailLeft;
-    float motor;
+    si::extended::Acceleration<> accX, accY, accZ;
+    si::default_type elevonLeft, elevonRight;
+    si::default_type motor;
 };
 
 class PdbPackage {
@@ -34,43 +38,54 @@ public:
 
 class TaranisPackage {
 public:
-    float throttle, yaw, pitch, roll;
+    si::default_type throttle, pitch, roll;
     bool isArmed, manualOverrideActive;
+    si::default_type rssi;
 };
 
 class LoraPackage {
 public:
-    float joyLeftX, joyRightX, joyLeftY, joyRightY;
-    FlightMode flightMode;
+    si::default_type joyLeftX, joyRightX, joyLeftY, joyRightY;
+    FlightMode flightMode = FlightMode::WAYPOINT;
     bool isArmed;
+};
+
+class NavPackage {
+    public:
+        int rssi;
+        si::base::Meter<> baroAltitude;
+        si::extended::Voltage<> pitotVoltage;
+        si::base::Meter<> usDistance;
 };
 
 
 class State_t {
 public:
-    GpsMeasurement_t position;
-    si::base::Meter<> heightAboveGround{}, heightAboveSeaLevel{};
-    double pitch{}, roll{}, yaw{};
-    si::extended::Speed<> airspeed{}, groundSpeed{};
+    si::default_type roll{};
+    si::default_type pitch{};
+    si::default_type yaw{};
+    si::extended::Speed<> speed{};
+    si::base::Meter<> altitude{};
+    si::base::Meter<> altitudeAboveGround{};
+    si::base::Meter<> altitudeGround;
+    si::default_type lat{}, lon{};
+    si::extended::Acceleration<> accX, accY, accZ;
 
     FlightControllerPackage rawFlightControllerData{};
     PdbPackage pdbPackage{};
     TaranisPackage taranisPackage{};
     LoraPackage loraRemote{};
+    NavPackage navPackage;
 
     friend std::ostream &operator<<(std::ostream &ostream, State_t state) {
         ostream << "H:" << state.yaw;
         ostream << "\tR:" << state.roll;
         ostream << "\tP:" << state.pitch;
-        ostream << "\tGnd:" << state.heightAboveGround;
-        ostream << "\tSea:" << state.heightAboveSeaLevel;
-        ostream << "\tAirs:" << state.airspeed;
-        ostream << "\tGnds:" << state.groundSpeed;
-        if(state.position.fixAquired) {
-            ostream << "\tPos:(" << state.position.location.lat << "," << state.position.location.lon << ")";
-        } else {
-            ostream << "\t No Fix";
-        }
+        ostream << "\tGnd:" << state.altitudeAboveGround;
+        ostream << "\tSea:" << state.altitude;
+        ostream << "\tSpeed:" << state.speed;
+        ostream << "\tAcc:(" << state.accX << "," << state.accY << "," << state.accZ << ")";
+        ostream << "\tPos:(" << state.lat << "," << state.lon << ")";
         ostream << "\tV:" << state.pdbPackage.voltageVcc;
         ostream << "\tAr:" << (state.taranisPackage.isArmed?1:0);
         ostream << "\tOr:" << (state.taranisPackage.manualOverrideActive?1:0);

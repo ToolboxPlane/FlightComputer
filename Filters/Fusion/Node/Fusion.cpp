@@ -2,16 +2,19 @@
 // Created by paul on 14.03.18.
 //
 
-#include <iostream>
+#include <numeric>
 #include "Fusion.hpp"
-#include "../Type/State_t.hpp"
 #include "../Lib/DecodePackage.hpp"
 
 namespace filter {
     using namespace si::extended;
     using namespace si::literals;
 
-    Fusion::Fusion() {
+    constexpr auto ACC_SIGMA_V = 400 * si::extended::acceleration / si::base::second; // Process noise
+    constexpr auto ACC_SIGMA_W = 0.0135F * si::extended::acceleration; // Measurement noise
+
+    Fusion::Fusion() : lastUpdate{getCurrSeconds<long double>()}, accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
+        accYFilter{ACC_SIGMA_V, ACC_SIGMA_W}, accZFilter{ACC_SIGMA_V, ACC_SIGMA_W} {
         this->start();
     }
 
@@ -43,66 +46,101 @@ namespace filter {
         return taranisIn;
     }
 
-    InputChannel<si::base::Meter<>> &Fusion::getUltrasonicIn() {
-        return ultrasonicIn;
+    InputChannel<rcLib::Package> &Fusion::getNavIn() {
+        return navIn;
     }
 
     void Fusion::run() {
         while (!flightControllerIn.isClosed()) {
-            gpsIn.get(lastGpsMeasurement);
-            pdbIn.get(lastPdbPackage);
-            taranisIn.get(lastTaranisPackage);
-            baseIn.get(lastBasePackage);
-            remoteIn.get(lastRemotePackage);
-            ultrasonicIn.get(lastUltrasonicDistance);
+            while (gpsIn.get(lastGpsMeasurement));
+            while (pdbIn.get(lastPdbPackage));
+            while (taranisIn.get(lastTaranisPackage));
+            while (baseIn.get(lastBasePackage));
+            while (remoteIn.get(lastRemotePackage));
+            while (navIn.get(lastNavPackage));
 
-            if (flightControllerIn.get(lastFcPackage)) {
-                out.put(process());
-            } else {
-                std::this_thread::yield();
-            }
+            do {
+                flightControllerIn.get(lastFcPackage);
+            } while (flightControllerIn.numAvailable() > 0);
+
+            process();
         }
     }
 
-    State_t Fusion::process() {
+    void Fusion::process() {
         State_t res{};
-        static State_t lastState;
-
-        // Flightcontroller Data
-        //auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
-
-        // Gps
-        if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired) {
-            res.position = lastGpsMeasurement.value();
-            if (lastState.position.timestamp < res.position.timestamp) {
-                res.groundSpeed = res.position.location.distanceTo(lastState.position.location) /
-                        (res.position.timestamp - lastState.position.timestamp);
-                //@TODO maybe res.position.speed is the better choice, requires testing
-            } else {
-                res.groundSpeed = lastState.groundSpeed;
-            }
-        } else {
-            res.groundSpeed = res.airspeed;
-            res.position.fixAquired = false;
-        }
 
         if (lastPdbPackage.has_value()) {
             res.pdbPackage = fusion::decodePackage<PdbPackage>(lastPdbPackage.value());
+        } else {
+            std::cout << "No PDB Package received!" << std::endl;
         }
 
         if (lastTaranisPackage.has_value()) {
             res.taranisPackage = fusion::decodePackage<TaranisPackage>(lastTaranisPackage.value());
+        } else {
+            std::cout << "No Taranis Package received!" << std::endl;
         }
 
         if (lastRemotePackage.has_value()) {
             res.loraRemote = fusion::decodePackage<LoraPackage>(lastRemotePackage.value());
+        } else {
+            std::cout << "No Lora-Remote Package received!" << std::endl;
         }
 
-        //@TODO handle base, discuss which data to send. ATM not necessary due to non functioning lora tx
+        if (lastGpsMeasurement.has_value() /*&& lastGpsMeasurement.value().fixAquired*/ && lastNavPackage.has_value()) {
+            const auto startTime = getCurrSeconds<long double>();
+            const auto dtDouble = startTime - lastUpdate;
+            const auto dt = static_cast<si::base::Second<si::default_type>>(dtDouble);
+            lastUpdate = startTime;
 
-        lastState = res;
+            auto navData = fusion::decodePackage<NavPackage>(lastNavPackage.value());
+            auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
+            auto state  = particleFilter.update(dt, flightControllerData, lastGpsMeasurement.value(),
+                    navData);
 
-        return res;
+            accXFilter.addMeasurement(flightControllerData.accX, dt);
+            accYFilter.addMeasurement(flightControllerData.accY, dt);
+            accZFilter.addMeasurement(flightControllerData.accZ, dt);
+
+            res.roll = state.roll_angle;
+            res.pitch = state.pitch_angle;
+            res.yaw = state.yaw_angle;
+            res.speed = state.speed * speed;
+            res.altitude = state.altitude * meter;
+            res.altitudeAboveGround = state.altitude_above_ground * meter;
+            res.altitudeGround = res.altitude - res.altitudeAboveGround;
+            res.lat = state.lat;
+            res.lon = state.lon;
+            res.accX = accXFilter.getMeasurementEstimate();
+            res.accY = accYFilter.getMeasurementEstimate();
+            res.accZ = accZFilter.getMeasurementEstimate();
+
+            res.rawFlightControllerData = flightControllerData;
+            res.navPackage = navData;
+
+            //std::cout << getCurrSeconds<long double>() - startTime << std::endl;
+
+            out.put(res);
+        } else {
+            std::cerr << "Fusion not running, reason(s):";
+            if (!lastGpsMeasurement.has_value()) {
+                std::cerr << "No GPS Measurement" << std::endl;
+            } else if (!lastGpsMeasurement.value().fixAquired) {
+                std::cerr << "No GPS Fix" << std::endl;
+            }
+
+            if (!lastNavPackage.has_value()) {
+                std::cerr << "No Nav Data" << std::endl;
+            }
+        }
     }
 
+    template <typename T>
+    auto Fusion::getCurrSeconds() -> si::base::Second<T> {
+        auto tp = std::chrono::high_resolution_clock::now().time_since_epoch();
+        auto microseconds = static_cast<T>(
+                std::chrono::duration_cast<std::chrono::microseconds>(tp).count());
+        return si::base::Second<T>(microseconds / 10e6);
+    }
 }

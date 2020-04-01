@@ -12,6 +12,8 @@ template<typename T>
 class InputChannel {
 public:
     InputChannel() : closed{false} {}
+    InputChannel(const InputChannel<T> &) = delete;
+    InputChannel& operator=(const InputChannel<T> &) = delete;
 
     void close() {
         std::unique_lock<std::mutex> lock(m);
@@ -46,10 +48,21 @@ public:
         return true;
     }
 
-    void get(std::optional<T> &t) {
+    auto get(std::optional<T> &t) -> bool {
         T newT;
         if (this->get(newT, false)) {
             t = std::move(newT);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    auto numAvailable() const -> std::size_t {
+        if (closed) {
+            return 0;
+        } else {
+            return queue.size();
         }
     }
 private:

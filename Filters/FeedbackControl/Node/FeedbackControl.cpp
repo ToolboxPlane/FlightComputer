@@ -22,23 +22,24 @@ namespace filter {
             channelIn.get(nav);
 
             Control_t control{};
-            control.pitch = headingControl(nav.state, nav.heading);
+            control.roll = headingControl(nav.state, nav.heading);
             control.power = speedControl(nav.state, nav.speed);
-            control.roll = altitudeControl(nav.state, nav.altitude);
+            control.pitch = altitudeControl(nav.state, nav.altitude);
+            control.state = nav.state;
 
             channelOut.put(control);
         }
     }
 
-    auto FeedbackControl::speedControl(State_t state, si::extended::Speed<> target) const -> double {
+    auto FeedbackControl::speedControl(const State_t &state, si::extended::Speed<> target) const -> si::default_type {
         if (static_cast<decltype(target)::type>(target) == 0) {
             return 0;
         }
 
         static si::extended::Speed<> diffSum = 0_speed;
-        static auto lastDiff = target - state.groundSpeed;
-        auto deltaSpeed = target - state.groundSpeed;
-        diffSum += deltaSpeed;
+        static auto lastDiff = target - state.speed;
+        auto deltaSpeed = target - state.speed;
+        diffSum += deltaSpeed; // @TODO dt
 
         // Change in sign, anti windup
         if (0 < static_cast<decltype(lastDiff)::type>(lastDiff * deltaSpeed)) {
@@ -47,15 +48,18 @@ namespace filter {
         lastDiff = deltaSpeed;
 
         // PI-Controller (I necessary to achieve stationary accuracy)
-        double speed = static_cast<decltype(deltaSpeed)::type>
+        si::default_type speedFeedback = static_cast<si::default_type>
                 (deltaSpeed * FeedbackControl::SPEED_P + diffSum * FeedbackControl::SPEED_I);
 
-        return clamp(speed, 0.0, 1.0);
+        // Feedforward Term
+        auto speedFeedforward = static_cast<si::default_type>(target / MAX_SPEED);
+
+        return clamp(speedFeedback + speedFeedforward, 0.0F, 1.0F);
     }
 
-    auto FeedbackControl::headingControl(State_t state, double target) const -> double {
-        double headingDiff = target - state.yaw;
-        headingDiff = std::fmod(headingDiff, 360);
+    auto FeedbackControl::headingControl(const State_t &state, si::default_type target) const -> si::default_type {
+        auto headingDiff = target - state.yaw;
+        headingDiff = fmodf(headingDiff, 360);
         if (headingDiff > 180) {
             headingDiff -= 180;
         } else if (headingDiff < -180) {
@@ -65,9 +69,9 @@ namespace filter {
         return clamp(roll, -MAX_ROLL, MAX_ROLL);
     }
 
-    auto FeedbackControl::altitudeControl(State_t state, si::base::Meter<> target) const -> double {
-        auto deltaHeight = state.heightAboveSeaLevel - target;
-        double pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::PITCH_P);
+    auto FeedbackControl::altitudeControl(const State_t &state, si::base::Meter<> target) const -> si::default_type {
+        auto deltaHeight = target - state.altitude;
+        auto pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::PITCH_P);
 
         return clamp(pitch, -MAX_PITCH, MAX_PITCH);
     }
@@ -84,7 +88,7 @@ namespace filter {
     auto FeedbackControl::clamp(T val, T min, T max) -> T {
         if (val < min) {
             return min;
-        } else if (val > max) {
+        } else if (max < val) {
             return max;
         } else {
             return val;

@@ -3,4 +3,4 @@ code=$(gcc -fpreprocessed -dD -E main.cpp | sed '/^#/ d' | sed '/^[[:space:]]*$/
 python scripts/graph.py "${code}"
 dot -Tpdf -o /tmp/graph.pdf tmp.dot
 rm tmp.dot
-evince /tmp/graph.pdf
+xdg-open /tmp/graph.pdf

@@ -12,68 +12,68 @@
 
 // ...
 #define CREATE_ALL_PREFIX(BASE_NAME, a, b, c, d, e, f, g) \
-constexpr Si<a,b,c,d,e,f,g> operator "" _Y_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E24}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _Z_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E21}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _E_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E18}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _P_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E15}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _T_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E12}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _G_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E9}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _M_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E6}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _k_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E3}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _h_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E2}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _da_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E1}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _d_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E-1}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _c_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E-2}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _m_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E-3}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _mu_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E-6}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _n_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E-9}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _p_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E-12}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _f_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E-15}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _a_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E-18}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _z_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E-21}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _y_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{t * 1E-24}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _Y_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E24}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _Z_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E21}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _E_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E18}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _P_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E15}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _T_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E12}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _G_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E9}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _M_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E6}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _k_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E3}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _h_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E2}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _da_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E1}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t)}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _d_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E-1}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _c_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E-2}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _m_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E-3}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _mu_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E-6}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _n_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E-9}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _p_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E-12}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _f_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E-15}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _a_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E-18}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _z_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E-21}; } \
-constexpr Si<a,b,c,d,e,f,g> operator "" _y_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<long double>(t) * 1E-24}; }
+constexpr Si<a,b,c,d,e,f,g> operator "" _Y_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E24)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _Z_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E21)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _E_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E18)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _P_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E15)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _T_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E12)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _G_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E9)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _M_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E6)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _k_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E3)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _h_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E2)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _da_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E1)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _d_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-1)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _c_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-2)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _m_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-3)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _mu_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-6)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _n_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-9)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _p_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-12)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _f_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-15)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _a_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-18)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _z_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-21)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _y_##BASE_NAME(long double t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-24)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _Y_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E24)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _Z_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E21)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _E_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E18)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _P_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E15)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _T_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E12)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _G_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E9)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _M_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E6)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _k_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E3)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _h_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E2)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _da_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E1)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _d_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-1)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _c_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-2)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _m_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-3)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _mu_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-6)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _n_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-9)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _p_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-12)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _f_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-15)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _a_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-18)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _z_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-21)}; } \
+constexpr Si<a,b,c,d,e,f,g> operator "" _y_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-24)}; }
 
 namespace si::base {
     // Base types
-    template<typename T = long double>
+    template<typename T = si::default_type>
     using Meter = Si<1, 0, 0, 0, 0, 0, 0, T>;
-    template<typename T = long double>
+    template<typename T = si::default_type>
     using Kilogram = Si<0, 1, 0, 0, 0, 0, 0, T>;
-    template<typename T = long double>
+    template<typename T = si::default_type>
     using Second = Si<0, 0, 1, 0, 0, 0, 0, T>;
-    template<typename T = long double>
+    template<typename T = si::default_type>
     using Ampere = Si<0, 0, 0, 1, 0, 0, 0, T>;
-    template<typename T = long double>
+    template<typename T = si::default_type>
     using Kelvin = Si<0, 0, 0, 0, 1, 0, 0, T>;
-    template<typename T = long double>
+    template<typename T = si::default_type>
     using Mole = Si<0, 0, 0, 0, 0, 1, 0, T>;
-    template<typename T = long double>
+    template<typename T = si::default_type>
     using Candela = Si<0, 0, 0, 0, 0, 0, 1, T>;
 
     // Base units
-    constexpr Meter<> meter{1};
+    constexpr Meter<> meter{1.0F};
     constexpr Kilogram<> kilogram{1};
     constexpr Second<> second{1};
     constexpr Ampere<> ampere{1};

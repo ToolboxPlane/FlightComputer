@@ -8,21 +8,21 @@
 #include "../../Node.hpp"
 #include "../../InputChannel.hpp"
 #include <unistd.h>
-#include "../rcLib/PackageExtended.hpp"
+#include "../rcLib/RadioControlProtocolCpp/rcLib.hpp"
 #include "../../OutputChannel.hpp"
 
 namespace device {
-    class LoRa : public Filter {
+    class LoRa : public Node {
     public:
         LoRa();
 
-        MultipleOutputChannel <rcLib::PackageExtended> &getChannelOut();
+        OutputChannel<rcLib::Package> &getChannelOut();
 
-        Channel <rcLib::PackageExtended> &getChannelIn();
+        InputChannel<rcLib::Package> &getChannelIn();
 
     private:
-        Channel <rcLib::PackageExtended> in;
-        MultipleOutputChannel <rcLib::PackageExtended> out;
+        InputChannel<rcLib::Package> in;
+        OutputChannel<rcLib::Package> out;
 
         void run() override;
 
@@ -44,9 +44,9 @@ namespace device {
 
         void configPower(int8_t power);
 
-        void writeBuf(unsigned char addr, unsigned char *value, unsigned char len);
+        void writeBuf(unsigned char addr, const unsigned char *value, unsigned char len);
 
-        void txLoRa(unsigned char *frame, unsigned char len);
+        void txLoRa(const unsigned char *frame, unsigned char len);
 
 
         const int CHANNEL = 0;
@@ -69,7 +69,7 @@ namespace device {
         int RST = 0;
 
         // Set spreading factor (SF7 - SF12)
-        sf_t sf = SF7;
+        sf_t sf = SF12;
 
         // Set center frequency
         uint32_t freq = 434000000; // in Mhz! (868.1)

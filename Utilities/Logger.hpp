@@ -12,14 +12,18 @@
 #include "../InputChannel.hpp"
 
 namespace debug {
-    static std::mutex lock; // Not in the class because of template fuckups
+    std::mutex _lock; // Not in the class because of template fuckups
 
     template<typename T>
     class Logger : public Node {
     public:
         explicit Logger(std::string tag, bool enabled = true, std::ostream &stream = std::cout) :
                 tag(std::move(tag)), stream(stream), enabled(enabled) {
-            this->start();
+            if (enabled) {
+                this->start();
+            } else {
+                in.close();
+            }
         }
 
         InputChannel<T> &getChannelIn() {
@@ -29,14 +33,14 @@ namespace debug {
     private:
         void run() override {
             T item;
-            while (enabled && !in.isClosed()) {
+            while (!in.isClosed()) {
                 if (in.get(item)) {
-                    lock.lock();
                     auto time = std::chrono::duration_cast<std::chrono::milliseconds>(
                             std::chrono::system_clock::now().time_since_epoch()
                     ).count();
+                    _lock.lock();
                     stream << "[" << tag << " " << time << "]\t" << item << "\n";
-                    lock.unlock();
+                    _lock.unlock();
                 }
             }
         }

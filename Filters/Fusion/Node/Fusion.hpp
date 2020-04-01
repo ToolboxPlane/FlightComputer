@@ -11,6 +11,8 @@
 #include "../../../Devices/GPS/Type/GpsMeasurement_t.hpp"
 #include "../Type/State_t.hpp"
 #include "../../../OutputChannel.hpp"
+#include "../Lib/StateEstimateParticleFilter.hpp"
+#include "../Lib/AlphaBetaTracker.hpp"
 #include <optional>
 
 namespace filter {
@@ -32,25 +34,32 @@ namespace filter {
 
         InputChannel<GpsMeasurement_t> &getGpsIn();
 
-        InputChannel<si::base::Meter<>> &getUltrasonicIn();
+        InputChannel<rcLib::Package> &getNavIn();
 
         OutputChannel<State_t> &getChannelOut();
 
     private:
+        InputChannel<rcLib::Package> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn, navIn;
+        InputChannel<GpsMeasurement_t> gpsIn;
+        OutputChannel<State_t> out;
+
+        template <typename T>
+        static auto getCurrSeconds() -> si::base::Second<T>;
+        void process();
+
+        si::base::Second<long double> lastUpdate;
+
         rcLib::Package lastFcPackage;
         std::optional<rcLib::Package> lastPdbPackage;
         std::optional<GpsMeasurement_t> lastGpsMeasurement;
         std::optional<rcLib::Package> lastBasePackage;
         std::optional<rcLib::Package> lastTaranisPackage;
         std::optional<rcLib::Package> lastRemotePackage;
-        std::optional<si::base::Meter<>> lastUltrasonicDistance;
+        std::optional<rcLib::Package> lastNavPackage;
 
-        State_t process();
-
-        InputChannel<rcLib::Package> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn;
-        InputChannel<si::base::Meter<>> ultrasonicIn;
-        InputChannel<GpsMeasurement_t> gpsIn;
-        OutputChannel<State_t> out;
+        StateEstimateParticleFilter particleFilter;
+        AlphaBetaTracker<si::extended::Acceleration<>> accXFilter, accYFilter,
+            accZFilter;
     };
 }
 

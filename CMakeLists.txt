@@ -9,9 +9,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Werror -mtune=native -march=native")
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Og -fsanitize=address")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -fsanitize=address -static-libasan -DDEBUG")
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -DNDEBUG")
 endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=unused-but-set-parameter")
@@ -26,12 +26,17 @@ set(SOURCES
         Devices/GPS/Node/Gps.cpp
         Devices/Network/Network.cpp
         Devices/Serial/SerialPosix.cpp
-        Devices/SRF02/SRF02.cpp
+        Devices/SRF02/Node/SRF02.cpp
+        Devices/SRF02/Sim/SRF02Sim.cpp
         Filters/Fusion/Node/Fusion.cpp
+        Filters/Fusion/Lib/StateEstimateParticleFilter.cpp
+        Filters/Fusion/Lib/system.c
+        Filters/Fusion/Lib/random_util.c
         Filters/Navigation/Node/Navigation.cpp
         Filters/MeshManager/MeshManager.cpp
         Filters/OutputFilter/OutputFilter.cpp
-        Filters/FeedbackControl/Node/FeedbackControl.cpp)
+        Filters/FeedbackControl/Node/FeedbackControl.cpp
+        Utilities/Si/SiExtended.cpp)
 
 set(SOURCES_PI ${SOURCES}
         Devices/LoRa/LoRa.cpp)

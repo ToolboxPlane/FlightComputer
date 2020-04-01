@@ -234,7 +234,7 @@ namespace device {
             } else {
                 writeRegister(REG_MODEM_CONFIG3, 0x04);
             }
-            writeRegister(REG_MODEM_CONFIG, 0x72);
+            writeRegister(REG_MODEM_CONFIG, 0b01110010);
             writeRegister(REG_MODEM_CONFIG2, (sf << 4) | 0x04);
         }
 
@@ -302,7 +302,7 @@ namespace device {
     }
 
 
-    void LoRa::writeBuf(unsigned char addr, unsigned char *value, unsigned char len) {
+    void LoRa::writeBuf(unsigned char addr, const unsigned char *value, unsigned char len) {
         unsigned char spibuf[256];
         spibuf[0] = addr | 0x80;
         for (int i = 0; i < len; i++) {
@@ -313,7 +313,7 @@ namespace device {
         unselectReceiver();
     }
 
-    void LoRa::txLoRa(unsigned char *frame, unsigned char datalen) {
+    void LoRa::txLoRa(const unsigned char *frame, unsigned char datalen) {
         // set the IRQ mapping DIO0=TxDone DIO1=NOP DIO2=NOP
         writeRegister(RegDioMapping1, MAP_DIO0_LORA_TXDONE | MAP_DIO1_LORA_NOP | MAP_DIO2_LORA_NOP);
         // clear all radio IRQ flags
@@ -333,7 +333,7 @@ namespace device {
     }
 
 
-    LoRa::LoRa() : Filter() {
+    LoRa::LoRa() : Node() {
         wiringPiSetup();
         pinMode(ssPin, OUTPUT);
         pinMode(dio0, INPUT);
@@ -355,19 +355,19 @@ namespace device {
         this->start();
     }
 
-    MultipleOutputChannel <rcLib::PackageExtended> &LoRa::getChannelOut() {
+    OutputChannel <rcLib::Package> &LoRa::getChannelOut() {
         return out;
     }
 
-    Channel <rcLib::PackageExtended> &LoRa::getChannelIn() {
+    InputChannel <rcLib::Package> &LoRa::getChannelIn() {
         return in;
     }
 
     void LoRa::run() {
-        rcLib::PackageExtended pkgIn, pkgOut;
+        rcLib::Package pkgIn, pkgOut;
         long int SNR;
         int rssicorr;
-        while (true) {
+        while (!in.isClosed()) {
             if (digitalRead(dio0) == 1) {
                 if (receive(message)) {
                     unsigned char value = readRegister(REG_PKT_SNR_VALUE);
@@ -387,11 +387,11 @@ namespace device {
                         rssicorr = 157;
                     }
 
-                    //printf("Packet RSSI: %d, ", readRegister(0x1A)-rssicorr);
-                    //printf("RSSI: %d, ", readRegister(0x1B)-rssicorr);
-                    //printf("SNR: %li, ", SNR);
-                    //printf("Length: %i", (int)receivedbytes);
-                    //printf("\n");
+                    printf("Packet RSSI: %d, ", readRegister(0x1A)-rssicorr);
+                    printf("RSSI: %d, ", readRegister(0x1B)-rssicorr);
+                    printf("SNR: %li, ", SNR);
+                    printf("Length: %i", (int)receivedbytes);
+                    printf("\n");
 
                     for (auto c = 0; c < receivedbytes; c++) {
                         if (pkgIn.decode(message[c])) {
@@ -402,14 +402,14 @@ namespace device {
                 }
             }
 
-/*        if(in.get(pkgOut, false)) {
-//            setOpMode(OPMODE_STANDBY);
-            auto len = pkgOut.encode();
-            txLoRa(pkgOut.getEncodedData(), len);
-            std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-            std::cout << "Sending..." << std::endl;
-//            setOpMode(OPMODE_RX);
-        }*/
+            if(in.get(pkgOut, false)) {
+                using namespace std::chrono_literals;
+                setOpMode(OPMODE_STANDBY);
+                auto len = pkgOut.encode();
+                txLoRa(pkgOut.getEncodedData(), len);
+                std::this_thread::sleep_for(100ms);
+                setOpMode(OPMODE_RX);
+            }
         }
     }
 }

@@ -8,6 +8,8 @@
 #ifndef FLIGHTCOMPUTER_NETWORK_HPP
 #define FLIGHTCOMPUTER_NETWORK_HPP
 
+#include <string>
+#include <netinet/in.h>
 
 #include "../../Node.hpp"
 #include "../../InputChannel.hpp"
@@ -17,17 +19,15 @@
 namespace device {
     class Network : public Node {
     public:
-        explicit Network(std::string address);
+        explicit Network(const std::string &address);
 
         auto getChannelIn() -> InputChannel<rcLib::Package>&;
-        auto getChannelOut() -> OutputChannel<rcLib::Package>&;
     private:
         void run() override;
 
-        std::string address;
         int fd;
+        sockaddr_in sockaddrIn{};
         InputChannel<rcLib::Package> in;
-        OutputChannel<rcLib::Package> out;
 
         static constexpr auto PROTOCOL_ID = 253;
     };

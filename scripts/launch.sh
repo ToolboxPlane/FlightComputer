@@ -1,6 +1,4 @@
 #!/bin/bash
-sudo killall gpsd
-gpsd /dev/ttyS0
-setserial /dev/ttyUSB0 low_latency
-sudo chrt --rr 99 ./build/FlightComputer
-
+EXECUTABLE=./cmake-build-toolbox-plane/FlightComputer
+sudo setcap cap_net_raw=ep ${EXECUTABLE}
+sudo chrt --rr 99 ${EXECUTABLE}

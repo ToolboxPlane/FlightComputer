@@ -19,7 +19,7 @@
 
 namespace device {
 
-    SerialPosix::SerialPosix(const std::string &port, int baud) {
+    SerialPosix::SerialPosix(const std::string &port, int baud) : fd{-1} {
         this->setPort(port);
         this->setBaud(baud);
         this->setParity(Parity::NONE);
@@ -29,7 +29,7 @@ namespace device {
         termios tty{};
         memset(&tty, 0, sizeof tty);
         if (tcgetattr(fd, &tty) != 0) {
-            throw std::runtime_error(strerror(errno));
+            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
         }
 
         // disable IGNBRK for mismatched speed tests; otherwise receive break
@@ -47,7 +47,7 @@ namespace device {
 #endif
 
         if (tcsetattr(fd, TCSANOW, &tty) != 0) {
-            throw std::runtime_error(strerror(errno));
+            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
         }
 
         this->start();
@@ -65,28 +65,29 @@ namespace device {
              */
             auto readed = read(this->fd, buffer.data(), BUF_SIZE);
             for (auto c=0; c < readed; c++) {
-                if (pkgIn.decode(buffer[c])) {
-                    out.put(pkgIn);
+                if (pkgOut.decode(buffer[c])) {
+                    out.put(pkgOut);
                 }
             }
 
             while (in.get(pkgIn, false)) {
                 auto len = pkgIn.encode();
-                this->sendBuff({pkgIn.getEncodedData(), pkgIn.getEncodedData() + len});
+                this->sendBuff(pkgIn.getEncodedData(), len);
             }
             std::this_thread::yield();
         }
     }
 
-    void SerialPosix::sendBuff(const std::vector<uint8_t> &buffer) const {
+    void SerialPosix::sendBuff(const uint8_t *buffer, std::size_t len) const {
         std::size_t written = 0;
         do {
-            auto result = write(this->fd, buffer.data() + written, buffer.size() - written);
+            auto result = write(this->fd, buffer + written, len - written);
             if (result < 0) {
-                throw std::runtime_error(strerror(errno));
+                std::cerr << "SerialPosix:\t" << strerror(errno) << std::endl;
+            } else {
+                written += static_cast<std::size_t>(result);
             }
-            written += static_cast<std::size_t>(result);
-        } while (written < buffer.size());
+        } while (written < len);
     }
 
 
@@ -186,18 +187,18 @@ namespace device {
                 break;
 #endif
             default:
-                throw std::runtime_error("Not a valid baud");
+                throw std::runtime_error("SerialPosix:\tNot a valid baud");
         }
         termios tty{};
         memset(&tty, 0, sizeof tty);
         if (tcgetattr(fd, &tty) != 0) {
-            throw std::runtime_error(strerror(errno));
+            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
         }
         cfsetospeed(&tty, static_cast<speed_t>(baudBits));
         cfsetispeed(&tty, static_cast<speed_t>(baudBits));
 
         if (tcsetattr(fd, TCSANOW, &tty) != 0) {
-            throw std::runtime_error(strerror(errno));
+            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
         }
     }
 
@@ -208,7 +209,7 @@ namespace device {
 
         this->fd = open(port.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
         if (this->fd < 0) {
-            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
+            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno) + port);
         }
     }
 
@@ -216,7 +217,7 @@ namespace device {
         termios tty{};
         memset(&tty, 0, sizeof tty);
         if (tcgetattr(fd, &tty) != 0) {
-            throw std::runtime_error(strerror(errno));
+            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
         }
 
         tty.c_cflag &= ~(PARENB | PARODD);      // shut off parity
@@ -242,7 +243,7 @@ namespace device {
         tty.c_cflag |= parityFlag;
 
         if (tcsetattr(fd, TCSANOW, &tty) != 0) {
-            throw std::runtime_error(strerror(errno));
+            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
         }
     }
 
@@ -251,7 +252,7 @@ namespace device {
         termios tty{};
         memset(&tty, 0, sizeof tty);
         if (tcgetattr(fd, &tty) != 0) {
-            throw std::runtime_error(strerror(errno));
+            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
         }
 
         tcflag_t charSize;
@@ -269,12 +270,12 @@ namespace device {
                 charSize = CS8;
                 break;
             default:
-                throw std::runtime_error("Invalid dataBits (needs to be \\in [5,8]");
+                throw std::runtime_error("SerialPosix:\tInvalid dataBits (needs to be \\in [5,8]");
         }
         tty.c_cflag = (tty.c_cflag & ~CSIZE) | charSize;     // 8-bit chars
 
         if (tcsetattr(fd, TCSANOW, &tty) != 0) {
-            throw std::runtime_error(strerror(errno));
+            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
         }
     }
 
@@ -282,7 +283,7 @@ namespace device {
         termios tty{};
         memset(&tty, 0, sizeof tty);
         if (tcgetattr(fd, &tty) != 0) {
-            throw std::runtime_error(strerror(errno));
+            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
         }
 
         if (stopBits == 1) {
@@ -290,27 +291,12 @@ namespace device {
         } else if (stopBits == 2) {
             tty.c_cflag |= CSTOPB;
         } else {
-            throw std::runtime_error("stopBits needs to be 1 or 2");
+            throw std::runtime_error("SerialPosix:\tstopBits needs to be 1 or 2");
         }
 
         if (tcsetattr(fd, TCSANOW, &tty) != 0) {
-            throw std::runtime_error(strerror(errno));
+            throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
         }
-    }
-
-    auto SerialPosix::getAvailablePorts() -> std::vector<std::string> {
-        std::string path = "/dev/";
-        std::regex deviceRegex{"tty[a-zA-Z]+[0-9]+"};
-        std::vector<std::string> results;
-        for (const auto & entry : std::filesystem::directory_iterator(path)) {
-            if (entry.is_character_file()) {
-                std::string fileName = entry.path().filename();
-                if (std::regex_match(fileName, deviceRegex)) {
-                    results.push_back(entry.path());
-                }
-            }
-        }
-        return results;
     }
 
     auto SerialPosix::getChannelIn() -> InputChannel<rcLib::Package> & {
@@ -319,5 +305,9 @@ namespace device {
 
     auto SerialPosix::getChannelOut() -> OutputChannel<rcLib::Package> & {
         return out;
+    }
+
+    SerialPosix::~SerialPosix() {
+        close(this->fd);
     }
 }

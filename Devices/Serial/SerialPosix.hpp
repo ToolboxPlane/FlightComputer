@@ -45,10 +45,10 @@ namespace device {
 
         auto getChannelOut() -> OutputChannel<rcLib::Package>&;
 
-        static auto getAvailablePorts() -> std::vector<std::string>;
+        ~SerialPosix();
     private:
         void run() override;
-        void sendBuff(const std::vector<uint8_t> &buffer) const;
+        void sendBuff(const uint8_t *buffer, std::size_t len) const;
         int fd;
 
         InputChannel<rcLib::Package> in;

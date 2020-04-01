@@ -42,7 +42,6 @@ namespace recording {
 
             while (std::getline(istream, line)) {
                 std::string item;
-                std::cerr << item << std::endl;
                 std::stringstream linestream(line);
                 std::getline(linestream, item, ';');
                 auto timestamp = std::stol(item);

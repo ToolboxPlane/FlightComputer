@@ -3,13 +3,15 @@
 //
 
 #include <iostream>
+#include "../../Devices/rcLib/PackageOstream.hpp"
 #include "MeshManager.hpp"
 
 namespace filter {
-    enum class RCLIB_DEVICE_ID {
+    enum class DeviceId {
         REMOTE = 17, FLIGHT_COMPUTER = 38,
         FLIGHT_CONTROLLER = 23,
-        BASE = 63, POWER_DISTRIBUTION = 74, TARANIS = 56
+        BASE = 63, POWER_DISTRIBUTION = 74, TARANIS = 56,
+        NAV_BOARD = 91
     };
 
     MeshManager::MeshManager() {
@@ -40,10 +42,6 @@ namespace filter {
         return baseIn;
     }
 
-    InputChannel<rcLib::Package> &MeshManager::getRemoteIn() {
-        return remoteIn;
-    }
-
     OutputChannel<rcLib::Package> &MeshManager::getFlightControllerOut() {
         return flightControllerOut;
     }
@@ -60,40 +58,35 @@ namespace filter {
         return pdbOut;
     }
 
+    InputChannel<rcLib::Package> &MeshManager::getPdbIn() {
+        return pdbIn;
+    }
+
     OutputChannel<rcLib::Package> &MeshManager::getTaranisOut() {
         return taranisOut;
+    }
+
+    OutputChannel<rcLib::Package> &MeshManager::getNavOut() {
+        return navOut;
     }
 
     void MeshManager::run() {
         rcLib::Package pkg{};
         while (!serialIn.isClosed()) {
             if (loraIn.get(pkg, false)) {
-                if (pkg.needsForwarding()) {
-                    pkg.countNode();
-                    serialOut.put(pkg);
-                }
                 propagateInternal(pkg);
             }
             if (serialIn.get(pkg, false)) {
-                if (pkg.needsForwarding()) {
-                    pkg.countNode();
-                    loraOut.put(pkg);
-                }
                 propagateInternal(pkg);
             }
+            if (pdbIn.get(pkg, false))  {
+                propagateInternal(pkg);
+            }
+
             if (flightControllerIn.get(pkg, false)) {
-                pkg.setMeshProperties(static_cast<uint8_t>(false));
-                pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
                 serialOut.put(pkg);
             }
-            if (remoteIn.get(pkg, false)) {
-                pkg.setMeshProperties(static_cast<uint8_t>(false));
-                pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
-                loraOut.put(pkg);
-            }
             if (baseIn.get(pkg, false)) {
-                pkg.setMeshProperties(static_cast<uint8_t>(true), 2);
-                pkg.setDeviceId(static_cast<uint8_t>(RCLIB_DEVICE_ID::FLIGHT_COMPUTER));
                 loraOut.put(pkg);
             }
             std::this_thread::yield();
@@ -101,27 +94,34 @@ namespace filter {
     }
 
 
-    void MeshManager::propagateInternal(rcLib::Package pkg) {
-        switch ((RCLIB_DEVICE_ID) pkg.getDeviceId()) {
-            case RCLIB_DEVICE_ID::REMOTE:
+    void MeshManager::propagateInternal(const rcLib::Package &pkg) {
+        switch (static_cast<DeviceId>(pkg.getDeviceId())) {
+            case DeviceId::REMOTE:
                 remoteOut.put(pkg);
                 break;
-            case RCLIB_DEVICE_ID::FLIGHT_CONTROLLER:
+            case DeviceId::FLIGHT_CONTROLLER:
                 flightControllerOut.put(pkg);
                 break;
-            case RCLIB_DEVICE_ID::BASE:
+            case DeviceId::BASE:
                 baseOut.put(pkg);
                 break;
-            case RCLIB_DEVICE_ID::POWER_DISTRIBUTION:
+            case DeviceId::POWER_DISTRIBUTION:
                 pdbOut.put(pkg);
                 break;
-            case RCLIB_DEVICE_ID::TARANIS:
+            case DeviceId::TARANIS:
                 taranisOut.put(pkg);
                 break;
-            case RCLIB_DEVICE_ID::FLIGHT_COMPUTER:
+            case DeviceId::NAV_BOARD:
+                navOut.put(pkg);
+                break;
+            case DeviceId::FLIGHT_COMPUTER:
                 // We routed in a loop...
-                std::cerr << "[MeshManager]: Some external device creates loops in the network\n";
+                std::cerr << "[MeshManager]:\tSome external device creates loops in the network: " << pkg << std::endl;
+                break;
+            default:
+                std::cerr << "[MeshManager]:\tUnknown Device" << std::endl;
                 break;
         }
     }
+
 }
