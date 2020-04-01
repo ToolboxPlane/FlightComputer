@@ -16,8 +16,10 @@
 #define VALUE_OR(var, val) (isnan(var)?val:var)
 #define DEG_TO_RAD(x) ((x) / 180.0F * (float)M_PI)
 #define RAD_TO_DEG(x) ((x) * 180.0F * (float)M_PI)
-#define DIST_LAT(y) ((y) * 360.0F / EARTH_DIAMETER)
-#define DIST_LON(x, lat) ((DIST_LAT((x))) / cosf(DEG_TO_RAD((lat))))
+#define DIST2LAT(y) ((y) * 360.0F / EARTH_DIAMETER)
+#define DIST2LON(x, lat) ((DIST2LAT((x))) / cosf(DEG_TO_RAD((lat))))
+#define LAT2DIST(y) ((y) / 360.0F * EARTH_DIAMETER)
+#define LON2DIST(x, lat) ((LAT2DIST((x))) * cosf(DEG_TO_RAD((lat))))
 
 #define IEEE754_FIX_FACTOR 10000
 
@@ -34,8 +36,8 @@ system_state_t predict(const system_state_t *x, const input_t *u, float dt, bool
     ret.speed = x->speed;
     ret.altitude = x->altitude + vert_dist;
     ret.altitude_above_ground = x->altitude_above_ground + vert_dist;
-    ret.lat = x->lat + DIST_LAT(lat_dist);
-    ret.lon = x->lon + DIST_LON(lon_dist, x->lat);
+    ret.lat = x->lat + DIST2LAT(lat_dist);
+    ret.lon = x->lon + DIST2LON(lon_dist, x->lat);
 
     // @ TODO input
 
@@ -59,8 +61,8 @@ system_state_t predict(const system_state_t *x, const input_t *u, float dt, bool
         float noise = gaussian_box_muller(0, SIGMA_V);
         ret.altitude += noise * gamma[0];
         ret.altitude_above_ground += noise * gamma[0];
-        ret.lat += DIST_LAT(noise * gamma[1]);
-        ret.lon += DIST_LON(noise * gamma[2], ret.lat);
+        ret.lat += DIST2LAT(noise * gamma[1]);
+        ret.lon += DIST2LON(noise * gamma[2], ret.lat);
         ret.speed += noise * gamma[3];
 
         // Additional noise as ground is not static
@@ -98,8 +100,8 @@ float likelihood(const measurement_t *measurement, const measurement_t *estimate
     }
 
     // GPS: normal distribution with accuracy = 2 * sigma
-    float sigma_lat = VALUE_OR(measurement_info->expected_error_lat, 10) / 2;
-    float sigma_lon = VALUE_OR(measurement_info->expected_error_lon, 10) / 2;
+    float sigma_lat_dist = VALUE_OR(measurement_info->expected_error_lat, 10) / 2;
+    float sigma_lon_dist = VALUE_OR(measurement_info->expected_error_lon, 10) / 2;
     float sigma_vert = VALUE_OR(measurement_info->expected_error_vert, 10) / 2;
     float sigma_speed = VALUE_OR(measurement_info->expected_error_speed, 10) / 2;
     float sigma_climb = VALUE_OR(measurement_info->expected_error_climb, 10) / 2;
@@ -107,10 +109,10 @@ float likelihood(const measurement_t *measurement, const measurement_t *estimate
 
     float p_lat = 1, p_lon = 1, p_vert = 1, p_speed = 1, p_climb = 1;
     if (!isnan(measurement->lat) && !isnan(measurement->lon)) {
-        float lat_dist = DIST_LAT(measurement->lat - estimate->lat);
-        p_lat = gaussian(0, sigma_lat , lat_dist);
-        float lon_dist = DIST_LON(measurement->lon - estimate->lon, (measurement->lat + estimate->lat) / 2);
-        p_lon = gaussian(0, sigma_lon, lon_dist);
+        float lat_dist = LAT2DIST(measurement->lat - estimate->lat);
+        p_lat = gaussian(0, sigma_lat_dist , lat_dist);
+        float lon_dist = LON2DIST(measurement->lon - estimate->lon, (measurement->lat + estimate->lat) / 2);
+        p_lon = gaussian(0, sigma_lon_dist, lon_dist);
     }
     if (!isnan(measurement->altitude_gps)) {
         p_vert = gaussian(measurement->altitude_gps, sigma_vert, estimate->altitude_gps);
