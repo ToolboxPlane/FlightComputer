@@ -3,7 +3,7 @@
 # Install necessary software
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y gpsd libgps-dev wiringpi gpsd-clients setserial
+sudo apt install -y gpsd libgps-dev gpsd-clients setserial
 
 # Enter the serial port for gpsd
 sed 's/DEVICE=""/DEVICE="\/dev\/ttyS0"/g' /etc/default/gpsd | sudo tee /etc/default/gpsd > /dev/null
@@ -16,4 +16,10 @@ echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6001\",
 
 sudo /etc/init.d/udev restart
 
-echo "Next enable SPI and UART via raspi-config, then restart the system"
+MACHINE_TYPE=$(uname -m)
+if [ "${MACHINE_TYPE}" == 'armv7l' ]; then
+  sudo apt install -y wiringpi
+  echo "Next enable SPI and UART via raspi-config, then restart the system"
+else
+  echo "Installation for non-pi targets complete"
+fi
