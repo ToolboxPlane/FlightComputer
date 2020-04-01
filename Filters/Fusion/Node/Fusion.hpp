@@ -43,10 +43,11 @@ namespace filter {
         InputChannel<GpsMeasurement_t> gpsIn;
         OutputChannel<State_t> out;
 
-        static auto getCurrSeconds() -> si::base::Second<>;
+        template <typename T>
+        static auto getCurrSeconds() -> si::base::Second<T>;
         void process();
 
-        si::base::Second<> lastUpdate;
+        si::base::Second<long double> lastUpdate;
 
         rcLib::Package lastFcPackage;
         std::optional<rcLib::Package> lastPdbPackage;

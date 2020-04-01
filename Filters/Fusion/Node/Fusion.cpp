@@ -13,7 +13,7 @@ namespace filter {
     constexpr auto ACC_SIGMA_V = 400 * si::extended::acceleration / si::base::second; // Process noise
     constexpr auto ACC_SIGMA_W = 0.0135F * si::extended::acceleration; // Measurement noise
 
-    Fusion::Fusion() : lastUpdate{getCurrSeconds()}, accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
+    Fusion::Fusion() : lastUpdate{getCurrSeconds<long double>()}, accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
         accYFilter{ACC_SIGMA_V, ACC_SIGMA_W}, accZFilter{ACC_SIGMA_V, ACC_SIGMA_W} {
         this->start();
     }
@@ -89,8 +89,9 @@ namespace filter {
         }
 
         if (lastGpsMeasurement.has_value() /*&& lastGpsMeasurement.value().fixAquired*/ && lastNavPackage.has_value()) {
-            const auto startTime = getCurrSeconds();
-            const auto dt = startTime - lastUpdate;
+            const auto startTime = getCurrSeconds<long double>();
+            const auto dtDouble = startTime - lastUpdate;
+            const auto dt = static_cast<si::base::Second<si::default_type>>(dtDouble);
             lastUpdate = startTime;
 
             auto navData = fusion::decodePackage<NavPackage>(lastNavPackage.value());
@@ -118,7 +119,7 @@ namespace filter {
             res.rawFlightControllerData = flightControllerData;
             res.navPackage = navData;
 
-            //std::cout << getCurrSeconds() - startTime << std::endl;
+            //std::cout << getCurrSeconds<long double>() - startTime << std::endl;
 
             out.put(res);
         } else {
@@ -135,10 +136,11 @@ namespace filter {
         }
     }
 
-    auto Fusion::getCurrSeconds() -> si::base::Second<> {
+    template <typename T>
+    auto Fusion::getCurrSeconds() -> si::base::Second<T> {
         auto tp = std::chrono::high_resolution_clock::now().time_since_epoch();
-        auto microseconds = static_cast<si::default_type>(
+        auto microseconds = static_cast<T>(
                 std::chrono::duration_cast<std::chrono::microseconds>(tp).count());
-        return microseconds / 10e6F * si::base::second;
+        return si::base::Second<T>(microseconds / 10e6);
     }
 }
