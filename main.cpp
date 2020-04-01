@@ -12,13 +12,7 @@
 #include "Filters/FeedbackControl/Node/FeedbackControl.hpp"
 #include "Devices/Serial/SerialPosix.hpp"
 #include "Devices/rcLib/PackageOstream.hpp"
-#include "Devices/SRF02/Node/SRF02.hpp"
 #include "Devices/Network/Network.hpp"
-#include "Devices/SRF02/Sim/SRF02Sim.hpp"
-
-#ifdef RASPBERRY_PI
-#include "Devices/LoRa/LoRa.hpp"
-#endif
 
 int main() {
     using namespace std::chrono_literals;
