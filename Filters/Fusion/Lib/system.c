@@ -16,9 +16,9 @@
 #define VALUE_OR(var, val) (isnan(var)?val:var)
 #define DEG_TO_RAD(x) ((x) / 180.0F * (float)M_PI)
 #define RAD_TO_DEG(x) ((x) * 180.0F * (float)M_PI)
-#define DIST2LAT(y) ((y) * 360.0F / EARTH_DIAMETER)
+#define DIST2LAT(y) ((y) * 360.0F / EARTH_CIRCUMFERENCE)
 #define DIST2LON(x, lat) ((DIST2LAT((x))) / cosf(DEG_TO_RAD((lat))))
-#define LAT2DIST(y) ((y) / 360.0F * EARTH_DIAMETER)
+#define LAT2DIST(y) ((y) / 360.0F * EARTH_CIRCUMFERENCE)
 #define LON2DIST(x, lat) ((LAT2DIST((x))) * cosf(DEG_TO_RAD((lat))))
 
 #define IEEE754_FIX_FACTOR 10000

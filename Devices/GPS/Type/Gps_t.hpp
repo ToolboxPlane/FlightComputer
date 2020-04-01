@@ -46,7 +46,7 @@ public:
                                                static_cast<decltype(xDiff)::type>(xDiff)) * 180.0 / M_PI + 90);
     }
 
-    static constexpr si::base::Meter<> EARTH_RADIUS{EARTH_DIAMETER / (2 * M_PI)};
+    static constexpr si::base::Meter<> EARTH_RADIUS{EARTH_CIRCUMFERENCE / (2 * M_PI)};
 };
 
 
