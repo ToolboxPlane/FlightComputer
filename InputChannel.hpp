@@ -35,7 +35,7 @@ class InputChannel {
             }
             queue.push_back(i);
             cv.notify_one();
-            //std::cerr << this->queue.size() << "\t" << typeid(T).name() << std::endl;
+            //std::cerr << typeid(T).name() << ":\t" << this->queue.size() << "\n";
         }
 
         bool get(T &out, bool wait = true) {

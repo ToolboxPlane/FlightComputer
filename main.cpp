@@ -108,9 +108,9 @@ int main() {
     debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", false};
     debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", false};
     debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
-    debug::Logger<State_t> fusionDebug{"Fusion", true};
-    debug::Logger<Nav_t> navDebug{"Nav", true};
-    debug::Logger<Control_t> controlDebug{"Control", true};
+    debug::Logger<State_t> fusionDebug{"Fusion", false};
+    debug::Logger<Nav_t> navDebug{"Nav", false};
+    debug::Logger<Control_t> controlDebug{"Control", false};
 
     fc.getChannelOut() >> fcReceiveDebug.getChannelIn();
     pdb.getChannelOut() >> pdbReceiveDebug.getChannelIn();

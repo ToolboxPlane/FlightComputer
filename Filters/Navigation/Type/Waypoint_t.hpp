@@ -5,6 +5,7 @@
 #ifndef FLIGHTCOMPUTER_WAYPOINT_T_HPP
 #define FLIGHTCOMPUTER_WAYPOINT_T_HPP
 
+#include <ostream>
 #include "../../../Devices/GPS/Type/Gps_t.hpp"
 
 class Waypoint_t {
@@ -25,6 +26,13 @@ class Waypoint_t {
         Gps_t location;
         si::base::Meter<> maxDelta;
         bool landingAllowed;
+
+        friend std::ostream &operator<<(std::ostream &ostream, const Waypoint_t &waypoint) {
+            ostream << "(" << waypoint.location.lat << ", " << waypoint.location.lon << ")"
+                    << "\tdelta: " << waypoint.maxDelta
+                    << "\tlandingAllowed: " << waypoint.landingAllowed;
+            return ostream;
+        }
 };
 
 
