@@ -58,7 +58,7 @@ namespace device {
         }
     }
 
-    auto Gps::getChannelOut() -> OutputChannel<GpsMeasurement_t>&  {
+    auto Gps::getChannelOut() -> OutputChannel<GpsMeasurement_t> & {
         return out;
     }
 }

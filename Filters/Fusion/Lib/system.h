@@ -50,9 +50,9 @@ typedef struct {
 } input_t;
 
 void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, float dt,
-        const measurement_info_t *measurement_info);
+                     const measurement_info_t *measurement_info);
 
-void resample(const weighted_particle_t* old_particles, size_t num_old_particles,
-              weighted_particle_t* new_particles, size_t num_new_particles);
+void resample(const weighted_particle_t *old_particles, size_t num_old_particles,
+              weighted_particle_t *new_particles, size_t num_new_particles);
 
 #endif //FLIGHTCOMPUTER_SYSTEM_H

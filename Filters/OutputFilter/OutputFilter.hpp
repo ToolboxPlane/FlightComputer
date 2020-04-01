@@ -14,20 +14,20 @@
 
 namespace filter {
     class OutputFilter : public Node {
-    public:
-        OutputFilter();
+        public:
+            OutputFilter();
 
-        OutputChannel<rcLib::Package> &getBaseOut();
+            OutputChannel<rcLib::Package> &getBaseOut();
 
-        OutputChannel<rcLib::Package> &getFlightControllerOut();
+            OutputChannel<rcLib::Package> &getFlightControllerOut();
 
-        InputChannel<Control_t> &getChannelIn();
+            InputChannel<Control_t> &getChannelIn();
 
-    private:
-        void run() override;
+        private:
+            void run() override;
 
-        OutputChannel<rcLib::Package> flightControllerOut, baseOut;
-        InputChannel<Control_t> in;
+            OutputChannel<rcLib::Package> flightControllerOut, baseOut;
+            InputChannel<Control_t> in;
     };
 }
 

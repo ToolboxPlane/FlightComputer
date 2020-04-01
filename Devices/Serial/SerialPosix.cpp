@@ -64,7 +64,7 @@ namespace device {
              * "read" (https://www.youtube.com/watch?v=A8zWWp0akUU).
              */
             auto readed = read(this->fd, buffer.data(), BUF_SIZE);
-            for (auto c=0; c < readed; c++) {
+            for (auto c = 0; c < readed; c++) {
                 if (pkgOut.decode(buffer[c])) {
                     out.put(pkgOut);
                 }

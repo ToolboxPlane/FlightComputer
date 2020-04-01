@@ -14,7 +14,7 @@ namespace filter {
     constexpr auto ACC_SIGMA_W = 0.0135F * si::extended::acceleration; // Measurement noise
 
     Fusion::Fusion() : lastUpdate{getCurrSeconds<long double>()}, accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
-        accYFilter{ACC_SIGMA_V, ACC_SIGMA_W}, accZFilter{ACC_SIGMA_V, ACC_SIGMA_W} {
+                       accYFilter{ACC_SIGMA_V, ACC_SIGMA_W}, accZFilter{ACC_SIGMA_V, ACC_SIGMA_W} {
         this->start();
     }
 
@@ -96,8 +96,8 @@ namespace filter {
 
             auto navData = fusion::decodePackage<NavPackage>(lastNavPackage.value());
             auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
-            auto state  = particleFilter.update(dt, flightControllerData, lastGpsMeasurement.value(),
-                    navData);
+            auto state = particleFilter.update(dt, flightControllerData, lastGpsMeasurement.value(),
+                                               navData);
 
             accXFilter.addMeasurement(flightControllerData.accX, dt);
             accYFilter.addMeasurement(flightControllerData.accY, dt);
@@ -136,7 +136,7 @@ namespace filter {
         }
     }
 
-    template <typename T>
+    template<typename T>
     auto Fusion::getCurrSeconds() -> si::base::Second<T> {
         auto tp = std::chrono::high_resolution_clock::now().time_since_epoch();
         auto microseconds = static_cast<T>(

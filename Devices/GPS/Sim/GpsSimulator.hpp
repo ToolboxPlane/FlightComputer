@@ -13,17 +13,17 @@
 
 namespace device {
     class GpsSimulator : public Node {
-    public:
-        explicit GpsSimulator(int intervalMs = 500);
+        public:
+            explicit GpsSimulator(int intervalMs = 500);
 
-        auto getChannelOut() -> OutputChannel<GpsMeasurement_t>&;
+            auto getChannelOut() -> OutputChannel<GpsMeasurement_t> &;
 
-    private:
-        OutputChannel<GpsMeasurement_t> out;
+        private:
+            OutputChannel<GpsMeasurement_t> out;
 
-        void run() override;
+            void run() override;
 
-        const int intervalMs;
+            const int intervalMs;
     };
 }
 

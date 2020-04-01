@@ -83,7 +83,7 @@ measurement_t measure(const system_state_t *x) {
     ret.altitude_baro = x->altitude;
     ret.altitude_gps = x->altitude;
     ret.distance_ground = x->altitude_above_ground /
-            (cosf(DEG_TO_RAD(x->roll_angle)) * cosf(DEG_TO_RAD(x->pitch_angle)));
+                          (cosf(DEG_TO_RAD(x->roll_angle)) * cosf(DEG_TO_RAD(x->pitch_angle)));
     ret.lat = x->lat;
     ret.lon = x->lon;
 
@@ -91,7 +91,7 @@ measurement_t measure(const system_state_t *x) {
 }
 
 float likelihood(const measurement_t *measurement, const measurement_t *estimate,
-        const measurement_info_t *measurement_info) {
+                 const measurement_info_t *measurement_info) {
     float p_distance_measure;
     if (measurement->distance_ground > 0) {
         p_distance_measure = gaussian(measurement->distance_ground, VAR_SRF02, estimate->distance_ground);
@@ -110,7 +110,7 @@ float likelihood(const measurement_t *measurement, const measurement_t *estimate
     float p_lat = 1, p_lon = 1, p_vert = 1, p_speed = 1, p_climb = 1;
     if (!isnan(measurement->lat) && !isnan(measurement->lon)) {
         float lat_dist = LAT2DIST(measurement->lat - estimate->lat);
-        p_lat = gaussian(0, sigma_lat_dist , lat_dist);
+        p_lat = gaussian(0, sigma_lat_dist, lat_dist);
         float lon_dist = LON2DIST(measurement->lon - estimate->lon, (measurement->lat + estimate->lat) / 2);
         p_lon = gaussian(0, sigma_lon_dist, lon_dist);
     }
@@ -135,17 +135,17 @@ float likelihood(const measurement_t *measurement, const measurement_t *estimate
     // These factors are not weights (in an non IEEE-754 world they would not change a thing),
     // they simply reduce numerical problems due to low likelihoods when they are multiplied together.
     return (p_distance_measure * IEEE754_FIX_FACTOR)
-        * (p_lat * IEEE754_FIX_FACTOR)
-        * (p_lon * IEEE754_FIX_FACTOR)
-        * (p_vert * IEEE754_FIX_FACTOR)
-        * (p_speed * IEEE754_FIX_FACTOR)
-        * (p_climb * IEEE754_FIX_FACTOR)
-        * (p_airspeed * IEEE754_FIX_FACTOR)
-        * (p_baro * IEEE754_FIX_FACTOR);
+           * (p_lat * IEEE754_FIX_FACTOR)
+           * (p_lon * IEEE754_FIX_FACTOR)
+           * (p_vert * IEEE754_FIX_FACTOR)
+           * (p_speed * IEEE754_FIX_FACTOR)
+           * (p_climb * IEEE754_FIX_FACTOR)
+           * (p_airspeed * IEEE754_FIX_FACTOR)
+           * (p_baro * IEEE754_FIX_FACTOR);
 }
 
 void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, float dt,
-        const measurement_info_t *measurement_info) {
+                     const measurement_info_t *measurement_info) {
     particle->x.pitch_angle = z->pitch_angle;
     particle->x.roll_angle = z->roll_angle;
     particle->x.yaw_angle = z->yaw_angle;
@@ -159,13 +159,13 @@ void resample(const weighted_particle_t *old_particles, size_t num_old_particles
     float cdf[num_old_particles];
     float sum = 0;
 
-    for (size_t c=0; c<num_old_particles; ++c) {
+    for (size_t c = 0; c < num_old_particles; ++c) {
         sum += old_particles[c].weight;
         cdf[c] = sum;
     }
 
-    for (size_t c=0; c<num_new_particles; ++c) {
-        float r = (float)rand() / RAND_MAX;
+    for (size_t c = 0; c < num_new_particles; ++c) {
+        float r = (float) rand() / RAND_MAX;
 
         size_t lower_bound = 0;
         size_t upper_bound = num_old_particles - 1;

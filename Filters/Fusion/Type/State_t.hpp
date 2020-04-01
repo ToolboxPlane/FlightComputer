@@ -18,37 +18,37 @@ enum class SwitchPos {
 };
 
 class FlightControllerPackage {
-public:
-    uint8_t bnoState;
-    si::default_type roll, pitch, yaw;
-    si::extended::Frequency<> rollDeriv, pitchDeriv, yawDeriv;
-    si::extended::Acceleration<> accX, accY, accZ;
-    si::default_type elevonLeft, elevonRight;
-    si::default_type motor;
+    public:
+        uint8_t bnoState;
+        si::default_type roll, pitch, yaw;
+        si::extended::Frequency<> rollDeriv, pitchDeriv, yawDeriv;
+        si::extended::Acceleration<> accX, accY, accZ;
+        si::default_type elevonLeft, elevonRight;
+        si::default_type motor;
 };
 
 class PdbPackage {
-public:
-    uint8_t status;
-    si::extended::Voltage<> voltageVcc;
-    si::base::Ampere<> currentVcc;
-    si::extended::Voltage<> voltage5V;
-    si::base::Ampere<> current5V;
+    public:
+        uint8_t status;
+        si::extended::Voltage<> voltageVcc;
+        si::base::Ampere<> currentVcc;
+        si::extended::Voltage<> voltage5V;
+        si::base::Ampere<> current5V;
 };
 
 class TaranisPackage {
-public:
-    si::default_type throttle, pitch, roll;
-    bool isArmed, manualOverrideActive;
-    si::default_type rssi;
+    public:
+        si::default_type throttle, pitch, roll;
+        bool isArmed, manualOverrideActive;
+        si::default_type rssi;
 };
 
 class LoraPackage {
-public:
-    si::default_type joyLeftX, joyRightX, joyLeftY, joyRightY;
-    FlightMode flightMode = FlightMode::WAYPOINT;
-    bool isArmed;
-    int rssi;
+    public:
+        si::default_type joyLeftX, joyRightX, joyLeftY, joyRightY;
+        FlightMode flightMode = FlightMode::WAYPOINT;
+        bool isArmed;
+        int rssi;
 };
 
 class NavPackage {
@@ -61,37 +61,37 @@ class NavPackage {
 
 
 class State_t {
-public:
-    si::default_type roll{};
-    si::default_type pitch{};
-    si::default_type yaw{};
-    si::extended::Speed<> speed{};
-    si::base::Meter<> altitude{};
-    si::base::Meter<> altitudeAboveGround{};
-    si::base::Meter<> altitudeGround;
-    si::default_type lat{}, lon{};
-    si::extended::Acceleration<> accX, accY, accZ;
+    public:
+        si::default_type roll{};
+        si::default_type pitch{};
+        si::default_type yaw{};
+        si::extended::Speed<> speed{};
+        si::base::Meter<> altitude{};
+        si::base::Meter<> altitudeAboveGround{};
+        si::base::Meter<> altitudeGround;
+        si::default_type lat{}, lon{};
+        si::extended::Acceleration<> accX, accY, accZ;
 
-    FlightControllerPackage rawFlightControllerData{};
-    PdbPackage pdbPackage{};
-    TaranisPackage taranisPackage{};
-    LoraPackage loraRemote{};
-    NavPackage navPackage;
+        FlightControllerPackage rawFlightControllerData{};
+        PdbPackage pdbPackage{};
+        TaranisPackage taranisPackage{};
+        LoraPackage loraRemote{};
+        NavPackage navPackage;
 
-    friend std::ostream &operator<<(std::ostream &ostream, State_t state) {
-        ostream << "H:" << state.yaw;
-        ostream << "\tR:" << state.roll;
-        ostream << "\tP:" << state.pitch;
-        ostream << "\tGnd:" << state.altitudeAboveGround;
-        ostream << "\tSea:" << state.altitude;
-        ostream << "\tSpeed:" << state.speed;
-        ostream << "\tAcc:(" << state.accX << "," << state.accY << "," << state.accZ << ")";
-        ostream << "\tPos:(" << state.lat << "," << state.lon << ")";
-        ostream << "\tV:" << state.pdbPackage.voltageVcc;
-        ostream << "\tAr:" << (state.taranisPackage.isArmed?1:0);
-        ostream << "\tOr:" << (state.taranisPackage.manualOverrideActive?1:0);
-        return ostream;
-    }
+        friend std::ostream &operator<<(std::ostream &ostream, State_t state) {
+            ostream << "H:" << state.yaw;
+            ostream << "\tR:" << state.roll;
+            ostream << "\tP:" << state.pitch;
+            ostream << "\tGnd:" << state.altitudeAboveGround;
+            ostream << "\tSea:" << state.altitude;
+            ostream << "\tSpeed:" << state.speed;
+            ostream << "\tAcc:(" << state.accX << "," << state.accY << "," << state.accZ << ")";
+            ostream << "\tPos:(" << state.lat << "," << state.lon << ")";
+            ostream << "\tV:" << state.pdbPackage.voltageVcc;
+            ostream << "\tAr:" << (state.taranisPackage.isArmed ? 1 : 0);
+            ostream << "\tOr:" << (state.taranisPackage.manualOverrideActive ? 1 : 0);
+            return ostream;
+        }
 };
 
 

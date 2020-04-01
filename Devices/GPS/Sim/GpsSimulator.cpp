@@ -31,7 +31,8 @@ namespace device {
             GpsMeasurement_t gps{};
             auto noiseLat = (noiseDist(rng) * sigmaLat) / EARTH_CIRCUMFERENCE * 360;
             gps.location.lat = 48.4235495 + noiseLat;
-            auto noiseLon = (noiseDist(rng) * sigmaLon) / EARTH_CIRCUMFERENCE * 360 / std::cos(gps.location.lat / 180 * M_PI);
+            auto noiseLon =
+                    (noiseDist(rng) * sigmaLon) / EARTH_CIRCUMFERENCE * 360 / std::cos(gps.location.lat / 180 * M_PI);
             gps.location.lon = 9.9292937 + noiseLon;
             gps.timestamp = 0_second;
             gps.location.altitude = 500_meter + noiseDist(rng) * sigmaVert * meter;

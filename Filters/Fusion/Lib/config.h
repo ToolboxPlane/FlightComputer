@@ -14,5 +14,4 @@
 #define SIGMA_V 3.0F
 
 
-
 #endif //FLIGHTCOMPUTER_CONFIG_H

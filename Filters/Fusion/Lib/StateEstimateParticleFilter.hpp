@@ -27,7 +27,8 @@ class StateEstimateParticleFilter {
 
     private:
         void init(std::size_t numberOfParticles, const GpsMeasurement_t &gpsMeasurement,
-                si::base::Meter<> distanceGround);
+                  si::base::Meter<> distanceGround);
+
         std::vector<weighted_particle_t> particles;
 };
 

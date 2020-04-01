@@ -8,9 +8,12 @@
 
 namespace filter {
     enum class DeviceId {
-        REMOTE = 17, FLIGHT_COMPUTER = 38,
+        REMOTE = 17,
         FLIGHT_CONTROLLER = 23,
-        BASE = 63, POWER_DISTRIBUTION = 74, TARANIS = 56,
+        FLIGHT_COMPUTER = 38,
+        TARANIS = 56,
+        BASE = 63,
+        POWER_DISTRIBUTION = 74,
         NAV_BOARD = 91
     };
 
@@ -79,7 +82,7 @@ namespace filter {
             if (serialIn.get(pkg, false)) {
                 propagateInternal(pkg);
             }
-            if (pdbIn.get(pkg, false))  {
+            if (pdbIn.get(pkg, false)) {
                 propagateInternal(pkg);
             }
 

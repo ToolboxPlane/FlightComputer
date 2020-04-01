@@ -15,15 +15,15 @@
 
 namespace device {
     class Gps : public Node {
-    public:
-        Gps();
+        public:
+            Gps();
 
-        auto getChannelOut() -> OutputChannel<GpsMeasurement_t>&;
+            auto getChannelOut() -> OutputChannel<GpsMeasurement_t> &;
 
-    private:
-        void run() override;
+        private:
+            void run() override;
 
-        OutputChannel<GpsMeasurement_t> out;
+            OutputChannel<GpsMeasurement_t> out;
     };
 }
 

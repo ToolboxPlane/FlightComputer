@@ -17,8 +17,8 @@ StateEstimateParticleFilter::StateEstimateParticleFilter() {
 
 auto
 StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControllerPackage &flightControllerPackage,
-        const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage)
-    -> system_state_t {
+                                    const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage)
+-> system_state_t {
     if (particles.empty()) {
         init(10000, gpsMeasurement, navPackage.usDistance);
     }
@@ -58,7 +58,7 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
     if (weight_sum < std::numeric_limits<float>::epsilon()) {
         std::cerr << "weight_sum = 0" << std::endl;
     }
-    if(std::isnan(weight_sum)) {
+    if (std::isnan(weight_sum)) {
         std::cerr << "weight_sum = NaN" << std::endl;
     }
 
@@ -96,7 +96,7 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
 
 void
 StateEstimateParticleFilter::init(std::size_t numberOfParticles, const GpsMeasurement_t &gpsMeasurement,
-        si::base::Meter<> distanceGround) {
+                                  si::base::Meter<> distanceGround) {
     std::random_device dev;
     std::mt19937 rng(dev());
     std::normal_distribution<float> altDist(0, 10);

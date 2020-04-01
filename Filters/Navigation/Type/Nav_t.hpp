@@ -9,18 +9,18 @@
 #include "../../Fusion/Type/State_t.hpp"
 
 class Nav_t {
-public:
-    si::default_type heading;
-    si::extended::Speed<> speed;
-    si::base::Meter<> altitude;
-    uint16_t stateMajor, stateMinor;
-    State_t state;
+    public:
+        si::default_type heading;
+        si::extended::Speed<> speed;
+        si::base::Meter<> altitude;
+        uint16_t stateMajor, stateMinor;
+        State_t state;
 
-    friend std::ostream &operator<<(std::ostream &stream, Nav_t nav) {
-        stream << "Heading: " << nav.heading << "\tSpeed : " << nav.speed<< "\taltitude: " << nav.altitude;
-        stream << "\tMaj: " << nav.stateMajor << "\tMin: " << nav.stateMinor;
-        return stream;
-    }
+        friend std::ostream &operator<<(std::ostream &stream, Nav_t nav) {
+            stream << "Heading: " << nav.heading << "\tSpeed : " << nav.speed << "\taltitude: " << nav.altitude;
+            stream << "\tMaj: " << nav.stateMajor << "\tMin: " << nav.stateMinor;
+            return stream;
+        }
 };
 
 

@@ -58,7 +58,8 @@ namespace filter {
     }
 
     void Navigation::waypoints(const State_t &currentState, bool) {
-        static Waypoint_t nextWaypoint({currentState.lat, currentState.lon}, std::numeric_limits<si::default_type>::max(), false);
+        static Waypoint_t nextWaypoint({currentState.lat, currentState.lon},
+                                       std::numeric_limits<si::default_type>::max(), false);
         static uint16_t waypointIndex = 0;
         Nav_t nav{};
 
@@ -93,7 +94,7 @@ namespace filter {
         if (LANDING_APPROACH_ALT + 0.1_meter < state.altitudeAboveGround) { // Approach
             nav.altitude = state.altitudeGround + LANDING_APPROACH_ALT;
             nav.stateMinor = 0;
-        } else if (LANDING_SPEED < state.speed){ // Slow Down
+        } else if (LANDING_SPEED < state.speed) { // Slow Down
             nav.altitude = state.altitudeAboveGround + LANDING_APPROACH_ALT;
             nav.stateMinor = 1;
         } else if (LANDING_FLARE_ALT < state.altitudeAboveGround) { // Landing
@@ -156,7 +157,7 @@ namespace filter {
         out.put(nav);
     }
 
-    void Navigation::angle(const State_t &currentState, bool ) {
+    void Navigation::angle(const State_t &currentState, bool) {
         Nav_t nav{};
         //@TODO
         /*nav.pitch = state.loraRemote.joyRight.y * MAX_PITCH;

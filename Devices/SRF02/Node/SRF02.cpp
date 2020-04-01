@@ -23,9 +23,9 @@ namespace device {
             throw std::runtime_error(std::string{"SRF02:\t"} + strerror(errno));
         }
 
-        cfsetispeed(&tty, B19200);					// Set the baud rates to 19200
+        cfsetispeed(&tty, B19200);                    // Set the baud rates to 19200
         cfmakeraw(&tty);
-        tty.c_cc[VMIN]  = 1;
+        tty.c_cc[VMIN] = 1;
         tty.c_cc[VTIME] = 50;
 
         if (tcsetattr(fd, TCSANOW, &tty) != 0) {
@@ -35,7 +35,7 @@ namespace device {
         start();
     }
 
-    auto SRF02::getChannelOut() -> OutputChannel<si::base::Meter<>>& {
+    auto SRF02::getChannelOut() -> OutputChannel<si::base::Meter<>> & {
         return out;
     }
 
@@ -62,7 +62,7 @@ namespace device {
             if (readed == static_cast<ssize_t>(data.size())) {
                 float distance = data[0] << 8u | data[1];
 
-                out.put(distance/100.0F * si::base::meter);
+                out.put(distance / 100.0F * si::base::meter);
             } else {
                 std::cerr << "SRF02:\tread: invalid response" << std::endl;
             }

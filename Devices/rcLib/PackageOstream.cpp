@@ -10,8 +10,8 @@
 std::ostream &operator<<(std::ostream &ostream, const rcLib::Package &package) {
     ostream << "Sender: " << static_cast<int>(package.getDeviceId()) << "\tChannel: " << package.getChannelCount();
     ostream << "\tResolution: " << package.getResolution() << "\tData: (";
-    for(auto c = 0; c<package.getChannelCount(); c++) {
-        if(c > 0) {
+    for (auto c = 0; c < package.getChannelCount(); c++) {
+        if (c > 0) {
             ostream << ", ";
         }
         ostream << package.getChannel(c);

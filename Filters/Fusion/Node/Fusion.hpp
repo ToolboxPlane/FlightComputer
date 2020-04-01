@@ -17,49 +17,50 @@
 
 namespace filter {
     class Fusion : public Node {
-    public:
-        Fusion();
+        public:
+            Fusion();
 
-        void run() override;
+            void run() override;
 
-        InputChannel<rcLib::Package> &getFlightControllerIn();
+            InputChannel<rcLib::Package> &getFlightControllerIn();
 
-        InputChannel<rcLib::Package> &getBaseIn();
+            InputChannel<rcLib::Package> &getBaseIn();
 
-        InputChannel<rcLib::Package> &getRemoteIn();
+            InputChannel<rcLib::Package> &getRemoteIn();
 
-        InputChannel<rcLib::Package> &getTaranisIn();
+            InputChannel<rcLib::Package> &getTaranisIn();
 
-        InputChannel<rcLib::Package> &getPdbIn();
+            InputChannel<rcLib::Package> &getPdbIn();
 
-        InputChannel<GpsMeasurement_t> &getGpsIn();
+            InputChannel<GpsMeasurement_t> &getGpsIn();
 
-        InputChannel<rcLib::Package> &getNavIn();
+            InputChannel<rcLib::Package> &getNavIn();
 
-        OutputChannel<State_t> &getChannelOut();
+            OutputChannel<State_t> &getChannelOut();
 
-    private:
-        InputChannel<rcLib::Package> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn, navIn;
-        InputChannel<GpsMeasurement_t> gpsIn;
-        OutputChannel<State_t> out;
+        private:
+            InputChannel<rcLib::Package> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn, navIn;
+            InputChannel<GpsMeasurement_t> gpsIn;
+            OutputChannel<State_t> out;
 
-        template <typename T>
-        static auto getCurrSeconds() -> si::base::Second<T>;
-        void process();
+            template<typename T>
+            static auto getCurrSeconds() -> si::base::Second<T>;
 
-        si::base::Second<long double> lastUpdate;
+            void process();
 
-        rcLib::Package lastFcPackage;
-        std::optional<rcLib::Package> lastPdbPackage;
-        std::optional<GpsMeasurement_t> lastGpsMeasurement;
-        std::optional<rcLib::Package> lastBasePackage;
-        std::optional<rcLib::Package> lastTaranisPackage;
-        std::optional<rcLib::Package> lastRemotePackage;
-        std::optional<rcLib::Package> lastNavPackage;
+            si::base::Second<long double> lastUpdate;
 
-        StateEstimateParticleFilter particleFilter;
-        AlphaBetaTracker<si::extended::Acceleration<>> accXFilter, accYFilter,
-            accZFilter;
+            rcLib::Package lastFcPackage;
+            std::optional<rcLib::Package> lastPdbPackage;
+            std::optional<GpsMeasurement_t> lastGpsMeasurement;
+            std::optional<rcLib::Package> lastBasePackage;
+            std::optional<rcLib::Package> lastTaranisPackage;
+            std::optional<rcLib::Package> lastRemotePackage;
+            std::optional<rcLib::Package> lastNavPackage;
+
+            StateEstimateParticleFilter particleFilter;
+            AlphaBetaTracker<si::extended::Acceleration<>> accXFilter, accYFilter,
+                    accZFilter;
     };
 }
 

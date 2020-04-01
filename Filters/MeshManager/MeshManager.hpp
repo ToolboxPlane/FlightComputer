@@ -10,41 +10,51 @@
 #include "../../Devices/rcLib/RadioControlProtocolCpp/rcLib.hpp"
 #include "../../InputChannel.hpp"
 #include "../../OutputChannel.hpp"
+
 namespace filter {
     class MeshManager : public Node {
-    public:
-        MeshManager();
+        public:
+            MeshManager();
 
-        InputChannel<rcLib::Package> &getLoraIn();
-        InputChannel<rcLib::Package> &getSerialIn();
-        InputChannel<rcLib::Package> &getPdbIn();
+            InputChannel<rcLib::Package> &getLoraIn();
 
-        OutputChannel<rcLib::Package> &getLoraOut();
-        OutputChannel<rcLib::Package> &getSerialOut();
+            InputChannel<rcLib::Package> &getSerialIn();
+
+            InputChannel<rcLib::Package> &getPdbIn();
+
+            OutputChannel<rcLib::Package> &getLoraOut();
+
+            OutputChannel<rcLib::Package> &getSerialOut();
 
 
-        InputChannel<rcLib::Package> &getFlightControllerIn();
-        InputChannel<rcLib::Package> &getBaseIn();
+            InputChannel<rcLib::Package> &getFlightControllerIn();
 
-        OutputChannel<rcLib::Package> &getFlightControllerOut();
-        OutputChannel<rcLib::Package> &getRemoteOut();
-        OutputChannel<rcLib::Package> &getBaseOut();
-        OutputChannel<rcLib::Package> &getPdbOut();
-        OutputChannel<rcLib::Package> &getTaranisOut();
-        OutputChannel<rcLib::Package> &getNavOut();
+            InputChannel<rcLib::Package> &getBaseIn();
 
-    private:
-        // Real output
-        InputChannel<rcLib::Package> loraIn, serialIn, pdbIn;
-        OutputChannel<rcLib::Package> loraOut, serialOut;
+            OutputChannel<rcLib::Package> &getFlightControllerOut();
 
-        // Internal
-        InputChannel<rcLib::Package> flightControllerIn, baseIn;
-        OutputChannel<rcLib::Package> flightControllerOut, remoteOut, baseOut, pdbOut, taranisOut, navOut;
+            OutputChannel<rcLib::Package> &getRemoteOut();
 
-        void propagateInternal(const rcLib::Package &pkg);
+            OutputChannel<rcLib::Package> &getBaseOut();
 
-        void run() override;
+            OutputChannel<rcLib::Package> &getPdbOut();
+
+            OutputChannel<rcLib::Package> &getTaranisOut();
+
+            OutputChannel<rcLib::Package> &getNavOut();
+
+        private:
+            // Real output
+            InputChannel<rcLib::Package> loraIn, serialIn, pdbIn;
+            OutputChannel<rcLib::Package> loraOut, serialOut;
+
+            // Internal
+            InputChannel<rcLib::Package> flightControllerIn, baseIn;
+            OutputChannel<rcLib::Package> flightControllerOut, remoteOut, baseOut, pdbOut, taranisOut, navOut;
+
+            void propagateInternal(const rcLib::Package &pkg);
+
+            void run() override;
     };
 }
 

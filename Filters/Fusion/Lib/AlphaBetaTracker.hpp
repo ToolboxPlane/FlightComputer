@@ -17,19 +17,22 @@ class AlphaBetaTracker {
     public:
         using f_type = typename T::type;
         using x_type = T;
-        using v_type = decltype(T{}/si::base::Second<f_type>{});
+        using v_type = decltype(T{} / si::base::Second<f_type>{});
         using z_type = x_type;
         using sigma_v_type = v_type;
         using sigma_w_type = z_type;
 
         AlphaBetaTracker(sigma_v_type sigma_v, sigma_w_type sigma_w,
-                x_type x_hat = x_type{0}, v_type v_hat = v_type{0});
+                         x_type x_hat = x_type{0}, v_type v_hat = v_type{0});
+
         void addMeasurement(z_type z, si::base::Second<> dt);
 
         auto getStateEstimate() const -> std::pair<x_type, v_type>;
+
         auto getMeasurementEstimate() const -> z_type;
 
         auto getNIS() const -> f_type;
+
         constexpr auto getNIS95Bound() const -> f_type;
 
     private:
@@ -42,7 +45,7 @@ class AlphaBetaTracker {
 
 template<typename T>
 AlphaBetaTracker<T>::AlphaBetaTracker(sigma_v_type sigma_v, sigma_w_type sigma_w, x_type x_hat, v_type v_hat)
-    : sigma_v{sigma_v}, sigma_w{sigma_w}, x_hat{x_hat}, v_hat{v_hat} {}
+        : sigma_v{sigma_v}, sigma_w{sigma_w}, x_hat{x_hat}, v_hat{v_hat} {}
 
 template<typename T>
 void AlphaBetaTracker<T>::addMeasurement(z_type z, si::base::Second<> dt) {
@@ -75,7 +78,7 @@ void AlphaBetaTracker<T>::addMeasurement(z_type z, si::base::Second<> dt) {
      *      NIS = \sqrt{\T{\hat{z}} * S^{-1} * \hat{z}}
      *          = \abs{hat{z}} / \sqrt{s_{11}}
      */
-    const auto s = sigma_w * sigma_w * (2-alpha)/(1-alpha);
+    const auto s = sigma_w * sigma_w * (2 - alpha) / (1 - alpha);
     nis = std::abs(static_cast<f_type>(z_hat)) / std::sqrt(static_cast<f_type>(s));
 }
 

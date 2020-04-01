@@ -8,12 +8,13 @@
 #include <thread>
 
 class Node {
-protected:
-    virtual void run()= 0;
-    void start() {
-        std::thread t(&Node::run, this);
-        t.detach();
-    }
+    protected:
+        virtual void run() = 0;
+
+        void start() {
+            std::thread t(&Node::run, this);
+            t.detach();
+        }
 };
 
 

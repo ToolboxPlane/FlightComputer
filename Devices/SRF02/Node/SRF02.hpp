@@ -15,7 +15,7 @@ namespace device {
         public:
             explicit SRF02(const std::string &port);
 
-            auto getChannelOut() -> OutputChannel<si::base::Meter<>>&;
+            auto getChannelOut() -> OutputChannel<si::base::Meter<>> &;
 
         private:
             void run() override;

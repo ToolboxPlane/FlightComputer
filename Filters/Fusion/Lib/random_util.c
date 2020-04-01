@@ -13,8 +13,8 @@ float gaussian_box_muller(float mu, float sigma) {
         Z = v * fac;
     } else {
         do {
-            U1 = (float)rand() / RAND_MAX;
-            U2 = (float)rand() / RAND_MAX;
+            U1 = (float) rand() / RAND_MAX;
+            U2 = (float) rand() / RAND_MAX;
 
             u = 2.f * U1 - 1.f;
             v = 2.f * U2 - 1.f;
@@ -31,7 +31,7 @@ float gaussian_box_muller(float mu, float sigma) {
 }
 
 float gaussian(float mu, float sigma, float x) {
-    float res = 1.0f / (sqrtf(2.0f * (float)M_PI) * sigma) * expf(-(x-mu)*(x-mu)/(2.0f * sigma * sigma));
+    float res = 1.0f / (sqrtf(2.0f * (float) M_PI) * sigma) * expf(-(x - mu) * (x - mu) / (2.0f * sigma * sigma));
     if (res <= FLT_EPSILON) {
         res = FLT_EPSILON;
     }

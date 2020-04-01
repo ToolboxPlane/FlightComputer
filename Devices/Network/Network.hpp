@@ -18,18 +18,19 @@
 
 namespace device {
     class Network : public Node {
-    public:
-        explicit Network(const std::string &address);
+        public:
+            explicit Network(const std::string &address);
 
-        auto getChannelIn() -> InputChannel<rcLib::Package>&;
-    private:
-        void run() override;
+            auto getChannelIn() -> InputChannel<rcLib::Package> &;
 
-        int fd;
-        sockaddr_in sockaddrIn{};
-        InputChannel<rcLib::Package> in;
+        private:
+            void run() override;
 
-        static constexpr auto PROTOCOL_ID = 253;
+            int fd;
+            sockaddr_in sockaddrIn{};
+            InputChannel<rcLib::Package> in;
+
+            static constexpr auto PROTOCOL_ID = 253;
     };
 }
 

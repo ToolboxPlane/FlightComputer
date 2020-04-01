@@ -21,9 +21,9 @@ namespace fusion {
 
     auto getSwitchPos(int input) -> SwitchPos {
         auto val = normalizeTaranis(input);
-        if (val < 1.0/3.0) {
+        if (val < 1.0 / 3.0) {
             return SwitchPos::UP;
-        } else if (val < 2.0/3.0) {
+        } else if (val < 2.0 / 3.0) {
             return SwitchPos::CENTRE;
         } else {
             return SwitchPos::DOWN;
@@ -31,7 +31,7 @@ namespace fusion {
     }
 
     template<typename T>
-    auto decodePackage(const rcLib::Package&) -> T {
+    auto decodePackage(const rcLib::Package &) -> T {
         static_assert("Cannot decode package to type");
     }
 
@@ -43,7 +43,7 @@ namespace fusion {
         flightControllerPackage.pitch = (static_cast<si::default_type>(pkg.getChannel(2)) - 500) / 2.0f;
         flightControllerPackage.yaw = (static_cast<si::default_type>(pkg.getChannel(3)) - 500) / 2.0f;
         flightControllerPackage.rollDeriv = (static_cast<si::default_type>(pkg.getChannel(4)) - 500) * hertz;
-        flightControllerPackage.pitchDeriv = (static_cast<si::default_type>(pkg.getChannel(5)) -500) * hertz;
+        flightControllerPackage.pitchDeriv = (static_cast<si::default_type>(pkg.getChannel(5)) - 500) * hertz;
         flightControllerPackage.yawDeriv = (static_cast<si::default_type>(pkg.getChannel(6)) - 500) * hertz;
         flightControllerPackage.accX =
                 (static_cast<si::default_type>((pkg.getChannel(7)) - 500) / 100) * acceleration;
@@ -55,7 +55,7 @@ namespace fusion {
         // @TODO fix scaling
         flightControllerPackage.motor = pkg.getChannel(13) / 1000.0f;
         flightControllerPackage.elevonLeft =
-                (static_cast<si::default_type>(pkg.getChannel(14)) -  500) / 500.0f;
+                (static_cast<si::default_type>(pkg.getChannel(14)) - 500) / 500.0f;
         flightControllerPackage.elevonRight =
                 (static_cast<si::default_type>(pkg.getChannel(15)) - 500) / 500.0F;
 

@@ -18,7 +18,6 @@
 
 #ifdef RASPBERRY_PI
 #include "Devices/LoRa/LoRa.hpp"
-
 #endif
 
 int main() {
@@ -145,7 +144,7 @@ int main() {
 #endif
 
     std::cout << "Started all modules!" << "\n";
-    while(!fc.getChannelIn().isClosed()) {
+    while (!fc.getChannelIn().isClosed()) {
         std::this_thread::sleep_for(24h);
     }
     return 0;

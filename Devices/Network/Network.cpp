@@ -11,7 +11,7 @@
 #include <utility>
 #include "Network.hpp"
 
-device::Network::Network(const std::string &address)  {
+device::Network::Network(const std::string &address) {
     this->fd = socket(AF_INET, SOCK_RAW | SOCK_NONBLOCK, PROTOCOL_ID);
     if (this->fd < 0) {
         throw std::runtime_error(std::string{"Network: "} + strerror(errno));
@@ -33,7 +33,7 @@ void device::Network::run() {
             std::size_t written = 0;
             do {
                 auto res = sendto(this->fd, pkgOut.getEncodedData() + written, len - written, 0,
-                       reinterpret_cast<sockaddr *>(&sockaddrIn), sizeof(sockaddrIn));
+                                  reinterpret_cast<sockaddr *>(&sockaddrIn), sizeof(sockaddrIn));
 
                 if (res < 0) {
                     std::cerr << "[Network]:\t" << strerror(errno) << std::endl;

@@ -13,38 +13,38 @@
 
 namespace filter {
     class Navigation : public Node {
-    public:
-        Navigation();
+        public:
+            Navigation();
 
-        InputChannel<State_t> &getChannelStateIn();
+            InputChannel<State_t> &getChannelStateIn();
 
-        InputChannel<Waypoint_t> &getChannelWaypointIn();
+            InputChannel<Waypoint_t> &getChannelWaypointIn();
 
-        OutputChannel<Nav_t> &getChannelOut();
+            OutputChannel<Nav_t> &getChannelOut();
 
-    private:
-        void run() override;
+        private:
+            void run() override;
 
-        InputChannel<State_t> stateIn;
-        InputChannel<Waypoint_t> waypointIn;
-        OutputChannel<Nav_t> out;
+            InputChannel<State_t> stateIn;
+            InputChannel<Waypoint_t> waypointIn;
+            OutputChannel<Nav_t> out;
 
-        void waypoints(const State_t &state, bool reset = false);
+            void waypoints(const State_t &state, bool reset = false);
 
-        void land(const State_t &state, bool reset = false);
+            void land(const State_t &state, bool reset = false);
 
-        void launch(const State_t &state, bool reset = false);
+            void launch(const State_t &state, bool reset = false);
 
-        void angle(const State_t &state, bool reset = false);
+            void angle(const State_t &state, bool reset = false);
 
-        void hold(const State_t &state, bool reset = false);
+            void hold(const State_t &state, bool reset = false);
 
-        static constexpr si::extended::Speed<> CRUISE_SPEED{20.0};
-        static constexpr si::base::Meter<> POST_LAUNCH_ALTITUDE{10.0};
-        static constexpr si::extended::Acceleration<> THROW_THRESH{2.0};
-        static constexpr si::extended::Speed<> LANDING_SPEED{5.0};
-        static constexpr si::base::Meter<> LANDING_APPROACH_ALT{2.5};
-        static constexpr si::base::Meter<> LANDING_FLARE_ALT{0.5};
+            static constexpr si::extended::Speed<> CRUISE_SPEED{20.0};
+            static constexpr si::base::Meter<> POST_LAUNCH_ALTITUDE{10.0};
+            static constexpr si::extended::Acceleration<> THROW_THRESH{2.0};
+            static constexpr si::extended::Speed<> LANDING_SPEED{5.0};
+            static constexpr si::base::Meter<> LANDING_APPROACH_ALT{2.5};
+            static constexpr si::base::Meter<> LANDING_FLARE_ALT{0.5};
     };
 }
 
