@@ -5,12 +5,21 @@ All the modules running on the Raspberry Pi.
 ## Output Package
 Both output packages are 4-Channel, 10 bit Packages.
 
+### Flightcontroller
 | Channel | Content |
 | --- | --- |
 | 0 | Power (between 0 and 1023) |
 | 1 | Pitch-Target + 180 |
 | 2 | Roll-Target + 180 |
 | 3 | Empty |
+
+### LoRa
+| Channel | Content |
+| --- | --- |
+| 0 | -RSSI |
+| 1 | Altitude above ground |
+| 2 | Latitude * 10 |
+| 3 | Longitude * 10 |
 
 ## Recording
 Recordings are saved as pseudo-csv files. The first line
