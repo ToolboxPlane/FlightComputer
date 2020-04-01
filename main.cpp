@@ -25,7 +25,9 @@ int main() {
     using namespace std::chrono_literals;
     using namespace si::literals;
 
+#ifdef DEBUG
     feenableexcept(FE_INVALID | FE_OVERFLOW); // Floating point exceptions
+#endif
 
     rcLib::Package::setTransmitterId(38);
 

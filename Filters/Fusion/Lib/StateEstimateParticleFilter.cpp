@@ -69,7 +69,7 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
     // Fix PDF (-> Bayes * 1/p(z)) and determine most likely particle
     for (auto &[state, weight] : particles) {
         weight /= weight_sum;
-        weight = std::min<float>(weight, 1.0);
+        weight = std::min(weight, 1.0F);
 
         estimate.roll_angle += state.roll_angle * weight;
         estimate.pitch_angle += state.pitch_angle * weight;

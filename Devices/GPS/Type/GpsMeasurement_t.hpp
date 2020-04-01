@@ -19,10 +19,10 @@ public:
         this->fixAquired = static_cast<bool>(std::stoi(items[0]));
         this->location.lat = std::stod(items[1]);
         this->location.lon = std::stod(items[2]);
-        this->speed = std::stol(items[3]) * si::extended::speed;
+        this->speed = std::stof(items[3]) * si::extended::speed;
         this->timestamp = std::stoi(items[4]) * si::base::second;
         this->location.altitude = std::stof(items[5]) * si::base::meter;
-        this->climb = std::stol(items[6]) * si::extended::speed;
+        this->climb = std::stof(items[6]) * si::extended::speed;
     }
 
     GpsMeasurement_t(double lat, double lon) :

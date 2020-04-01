@@ -96,7 +96,7 @@ auto AlphaBetaTracker<T>::getNIS() const -> f_type {
 
 template<typename T>
 constexpr auto AlphaBetaTracker<T>::getNIS95Bound() const -> f_type {
-    return 3.84; // Chi^2 0.95 bound
+    return 3.84F; // Chi^2 0.95 bound
 }
 
 

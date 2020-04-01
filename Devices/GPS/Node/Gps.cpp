@@ -3,8 +3,6 @@
 //
 
 #include "Gps.hpp"
-#include "../../../../../../../../usr/include/gps.h"
-#include <unistd.h>
 #include <gps.h>
 
 namespace device {
@@ -48,6 +46,11 @@ namespace device {
                         out.put(gps);
                     } else {
                         gps.fixAquired = false;
+                        gps.epLat = std::numeric_limits<si::default_type>::infinity() * si::base::meter;
+                        gps.epLon = std::numeric_limits<si::default_type>::infinity() * si::base::meter;
+                        gps.epVert = std::numeric_limits<si::default_type>::infinity() * si::base::meter;
+                        gps.epSpeed = std::numeric_limits<si::default_type>::infinity() * si::extended::speed;
+                        gps.epClimb = std::numeric_limits<si::default_type>::infinity() * si::extended::speed;
                         out.put(gps);
                     }
                 }

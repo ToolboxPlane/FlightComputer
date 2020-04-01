@@ -31,7 +31,7 @@ namespace filter {
         }
     }
 
-    auto FeedbackControl::speedControl(const State_t &state, si::extended::Speed<> target) const -> float {
+    auto FeedbackControl::speedControl(const State_t &state, si::extended::Speed<> target) const -> si::default_type {
         if (static_cast<decltype(target)::type>(target) == 0) {
             return 0;
         }
@@ -48,17 +48,17 @@ namespace filter {
         lastDiff = deltaSpeed;
 
         // PI-Controller (I necessary to achieve stationary accuracy)
-        float speedFeedback = static_cast<float>
+        si::default_type speedFeedback = static_cast<si::default_type>
                 (deltaSpeed * FeedbackControl::SPEED_P + diffSum * FeedbackControl::SPEED_I);
 
         // Feedforward Term
-        float speedFeedforward = static_cast<float>(target / MAX_SPEED);
+        auto speedFeedforward = static_cast<si::default_type>(target / MAX_SPEED);
 
         return clamp(speedFeedback + speedFeedforward, 0.0F, 1.0F);
     }
 
-    auto FeedbackControl::headingControl(const State_t &state, float target) const -> float {
-        float headingDiff = target - state.yaw;
+    auto FeedbackControl::headingControl(const State_t &state, si::default_type target) const -> si::default_type {
+        auto headingDiff = target - state.yaw;
         headingDiff = fmodf(headingDiff, 360);
         if (headingDiff > 180) {
             headingDiff -= 180;
@@ -69,9 +69,9 @@ namespace filter {
         return clamp(roll, -MAX_ROLL, MAX_ROLL);
     }
 
-    auto FeedbackControl::altitudeControl(const State_t &state, si::base::Meter<> target) const -> float {
+    auto FeedbackControl::altitudeControl(const State_t &state, si::base::Meter<> target) const -> si::default_type {
         auto deltaHeight = target - state.altitude;
-        float pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::PITCH_P);
+        auto pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::PITCH_P);
 
         return clamp(pitch, -MAX_PITCH, MAX_PITCH);
     }

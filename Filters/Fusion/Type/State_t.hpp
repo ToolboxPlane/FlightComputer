@@ -20,11 +20,11 @@ enum class SwitchPos {
 class FlightControllerPackage {
 public:
     uint8_t bnoState;
-    float roll, pitch, yaw;
+    si::default_type roll, pitch, yaw;
     si::extended::Frequency<> rollDeriv, pitchDeriv, yawDeriv;
     si::extended::Acceleration<> accX, accY, accZ;
-    float elevonLeft, elevonRight;
-    float motor;
+    si::default_type elevonLeft, elevonRight;
+    si::default_type motor;
 };
 
 class PdbPackage {
@@ -38,14 +38,14 @@ public:
 
 class TaranisPackage {
 public:
-    float throttle, pitch, roll;
+    si::default_type throttle, pitch, roll;
     bool isArmed, manualOverrideActive;
-    float rssi;
+    si::default_type rssi;
 };
 
 class LoraPackage {
 public:
-    float joyLeftX, joyRightX, joyLeftY, joyRightY;
+    si::default_type joyLeftX, joyRightX, joyLeftY, joyRightY;
     FlightMode flightMode = FlightMode::WAYPOINT;
     bool isArmed;
 };
@@ -61,14 +61,14 @@ class NavPackage {
 
 class State_t {
 public:
-    float roll{};
-    float pitch{};
-    float yaw{};
+    si::default_type roll{};
+    si::default_type pitch{};
+    si::default_type yaw{};
     si::extended::Speed<> speed{};
     si::base::Meter<> altitude{};
     si::base::Meter<> altitudeAboveGround{};
     si::base::Meter<> altitudeGround;
-    float lat{}, lon{};
+    si::default_type lat{}, lon{};
     si::extended::Acceleration<> accX, accY, accZ;
 
     FlightControllerPackage rawFlightControllerData{};

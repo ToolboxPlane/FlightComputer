@@ -15,8 +15,8 @@ using namespace si::base;
 using namespace si::extended;
 
 namespace fusion {
-    auto normalizeTaranis(int input) -> float {
-        return (static_cast<float>(input) - 172) / (1811 - 172);
+    auto normalizeTaranis(int input) -> si::default_type {
+        return (static_cast<si::default_type>(input) - 172) / (1811 - 172);
     }
 
     auto getSwitchPos(int input) -> SwitchPos {
@@ -39,20 +39,20 @@ namespace fusion {
     auto decodePackage<FlightControllerPackage>(const rcLib::Package &pkg) -> FlightControllerPackage {
         FlightControllerPackage flightControllerPackage{};
         flightControllerPackage.bnoState = pkg.getChannel(0);
-        flightControllerPackage.roll = (static_cast<float>(pkg.getChannel(1)) - 500) / 2.0f;
-        flightControllerPackage.pitch = (static_cast<float>(pkg.getChannel(2)) - 500) / 2.0f;
-        flightControllerPackage.yaw = (static_cast<float>(pkg.getChannel(3)) - 500) / 2.0f;
-        flightControllerPackage.rollDeriv = (static_cast<float>(pkg.getChannel(4)) - 500) * hertz;
-        flightControllerPackage.pitchDeriv = (static_cast<float>(pkg.getChannel(5)) -500) * hertz;
-        flightControllerPackage.yawDeriv = (static_cast<float>(pkg.getChannel(6)) - 500) * hertz;
-        flightControllerPackage.accX = (static_cast<float>((pkg.getChannel(7)) - 500) / 100) * acceleration;
-        flightControllerPackage.accY = (static_cast<float>((pkg.getChannel(8)) - 500) / 100) * acceleration;
-        flightControllerPackage.accZ = (static_cast<float>((pkg.getChannel(9)) - 500) / 100) * acceleration;
+        flightControllerPackage.roll = (static_cast<si::default_type>(pkg.getChannel(1)) - 500) / 2.0f;
+        flightControllerPackage.pitch = (static_cast<si::default_type>(pkg.getChannel(2)) - 500) / 2.0f;
+        flightControllerPackage.yaw = (static_cast<si::default_type>(pkg.getChannel(3)) - 500) / 2.0f;
+        flightControllerPackage.rollDeriv = (static_cast<si::default_type>(pkg.getChannel(4)) - 500) * hertz;
+        flightControllerPackage.pitchDeriv = (static_cast<si::default_type>(pkg.getChannel(5)) -500) * hertz;
+        flightControllerPackage.yawDeriv = (static_cast<si::default_type>(pkg.getChannel(6)) - 500) * hertz;
+        flightControllerPackage.accX = (static_cast<si::default_type>((pkg.getChannel(7)) - 500) / 100) * acceleration;
+        flightControllerPackage.accY = (static_cast<si::default_type>((pkg.getChannel(8)) - 500) / 100) * acceleration;
+        flightControllerPackage.accZ = (static_cast<si::default_type>((pkg.getChannel(9)) - 500) / 100) * acceleration;
 
         // @TODO fix scaling
         flightControllerPackage.motor = pkg.getChannel(13);
-        flightControllerPackage.elevonLeft = static_cast<float>(pkg.getChannel(14)) -  500;
-        flightControllerPackage.elevonRight = static_cast<float>(pkg.getChannel(15)) - 500;
+        flightControllerPackage.elevonLeft = static_cast<si::default_type>(pkg.getChannel(14)) -  500;
+        flightControllerPackage.elevonRight = static_cast<si::default_type>(pkg.getChannel(15)) - 500;
 
         return flightControllerPackage;
     }
@@ -61,10 +61,10 @@ namespace fusion {
     auto decodePackage<PdbPackage>(const rcLib::Package &pkg) -> PdbPackage {
         PdbPackage pdbPackage{};
         pdbPackage.status = pkg.getChannel(0);
-        pdbPackage.voltageVcc = static_cast<float>(pkg.getChannel(1)) * 128 / 1000.0f * volt;
-        pdbPackage.currentVcc = static_cast<float>(pkg.getChannel(2)) * 256 / 1000.0f * ampere;
-        pdbPackage.voltage5V = static_cast<float>(pkg.getChannel(3)) * 32 / 1000.0f * volt;
-        pdbPackage.current5V = static_cast<float>(pkg.getChannel(4)) * 64 / 1000.0f * ampere;
+        pdbPackage.voltageVcc = static_cast<si::default_type>(pkg.getChannel(1)) * 128 / 1000.0f * volt;
+        pdbPackage.currentVcc = static_cast<si::default_type>(pkg.getChannel(2)) * 256 / 1000.0f * ampere;
+        pdbPackage.voltage5V = static_cast<si::default_type>(pkg.getChannel(3)) * 32 / 1000.0f * volt;
+        pdbPackage.current5V = static_cast<si::default_type>(pkg.getChannel(4)) * 64 / 1000.0f * ampere;
 
         return pdbPackage;
     }
@@ -85,10 +85,10 @@ namespace fusion {
     template<>
     auto decodePackage<LoraPackage>(const rcLib::Package &pkg) -> LoraPackage {
         LoraPackage loraPackage{};
-        loraPackage.joyRightX = static_cast<float>(pkg.getChannel(0) - 127) / 127.0f;
-        loraPackage.joyRightY = static_cast<float>(pkg.getChannel(1) - 127) / 127.0f;
-        loraPackage.joyLeftX = static_cast<float>(pkg.getChannel(2) - 127) / 127.0f;
-        loraPackage.joyLeftY = static_cast<float>(pkg.getChannel(3) - 127) / 127.0f;
+        loraPackage.joyRightX = static_cast<si::default_type>(pkg.getChannel(0) - 127) / 127.0f;
+        loraPackage.joyRightY = static_cast<si::default_type>(pkg.getChannel(1) - 127) / 127.0f;
+        loraPackage.joyLeftX = static_cast<si::default_type>(pkg.getChannel(2) - 127) / 127.0f;
+        loraPackage.joyLeftY = static_cast<si::default_type>(pkg.getChannel(3) - 127) / 127.0f;
         loraPackage.flightMode = static_cast<FlightMode>(pkg.getChannel(4));
         loraPackage.isArmed = static_cast<bool>(pkg.getChannel(5));
 
