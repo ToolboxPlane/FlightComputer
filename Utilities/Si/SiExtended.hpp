@@ -14,17 +14,19 @@
 
 namespace si {
     template <int exp>
-    constexpr void printHelper(std::ostream &ostream, const char *name) {
-        if constexpr (exp != 0) {
-            if constexpr (exp == -1) {
-                ostream << "/" << name;
-            } else if constexpr (exp == 1) {
-                ostream << name;
-            } else {
-                ostream << " " << name << "^" << exp;
-            }
-        }
+    void printHelper(std::ostream &ostream, const char *name) {
+        ostream << " " << name << "^" << exp;
     }
+
+    template <>
+    void printHelper<0>(std::ostream&, const char*);
+
+    template <>
+    void printHelper<-1>(std::ostream &ostream, const char *name);
+
+    template <>
+    void printHelper<1>(std::ostream &ostream, const char *name);
+
 
     template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T>
     std::ostream &operator<<(std::ostream& ostream, const Si<m,kg,s,A,K,MOL,CD,T> &si) {

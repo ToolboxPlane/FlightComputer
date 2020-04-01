@@ -35,7 +35,8 @@ set(SOURCES
         Filters/Navigation/Node/Navigation.cpp
         Filters/MeshManager/MeshManager.cpp
         Filters/OutputFilter/OutputFilter.cpp
-        Filters/FeedbackControl/Node/FeedbackControl.cpp)
+        Filters/FeedbackControl/Node/FeedbackControl.cpp
+        Utilities/Si/SiExtended.cpp)
 
 set(SOURCES_PI ${SOURCES}
         Devices/LoRa/LoRa.cpp)
