@@ -21,6 +21,8 @@ class AlphaBetaTracker {
         using z_type = x_type;
         using sigma_v_type = v_type;
         using sigma_w_type = z_type;
+        using sigma2_v_type = decltype(sigma_v_type{} * sigma_v_type{});
+        using sigma2_w_type = decltype(sigma_w_type{} * sigma_w_type{});
 
         AlphaBetaTracker(sigma_v_type sigma_v, sigma_w_type sigma_w,
                          x_type x_hat = x_type{0}, v_type v_hat = v_type{0});
@@ -30,6 +32,8 @@ class AlphaBetaTracker {
         auto getStateEstimate() const -> std::pair<x_type, v_type>;
 
         auto getMeasurementEstimate() const -> z_type;
+
+        auto updateMeasurementNoise(z_type z) -> sigma_w_type;
 
         auto getNIS() const -> f_type;
 
@@ -41,6 +45,8 @@ class AlphaBetaTracker {
         x_type x_hat;
         v_type v_hat;
         f_type nis;
+
+        std::list<z_type> measurements;
 };
 
 template<typename T>
@@ -100,6 +106,31 @@ auto AlphaBetaTracker<T>::getNIS() const -> f_type {
 template<typename T>
 constexpr auto AlphaBetaTracker<T>::getNIS95Bound() const -> f_type {
     return 3.84F; // Chi^2 0.95 bound
+}
+
+template<typename T>
+auto AlphaBetaTracker<T>::updateMeasurementNoise(z_type z) -> sigma_w_type {
+    measurements.emplace_back(z);
+
+    if (measurements.size() < 2) {
+        return sigma_w_type{0};
+    }
+
+    z_type sum{0};
+    for (const auto &meas : measurements) {
+        sum += meas;
+    }
+
+    z_type mean = sum / measurements.size();
+
+    sigma2_w_type mse_sum{0};
+    for (const auto &meas : measurements) {
+        mse_sum = mse_sum + (meas - mean) * (meas - mean);
+    }
+
+    sigma2_w_type var = mse_sum / (measurements.size() - 1);
+
+    return sigma_w_type{std::sqrt(static_cast<f_type>(var))};
 }
 
 

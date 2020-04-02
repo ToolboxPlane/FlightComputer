@@ -10,8 +10,8 @@ namespace filter {
     using namespace si::extended;
     using namespace si::literals;
 
-    constexpr auto ACC_SIGMA_V = 400 * si::extended::acceleration / si::base::second; // Process noise
-    constexpr auto ACC_SIGMA_W = 0.0135F * si::extended::acceleration; // Measurement noise
+    constexpr auto ACC_SIGMA_V = 1900 * si::extended::acceleration / si::base::second; // Process noise
+    constexpr auto ACC_SIGMA_W = 0.035F * si::extended::acceleration; // Measurement noise
 
     Fusion::Fusion() : lastUpdate{getCurrSeconds<long double>()}, accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
                        accYFilter{ACC_SIGMA_V, ACC_SIGMA_W}, accZFilter{ACC_SIGMA_V, ACC_SIGMA_W} {
@@ -115,6 +115,9 @@ namespace filter {
             res.accX = accXFilter.getMeasurementEstimate();
             res.accY = accYFilter.getMeasurementEstimate();
             res.accZ = accZFilter.getMeasurementEstimate();
+
+            std::cout << std::sqrt(static_cast<si::default_type>(flightControllerData.accX * flightControllerData.accX + flightControllerData.accY * flightControllerData.accY + flightControllerData.accZ * flightControllerData.accZ)) << std::endl;
+            std::cout << std::sqrt(static_cast<si::default_type>(res.accX * res.accX + res.accY * res.accY + res.accZ * res.accZ)) << std::endl;
 
             res.rawFlightControllerData = flightControllerData;
             res.navPackage = navData;
