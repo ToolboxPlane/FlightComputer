@@ -26,7 +26,8 @@ class GpsMeasurement_t {
         }
 
         GpsMeasurement_t(double lat, double lon) :
-                fixAquired{false}, location{lat, lon, 0}, speed{0}, timestamp{0}, climb{0} {};
+                fixAquired{false}, location{lat, lon, 0 * si::base::meter}, speed{0},
+                timestamp{0}, climb{0} {};
 
         GpsMeasurement_t() : fixAquired{false}, location{0, 0}, speed{0}, timestamp{0}, climb{0},
                              epLat{std::numeric_limits<si::default_type>::infinity()},

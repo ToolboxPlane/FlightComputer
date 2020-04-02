@@ -68,9 +68,9 @@ class State_t {
         si::base::Meter<> altitude{};
         si::base::Meter<> altitudeAboveGround{};
         si::base::Meter<> altitudeGround;
-        si::default_type lat{}, lon{};
+        double lat{}, lon{};
         si::extended::Acceleration<> accX, accY, accZ;
-        Gps_t startLocation{0,0,0};
+        Gps_t startLocation{0,0,0 * si::base::meter};
         si::base::Second<long double> startTime;
 
         FlightControllerPackage rawFlightControllerData{};

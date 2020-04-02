@@ -12,7 +12,8 @@
 
 class Gps_t {
     public:
-        Gps_t(double lat, double lon, si::default_type altitude = 0) : lat(lat), lon(lon), altitude(altitude) {};
+        Gps_t(double lat, double lon, si::base::Meter<> altitude = 0 * si::base::meter)
+                : lat(lat), lon(lon), altitude(altitude) {};
         double lat, lon;
         si::base::Meter<> altitude;
 

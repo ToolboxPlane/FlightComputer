@@ -12,12 +12,12 @@ class Waypoint_t {
     public:
         Waypoint_t() : location(0, 0), maxDelta(5), landingAllowed(false) {};
 
-        Waypoint_t(double lat, double lon, si::default_type altitude, si::default_type maxDelta = 5,
+        Waypoint_t(double lat, double lon, si::base::Meter<> altitude, si::default_type maxDelta = 5,
                    bool landingAllowed = false) :
                 location(lat, lon, altitude), maxDelta(maxDelta), landingAllowed(landingAllowed) {};
 
         Waypoint_t(const std::vector<std::string> &items) :
-                location(std::stod(items[0]), std::stod(items[1]), std::stof(items[2])),
+                location(std::stod(items[0]), std::stod(items[1]), std::stof(items[2]) * si::base::meter),
                 maxDelta(std::stof(items[3])), landingAllowed(static_cast<bool>(std::stoi(items[4]))) {};
 
         Waypoint_t(Gps_t gps, double maxDelta, bool landingAllowed) : location(gps), maxDelta(maxDelta),

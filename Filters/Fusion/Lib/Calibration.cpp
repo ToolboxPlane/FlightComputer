@@ -6,7 +6,7 @@
  */
 #include "Calibration.hpp"
 
-Calibration::Calibration() : calibrationFinished{false}, numMeas{0}, startPosition{0, 0, 0},
+Calibration::Calibration() : calibrationFinished{false}, numMeas{0}, startPosition{0, 0, 0 * si::base::meter},
                              latStdDev{0}, lonStdDev{0}, altStdDev{0}, accOffset{0}, baroOffset{0}, calibTime{0} {}
 
 void
