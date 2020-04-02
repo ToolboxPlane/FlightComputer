@@ -90,13 +90,21 @@ namespace filter {
 
         if (lastGpsMeasurement.has_value() /*&& lastGpsMeasurement.value().fixAquired*/ && lastNavPackage.has_value()) {
             const auto startTime = getCurrSeconds<long double>();
+            auto navData = fusion::decodePackage<NavPackage>(lastNavPackage.value());
+            auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
+            auto gpsMeasurement = lastGpsMeasurement.value();
+
+            if (!calibration.isCalibrated()) {
+                std::cout << "Calibrating" << std::endl;
+                calibration.update(startTime, flightControllerData, gpsMeasurement, navData);
+                return;
+            }
+
             const auto dtDouble = startTime - lastUpdate;
             const auto dt = static_cast<si::base::Second<si::default_type>>(dtDouble);
             lastUpdate = startTime;
 
-            auto navData = fusion::decodePackage<NavPackage>(lastNavPackage.value());
-            auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
-            auto state = particleFilter.update(dt, flightControllerData, lastGpsMeasurement.value(),
+            auto state = particleFilter.update(dt, flightControllerData, gpsMeasurement,
                                                navData);
 
             accXFilter.addMeasurement(flightControllerData.accX, dt);
@@ -115,9 +123,6 @@ namespace filter {
             res.accX = accXFilter.getMeasurementEstimate();
             res.accY = accYFilter.getMeasurementEstimate();
             res.accZ = accZFilter.getMeasurementEstimate();
-
-            std::cout << std::sqrt(static_cast<si::default_type>(flightControllerData.accX * flightControllerData.accX + flightControllerData.accY * flightControllerData.accY + flightControllerData.accZ * flightControllerData.accZ)) << std::endl;
-            std::cout << std::sqrt(static_cast<si::default_type>(res.accX * res.accX + res.accY * res.accY + res.accZ * res.accZ)) << std::endl;
 
             res.rawFlightControllerData = flightControllerData;
             res.navPackage = navData;

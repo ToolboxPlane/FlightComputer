@@ -13,6 +13,7 @@
 #include "../../../OutputChannel.hpp"
 #include "../Lib/StateEstimateParticleFilter.hpp"
 #include "../Lib/AlphaBetaTracker.hpp"
+#include "../Lib/Calibration.hpp"
 #include <optional>
 
 namespace filter {
@@ -61,6 +62,7 @@ namespace filter {
             StateEstimateParticleFilter particleFilter;
             AlphaBetaTracker<si::extended::Acceleration<>> accXFilter, accYFilter,
                     accZFilter;
+            Calibration calibration;
     };
 }
 

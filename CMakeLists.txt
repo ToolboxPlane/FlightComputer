@@ -32,6 +32,7 @@ set(SOURCES
         Filters/Fusion/Lib/StateEstimateParticleFilter.cpp
         Filters/Fusion/Lib/system.c
         Filters/Fusion/Lib/random_util.c
+        Filters/Fusion/Lib/Calibration.cpp
         Filters/Navigation/Node/Navigation.cpp
         Filters/MeshManager/MeshManager.cpp
         Filters/OutputFilter/OutputFilter.cpp
