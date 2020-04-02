@@ -10,7 +10,7 @@
 #include "../../../Utilities/Si/SiExtended.hpp"
 
 enum class FlightMode {
-    ANGLE = 0, LAUNCH = 1, LAND = 2, HOLD = 3, WAYPOINT = 4
+    RTH = 0, LAUNCH = 1, LAND = 2, LOITER = 3, WAYPOINT = 4
 };
 
 enum class SwitchPos {

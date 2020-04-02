@@ -29,15 +29,15 @@ namespace filter {
             InputChannel<Waypoint_t> waypointIn;
             OutputChannel<Nav_t> out;
 
-            void waypoints(const State_t &state, bool reset = false);
+            void waypoint(const State_t &currentState, bool = false);
 
             void land(const State_t &state, bool reset = false);
 
             void launch(const State_t &state, bool reset = false);
 
-            void angle(const State_t &state, bool reset = false);
+            void rth(const State_t &currentState, bool = false);
 
-            void hold(const State_t &state, bool reset = false);
+            void loiter(const State_t &state, bool reset = false);
 
             static constexpr si::extended::Speed<> CRUISE_SPEED{20.0};
             static constexpr si::base::Meter<> POST_LAUNCH_ALTITUDE{10.0};
@@ -48,6 +48,9 @@ namespace filter {
             static constexpr si::default_type LAUNCH_MAX_ROLL{30};
             static constexpr si::default_type LAUNCH_MIN_PITCH{0};
             static constexpr si::default_type LAUNCH_MAX_PITCH{90};
+            static constexpr si::base::Meter<> RTH_ALT{10};
+            static constexpr si::base::Meter<> LOITER_RADIUS{20};
+            static constexpr si::default_type LOITER_TARGET_ANGLE{72};
     };
 }
 
