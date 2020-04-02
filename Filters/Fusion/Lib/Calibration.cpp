@@ -99,3 +99,7 @@ auto Calibration::getStartTime() const -> si::base::Second<long double> {
     return calibTime;
 }
 
+auto Calibration::getAdditionalBaroUncertainty() const -> si::base::Meter<> {
+    return baroCalibUncertainty;
+}
+

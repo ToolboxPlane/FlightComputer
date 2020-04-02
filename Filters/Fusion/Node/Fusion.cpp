@@ -105,7 +105,7 @@ namespace filter {
             lastUpdate = startTime;
 
             auto state = particleFilter.update(dt, flightControllerData, gpsMeasurement,
-                                               navData);
+                                               navData, calibration.getAdditionalBaroUncertainty());
 
             accXFilter.addMeasurement(flightControllerData.accX, dt);
             accYFilter.addMeasurement(flightControllerData.accY, dt);

@@ -28,6 +28,8 @@ class Calibration {
 
         [[nodiscard]] auto getStartTime() const -> si::base::Second<long double>;
 
+        [[nodiscard]] auto getAdditionalBaroUncertainty() const -> si::base::Meter<>;
+
     private:
         /**
          * Calculates an update for the maximum a-posterior estimate
