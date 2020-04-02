@@ -129,7 +129,8 @@ namespace filter {
                 nav.speed = 0.0_speed;
                 nav.heading = state.yaw;
                 nav.altitude = state.altitude;
-                if (THROW_THRESH < state.accX) {
+                if (THROW_THRESH < state.accX && std::abs(state.roll) < LAUNCH_MAX_ROLL
+                        && state.pitch > LAUNCH_MIN_PITCH && state.pitch < LAUNCH_MAX_PITCH) {
                     headingTarget = state.yaw;
                     altitudeTarget = state.altitude + POST_LAUNCH_ALTITUDE;
                     launchState = THROWN;

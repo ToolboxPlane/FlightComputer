@@ -45,6 +45,9 @@ namespace filter {
             static constexpr si::extended::Speed<> LANDING_SPEED{5.0};
             static constexpr si::base::Meter<> LANDING_APPROACH_ALT{2.5};
             static constexpr si::base::Meter<> LANDING_FLARE_ALT{0.5};
+            static constexpr si::default_type LAUNCH_MAX_ROLL{30};
+            static constexpr si::default_type LAUNCH_MIN_PITCH{0};
+            static constexpr si::default_type LAUNCH_MAX_PITCH{90};
     };
 }
 
