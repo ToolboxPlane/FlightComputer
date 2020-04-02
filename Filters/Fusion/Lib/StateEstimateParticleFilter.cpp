@@ -17,7 +17,8 @@ StateEstimateParticleFilter::StateEstimateParticleFilter() {
 
 auto
 StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControllerPackage &flightControllerPackage,
-                                    const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage)
+                                    const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage,
+                                    si::base::Meter<> additionalBaroUncertainty)
 -> system_state_t {
     if (particles.empty()) {
         init(10000, gpsMeasurement, navPackage.usDistance);
@@ -42,6 +43,7 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
     measurementInfo.expected_error_vert = static_cast<float>(gpsMeasurement.epVert);
     measurementInfo.expected_error_speed = static_cast<float>(gpsMeasurement.epSpeed);
     measurementInfo.expected_error_climb = static_cast<float>(gpsMeasurement.epClimb);
+    measurementInfo.additional_baro_uncertainty = static_cast<float>(additionalBaroUncertainty);
 
     input_t input{};
     input.elevon_l = flightControllerPackage.elevonLeft;
@@ -66,7 +68,7 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
 
     float nEffInv = 0;
 
-    // Fix PDF (-> Bayes * 1/p(z)) and determine most likely particle
+    // Fix PDF (-> Bayes * 1/p(z)) and determine expected state E{x}
     for (auto &[state, weight] : particles) {
         weight /= weight_sum;
         weight = std::min(weight, 1.0F);

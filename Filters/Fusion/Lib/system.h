@@ -42,6 +42,7 @@ typedef struct {
 
 typedef struct {
     float expected_error_lat, expected_error_lon, expected_error_vert, expected_error_speed, expected_error_climb;
+    float additional_baro_uncertainty;
 } measurement_info_t;
 
 typedef struct {

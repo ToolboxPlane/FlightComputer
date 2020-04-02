@@ -9,8 +9,9 @@
 Calibration::Calibration() : calibrationFinished{false}, numMeas{0}, startPosition{0, 0, 0},
                              latStdDev{0}, lonStdDev{0}, altStdDev{0}, accOffset{0}, baroOffset{0}, calibTime{0} {}
 
-void Calibration::update(si::base::Second<long double> currentTime, const FlightControllerPackage &flightControllerPackage,
-                         const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage) {
+void
+Calibration::update(si::base::Second<long double> currentTime, const FlightControllerPackage &flightControllerPackage,
+                    const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage) {
     if (calibrationFinished) {
         return;
     }
@@ -37,19 +38,45 @@ void Calibration::update(si::base::Second<long double> currentTime, const Flight
 
     baroOffset += navPackage.baroAltitude;
 
-
+    numMeas += 1;
     if (si::base::Meter<>{static_cast<float>(latStdDev)} < GPS_STDDEV_THRESH &&
         si::base::Meter<>{static_cast<float>(lonStdDev)} < GPS_STDDEV_THRESH
         && altStdDev < GPS_STDDEV_THRESH && numMeas > NUM_MEAS_THRESH) {
         accOffset = accOffset / numMeas;
-        baroOffset = startPosition.altitude - baroOffset / numMeas;
+        baroOffset = baroOffset / numMeas - gpsMeasurement.location.altitude;
 
         calibTime = currentTime;
         calibrationFinished = true;
+    } else {
+        std::cout << "Calibration not finished after " << numMeas << " measurements:\n"
+                  << "\t\\sigma_lat=" << si::base::Meter<>{static_cast<float>(latStdDev)} << "\n"
+                  << "\t\\sigma_lon=" << si::base::Meter<>{static_cast<float>(lonStdDev)} << "\n"
+                  << "\t\\sigma_alt=" << si::base::Meter<>{static_cast<float>(altStdDev)} << std::endl;
     }
 }
 
-auto Calibration::isCalibrated() -> bool {
+void
+Calibration::applyCalib(si::base::Second<long double> currentTime, FlightControllerPackage &flightControllerPackage,
+                        GpsMeasurement_t &gpsMeasurement, NavPackage &navPackage) {
+    // Acceleration
+    auto xWeight = static_cast<float>(std::sin(-flightControllerPackage.pitch / 180 * M_PI));
+    auto yWeight = static_cast<float>(std::sin(flightControllerPackage.roll / 180 * M_PI));
+    auto zWeight = static_cast<float>(std::cos(-flightControllerPackage.pitch / 180 * M_PI)
+                   * std::cos(flightControllerPackage.roll / 180 * M_PI));
+    flightControllerPackage.accX -= accOffset * xWeight;
+    flightControllerPackage.accY -= accOffset * yWeight;
+    flightControllerPackage.accZ -= accOffset * zWeight;
+
+    // Barometer
+    navPackage.baroAltitude -= baroOffset;
+    auto distToStart = gpsMeasurement.location.distanceTo(startPosition);
+    auto timeToStart = static_cast<si::base::Second<>>(currentTime - calibTime);
+
+    baroCalibUncertainty = distToStart * DISTANCE_ALTITUDE_UNCERTAINTY + timeToStart * TIME_ALTITUDE_UNCERTAINTY;
+}
+
+
+auto Calibration::isCalibrated() const -> bool {
     return calibrationFinished;
 }
 
@@ -63,3 +90,12 @@ void Calibration::mapUpdate(T &x_hat, T &sqrt_p, T z, T sqrt_r) {
     p = (1 - k) * p; // Variance update
     sqrt_p = T{std::sqrt(static_cast<si::default_type>(p))};
 }
+
+auto Calibration::getStartLocation() const -> Gps_t {
+    return startPosition;
+}
+
+auto Calibration::getStartTime() const -> si::base::Second<long double> {
+    return calibTime;
+}
+

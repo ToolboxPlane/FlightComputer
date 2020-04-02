@@ -88,17 +88,17 @@ namespace filter {
             std::cout << "No Lora-Remote Package received!" << std::endl;
         }
 
-        if (lastGpsMeasurement.has_value() /*&& lastGpsMeasurement.value().fixAquired*/ && lastNavPackage.has_value()) {
+        if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired && lastNavPackage.has_value()) {
             const auto startTime = getCurrSeconds<long double>();
             auto navData = fusion::decodePackage<NavPackage>(lastNavPackage.value());
             auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
             auto gpsMeasurement = lastGpsMeasurement.value();
 
             if (!calibration.isCalibrated()) {
-                std::cout << "Calibrating" << std::endl;
                 calibration.update(startTime, flightControllerData, gpsMeasurement, navData);
                 return;
             }
+            calibration.applyCalib(startTime, flightControllerData, gpsMeasurement, navData);
 
             const auto dtDouble = startTime - lastUpdate;
             const auto dt = static_cast<si::base::Second<si::default_type>>(dtDouble);
@@ -123,6 +123,8 @@ namespace filter {
             res.accX = accXFilter.getMeasurementEstimate();
             res.accY = accYFilter.getMeasurementEstimate();
             res.accZ = accZFilter.getMeasurementEstimate();
+            res.startTime = calibration.getStartTime();
+            res.startLocation = calibration.getStartLocation();
 
             res.rawFlightControllerData = flightControllerData;
             res.navPackage = navData;

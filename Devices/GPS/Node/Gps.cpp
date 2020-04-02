@@ -20,15 +20,12 @@ namespace device {
 
         GpsMeasurement_t gps;
         while (true) {
-            if (gps_waiting(&gps_data, 60000000)) {
+            if (gps_waiting(&gps_data, std::numeric_limits<int>::max())) {
                 if (gps_read(&gps_data) == -1) {
                     std::cerr << std::string{"[GPS]:\tError:"} + gps_errstr(errno) << std::endl;
                 } else {
-                    if ((gps_data.status == STATUS_FIX || gps_data.status == STATUS_DGPS_FIX) &&
-                        (gps_data.fix.mode == MODE_2D || gps_data.fix.mode == MODE_3D) &&
-                        !std::isnan(gps_data.fix.latitude) &&
-                        !std::isnan(gps_data.fix.longitude)) {
-
+                    if ((gps_data.status == STATUS_FIX || gps_data.status == STATUS_DGPS_FIX) && gps_data.fix.mode == MODE_3D &&
+                        !std::isnan(gps_data.fix.latitude) && !std::isnan(gps_data.fix.longitude)) {
                         gps.fixAquired = true;
 
                         gps.location.lat = gps_data.fix.latitude;
