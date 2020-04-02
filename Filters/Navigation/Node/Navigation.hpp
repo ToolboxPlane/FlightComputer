@@ -40,15 +40,19 @@ namespace filter {
             void loiter(const State_t &state, bool reset = false);
 
             static constexpr si::extended::Speed<> CRUISE_SPEED{20.0};
-            static constexpr si::base::Meter<> POST_LAUNCH_ALTITUDE{10.0};
-            static constexpr si::extended::Acceleration<> THROW_THRESH{2.0};
-            static constexpr si::extended::Speed<> LANDING_SPEED{5.0};
-            static constexpr si::base::Meter<> LANDING_APPROACH_ALT{2.5};
-            static constexpr si::base::Meter<> LANDING_FLARE_ALT{0.5};
+
+            static constexpr si::base::Meter<> RTH_ALTITUDE{10};
+
+            static constexpr si::extended::Acceleration<> LAUNCH_THROW_THRESH{2.0};
             static constexpr si::default_type LAUNCH_MAX_ROLL{30};
             static constexpr si::default_type LAUNCH_MIN_PITCH{0};
             static constexpr si::default_type LAUNCH_MAX_PITCH{90};
-            static constexpr si::base::Meter<> RTH_ALT{10};
+            static constexpr si::base::Meter<> LAUNCH_TARGET_ALTITUDE{10.0};
+
+            static constexpr si::extended::Speed<> LANDING_SPEED{5.0};
+            static constexpr si::base::Meter<> LANDING_APPROACH_ALTITUDE{2.5};
+            static constexpr si::base::Meter<> LANDING_FLARE_ALTITUDE{0.5};
+
             static constexpr si::base::Meter<> LOITER_RADIUS{20};
             static constexpr si::default_type LOITER_TARGET_ANGLE{72};
     };

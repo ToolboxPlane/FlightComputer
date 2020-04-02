@@ -62,7 +62,7 @@ namespace filter {
 
         Gps_t position{currentState.lat, currentState.lon};
         nav.heading = position.angleTo(currentState.startLocation);
-        nav.altitude = currentState.startLocation.altitude + RTH_ALT;
+        nav.altitude = currentState.startLocation.altitude + RTH_ALTITUDE;
 
         nav.speed = CRUISE_SPEED;
 
@@ -91,10 +91,10 @@ namespace filter {
                 nav.speed = 0.0_speed;
                 nav.heading = state.yaw;
                 nav.altitude = state.altitude;
-                if (THROW_THRESH < state.accX && std::abs(state.roll) < LAUNCH_MAX_ROLL
-                        && state.pitch > LAUNCH_MIN_PITCH && state.pitch < LAUNCH_MAX_PITCH) {
+                if (LAUNCH_THROW_THRESH < state.accX && std::abs(state.roll) < LAUNCH_MAX_ROLL
+                    && state.pitch > LAUNCH_MIN_PITCH && state.pitch < LAUNCH_MAX_PITCH) {
                     headingTarget = state.yaw;
-                    altitudeTarget = state.altitude + POST_LAUNCH_ALTITUDE;
+                    altitudeTarget = state.altitude + LAUNCH_TARGET_ALTITUDE;
                     launchState = THROWN;
                 }
                 break;
@@ -129,14 +129,14 @@ namespace filter {
         Nav_t nav{};
         nav.speed = 0_speed;
         nav.heading = targetHeading;
-        if (LANDING_APPROACH_ALT + 0.1_meter < state.altitudeAboveGround) { // Approach
-            nav.altitude = state.altitudeGround + LANDING_APPROACH_ALT;
+        if (LANDING_APPROACH_ALTITUDE + 0.1_meter < state.altitudeAboveGround) { // Approach
+            nav.altitude = state.altitudeGround + LANDING_APPROACH_ALTITUDE;
             nav.stateMinor = 0;
         } else if (LANDING_SPEED < state.speed) { // Slow Down
-            nav.altitude = state.altitudeAboveGround + LANDING_APPROACH_ALT;
+            nav.altitude = state.altitudeAboveGround + LANDING_APPROACH_ALTITUDE;
             nav.stateMinor = 1;
-        } else if (LANDING_FLARE_ALT < state.altitudeAboveGround) { // Landing
-            nav.altitude = LANDING_FLARE_ALT - 0.1_meter;
+        } else if (LANDING_FLARE_ALTITUDE < state.altitudeAboveGround) { // Landing
+            nav.altitude = LANDING_FLARE_ALTITUDE - 0.1_meter;
             nav.stateMinor = 2;
         } else { // Flare
             nav.altitude = state.altitude + 100_meter;
