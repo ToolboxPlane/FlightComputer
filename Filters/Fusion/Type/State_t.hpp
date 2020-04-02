@@ -19,7 +19,7 @@ enum class SwitchPos {
 
 class FlightControllerPackage {
     public:
-        uint8_t bnoState;
+        uint8_t bnoState, bnoError, calibStat;
         si::default_type roll, pitch, yaw;
         si::extended::Frequency<> rollDeriv, pitchDeriv, yawDeriv;
         si::extended::Acceleration<> accX, accY, accZ;
@@ -29,7 +29,6 @@ class FlightControllerPackage {
 
 class PdbPackage {
     public:
-        uint8_t status;
         si::extended::Voltage<> voltageVcc;
         si::base::Ampere<> currentVcc;
         si::extended::Voltage<> voltage5V;
@@ -88,8 +87,6 @@ class State_t {
             ostream << "\tAcc:(" << state.accX << "," << state.accY << "," << state.accZ << ")";
             ostream << "\tPos:(" << state.lat << "," << state.lon << ")";
             ostream << "\tV:" << state.pdbPackage.voltageVcc;
-            ostream << "\tAr:" << (state.taranisPackage.isArmed ? 1 : 0);
-            ostream << "\tOr:" << (state.taranisPackage.manualOverrideActive ? 1 : 0);
             return ostream;
         }
 };

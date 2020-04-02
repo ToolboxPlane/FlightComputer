@@ -1,6 +1,6 @@
 dist: bionic
 os: linux
-language: c++
+language: cpp
 
 before_install:
   - bash scripts/install.sh
