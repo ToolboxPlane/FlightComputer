@@ -60,9 +60,10 @@ namespace recording {
                     auto currentTime = std::chrono::duration_cast
                             <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                     auto timeToWait = (timestamp + offset) - currentTime;
-                    std::this_thread::sleep_for(std::chrono::milliseconds(timeToWait));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(timeToWait / 100));
                     channelOut.put(getItem<T>(remainingItems));
                 }
+
                 channelOut.close();
             }
     };

@@ -65,6 +65,8 @@ namespace filter {
 
             process();
         }
+
+        std::exit(0);
     }
 
     void Fusion::process() {

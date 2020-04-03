@@ -94,6 +94,13 @@ namespace filter {
             }
             std::this_thread::yield();
         }
+
+        remoteOut.close();
+        flightControllerOut.close();
+        baseOut.close();
+        pdbOut.close();
+        taranisOut.close();
+        navOut.close();
     }
 
 
