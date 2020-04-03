@@ -16,9 +16,9 @@ StateEstimateParticleFilter::StateEstimateParticleFilter() {
 }
 
 auto
-StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControllerPackage &flightControllerPackage,
+StateEstimateParticleFilter::update(si::Second<> dt, const FlightControllerPackage &flightControllerPackage,
                                     const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage,
-                                    si::base::Meter<> additionalBaroUncertainty)
+                                    si::Meter<> additionalBaroUncertainty)
 -> system_state_t {
     if (particles.empty()) {
         init(10000, gpsMeasurement, navPackage.usDistance);
@@ -98,7 +98,7 @@ StateEstimateParticleFilter::update(si::base::Second<> dt, const FlightControlle
 
 void
 StateEstimateParticleFilter::init(std::size_t numberOfParticles, const GpsMeasurement_t &gpsMeasurement,
-                                  si::base::Meter<> distanceGround) {
+                                  si::Meter<> distanceGround) {
     std::random_device dev;
     std::mt19937 rng(dev());
     std::normal_distribution<float> altDist(0, 10);

@@ -7,9 +7,8 @@
 #include <limits>
 
 namespace filter {
-    using namespace si::base;
     using namespace si::literals;
-    using namespace si::extended;
+    using namespace si;
 
     Navigation::Navigation() {
         this->start();
@@ -82,7 +81,7 @@ namespace filter {
             launchState = IN_HAND;
         }
         static si::default_type headingTarget;
-        static si::base::Meter<> altitudeTarget;
+        static si::Meter<> altitudeTarget;
 
         Nav_t nav{};
 
@@ -99,7 +98,7 @@ namespace filter {
                 }
                 break;
             case THROWN:
-                nav.speed = std::numeric_limits<si::default_type>::max() * si::extended::speed;
+                nav.speed = std::numeric_limits<si::default_type>::max() * si::speed;
                 nav.altitude = altitudeTarget;
                 nav.heading = headingTarget;
                 if (CRUISE_SPEED < state.speed) {

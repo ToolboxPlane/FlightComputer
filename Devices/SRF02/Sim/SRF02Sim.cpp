@@ -12,7 +12,7 @@ namespace device {
     }
 
 
-    auto SRF02Sim::getChannelOut() -> OutputChannel<si::base::Meter<>> & {
+    auto SRF02Sim::getChannelOut() -> OutputChannel<si::Meter<>> & {
         return out;
     }
 
@@ -23,7 +23,7 @@ namespace device {
 
             uint16_t distance = 70;
 
-            out.put(distance/100.0F * si::base::meter);
+            out.put(distance/100.0F * si::meter);
         }
     }
 

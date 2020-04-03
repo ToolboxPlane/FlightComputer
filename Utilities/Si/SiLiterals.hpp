@@ -55,7 +55,7 @@ constexpr Si<a,b,c,d,e,f,g> operator "" _a_##BASE_NAME(unsigned long long t) { r
 constexpr Si<a,b,c,d,e,f,g> operator "" _z_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-21)}; } \
 constexpr Si<a,b,c,d,e,f,g> operator "" _y_##BASE_NAME(unsigned long long t) { return Si<a,b,c,d,e,f,g>{static_cast<si::default_type>(t * 1E-24)}; }
 
-namespace si::base {
+namespace si {
     // Base types
     template<typename T = si::default_type>
     using Meter = Si<1, 0, 0, 0, 0, 0, 0, T>;

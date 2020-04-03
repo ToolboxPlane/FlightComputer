@@ -11,9 +11,6 @@
 #include "../Type/State_t.hpp"
 #include "../../../Devices/rcLib/RadioControlProtocolCpp/rcLib.hpp"
 
-using namespace si::base;
-using namespace si::extended;
-
 namespace fusion {
     auto normalizeTaranis(int input) -> si::default_type {
         return (static_cast<si::default_type>(input) - 172) / (1811 - 172);
@@ -44,15 +41,15 @@ namespace fusion {
         flightControllerPackage.roll = (static_cast<si::default_type>(pkg.getChannel(1)) - 500) / 2.0f;
         flightControllerPackage.pitch = (static_cast<si::default_type>(pkg.getChannel(2)) - 500) / 2.0f;
         flightControllerPackage.yaw = (static_cast<si::default_type>(pkg.getChannel(3)) - 500) / 2.0f;
-        flightControllerPackage.rollDeriv = (static_cast<si::default_type>(pkg.getChannel(4)) - 500) * hertz;
-        flightControllerPackage.pitchDeriv = (static_cast<si::default_type>(pkg.getChannel(5)) - 500) * hertz;
-        flightControllerPackage.yawDeriv = (static_cast<si::default_type>(pkg.getChannel(6)) - 500) * hertz;
+        flightControllerPackage.rollDeriv = (static_cast<si::default_type>(pkg.getChannel(4)) - 500) * si::hertz;
+        flightControllerPackage.pitchDeriv = (static_cast<si::default_type>(pkg.getChannel(5)) - 500) * si::hertz;
+        flightControllerPackage.yawDeriv = (static_cast<si::default_type>(pkg.getChannel(6)) - 500) * si::hertz;
         flightControllerPackage.accX =
-                (static_cast<si::default_type>((pkg.getChannel(7)) - 500) / 6.25F) * acceleration;
+                (static_cast<si::default_type>((pkg.getChannel(7)) - 500) / 6.25F) * si::acceleration;
         flightControllerPackage.accY =
-                (static_cast<si::default_type>((pkg.getChannel(8)) - 500) / 6.25F) * acceleration;
+                (static_cast<si::default_type>((pkg.getChannel(8)) - 500) / 6.25F) * si::acceleration;
         flightControllerPackage.accZ =
-                (static_cast<si::default_type>((pkg.getChannel(9)) - 500) / 6.25F) * acceleration;
+                (static_cast<si::default_type>((pkg.getChannel(9)) - 500) / 6.25F) * si::acceleration;
 
         flightControllerPackage.elevonLeft =
                 (static_cast<si::default_type>(pkg.getChannel(14)) - 500) / 500.0f;
@@ -65,10 +62,10 @@ namespace fusion {
     template<>
     auto decodePackage<PdbPackage>(const rcLib::Package &pkg) -> PdbPackage {
         PdbPackage pdbPackage{};
-        pdbPackage.voltageVcc = static_cast<si::default_type>(pkg.getChannel(0)) * 128 / 1000.0f * volt;
-        pdbPackage.currentVcc = static_cast<si::default_type>(pkg.getChannel(1)) * 256 / 1000.0f * ampere;
-        pdbPackage.voltage5V = static_cast<si::default_type>(pkg.getChannel(2)) * 32 / 1000.0f * volt;
-        pdbPackage.current5V = static_cast<si::default_type>(pkg.getChannel(3)) * 64 / 1000.0f * ampere;
+        pdbPackage.voltageVcc = static_cast<si::default_type>(pkg.getChannel(0)) * 128 / 1000.0f * si::volt;
+        pdbPackage.currentVcc = static_cast<si::default_type>(pkg.getChannel(1)) * 256 / 1000.0f * si::ampere;
+        pdbPackage.voltage5V = static_cast<si::default_type>(pkg.getChannel(2)) * 32 / 1000.0f * si::volt;
+        pdbPackage.current5V = static_cast<si::default_type>(pkg.getChannel(3)) * 64 / 1000.0f * si::ampere;
 
         return pdbPackage;
     }
@@ -104,9 +101,9 @@ namespace fusion {
     auto decodePackage<NavPackage>(const rcLib::Package &pkg) -> NavPackage {
         NavPackage navPackage;
         navPackage.rssi = -pkg.getChannel(0);
-        navPackage.baroAltitude = pkg.getChannel(1) * si::base::meter;
-        navPackage.pitotVoltage = pkg.getChannel(2) * si::extended::volt;
-        navPackage.usDistance = pkg.getChannel(3) * si::base::meter;
+        navPackage.baroAltitude = pkg.getChannel(1) * si::meter;
+        navPackage.pitotVoltage = pkg.getChannel(2) * si::volt;
+        navPackage.usDistance = pkg.getChannel(3) * si::meter;
 
         return navPackage;
     }

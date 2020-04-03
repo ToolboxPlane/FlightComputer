@@ -24,30 +24,31 @@ namespace device {
                 if (gps_read(&gps_data) == -1) {
                     std::cerr << std::string{"[GPS]:\tError:"} + gps_errstr(errno) << std::endl;
                 } else {
-                    if ((gps_data.status == STATUS_FIX || gps_data.status == STATUS_DGPS_FIX) && gps_data.fix.mode == MODE_3D &&
-                        !std::isnan(gps_data.fix.latitude) && !std::isnan(gps_data.fix.longitude)) {
+                    if ((gps_data.status == STATUS_FIX || gps_data.status == STATUS_DGPS_FIX) &&
+                            gps_data.fix.mode == MODE_3D &&
+                            !std::isnan(gps_data.fix.latitude) && !std::isnan(gps_data.fix.longitude)) {
                         gps.fixAquired = true;
 
                         gps.location.lat = gps_data.fix.latitude;
                         gps.location.lon = gps_data.fix.longitude;
-                        gps.timestamp = si::base::Second<long double>{gps_data.fix.time};
-                        gps.speed = static_cast<si::default_type>(gps_data.fix.speed) * si::extended::speed;
-                        gps.climb = static_cast<si::default_type>(gps_data.fix.climb) * si::extended::speed;
-                        gps.location.altitude = static_cast<si::default_type>(gps_data.fix.altitude) * si::base::meter;
-                        gps.epLat = static_cast<si::default_type>(gps_data.fix.epy) * si::base::meter;
-                        gps.epLon = static_cast<si::default_type>(gps_data.fix.epx) * si::base::meter;
-                        gps.epVert = static_cast<si::default_type>(gps_data.fix.epv) * si::base::meter;
-                        gps.epSpeed = static_cast<si::default_type>(gps_data.fix.eps) * si::extended::speed;
-                        gps.epClimb = static_cast<si::default_type>(gps_data.fix.epc) * si::extended::speed;
+                        gps.timestamp = si::Second<long double>{gps_data.fix.time};
+                        gps.speed = static_cast<si::default_type>(gps_data.fix.speed) * si::speed;
+                        gps.climb = static_cast<si::default_type>(gps_data.fix.climb) * si::speed;
+                        gps.location.altitude = static_cast<si::default_type>(gps_data.fix.altitude) * si::meter;
+                        gps.epLat = static_cast<si::default_type>(gps_data.fix.epy) * si::meter;
+                        gps.epLon = static_cast<si::default_type>(gps_data.fix.epx) * si::meter;
+                        gps.epVert = static_cast<si::default_type>(gps_data.fix.epv) * si::meter;
+                        gps.epSpeed = static_cast<si::default_type>(gps_data.fix.eps) * si::speed;
+                        gps.epClimb = static_cast<si::default_type>(gps_data.fix.epc) * si::speed;
 
                         out.put(gps);
                     } else {
                         gps.fixAquired = false;
-                        gps.epLat = std::numeric_limits<si::default_type>::infinity() * si::base::meter;
-                        gps.epLon = std::numeric_limits<si::default_type>::infinity() * si::base::meter;
-                        gps.epVert = std::numeric_limits<si::default_type>::infinity() * si::base::meter;
-                        gps.epSpeed = std::numeric_limits<si::default_type>::infinity() * si::extended::speed;
-                        gps.epClimb = std::numeric_limits<si::default_type>::infinity() * si::extended::speed;
+                        gps.epLat = std::numeric_limits<si::default_type>::infinity() * si::meter;
+                        gps.epLon = std::numeric_limits<si::default_type>::infinity() * si::meter;
+                        gps.epVert = std::numeric_limits<si::default_type>::infinity() * si::meter;
+                        gps.epSpeed = std::numeric_limits<si::default_type>::infinity() * si::speed;
+                        gps.epClimb = std::numeric_limits<si::default_type>::infinity() * si::speed;
                         out.put(gps);
                     }
                 }

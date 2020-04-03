@@ -7,11 +7,11 @@
 #include "../Lib/DecodePackage.hpp"
 
 namespace filter {
-    using namespace si::extended;
+    using namespace si;
     using namespace si::literals;
 
-    constexpr auto ACC_SIGMA_V = 1900 * si::extended::acceleration / si::base::second; // Process noise
-    constexpr auto ACC_SIGMA_W = 0.035F * si::extended::acceleration; // Measurement noise
+    constexpr auto ACC_SIGMA_V = 1900 * si::acceleration / si::second; // Process noise
+    constexpr auto ACC_SIGMA_W = 0.035F * si::acceleration; // Measurement noise
 
     Fusion::Fusion() : lastUpdate{getCurrSeconds<long double>()}, accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
                        accYFilter{ACC_SIGMA_V, ACC_SIGMA_W}, accZFilter{ACC_SIGMA_V, ACC_SIGMA_W} {
@@ -103,7 +103,7 @@ namespace filter {
             calibration.applyCalib(startTime, flightControllerData, gpsMeasurement, navData);
 
             const auto dtDouble = startTime - lastUpdate;
-            const auto dt = static_cast<si::base::Second<si::default_type>>(dtDouble);
+            const auto dt = static_cast<si::Second<si::default_type>>(dtDouble);
             lastUpdate = startTime;
 
             auto state = particleFilter.update(dt, flightControllerData, gpsMeasurement,
@@ -149,10 +149,10 @@ namespace filter {
     }
 
     template<typename T>
-    auto Fusion::getCurrSeconds() -> si::base::Second<T> {
+    auto Fusion::getCurrSeconds() -> si::Second<T> {
         auto tp = std::chrono::high_resolution_clock::now().time_since_epoch();
         auto microseconds = static_cast<T>(
                 std::chrono::duration_cast<std::chrono::microseconds>(tp).count());
-        return si::base::Second<T>(microseconds / 10e6);
+        return si::Second<T>(microseconds / 10e6);
     }
 }

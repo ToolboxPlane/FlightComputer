@@ -17,7 +17,7 @@
 class GpsMeasurement_t {
     public:
         GpsMeasurement_t(double lat, double lon) :
-                fixAquired{false}, location{lat, lon, 0 * si::base::meter}, speed{0},
+                fixAquired{false}, location{lat, lon, 0 * si::meter}, speed{0},
                 timestamp{0}, climb{0} {};
 
         GpsMeasurement_t() : fixAquired{false}, location{0, 0}, speed{0}, timestamp{0}, climb{0},
@@ -44,11 +44,11 @@ class GpsMeasurement_t {
         bool fixAquired;
 
         Gps_t location;
-        si::extended::Speed<> speed;
-        si::base::Second<long double> timestamp;
-        si::extended::Speed<> climb;
-        si::base::Meter<> epLat{}, epLon{}, epVert{};
-        si::extended::Speed<> epSpeed{}, epClimb{};
+        si::Speed<> speed;
+        si::Second<long double> timestamp;
+        si::Speed<> climb;
+        si::Meter<> epLat{}, epLon{}, epVert{};
+        si::Speed<> epSpeed{}, epClimb{};
 };
 
 namespace recording {

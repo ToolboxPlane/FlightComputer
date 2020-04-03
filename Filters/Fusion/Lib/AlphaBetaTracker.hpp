@@ -17,7 +17,7 @@ class AlphaBetaTracker {
     public:
         using f_type = typename T::type;
         using x_type = T;
-        using v_type = decltype(T{} / si::base::Second<f_type>{});
+        using v_type = decltype(T{} / si::Second<f_type>{});
         using z_type = x_type;
         using sigma_v_type = v_type;
         using sigma_w_type = z_type;
@@ -27,7 +27,7 @@ class AlphaBetaTracker {
         AlphaBetaTracker(sigma_v_type sigma_v, sigma_w_type sigma_w,
                          x_type x_hat = x_type{0}, v_type v_hat = v_type{0});
 
-        void addMeasurement(z_type z, si::base::Second<> dt);
+        void addMeasurement(z_type z, si::Second<> dt);
 
         auto getStateEstimate() const -> std::pair<x_type, v_type>;
 
@@ -54,7 +54,7 @@ AlphaBetaTracker<T>::AlphaBetaTracker(sigma_v_type sigma_v, sigma_w_type sigma_w
         : sigma_v{sigma_v}, sigma_w{sigma_w}, x_hat{x_hat}, v_hat{v_hat} {}
 
 template<typename T>
-void AlphaBetaTracker<T>::addMeasurement(z_type z, si::base::Second<> dt) {
+void AlphaBetaTracker<T>::addMeasurement(z_type z, si::Second<> dt) {
     // Calculate Kalman Gain
     const auto lambda = static_cast<f_type >(sigma_v * dt * dt / sigma_w);
     const auto lambda2 = lambda * lambda;

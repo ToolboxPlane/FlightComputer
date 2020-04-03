@@ -12,12 +12,12 @@
 
 class Gps_t {
     public:
-        Gps_t(double lat, double lon, si::base::Meter<> altitude = 0 * si::base::meter)
+        Gps_t(double lat, double lon, si::Meter<> altitude = 0 * si::meter)
                 : lat(lat), lon(lon), altitude(altitude) {};
         double lat, lon;
-        si::base::Meter<> altitude;
+        si::Meter<> altitude;
 
-        si::base::Meter<> distanceTo(const Gps_t &gps) const {
+        si::Meter<> distanceTo(const Gps_t &gps) const {
             auto phi1 = this->lon / 180 * M_PI;
             auto sigma1 = M_PI / 2 - (this->lat / 180 * M_PI);
             auto r1 = EARTH_RADIUS + this->altitude;
@@ -36,7 +36,7 @@ class Gps_t {
             auto dy = y1 - y2;
             auto dz = z1 - z2;
 
-            return std::sqrt(static_cast<si::default_type>(dx * dx + dy * dy + dz * dz)) * si::base::meter;
+            return std::sqrt(static_cast<si::default_type>(dx * dx + dy * dy + dz * dz)) * si::meter;
         }
 
         auto angleTo(const Gps_t &gps) const -> si::default_type {
@@ -48,7 +48,7 @@ class Gps_t {
                                                  90);
         }
 
-        static constexpr si::base::Meter<> EARTH_RADIUS{EARTH_CIRCUMFERENCE / (2 * M_PI)};
+        static constexpr si::Meter<> EARTH_RADIUS{EARTH_CIRCUMFERENCE / (2 * M_PI)};
 };
 
 #endif //FLIGHTCOMPUTER_GPS_T_HPP

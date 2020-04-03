@@ -45,11 +45,11 @@ namespace filter {
             OutputChannel<State_t> out;
 
             template<typename T>
-            static auto getCurrSeconds() -> si::base::Second<T>;
+            static auto getCurrSeconds() -> si::Second<T>;
 
             void process();
 
-            si::base::Second<long double> lastUpdate;
+            si::Second<long double> lastUpdate;
 
             rcLib::Package lastFcPackage;
             std::optional<rcLib::Package> lastPdbPackage;
@@ -60,7 +60,7 @@ namespace filter {
             std::optional<rcLib::Package> lastNavPackage;
 
             StateEstimateParticleFilter particleFilter;
-            AlphaBetaTracker<si::extended::Acceleration<>> accXFilter, accYFilter,
+            AlphaBetaTracker<si::Acceleration<>> accXFilter, accYFilter,
                     accZFilter;
             Calibration calibration;
     };

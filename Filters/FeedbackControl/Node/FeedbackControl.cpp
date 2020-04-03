@@ -9,7 +9,7 @@
 #include "FeedbackControl.hpp"
 
 namespace filter {
-    using namespace si::extended;
+    using namespace si;
     using namespace si::literals;
 
     FeedbackControl::FeedbackControl() {
@@ -31,12 +31,12 @@ namespace filter {
         }
     }
 
-    auto FeedbackControl::speedControl(const State_t &state, si::extended::Speed<> target) const -> si::default_type {
+    auto FeedbackControl::speedControl(const State_t &state, si::Speed<> target) const -> si::default_type {
         if (static_cast<decltype(target)::type>(target) == 0) {
             return 0;
         }
 
-        static si::extended::Speed<> diffSum = 0_speed;
+        static si::Speed<> diffSum = 0_speed;
         static auto lastDiff = target - state.speed;
         auto deltaSpeed = target - state.speed;
         diffSum += deltaSpeed; // @TODO dt
@@ -69,7 +69,7 @@ namespace filter {
         return clamp(roll, -MAX_ROLL, MAX_ROLL);
     }
 
-    auto FeedbackControl::altitudeControl(const State_t &state, si::base::Meter<> target) const -> si::default_type {
+    auto FeedbackControl::altitudeControl(const State_t &state, si::Meter<> target) const -> si::default_type {
         auto deltaHeight = target - state.altitude;
         auto pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::PITCH_P);
 

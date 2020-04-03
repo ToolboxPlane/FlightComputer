@@ -37,18 +37,18 @@ namespace recording {
         assert(line.size() == 12);
 
         GpsMeasurement_t measurement;
-        measurement.timestamp = si::base::Second<long double>(std::stold(line[0]));
+        measurement.timestamp = si::Second<long double>(std::stold(line[0]));
         measurement.fixAquired = static_cast<bool>(std::stoi(line[1]));
         measurement.location.lat = std::stod(line[2]);
         measurement.location.lon = std::stod(line[3]);
-        measurement.location.altitude = std::stof(line[4]) * si::base::meter;
-        measurement.speed = std::stof(line[5]) * si::extended::speed;
-        measurement.climb = std::stof(line[6]) * si::extended::speed;
-        measurement.epLat = std::stof(line[7]) * si::base::meter;
-        measurement.epLon = std::stof(line[8]) * si::base::meter;
-        measurement.epVert = std::stof(line[9]) * si::base::meter;
-        measurement.epSpeed = std::stof(line[10]) * si::extended::speed;
-        measurement.epClimb = std::stof(line[11]) * si::extended::speed;
+        measurement.location.altitude = std::stof(line[4]) * si::meter;
+        measurement.speed = std::stof(line[5]) * si::speed;
+        measurement.climb = std::stof(line[6]) * si::speed;
+        measurement.epLat = std::stof(line[7]) * si::meter;
+        measurement.epLon = std::stof(line[8]) * si::meter;
+        measurement.epVert = std::stof(line[9]) * si::meter;
+        measurement.epSpeed = std::stof(line[10]) * si::speed;
+        measurement.epClimb = std::stof(line[11]) * si::speed;
 
         return measurement;
     }

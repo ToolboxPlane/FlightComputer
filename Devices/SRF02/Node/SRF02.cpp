@@ -35,7 +35,7 @@ namespace device {
         start();
     }
 
-    auto SRF02::getChannelOut() -> OutputChannel<si::base::Meter<>> & {
+    auto SRF02::getChannelOut() -> OutputChannel<si::Meter<>> & {
         return out;
     }
 
@@ -62,7 +62,7 @@ namespace device {
             if (readed == static_cast<ssize_t>(data.size())) {
                 float distance = data[0] << 8u | data[1];
 
-                out.put(distance / 100.0F * si::base::meter);
+                out.put(distance / 100.0F * si::meter);
             } else {
                 std::cerr << "SRF02:\tread: invalid response" << std::endl;
             }

@@ -21,18 +21,18 @@ class FlightControllerPackage {
     public:
         uint8_t bnoState, bnoError, calibStat;
         si::default_type roll, pitch, yaw;
-        si::extended::Frequency<> rollDeriv, pitchDeriv, yawDeriv;
-        si::extended::Acceleration<> accX, accY, accZ;
+        si::Frequency<> rollDeriv, pitchDeriv, yawDeriv;
+        si::Acceleration<> accX, accY, accZ;
         si::default_type elevonLeft, elevonRight;
         si::default_type motor;
 };
 
 class PdbPackage {
     public:
-        si::extended::Voltage<> voltageVcc;
-        si::base::Ampere<> currentVcc;
-        si::extended::Voltage<> voltage5V;
-        si::base::Ampere<> current5V;
+        si::Voltage<> voltageVcc;
+        si::Ampere<> currentVcc;
+        si::Voltage<> voltage5V;
+        si::Ampere<> current5V;
 };
 
 class TaranisPackage {
@@ -53,9 +53,9 @@ class LoraPackage {
 class NavPackage {
     public:
         int rssi;
-        si::base::Meter<> baroAltitude;
-        si::extended::Voltage<> pitotVoltage;
-        si::base::Meter<> usDistance;
+        si::Meter<> baroAltitude;
+        si::Voltage<> pitotVoltage;
+        si::Meter<> usDistance;
 };
 
 
@@ -64,14 +64,14 @@ class State_t {
         si::default_type roll{};
         si::default_type pitch{};
         si::default_type yaw{};
-        si::extended::Speed<> speed{};
-        si::base::Meter<> altitude{};
-        si::base::Meter<> altitudeAboveGround{};
-        si::base::Meter<> altitudeGround;
+        si::Speed<> speed{};
+        si::Meter<> altitude{};
+        si::Meter<> altitudeAboveGround{};
+        si::Meter<> altitudeGround;
         double lat{}, lon{};
-        si::extended::Acceleration<> accX, accY, accZ;
-        Gps_t startLocation{0,0,0 * si::base::meter};
-        si::base::Second<long double> startTime;
+        si::Acceleration<> accX, accY, accZ;
+        Gps_t startLocation{0,0,0 * si::meter};
+        si::Second<long double> startTime;
 
         FlightControllerPackage rawFlightControllerData{};
         PdbPackage pdbPackage{};

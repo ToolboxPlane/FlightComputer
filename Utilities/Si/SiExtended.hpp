@@ -42,29 +42,26 @@ namespace si {
         return ostream;
     }
 
-    namespace extended {
-        template<typename T = si::default_type>
-        using Speed = Si<1, 0, -1, 0, 0, 0, 0, T>;
-        constexpr Speed<> speed{1};
+    template<typename T = si::default_type>
+    using Speed = Si<1, 0, -1, 0, 0, 0, 0, T>;
+    constexpr Speed<> speed{1};
 
+    template<typename T = si::default_type>
+    using Acceleration = Si<1, 0, -2, 0, 0, 0, 0, T>;
+    constexpr Acceleration<> acceleration{1};
+
+    template<typename T = si::default_type>
+    using Voltage = Si<2, 1, -3, -1, 0, 0, 0, T>;
+    constexpr Voltage<> volt{1};
+
+    template<typename T = si::default_type>
+    using Frequency = Si<0, 0, -1, 0, 0, 0, 0, T>;
+    constexpr Frequency<> hertz{1};
+
+    namespace literals {
         CREATE_ALL_PREFIX(speed, 1, 0, -1, 0, 0, 0, 0)
-
-        template<typename T = si::default_type>
-        using Acceleration = Si<1, 0, -2, 0, 0, 0, 0, T>;
-        constexpr Acceleration<> acceleration{1};
-
         CREATE_ALL_PREFIX(acceleration, 1, 0, -2, 0, 0, 0, 0)
-
-        template<typename T = si::default_type>
-        using Voltage = Si<2, 1, -3, -1, 0, 0, 0, T>;
-        constexpr Voltage<> volt{1};
-
         CREATE_ALL_PREFIX(volt, 2, 1, -3, -1, 0, 0, 0)
-
-        template<typename T = si::default_type>
-        using Frequency = Si<0, 0, -1, 0, 0, 0, 0, T>;
-        constexpr Frequency<> hertz{1};
-
         CREATE_ALL_PREFIX(hertz, 0, 0, -1, 0, 0, 0, 0)
     }
 }

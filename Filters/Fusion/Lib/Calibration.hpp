@@ -16,19 +16,19 @@ class Calibration {
     public:
         Calibration();
 
-        void update(si::base::Second<long double> currentTime, const FlightControllerPackage &flightControllerPackage,
+        void update(si::Second<long double> currentTime, const FlightControllerPackage &flightControllerPackage,
                 const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage);
 
         [[nodiscard]] auto isCalibrated() const -> bool;
 
-        void applyCalib(si::base::Second<long double> currentTime, FlightControllerPackage &flightControllerPackage,
+        void applyCalib(si::Second<long double> currentTime, FlightControllerPackage &flightControllerPackage,
                         GpsMeasurement_t &gpsMeasurement, NavPackage &navPackage);
 
         [[nodiscard]] auto getStartLocation() const -> Gps_t;
 
-        [[nodiscard]] auto getStartTime() const -> si::base::Second<long double>;
+        [[nodiscard]] auto getStartTime() const -> si::Second<long double>;
 
-        [[nodiscard]] auto getAdditionalBaroUncertainty() const -> si::base::Meter<>;
+        [[nodiscard]] auto getAdditionalBaroUncertainty() const -> si::Meter<>;
 
     private:
         /**
@@ -48,22 +48,22 @@ class Calibration {
         Gps_t startPosition;
         // This is actually in meters as well but it gets treated as actual lat/lon error here.
         double latStdDev, lonStdDev;
-        si::base::Meter<> altStdDev;
+        si::Meter<> altStdDev;
 
-        si::extended::Acceleration<> accOffset;
+        si::Acceleration<> accOffset;
 
-        si::base::Meter<> baroOffset;
+        si::Meter<> baroOffset;
 
-        si::base::Second<long double> calibTime;
+        si::Second<long double> calibTime;
 
-        si::base::Meter<> baroCalibUncertainty{};
+        si::Meter<> baroCalibUncertainty{};
 
-        static constexpr auto GPS_STDDEV_THRESH = 3 * si::base::meter;
+        static constexpr auto GPS_STDDEV_THRESH = 3 * si::meter;
         static constexpr auto NUM_MEAS_THRESH = 20;
         // Additional uncertainty as uncertainty/distance
-        static constexpr auto DISTANCE_ALTITUDE_UNCERTAINTY = (10 * si::base::meter) / (1000 * si::base::meter);
+        static constexpr auto DISTANCE_ALTITUDE_UNCERTAINTY = (10 * si::meter) / (1000 * si::meter);
         // Additional uncertainty as uncertainty/time
-        static constexpr auto TIME_ALTITUDE_UNCERTAINTY = (10.0F * si::base::meter) / (60 * 60 * si::base::second);
+        static constexpr auto TIME_ALTITUDE_UNCERTAINTY = (10.0F * si::meter) / (60 * 60 * si::second);
 };
 
 

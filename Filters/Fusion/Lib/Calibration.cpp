@@ -6,11 +6,11 @@
  */
 #include "Calibration.hpp"
 
-Calibration::Calibration() : calibrationFinished{false}, numMeas{0}, startPosition{0, 0, 0 * si::base::meter},
+Calibration::Calibration() : calibrationFinished{false}, numMeas{0}, startPosition{0, 0, 0 * si::meter},
                              latStdDev{0}, lonStdDev{0}, altStdDev{0}, accOffset{0}, baroOffset{0}, calibTime{0} {}
 
 void
-Calibration::update(si::base::Second<long double> currentTime, const FlightControllerPackage &flightControllerPackage,
+Calibration::update(si::Second<long double> currentTime, const FlightControllerPackage &flightControllerPackage,
                     const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage) {
     if (calibrationFinished) {
         return;
@@ -32,15 +32,15 @@ Calibration::update(si::base::Second<long double> currentTime, const FlightContr
     auto accSqr = flightControllerPackage.accX * flightControllerPackage.accX
                   + flightControllerPackage.accY * flightControllerPackage.accY
                   + flightControllerPackage.accZ * flightControllerPackage.accZ;
-    auto accAbs = std::sqrt(static_cast<si::default_type>(accSqr)) * si::extended::acceleration;
+    auto accAbs = std::sqrt(static_cast<si::default_type>(accSqr)) * si::acceleration;
 
     accOffset += accAbs;
 
     baroOffset += navPackage.baroAltitude;
 
     numMeas += 1;
-    if (si::base::Meter<>{static_cast<float>(latStdDev)} < GPS_STDDEV_THRESH &&
-        si::base::Meter<>{static_cast<float>(lonStdDev)} < GPS_STDDEV_THRESH
+    if (si::Meter<>{static_cast<float>(latStdDev)} < GPS_STDDEV_THRESH &&
+        si::Meter<>{static_cast<float>(lonStdDev)} < GPS_STDDEV_THRESH
         && altStdDev < GPS_STDDEV_THRESH && numMeas > NUM_MEAS_THRESH) {
         accOffset = accOffset / numMeas;
         baroOffset = baroOffset / numMeas - gpsMeasurement.location.altitude;
@@ -49,14 +49,14 @@ Calibration::update(si::base::Second<long double> currentTime, const FlightContr
         calibrationFinished = true;
     } else {
         std::cout << "Calibration not finished after " << numMeas << " measurements:\n"
-                  << "\t\\sigma_lat=" << si::base::Meter<>{static_cast<float>(latStdDev)} << "\n"
-                  << "\t\\sigma_lon=" << si::base::Meter<>{static_cast<float>(lonStdDev)} << "\n"
-                  << "\t\\sigma_alt=" << si::base::Meter<>{static_cast<float>(altStdDev)} << std::endl;
+                  << "\t\\sigma_lat=" << si::Meter<>{static_cast<float>(latStdDev)} << "\n"
+                  << "\t\\sigma_lon=" << si::Meter<>{static_cast<float>(lonStdDev)} << "\n"
+                  << "\t\\sigma_alt=" << si::Meter<>{static_cast<float>(altStdDev)} << std::endl;
     }
 }
 
 void
-Calibration::applyCalib(si::base::Second<long double> currentTime, FlightControllerPackage &flightControllerPackage,
+Calibration::applyCalib(si::Second<long double> currentTime, FlightControllerPackage &flightControllerPackage,
                         GpsMeasurement_t &gpsMeasurement, NavPackage &navPackage) {
     // Acceleration
     auto xWeight = static_cast<float>(std::sin(-flightControllerPackage.pitch / 180 * M_PI));
@@ -70,7 +70,7 @@ Calibration::applyCalib(si::base::Second<long double> currentTime, FlightControl
     // Barometer
     navPackage.baroAltitude -= baroOffset;
     auto distToStart = gpsMeasurement.location.distanceTo(startPosition);
-    auto timeToStart = static_cast<si::base::Second<>>(currentTime - calibTime);
+    auto timeToStart = static_cast<si::Second<>>(currentTime - calibTime);
 
     baroCalibUncertainty = distToStart * DISTANCE_ALTITUDE_UNCERTAINTY + timeToStart * TIME_ALTITUDE_UNCERTAINTY;
 }
@@ -95,11 +95,11 @@ auto Calibration::getStartLocation() const -> Gps_t {
     return startPosition;
 }
 
-auto Calibration::getStartTime() const -> si::base::Second<long double> {
+auto Calibration::getStartTime() const -> si::Second<long double> {
     return calibTime;
 }
 
-auto Calibration::getAdditionalBaroUncertainty() const -> si::base::Meter<> {
+auto Calibration::getAdditionalBaroUncertainty() const -> si::Meter<> {
     return baroCalibUncertainty;
 }
 

@@ -15,12 +15,12 @@ namespace device {
     class SRF02Sim : public Node {
         public:
             SRF02Sim();
-            auto getChannelOut() -> OutputChannel<si::base::Meter<>> &;
+            auto getChannelOut() -> OutputChannel<si::Meter<>> &;
 
         private:
             void run() override;
 
-            OutputChannel <si::base::Meter<>> out;
+            OutputChannel <si::Meter<>> out;
     };
 
 }
