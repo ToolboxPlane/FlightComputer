@@ -8,6 +8,7 @@
 
 #include <cmath>
 #include "../../../Utilities/Si/SiLiterals.hpp"
+#include "../../../Utilities/Si/SiStl.hpp"
 #include "../../../constants.hpp"
 
 class Gps_t {
@@ -18,15 +19,15 @@ class Gps_t {
         si::Meter<> altitude;
 
         si::Meter<> distanceTo(const Gps_t &gps) const {
-            auto phi1 = this->lon / 180 * M_PI;
-            auto sigma1 = M_PI / 2 - (this->lat / 180 * M_PI);
+            auto phi1 = static_cast<si::default_type>(this->lon / 180 * M_PI_F);
+            auto sigma1 = M_PI_F / 2 - static_cast<si::default_type>(this->lat / 180 * M_PI_F);
             auto r1 = EARTH_RADIUS + this->altitude;
             auto x1 = r1 * std::sin(sigma1) * std::cos(phi1);
             auto y1 = r1 * std::sin(sigma1) * std::sin(phi1);
             auto z1 = r1 * std::cos(sigma1);
 
-            double phi2 = gps.lon / 180 * M_PI;
-            double sigma2 = M_PI / 2 - (gps.lat / 180 * M_PI);
+            auto phi2 = static_cast<si::default_type>(gps.lon / 180 * M_PI_F);
+            auto sigma2 = M_PI_F / 2 - static_cast<si::default_type>(gps.lat / 180 * M_PI_F);
             auto r2 = EARTH_RADIUS + gps.altitude;
             auto x2 = r2 * std::sin(sigma2) * std::cos(phi2);
             auto y2 = r2 * std::sin(sigma2) * std::sin(phi2);
@@ -36,7 +37,7 @@ class Gps_t {
             auto dy = y1 - y2;
             auto dz = z1 - z2;
 
-            return std::sqrt(static_cast<si::default_type>(dx * dx + dy * dy + dz * dz)) * si::meter;
+            return std::sqrt(dx * dx + dy * dy + dz * dz);
         }
 
         auto angleTo(const Gps_t &gps) const -> si::default_type {
@@ -48,7 +49,7 @@ class Gps_t {
                                                  90);
         }
 
-        static constexpr si::Meter<> EARTH_RADIUS{EARTH_CIRCUMFERENCE / (2 * M_PI)};
+        static constexpr si::Meter<> EARTH_RADIUS{EARTH_CIRCUMFERENCE / (2 * M_PI_F)};
 };
 
 #endif //FLIGHTCOMPUTER_GPS_T_HPP

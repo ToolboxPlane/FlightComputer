@@ -5,6 +5,7 @@
  * Description here TODO
  */
 #include "Calibration.hpp"
+#include "../../../Utilities/Si/SiStl.hpp"
 
 Calibration::Calibration() : calibrationFinished{false}, numMeas{0}, startPosition{0, 0, 0 * si::meter},
                              latStdDev{0}, lonStdDev{0}, altStdDev{0}, accOffset{0}, baroOffset{0}, calibTime{0} {}
@@ -32,7 +33,7 @@ Calibration::update(si::Second<long double> currentTime, const FlightControllerP
     auto accSqr = flightControllerPackage.accX * flightControllerPackage.accX
                   + flightControllerPackage.accY * flightControllerPackage.accY
                   + flightControllerPackage.accZ * flightControllerPackage.accZ;
-    auto accAbs = std::sqrt(static_cast<si::default_type>(accSqr)) * si::acceleration;
+    auto accAbs = std::sqrt(accSqr);
 
     accOffset += accAbs;
 
@@ -88,7 +89,7 @@ void Calibration::mapUpdate(T &x_hat, T &sqrt_p, T z, T sqrt_r) {
     auto gamma = z - x_hat; // Measurement error
     x_hat = x_hat + k * gamma; // State update
     p = (1 - k) * p; // Variance update
-    sqrt_p = T{std::sqrt(static_cast<si::default_type>(p))};
+    sqrt_p = std::sqrt(p);
 }
 
 auto Calibration::getStartLocation() const -> Gps_t {

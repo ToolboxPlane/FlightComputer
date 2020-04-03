@@ -85,7 +85,7 @@ void AlphaBetaTracker<T>::addMeasurement(z_type z, si::Second<> dt) {
      *          = \abs{hat{z}} / \sqrt{s_{11}}
      */
     const auto s = sigma_w * sigma_w * (2 - alpha) / (1 - alpha);
-    nis = std::abs(static_cast<f_type>(z_hat)) / std::sqrt(static_cast<f_type>(s));
+    nis = static_cast<f_type>(std::abs(z_hat / std::sqrt(s)));
 }
 
 template<typename T>
@@ -130,7 +130,7 @@ auto AlphaBetaTracker<T>::updateMeasurementNoise(z_type z) -> sigma_w_type {
 
     sigma2_w_type var = mse_sum / (measurements.size() - 1);
 
-    return sigma_w_type{std::sqrt(static_cast<f_type>(var))};
+    return std::sqrt(var);
 }
 
 
