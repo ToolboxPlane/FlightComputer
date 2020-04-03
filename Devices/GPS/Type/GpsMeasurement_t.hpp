@@ -12,19 +12,10 @@
 #include <sstream>
 #include "Gps_t.hpp"
 #include "../../../Utilities/Si/SiExtended.hpp"
+#include "../../../Utilities/Recording/Serialization.hpp"
 
 class GpsMeasurement_t {
     public:
-        GpsMeasurement_t(const std::vector<std::string> &items) : location{0, 0} {
-            this->fixAquired = static_cast<bool>(std::stoi(items[0]));
-            this->location.lat = std::stod(items[1]);
-            this->location.lon = std::stod(items[2]);
-            this->speed = std::stof(items[3]) * si::extended::speed;
-            this->timestamp = std::stoi(items[4]) * si::base::second;
-            this->location.altitude = std::stof(items[5]) * si::base::meter;
-            this->climb = std::stof(items[6]) * si::extended::speed;
-        }
-
         GpsMeasurement_t(double lat, double lon) :
                 fixAquired{false}, location{lat, lon, 0 * si::base::meter}, speed{0},
                 timestamp{0}, climb{0} {};
@@ -50,32 +41,25 @@ class GpsMeasurement_t {
             return ostream;
         }
 
-
-        auto getLine() const -> std::string {
-            std::stringstream stringstream;
-            stringstream << (this->fixAquired ? 1 : 0) << "; ";
-            stringstream << this->location.lat << "; ";
-            stringstream << this->location.lon << "; ";
-            stringstream << this->speed << "; ";
-            stringstream << this->timestamp << "; ";
-            stringstream << this->location.altitude << "; ";
-            stringstream << this->climb;
-
-            return stringstream.str();
-        }
-
-        static auto header() -> std::string {
-            return "Fix; Lat; Lon; Speed; Timestamp; Altitude; Climb";
-        }
-
         bool fixAquired;
 
         Gps_t location;
         si::extended::Speed<> speed;
-        si::base::Second<> timestamp;
+        si::base::Second<long double> timestamp;
         si::extended::Speed<> climb;
-        si::base::Meter<> epLat, epLon, epVert;
-        si::extended::Speed<> epSpeed, epClimb;
+        si::base::Meter<> epLat{}, epLon{}, epVert{};
+        si::extended::Speed<> epSpeed{}, epClimb{};
 };
+
+namespace recording {
+    template <>
+    auto header<GpsMeasurement_t>() -> std::string;
+
+    template <>
+    auto getLine<GpsMeasurement_t>(const GpsMeasurement_t &gpsMeasurement) -> std::string;
+
+    template<>
+    auto getItem<GpsMeasurement_t>(const std::vector<std::string> &line) -> GpsMeasurement_t;
+}
 
 #endif //FLIGHTCOMPUTER_GPS_MEASUREMENT_T_HPP

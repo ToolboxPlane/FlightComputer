@@ -20,10 +20,11 @@ set(SOURCES
         main.cpp
         Devices/rcLib/RadioControlProtocolCpp/rcLib.cpp
         Devices/rcLib/RadioControlProtocolCpp/RadioControlProtocolC/rc_lib.c
-        Devices/rcLib/PackageOstream.cpp
+        Devices/rcLib/PackageUtil.cpp
         Devices/rcLib/RcLibSimulator.cpp
         Devices/GPS/Sim/GpsSimulator.cpp
         Devices/GPS/Node/Gps.cpp
+        Devices/GPS/Type/GpsMeasurement_t.cpp
         Devices/Network/Network.cpp
         Devices/Serial/SerialPosix.cpp
         Devices/SRF02/Node/SRF02.cpp

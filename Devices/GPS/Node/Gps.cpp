@@ -30,7 +30,7 @@ namespace device {
 
                         gps.location.lat = gps_data.fix.latitude;
                         gps.location.lon = gps_data.fix.longitude;
-                        gps.timestamp = static_cast<si::default_type>(gps_data.fix.time) * si::base::second;
+                        gps.timestamp = si::base::Second<long double>{gps_data.fix.time};
                         gps.speed = static_cast<si::default_type>(gps_data.fix.speed) * si::extended::speed;
                         gps.climb = static_cast<si::default_type>(gps_data.fix.climb) * si::extended::speed;
                         gps.location.altitude = static_cast<si::default_type>(gps_data.fix.altitude) * si::base::meter;

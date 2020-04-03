@@ -51,5 +51,4 @@ class Gps_t {
         static constexpr si::base::Meter<> EARTH_RADIUS{EARTH_CIRCUMFERENCE / (2 * M_PI)};
 };
 
-
 #endif //FLIGHTCOMPUTER_GPS_T_HPP

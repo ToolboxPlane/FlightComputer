@@ -3,7 +3,7 @@
 //
 
 #include "OutputFilter.hpp"
-#include "../../Devices/rcLib/PackageOstream.hpp"
+#include "../../Devices/rcLib/PackageUtil.hpp"
 
 namespace filter {
     OutputFilter::OutputFilter() {

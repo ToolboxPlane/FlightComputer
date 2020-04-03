@@ -8,15 +8,17 @@
 #include <fstream>
 #include <chrono>
 #include <thread>
-#include "../Node.hpp"
-#include "../InputChannel.hpp"
-#include "../OutputChannel.hpp"
+#include "../../Node.hpp"
+#include "../../InputChannel.hpp"
+#include "../../OutputChannel.hpp"
+#include "Serialization.hpp"
 
 namespace recording {
     template<typename T>
     class ChannelReplay : public Node {
         public:
             explicit ChannelReplay(std::istream &istream) : istream(istream) {
+                channelIn.close();
                 this->start();
             };
 
@@ -48,14 +50,14 @@ namespace recording {
 
                     remainingItems.resize(0);
                     while (std::getline(linestream, item, ';')) {
-                        remainingItems.push_back(item);
+                        remainingItems.emplace_back(item);
                     }
 
                     auto currentTime = std::chrono::duration_cast
                             <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                     auto timeToWait = (timestamp + offset) - currentTime;
                     std::this_thread::sleep_for(std::chrono::milliseconds(timeToWait));
-                    channelOut.put(T(remainingItems));
+                    channelOut.put(getItem<T>(remainingItems));
                 }
 
 

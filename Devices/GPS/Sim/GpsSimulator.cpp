@@ -34,7 +34,7 @@ namespace device {
             auto noiseLon =
                     (noiseDist(rng) * sigmaLon) / EARTH_CIRCUMFERENCE * 360 / std::cos(gps.location.lat / 180 * M_PI);
             gps.location.lon = 9.9292937 + noiseLon;
-            gps.timestamp = 0_second;
+            gps.timestamp = si::base::Second<long double>{0};
             gps.location.altitude = 500_meter + noiseDist(rng) * sigmaVert * meter;
             gps.fixAquired = true;
             gps.speed = 0_speed + noiseDist(rng) * sigmaSpeed * speed;

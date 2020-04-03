@@ -1,4 +1,5 @@
 #include <cfenv>
+#include <iomanip>
 #include "Devices/rcLib/RcLibSimulator.hpp"
 #include "Filters/Fusion/Node/Fusion.hpp"
 #include "Filters/Navigation/Node/Navigation.hpp"
@@ -6,12 +7,12 @@
 #include "Utilities/Logger.hpp"
 #include "Filters/OutputFilter/OutputFilter.hpp"
 #include "Devices/GPS/Sim/GpsSimulator.hpp"
-#include "Utilities/ChannelRecorder.hpp"
-#include "Utilities/ChannelReplay.hpp"
+#include "Utilities/Recording/ChannelRecorder.hpp"
+#include "Utilities/Recording/ChannelReplay.hpp"
 #include "Devices/GPS/Node/Gps.hpp"
 #include "Filters/FeedbackControl/Node/FeedbackControl.hpp"
 #include "Devices/Serial/SerialPosix.hpp"
-#include "Devices/rcLib/PackageOstream.hpp"
+#include "Devices/rcLib/PackageUtil.hpp"
 #include "Devices/Network/Network.hpp"
 
 int main() {
@@ -36,11 +37,13 @@ int main() {
     //device::LoRa lora{};
     device::Gps gps{};
 #else
-    device::SerialPosix fc{"/dev/ttyACM0", 115200};
+    std::ifstream ifstreamSerial{"Logs/serial_20_04_03_12_46.csv"};
+    recording::ChannelReplay<rcLib::Package> fc{ifstreamSerial};
+    std::ifstream ifstreamGps{"Logs/gps_20_04_03_12_46.csv"};
+    recording::ChannelReplay<GpsMeasurement_t> gps{ifstreamGps};
+
     device::RcLibSimulator lora{17, 60000};
     device::RcLibSimulator pdb{17, 60000};
-    device::SRF02Sim srf02{};
-    device::GpsSimulator gps{1000};
 #endif
 
     std::ifstream waypointFile("Missions/mission.csv");
@@ -120,21 +123,21 @@ int main() {
     /*
      * Recorder
      */
-    /*auto time = std::time(nullptr);
+    auto time = std::time(nullptr);
     auto localTime = std::localtime(&time);
 
     std::stringstream serialFileNameStream;
-    serialFileNameStream << "logs/serial_" << std::put_time(localTime,"%y_%m_%d_%H_%M") << ".csv";
+    serialFileNameStream << "Logs/serial_" << std::put_time(localTime,"%y_%m_%d_%H_%M") << ".csv";
     std::ofstream fileSerialRecord(serialFileNameStream.str());
     recording::ChannelRecorder<rcLib::Package> serialRecorder(fileSerialRecord);
 
     std::stringstream gpsFileNameStream;
-    gpsFileNameStream << "logs/gps_" << std::put_time(localTime, "%y_%m_%d_%H_%M") << ".csv";
+    gpsFileNameStream << "Logs/gps_" << std::put_time(localTime, "%y_%m_%d_%H_%M") << ".csv";
     std::ofstream fileGpsRecord(gpsFileNameStream.str());
     recording::ChannelRecorder<GpsMeasurement_t> gpsRecorder(fileGpsRecord);
 
     fc.getChannelOut() >> serialRecorder.getChannelIn();
-    gps.getChannelOut() >> gpsRecorder.getChannelIn();*/
+    gps.getChannelOut() >> gpsRecorder.getChannelIn();
 #endif
 
     std::cout << "Started all modules!" << "\n";
