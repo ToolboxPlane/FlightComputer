@@ -7,21 +7,21 @@
 #ifndef FLIGHTCOMPUTER_NAMEPROVIDER_HPP
 #define FLIGHTCOMPUTER_NAMEPROVIDER_HPP
 
-#include <iostream>
-#include <map>
+#include <fstream>
+#include <string>
 
 namespace recording {
     class NameProvider {
         public:
             NameProvider();
-            explicit NameProvider(std::string recordingName);
+            explicit NameProvider(const std::string &recordingName);
 
-            auto getStream(const std::string &device) -> std::iostream&;
+            [[nodiscard]] auto getOutputStream(const std::string &device) const -> std::ofstream;
+
+            [[nodiscard]] auto getInputStream(const std::string &device) const -> std::ifstream;
 
         private:
-            std::string recordingName;
-            std::map<std::string, std::fstream> openStreams;
-
+            std::string recordingPath;
     };
 }
 

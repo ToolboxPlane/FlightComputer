@@ -14,6 +14,7 @@
 #include "Devices/Serial/SerialPosix.hpp"
 #include "Devices/rcLib/PackageUtil.hpp"
 #include "Devices/Network/Network.hpp"
+#include "Utilities/Recording/NameProvider.hpp"
 
 int main() {
     using namespace std::chrono_literals;
@@ -33,24 +34,20 @@ int main() {
     device::SerialPosix fc{"/dev/ttyFC", 115200};
     device::SerialPosix pdb{"/dev/ttyPDB", 115200};
     device::SerialPosix lora{"/dev/ttyNav", 115200};
-    //device::SRF02 srf02{"/dev/ttyUS"};
-    //device::LoRa lora{};
     device::Gps gps{};
 #else
-    std::ifstream ifstreamSerial{"Logs/serial_20_04_03_12_46.csv"};
-    recording::ChannelReplay<rcLib::Package> fc{ifstreamSerial};
-    std::ifstream ifstreamGps{"Logs/gps_20_04_03_12_46.csv"};
-    recording::ChannelReplay<GpsMeasurement_t> gps{ifstreamGps};
-
-    device::RcLibSimulator lora{17, 60000};
-    device::RcLibSimulator pdb{17, 60000};
+    recording::NameProvider replayNameProvider{"2020-04-03_17-32-44"};
+    recording::ChannelReplay<rcLib::Package> fc{replayNameProvider.getInputStream("fc")};
+    recording::ChannelReplay<rcLib::Package> pdb{replayNameProvider.getInputStream("pdb")};
+    recording::ChannelReplay<rcLib::Package> lora{replayNameProvider.getInputStream("lora")};
+    recording::ChannelReplay<GpsMeasurement_t> gps{replayNameProvider.getInputStream("gps")};
 #endif
 
     std::ifstream waypointFile("Missions/mission.csv");
     if (!waypointFile.is_open()) {
         throw std::runtime_error{"Could not open waypoint file!"};
     }
-    recording::ChannelReplay<Waypoint_t> waypointReader{waypointFile};
+    recording::ChannelReplay<Waypoint_t> waypointReader{std::move(waypointFile)};
 
     device::Network network{"192.168.0.120"};
 
@@ -123,20 +120,15 @@ int main() {
     /*
      * Recorder
      */
-    auto time = std::time(nullptr);
-    auto localTime = std::localtime(&time);
+    recording::NameProvider recordingNameProvider{};
+    recording::ChannelRecorder<rcLib::Package> fcRecorder(recordingNameProvider.getOutputStream("fc"));
+    recording::ChannelRecorder<rcLib::Package> pdbRecorder(recordingNameProvider.getOutputStream("pdb"));
+    recording::ChannelRecorder<rcLib::Package> loraRecorder(recordingNameProvider.getOutputStream("lora"));
+    recording::ChannelRecorder<GpsMeasurement_t> gpsRecorder(recordingNameProvider.getOutputStream("gps"));
 
-    std::stringstream serialFileNameStream;
-    serialFileNameStream << "Logs/serial_" << std::put_time(localTime,"%y_%m_%d_%H_%M") << ".csv";
-    std::ofstream fileSerialRecord(serialFileNameStream.str());
-    recording::ChannelRecorder<rcLib::Package> serialRecorder(fileSerialRecord);
-
-    std::stringstream gpsFileNameStream;
-    gpsFileNameStream << "Logs/gps_" << std::put_time(localTime, "%y_%m_%d_%H_%M") << ".csv";
-    std::ofstream fileGpsRecord(gpsFileNameStream.str());
-    recording::ChannelRecorder<GpsMeasurement_t> gpsRecorder(fileGpsRecord);
-
-    fc.getChannelOut() >> serialRecorder.getChannelIn();
+    fc.getChannelOut() >> fcRecorder.getChannelIn();
+    pdb.getChannelOut() >> pdbRecorder.getChannelIn();
+    lora.getChannelOut() >> loraRecorder.getChannelIn();
     gps.getChannelOut() >> gpsRecorder.getChannelIn();
 #endif
 

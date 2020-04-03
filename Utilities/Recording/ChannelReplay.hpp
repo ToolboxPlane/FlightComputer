@@ -7,7 +7,7 @@
 
 #include <fstream>
 #include <chrono>
-#include <thread>
+
 #include "../../Node.hpp"
 #include "../../InputChannel.hpp"
 #include "../../OutputChannel.hpp"
@@ -17,7 +17,7 @@ namespace recording {
     template<typename T>
     class ChannelReplay : public Node {
         public:
-            explicit ChannelReplay(std::istream &istream) : istream(istream) {
+            explicit ChannelReplay(std::ifstream &&istream) : stream(std::move(istream)) {
                 channelIn.close();
                 this->start();
             };
@@ -32,17 +32,21 @@ namespace recording {
             }
 
         private:
+            std::ifstream stream;
+            OutputChannel<T> channelOut;
+            InputChannel<T> channelIn;
+
             void run() override {
-                auto recordingStart = std::chrono::duration_cast
+                auto replayStart = std::chrono::duration_cast
                         <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                 std::string line;
-                std::getline(istream, line);
-                auto offset = recordingStart - std::stol(line);
-                std::getline(istream, line);
+                std::getline(stream, line);
+                auto offset = replayStart - std::stol(line);
+                std::getline(stream, line);
                 std::vector<std::string> remainingItems;
                 remainingItems.reserve(256);
 
-                while (std::getline(istream, line)) {
+                while (std::getline(stream, line)) {
                     std::string item;
                     std::stringstream linestream(line);
                     std::getline(linestream, item, ';');
@@ -59,13 +63,7 @@ namespace recording {
                     std::this_thread::sleep_for(std::chrono::milliseconds(timeToWait));
                     channelOut.put(getItem<T>(remainingItems));
                 }
-
-
             }
-
-            std::istream &istream;
-            OutputChannel<T> channelOut;
-            InputChannel<T> channelIn;
     };
 }
 

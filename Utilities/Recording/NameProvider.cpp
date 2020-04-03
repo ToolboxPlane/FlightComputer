@@ -8,7 +8,6 @@
 
 #include <ctime>
 #include <sstream>
-#include <fstream>
 #include <iomanip>
 #include <filesystem>
 
@@ -18,27 +17,37 @@ namespace recording {
         auto localTime = std::localtime(&time);
 
         std::stringstream dirNameStream;
-        dirNameStream << "Logs/Recording" << std::put_time(localTime,"%Y-%m-%d_%H-%M-%S");
+        dirNameStream << "Logs/Recording-" << std::put_time(localTime,"%Y-%m-%d_%H-%M-%S");
 
-        recordingName = dirNameStream.str();
+        recordingPath = dirNameStream.str();
 
-        if (!std::filesystem::exists(recordingName)) {
-            std::filesystem::create_directory(recordingName);
+        if (!std::filesystem::exists("Logs")) {
+            std::filesystem::create_directory("Logs");
+        }
+
+        if (!std::filesystem::exists(recordingPath)) {
+            std::filesystem::create_directory(recordingPath);
         }
     }
 
-    NameProvider::NameProvider(std::string recordingName) : recordingName{std::move(recordingName)} {
-        if (!std::filesystem::exists(recordingName)) {
+    NameProvider::NameProvider(const std::string &recordingName) {
+        std::stringstream dirNameStream;
+        dirNameStream << "Logs/Recording-" << recordingName;
+        recordingPath = dirNameStream.str();
+
+        if (!std::filesystem::exists(recordingPath)) {
             throw std::runtime_error{"[NameProvider]:\tRecording does not exist!"};
         }
     }
 
-    auto NameProvider::getStream(const std::string &device) -> std::iostream& {
-        if (openStreams.find(device) == openStreams.end()) {
-            std::fstream fstream{recordingName + "/" + device + ".csv"};
-            openStreams.emplace(std::make_pair(device, std::move(fstream)));
-        }
-        return openStreams.at(device);
+    auto NameProvider::getOutputStream(const std::string &device) const -> std::ofstream {
+        return std::ofstream{recordingPath + "/" + device + ".csv"};
+    }
 
+    auto NameProvider::getInputStream(const std::string &device) const -> std::ifstream {
+        if (!std::filesystem::exists(recordingPath + "/" + device + ".csv")) {
+            throw std::runtime_error("[NameProvider]:\t" + device + " does not exist!");
+        }
+        return std::ifstream{recordingPath + "/" + device + ".csv"};
     }
 }

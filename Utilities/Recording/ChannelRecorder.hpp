@@ -5,7 +5,7 @@
 #ifndef FLIGHTCOMPUTER_RECORDER_HPP
 #define FLIGHTCOMPUTER_RECORDER_HPP
 
-#include <iostream>
+#include <fstream>
 #include "../../Node.hpp"
 #include "../../InputChannel.hpp"
 
@@ -13,7 +13,7 @@ namespace recording {
     template<typename T>
     class ChannelRecorder : public Node {
         public:
-            explicit ChannelRecorder(std::ostream &ostream) : ostream(ostream), count{0} {
+            explicit ChannelRecorder(std::ofstream &&ostream) : stream(std::move(ostream)) {
                 this->start();
             };
 
@@ -23,25 +23,26 @@ namespace recording {
 
         private:
             InputChannel<T> channelIn;
-            std::ostream &ostream;
-            std::size_t count;
+            std::ofstream stream;
 
             void run() override {
                 T item;
-                ostream << std::chrono::duration_cast
-                        <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()
-                        << "\n";
-                ostream << header<T>() << std::endl;
+                auto lastUpdate = std::chrono::duration_cast
+                        <std::chrono::milliseconds>(
+                        std::chrono::system_clock::now().time_since_epoch()).count();
+                stream << lastUpdate << "\n";
+                stream << header<T>() << std::endl;
 
                 while (!channelIn.isClosed()) {
                     if (channelIn.get(item)) {
-                        ostream << std::chrono::duration_cast
+                        auto millis = std::chrono::duration_cast
                                 <std::chrono::milliseconds>(
                                 std::chrono::system_clock::now().time_since_epoch()).count();
-                        ostream << "; " << getLine(item) << "\n";
-                        count += 1;
-                        if (count % 20 == 0) {
-                            ostream << std::flush;
+
+                        stream << millis << "; " << getLine(item) << "\n";
+
+                        if (millis - lastUpdate > 1000) {
+                            stream << std::flush;
                         }
                     }
                 }
