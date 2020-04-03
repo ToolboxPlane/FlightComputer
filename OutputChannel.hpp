@@ -29,6 +29,14 @@ class OutputChannel {
             outputChannelList.emplace_back(channel);
         }
 
+        void close() {
+            for (auto &channel : outputChannelList) {
+                if (!channel.get().isClosed()) {
+                    channel.get().close();
+                }
+            }
+        }
+
     private:
         std::vector<std::reference_wrapper<InputChannel<T>>> outputChannelList;
 

@@ -6,6 +6,7 @@
  */
 
 #include <cassert>
+#include <iostream>
 #include "PackageUtil.hpp"
 
 std::ostream &operator<<(std::ostream &ostream, const rcLib::Package &package) {

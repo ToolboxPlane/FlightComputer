@@ -133,15 +133,15 @@ namespace filter {
 
             out.put(res);
         } else {
-            std::cerr << "Fusion not running, reason(s):";
+            std::cerr << "Fusion not running, reason(s):\n";
             if (!lastGpsMeasurement.has_value()) {
-                std::cerr << "No GPS Measurement" << std::endl;
+                std::cerr << "\tNo GPS Measurement" << std::endl;
             } else if (!lastGpsMeasurement.value().fixAquired) {
-                std::cerr << "No GPS Fix" << std::endl;
+                std::cerr << "\tNo GPS Fix" << std::endl;
             }
 
             if (!lastNavPackage.has_value()) {
-                std::cerr << "No Nav Data" << std::endl;
+                std::cerr << "\tNo Nav Data" << std::endl;
             }
         }
     }

@@ -122,7 +122,8 @@ namespace filter {
                 std::cerr << "[MeshManager]:\tSome external device creates loops in the network: " << pkg << std::endl;
                 break;
             default:
-                std::cerr << "[MeshManager]:\tUnknown Device" << std::endl;
+                std::cerr << "[MeshManager]:\tUnknown Device ("
+                        << static_cast<int>(pkg.getDeviceId()) << ")" << std::endl;
                 break;
         }
     }

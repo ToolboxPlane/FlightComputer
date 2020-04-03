@@ -23,5 +23,8 @@ namespace recording {
     template <>
     auto getLine<rcLib::Package>(const rcLib::Package &package) -> std::string;
 
+    template <>
+    auto getItem<rcLib::Package>(const std::vector<std::string> &line) -> rcLib::Package;
+
 }
 #endif //FLIGHTCOMPUTER_PACKAGEUTIL_HPP

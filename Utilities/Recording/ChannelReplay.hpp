@@ -63,6 +63,7 @@ namespace recording {
                     std::this_thread::sleep_for(std::chrono::milliseconds(timeToWait));
                     channelOut.put(getItem<T>(remainingItems));
                 }
+                channelOut.close();
             }
     };
 }
