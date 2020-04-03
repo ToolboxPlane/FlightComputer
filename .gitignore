@@ -6,5 +6,6 @@ build-*/
 cmake-build-*/
 .idea/
 logs/
+Logs/
 missions/
 Missions
