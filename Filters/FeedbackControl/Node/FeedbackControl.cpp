@@ -66,14 +66,14 @@ namespace filter {
             headingDiff += 360;
         }
         auto roll = headingDiff * HEADING_P;
-        return clamp(roll, -MAX_ROLL, MAX_ROLL);
+        return clamp(roll, -HEADING_MAX_ROLL, HEADING_MAX_ROLL);
     }
 
     auto FeedbackControl::altitudeControl(const State_t &state, si::Meter<> target) const -> si::default_type {
         auto deltaHeight = target - state.altitude;
-        auto pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::PITCH_P);
+        auto pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::ALTITUDE_P);
 
-        return clamp(pitch, -MAX_PITCH, MAX_PITCH);
+        return clamp(pitch, -ALTITUDE_MAX_PITCH, ALTITUDE_MAX_PITCH);
     }
 
     InputChannel<Nav_t> &FeedbackControl::getChannelIn() {
