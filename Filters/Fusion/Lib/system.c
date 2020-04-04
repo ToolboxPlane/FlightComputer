@@ -80,10 +80,11 @@ measurement_t measure(const system_state_t *x) {
     ret.air_speed = x->speed;
     ret.ground_speed = x->speed * cosf(DEG_TO_RAD(x->pitch_angle));
     ret.vertical_speed = x->speed * sinf(DEG_TO_RAD(x->pitch_angle));
-    ret.altitude_baro = x->altitude;
+    ret.altitude_baro = (int)x->altitude; // Measurement resolution is 1 meter
     ret.altitude_gps = x->altitude;
-    ret.distance_ground = x->altitude_above_ground /
+    float distance_ground = x->altitude_above_ground /
                           (cosf(DEG_TO_RAD(x->roll_angle)) * cosf(DEG_TO_RAD(x->pitch_angle)));
+    ret.distance_ground = 100 * ((int)(distance_ground/100)); // Measuremnt resolution is 1cm
     ret.lat = x->lat;
     ret.lon = x->lon;
 
