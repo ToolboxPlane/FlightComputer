@@ -54,11 +54,6 @@ class Gps_t {
                 yDiff = yDiff * -1;
             }
 
-            std::cout << "this=(" << this->lat << ","  << this->lon << ")\n";
-            std::cout << "gps=(" << gps.lat << ","  << gps.lon << ")\n";
-            std::cout << "support=(" << supportPoint.lat << ","  << supportPoint.lon << ")\n";
-            std::cout << "xDiff=" << xDiff << "\tyDiff=" << yDiff << std::endl;
-
             return -std::atan2(yDiff, xDiff) * 180.0 / M_PI + 90;
         }
 
