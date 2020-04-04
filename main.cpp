@@ -36,7 +36,7 @@ int main() {
     device::SerialPosix lora{"/dev/ttyNav", 115200};
     device::Gps gps{};
 #else
-    recording::NameProvider replayNameProvider{"2020-04-03_17-32-44_Short"};
+    recording::NameProvider replayNameProvider{"2020-04-04_18-24-20"};
     recording::ChannelReplay<rcLib::Package> fc{replayNameProvider.getInputStream("fc")};
     recording::ChannelReplay<rcLib::Package> pdb{replayNameProvider.getInputStream("pdb")};
     recording::ChannelReplay<rcLib::Package> lora{replayNameProvider.getInputStream("lora")};
@@ -102,7 +102,7 @@ int main() {
     debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", false};
     debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", false};
     debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
-    debug::Logger<State_t> fusionDebug{"Fusion", false};
+    debug::Logger<State_t> fusionDebug{"Fusion", true};
     debug::Logger<Nav_t> navDebug{"Nav", true};
     debug::Logger<Control_t> controlDebug{"Control", false};
 

@@ -45,7 +45,7 @@ class TaranisPackage {
 class LoraPackage {
     public:
         si::default_type joyLeftX, joyRightX, joyLeftY, joyRightY;
-        FlightMode flightMode = FlightMode::WAYPOINT;
+        FlightMode flightMode = FlightMode::RTH;
         bool isArmed;
         int rssi;
 };

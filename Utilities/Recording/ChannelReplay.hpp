@@ -18,7 +18,6 @@ namespace recording {
     class ChannelReplay : public Node {
         public:
             explicit ChannelReplay(std::ifstream &&istream) : stream(std::move(istream)) {
-                channelIn.close();
                 this->start();
             };
 
@@ -60,11 +59,9 @@ namespace recording {
                     auto currentTime = std::chrono::duration_cast
                             <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                     auto timeToWait = (timestamp + offset) - currentTime;
-                    std::this_thread::sleep_for(std::chrono::milliseconds(timeToWait / 100));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(timeToWait));
                     channelOut.put(getItem<T>(remainingItems));
                 }
-
-                channelOut.close();
             }
     };
 }

@@ -28,7 +28,7 @@ namespace filter {
 
     void Navigation::run() {
         State_t currentState{};
-        static auto lastFlightMode = static_cast<FlightMode>(-1);
+        static auto lastFlightMode = FlightMode::RTH;
 
         while (!stateIn.isClosed()) {
             if (stateIn.get(currentState)) {
