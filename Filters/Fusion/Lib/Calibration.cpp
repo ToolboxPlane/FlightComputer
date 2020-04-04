@@ -48,6 +48,13 @@ Calibration::update(si::Second<long double> currentTime, const FlightControllerP
 
         calibTime = currentTime;
         calibrationFinished = true;
+
+        std::cout << "Calibration finished after" << numMeas << " measurements:\n"
+                  << "\t\\baroOffset=" << baroOffset << "\n"
+                  << "\t\\accOffset=" << accOffset << "\n"
+                  << "\t\\sigma_lat=" << si::Meter<>{static_cast<float>(latStdDev)} << "\n"
+                  << "\t\\sigma_lon=" << si::Meter<>{static_cast<float>(lonStdDev)} << "\n"
+                  << "\t\\sigma_alt=" << si::Meter<>{static_cast<float>(altStdDev)} << std::endl;
     } else {
         std::cout << "Calibration not finished after " << numMeas << " measurements:\n"
                   << "\t\\sigma_lat=" << si::Meter<>{static_cast<float>(latStdDev)} << "\n"
@@ -63,7 +70,7 @@ Calibration::applyCalib(si::Second<long double> currentTime, FlightControllerPac
     auto xWeight = static_cast<float>(std::sin(-flightControllerPackage.pitch / 180 * M_PI));
     auto yWeight = static_cast<float>(std::sin(flightControllerPackage.roll / 180 * M_PI));
     auto zWeight = static_cast<float>(std::cos(-flightControllerPackage.pitch / 180 * M_PI)
-                   * std::cos(flightControllerPackage.roll / 180 * M_PI));
+                                      * std::cos(flightControllerPackage.roll / 180 * M_PI));
     flightControllerPackage.accX -= accOffset * xWeight;
     flightControllerPackage.accY -= accOffset * yWeight;
     flightControllerPackage.accZ -= accOffset * zWeight;
@@ -103,4 +110,3 @@ auto Calibration::getStartTime() const -> si::Second<long double> {
 auto Calibration::getAdditionalBaroUncertainty() const -> si::Meter<> {
     return baroCalibUncertainty;
 }
-

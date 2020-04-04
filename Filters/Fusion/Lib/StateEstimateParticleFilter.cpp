@@ -109,8 +109,8 @@ StateEstimateParticleFilter::init(std::size_t numberOfParticles, const GpsMeasur
         weighted_particle_t weightedParticle{};
         weightedParticle.x.altitude_above_ground = static_cast<float>(distanceGround) + altGroundDist(rng);
         weightedParticle.x.altitude = static_cast<float>(gpsMeasurement.location.altitude) + altDist(rng);
-        weightedParticle.x.lon = static_cast<float>(gpsMeasurement.location.lat) + latLonDist(rng);
-        weightedParticle.x.lat = static_cast<float>(gpsMeasurement.location.lon) + latLonDist(rng);
+        weightedParticle.x.lat = static_cast<float>(gpsMeasurement.location.lat) + latLonDist(rng);
+        weightedParticle.x.lon = static_cast<float>(gpsMeasurement.location.lon) + latLonDist(rng);
         weightedParticle.x.speed = 0;
 
         weightedParticle.weight = 1.0F / numberOfParticles;
