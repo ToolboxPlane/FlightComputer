@@ -46,6 +46,14 @@ class Gps_t {
             auto xDiff = this->distanceTo(supportPoint);
             auto yDiff = supportPoint.distanceTo(gps);
 
+            if (gps.lon < this->lon) {
+                xDiff = xDiff * -1;
+            }
+
+            if (gps.lat < this->lat) {
+                yDiff = yDiff * -1;
+            }
+
             std::cout << "this=(" << this->lat << ","  << this->lon << ")\n";
             std::cout << "gps=(" << gps.lat << ","  << gps.lon << ")\n";
             std::cout << "support=(" << supportPoint.lat << ","  << supportPoint.lon << ")\n";

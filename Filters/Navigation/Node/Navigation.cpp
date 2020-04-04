@@ -28,7 +28,7 @@ namespace filter {
 
     void Navigation::run() {
         State_t currentState{};
-        static FlightMode lastFlightMode;
+        static auto lastFlightMode = static_cast<FlightMode>(-1);
 
         while (!stateIn.isClosed()) {
             if (stateIn.get(currentState)) {
@@ -161,7 +161,7 @@ namespace filter {
         auto angleFromCentre = centre.angleTo(position);
         auto targetAngle = angleFromCentre + LOITER_TARGET_ANGLE;
         auto latDist = std::cos(targetAngle / 180 * M_PI_F) * LOITER_RADIUS;
-        auto lonDist = std::sin(-targetAngle / 180 * M_PI_F) * LOITER_RADIUS;
+        auto lonDist = std::sin(targetAngle / 180 * M_PI_F) * LOITER_RADIUS;
         Gps_t targetPosition{
             centre.lat + static_cast<double>(latDist / EARTH_CIRCUMFERENCE * 360),
             centre.lon + static_cast<double>(lonDist / EARTH_CIRCUMFERENCE * 360 / std::cos(centre.lat / 180 * M_PI_F))
