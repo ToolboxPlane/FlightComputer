@@ -44,9 +44,7 @@ class Gps_t {
             Gps_t supportPoint(this->lat, gps.lon);
             auto xDiff = this->distanceTo(supportPoint);
             auto yDiff = supportPoint.distanceTo(gps);
-            return static_cast<si::default_type>(-std::atan2(static_cast<decltype(yDiff)::type>(yDiff),
-                                                             static_cast<decltype(xDiff)::type>(xDiff)) * 180.0 / M_PI +
-                                                 90);
+            return -std::atan2(yDiff, xDiff) * 180.0 / M_PI + 90;
         }
 
         static constexpr si::Meter<> EARTH_RADIUS{EARTH_CIRCUMFERENCE / (2 * M_PI_F)};
