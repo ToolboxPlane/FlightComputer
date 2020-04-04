@@ -9,6 +9,7 @@
 #include <cmath>
 #include "../../../Utilities/Si/SiLiterals.hpp"
 #include "../../../Utilities/Si/SiStl.hpp"
+#include "../../../Utilities/Si/SiExtended.hpp"
 #include "../../../constants.hpp"
 
 class Gps_t {
@@ -41,9 +42,15 @@ class Gps_t {
         }
 
         auto angleTo(const Gps_t &gps) const -> si::default_type {
-            Gps_t supportPoint(this->lat, gps.lon);
+            Gps_t supportPoint(this->lat, gps.lon, (this->altitude + gps.altitude) / 2);
             auto xDiff = this->distanceTo(supportPoint);
             auto yDiff = supportPoint.distanceTo(gps);
+
+            std::cout << "this=(" << this->lat << ","  << this->lon << ")\n";
+            std::cout << "gps=(" << gps.lat << ","  << gps.lon << ")\n";
+            std::cout << "support=(" << supportPoint.lat << ","  << supportPoint.lon << ")\n";
+            std::cout << "xDiff=" << xDiff << "\tyDiff=" << yDiff << std::endl;
+
             return -std::atan2(yDiff, xDiff) * 180.0 / M_PI + 90;
         }
 

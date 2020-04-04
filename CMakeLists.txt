@@ -35,6 +35,7 @@ set(SOURCES
         Filters/Fusion/Lib/random_util.c
         Filters/Fusion/Lib/Calibration.cpp
         Filters/Navigation/Node/Navigation.cpp
+        Filters/Navigation/Type/Waypoint_t.cpp
         Filters/MeshManager/MeshManager.cpp
         Filters/OutputFilter/OutputFilter.cpp
         Filters/FeedbackControl/Node/FeedbackControl.cpp

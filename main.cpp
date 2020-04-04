@@ -7,14 +7,14 @@
 #include "Utilities/Logger.hpp"
 #include "Filters/OutputFilter/OutputFilter.hpp"
 #include "Devices/GPS/Sim/GpsSimulator.hpp"
-#include "Utilities/Recording/ChannelRecorder.hpp"
-#include "Utilities/Recording/ChannelReplay.hpp"
 #include "Devices/GPS/Node/Gps.hpp"
 #include "Filters/FeedbackControl/Node/FeedbackControl.hpp"
 #include "Devices/Serial/SerialPosix.hpp"
 #include "Devices/rcLib/PackageUtil.hpp"
 #include "Devices/Network/Network.hpp"
 #include "Utilities/Recording/NameProvider.hpp"
+#include "Utilities/Recording/ChannelRecorder.hpp"
+#include "Utilities/Recording/ChannelReplay.hpp"
 
 int main() {
     using namespace std::chrono_literals;
@@ -102,8 +102,8 @@ int main() {
     debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", false};
     debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", false};
     debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
-    debug::Logger<State_t> fusionDebug{"Fusion", true};
-    debug::Logger<Nav_t> navDebug{"Nav", false};
+    debug::Logger<State_t> fusionDebug{"Fusion", false};
+    debug::Logger<Nav_t> navDebug{"Nav", true};
     debug::Logger<Control_t> controlDebug{"Control", false};
 
     fc.getChannelOut() >> fcReceiveDebug.getChannelIn();

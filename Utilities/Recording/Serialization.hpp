@@ -12,23 +12,13 @@
 
 namespace recording {
     template<typename T>
-    auto header() -> std::string {
-        static_assert("header() not defined for class");
-        return "";
-    }
+    auto header() -> std::string;
 
     template<typename T>
-    auto getLine(const T&) -> std::string {
-        static_assert("getLine() not defined for class");
-        return "";
-    }
+    auto getLine(const T&) -> std::string;
 
     template <typename T>
-    auto getItem(const std::vector<std::string>&) -> T {
-        static_assert("getItem() not defined for class");
-        return T{};
-    }
-
+    auto getItem(const std::vector<std::string>&) -> T;
 }
 
 #endif //FLIGHTCOMPUTER_SERIALIZATION_HPP

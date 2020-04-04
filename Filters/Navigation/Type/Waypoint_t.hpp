@@ -7,6 +7,7 @@
 
 #include <ostream>
 #include "../../../Devices/GPS/Type/Gps_t.hpp"
+#include "../../../Utilities/Recording/Serialization.hpp"
 
 class Waypoint_t {
     public:
@@ -34,6 +35,11 @@ class Waypoint_t {
             return ostream;
         }
 };
+
+namespace recording {
+     template<>
+     auto getItem(const std::vector<std::string> &line) -> Waypoint_t;
+}
 
 
 #endif //FLIGHTCOMPUTER_WAYPOINT_T_HPP
