@@ -79,8 +79,8 @@ int main() {
 
     pdb.getChannelOut() >> network.getChannelIn();
     lora.getChannelOut() >> network.getChannelIn();
-    outputFilter.getBaseOut() >> network.getChannelIn();
     fc.getChannelOut() >> network.getChannelIn();
+    outputFilter.getNetworkOut() >> network.getChannelIn();
 
     /*
      * Internal connection

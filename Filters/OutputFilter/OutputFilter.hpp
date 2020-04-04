@@ -21,12 +21,14 @@ namespace filter {
 
             OutputChannel<rcLib::Package> &getFlightControllerOut();
 
+            OutputChannel<rcLib::Package> &getNetworkOut();
+
             InputChannel<Control_t> &getChannelIn();
 
         private:
             void run() override;
 
-            OutputChannel<rcLib::Package> flightControllerOut, baseOut;
+            OutputChannel<rcLib::Package> flightControllerOut, baseOut, networkOut;
             InputChannel<Control_t> in;
     };
 }

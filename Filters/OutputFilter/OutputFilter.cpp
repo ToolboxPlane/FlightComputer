@@ -18,6 +18,10 @@ namespace filter {
         return flightControllerOut;
     }
 
+    OutputChannel<rcLib::Package> &OutputFilter::getNetworkOut() {
+        return networkOut;
+    }
+
     InputChannel<Control_t> &OutputFilter::getChannelIn() {
         return in;
     }
@@ -26,6 +30,7 @@ namespace filter {
         Control_t control{};
         rcLib::Package serialOutPkg(1024, 4);
         rcLib::Package baseOutPkg(1024, 4);
+        rcLib::Package networkOutPkg(1024, 16);
 
         baseOutPkg.setMeshProperties(static_cast<uint8_t>(true), 2);
 
@@ -41,9 +46,16 @@ namespace filter {
                 baseOutPkg.setChannel(2, static_cast<uint16_t>(control.state.lat * 10));
                 baseOutPkg.setChannel(3, static_cast<uint16_t>(control.state.lon * 10));
 
+                networkOutPkg.setChannel(0, -control.state.navPackage.rssi);
+                networkOutPkg.setChannel(1, static_cast<uint16_t>(control.state.altitudeAboveGround * 10));
+                networkOutPkg.setChannel(2, static_cast<uint16_t>(control.state.lat * 10));
+                networkOutPkg.setChannel(3, static_cast<uint16_t>(control.state.lon * 10));
+
                 flightControllerOut.put(serialOutPkg);
                 baseOut.put(baseOutPkg);
+                networkOut.put(networkOutPkg);
             }
         }
     }
+
 }
