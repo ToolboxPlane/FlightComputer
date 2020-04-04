@@ -3,7 +3,7 @@
 All the modules running on the Raspberry Pi. 
 
 ## Output Package
-Both output packages are 4-Channel, 10 bit Packages.
+All output packages are 10 bit Packages.
 
 ### Flightcontroller
 | Channel | Content |
@@ -20,6 +20,27 @@ Both output packages are 4-Channel, 10 bit Packages.
 | 1 | Altitude above ground |
 | 2 | Latitude * 10 |
 | 3 | Longitude * 10 |
+
+
+### Network
+| Channel | Content |
+| --- | --- |
+| 0 | -RSSI |
+| 1 | Altitude above ground |
+| 2 | Latitude * 10 |
+| 3 | Longitude * 10 |
+| 4 | Roll * 2 + 500 |
+| 5 | Pitch * 2 + 500 |
+| 6 | Yaw * 2 + 500 |
+| 7 | Speed * 10 |
+| 8 | Altitude |
+| 9 | Acc-X * 10 + 500 |
+| 10 | Acc-Y * 10 + 500 |
+| 11 | Acc-Z * 10 + 500 |
+| 12 | VCC * 50 |
+| 13 | Empty |
+| 14 | Empty |
+| 15 | Empty |
 
 ## Recording
 Recordings are saved as pseudo-csv files. The first line

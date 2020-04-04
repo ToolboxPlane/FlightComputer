@@ -50,6 +50,15 @@ namespace filter {
                 networkOutPkg.setChannel(1, static_cast<uint16_t>(control.state.altitudeAboveGround * 10));
                 networkOutPkg.setChannel(2, static_cast<uint16_t>(control.state.lat * 10));
                 networkOutPkg.setChannel(3, static_cast<uint16_t>(control.state.lon * 10));
+                networkOutPkg.setChannel(4, static_cast<uint16_t>(control.state.roll*2 + 500));
+                networkOutPkg.setChannel(5, static_cast<uint16_t>(control.state.pitch*2 + 500));
+                networkOutPkg.setChannel(6, static_cast<uint16_t>(control.state.yaw*2 + 500));
+                networkOutPkg.setChannel(7, static_cast<uint16_t>(control.state.speed * 10));
+                networkOutPkg.setChannel(8, static_cast<uint16_t>(control.state.altitude));
+                networkOutPkg.setChannel(9, static_cast<uint16_t>(control.state.accX * 10) + 500);
+                networkOutPkg.setChannel(10, static_cast<uint16_t>(control.state.accY * 10) + 500);
+                networkOutPkg.setChannel(11, static_cast<uint16_t>(control.state.accZ * 10) + 500);
+                networkOutPkg.setChannel(12, static_cast<uint16_t>(control.state.pdbPackage.voltageVcc * 50));
 
                 flightControllerOut.put(serialOutPkg);
                 baseOut.put(baseOutPkg);
