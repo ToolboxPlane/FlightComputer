@@ -19,7 +19,8 @@ enum class SwitchPos {
 
 class FlightControllerPackage {
     public:
-        uint8_t bnoState, bnoError, calibStat;
+        uint8_t bnoState, bnoError;
+        uint8_t sysCalibStatus, gyroCalibStatus, accCalibStatus, magCalibStatus;
         si::default_type roll, pitch, yaw;
         si::Frequency<> rollDeriv, pitchDeriv, yawDeriv;
         si::Acceleration<> accX, accY, accZ;

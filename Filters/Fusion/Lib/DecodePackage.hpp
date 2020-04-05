@@ -37,7 +37,11 @@ namespace fusion {
         FlightControllerPackage flightControllerPackage{};
         flightControllerPackage.bnoState = pkg.getChannel(0);
         flightControllerPackage.bnoError = pkg.getChannel(10);
-        flightControllerPackage.calibStat = pkg.getChannel(11);
+        auto calibStat = pkg.getChannel(11);
+        flightControllerPackage.sysCalibStatus = (calibStat >> 6u) & 3u;
+        flightControllerPackage.gyroCalibStatus = (calibStat >> 4u) & 3u;
+        flightControllerPackage.accCalibStatus = (calibStat >> 2u) & 3u;
+        flightControllerPackage.magCalibStatus = (calibStat >> 6u) & 3u;
         flightControllerPackage.roll = (static_cast<si::default_type>(pkg.getChannel(1)) - 500) / 2.0f;
         flightControllerPackage.pitch = (static_cast<si::default_type>(pkg.getChannel(2)) - 500) / 2.0f;
         flightControllerPackage.yaw = (static_cast<si::default_type>(pkg.getChannel(3)) - 500) / 2.0f;
