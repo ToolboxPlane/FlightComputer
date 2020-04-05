@@ -67,10 +67,10 @@ void
 Calibration::applyCalib(si::Second<long double> currentTime, FlightControllerPackage &flightControllerPackage,
                         GpsMeasurement_t &gpsMeasurement, NavPackage &navPackage) {
     // Acceleration
-    auto xWeight = static_cast<float>(std::sin(-flightControllerPackage.pitch / 180 * M_PI));
-    auto yWeight = static_cast<float>(std::sin(flightControllerPackage.roll / 180 * M_PI));
-    auto zWeight = static_cast<float>(std::cos(-flightControllerPackage.pitch / 180 * M_PI)
-                                      * std::cos(flightControllerPackage.roll / 180 * M_PI));
+    auto xWeight = static_cast<float>(std::sin(flightControllerPackage.pitch / 180 * M_PI));
+    auto yWeight = static_cast<float>(std::sin(-flightControllerPackage.roll / 180 * M_PI) * std::cos(flightControllerPackage.pitch / 180 * M_PI));
+    auto zWeight = std::sqrt(1 - xWeight * xWeight - yWeight * yWeight);
+
     flightControllerPackage.accX -= accOffset * xWeight;
     flightControllerPackage.accY -= accOffset * yWeight;
     flightControllerPackage.accZ -= accOffset * zWeight;

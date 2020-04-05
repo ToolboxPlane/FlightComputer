@@ -34,7 +34,9 @@ int main() {
     device::SerialPosix fc{"/dev/ttyFC", 115200};
     device::SerialPosix pdb{"/dev/ttyPDB", 115200};
     device::SerialPosix lora{"/dev/ttyNav", 115200};
-    device::Gps gps{};
+    //device::Gps gps{};
+    recording::NameProvider replayNameProvider{"2020-04-04_18-24-20"};
+    recording::ChannelReplay<GpsMeasurement_t> gps{replayNameProvider.getInputStream("gps")};
 #else
     recording::NameProvider replayNameProvider{"2020-04-04_18-24-20"};
     recording::ChannelReplay<rcLib::Package> fc{replayNameProvider.getInputStream("fc")};
