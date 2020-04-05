@@ -43,10 +43,10 @@ namespace filter {
 
             static constexpr si::Meter<> RTH_ALTITUDE{10};
 
-            static constexpr si::Acceleration<> LAUNCH_THROW_THRESH{2.0};
+            static constexpr si::Acceleration<> LAUNCH_THROW_THRESH{6.0};
             static constexpr si::default_type LAUNCH_MAX_ROLL{30};
             static constexpr si::default_type LAUNCH_MIN_PITCH{0};
-            static constexpr si::default_type LAUNCH_MAX_PITCH{90};
+            static constexpr si::default_type LAUNCH_MAX_PITCH{70};
             static constexpr si::Meter<> LAUNCH_TARGET_ALTITUDE{10.0};
 
             static constexpr si::Speed<> LANDING_SPEED{5.0};
