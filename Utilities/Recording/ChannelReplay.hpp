@@ -40,7 +40,7 @@ namespace recording {
                         <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
                 std::string line;
                 std::getline(stream, line);
-                auto offset = replayStart - std::stol(line);
+                auto offset = replayStart - std::stoll(line);
                 std::getline(stream, line);
                 std::vector<std::string> remainingItems;
                 remainingItems.reserve(256);
@@ -49,7 +49,7 @@ namespace recording {
                     std::string item;
                     std::stringstream linestream(line);
                     std::getline(linestream, item, ';');
-                    auto timestamp = std::stol(item);
+                    auto timestamp = std::stoll(item);
 
                     remainingItems.resize(0);
                     while (std::getline(linestream, item, ';')) {
