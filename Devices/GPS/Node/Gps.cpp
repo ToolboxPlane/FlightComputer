@@ -26,7 +26,9 @@ namespace device {
                 } else {
                     if ((gps_data.status == STATUS_FIX || gps_data.status == STATUS_DGPS_FIX) &&
                             gps_data.fix.mode == MODE_3D &&
-                            !std::isnan(gps_data.fix.latitude) && !std::isnan(gps_data.fix.longitude)) {
+                            !std::isnan(gps_data.fix.latitude) && !std::isnan(gps_data.fix.longitude)
+                            && !std::isnan(gps_data.fix.altitude) && !std::isnan(gps_data.fix.epy)
+                            && !std::isnan(gps_data.fix.epx) && !std::isnan(gps_data.fix.epv)) {
                         gps.fixAquired = true;
 
                         gps.location.lat = gps_data.fix.latitude;

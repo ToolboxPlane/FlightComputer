@@ -8,7 +8,7 @@
 #include "../../../Utilities/Si/SiStl.hpp"
 
 Calibration::Calibration() : calibrationFinished{false}, numMeas{0}, startPosition{0, 0, 0 * si::meter},
-                             latStdDev{0}, lonStdDev{0}, altStdDev{0}, accOffset{0}, baroOffset{0}, calibTime{0} {}
+                             latStdDev{NAN}, lonStdDev{NAN}, altStdDev{NAN}, accOffset{0}, baroOffset{0}, calibTime{0} {}
 
 void
 Calibration::update(si::Second<long double> currentTime, const FlightControllerPackage &flightControllerPackage,
