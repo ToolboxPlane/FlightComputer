@@ -70,6 +70,10 @@ namespace si {
             constexpr auto operator/(Si<m_, kg_, s_, A_, K_, MOL_, CD_, T> rhs) const
             -> Si<m - m_, kg - kg_, s - s_, A - A_, K - K_, MOL - MOL_, CD - CD_, T>;
 
+            // Equal
+            constexpr auto operator==(ThisT rhs) const;
+
+            constexpr auto operator!=(ThisT rhs) const;
         private:
             T val;
     };
@@ -165,6 +169,16 @@ namespace si {
     template<typename T_>
     constexpr Si<m, kg, s, A, K, MOL, CD, T>::operator T_() const {
         return static_cast<T_>(val);
+    }
+
+    template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T>
+    constexpr auto Si<m, kg, s, A, K, MOL, CD, T>::operator==(Si::ThisT rhs) const {
+        return this->val == static_cast<T>(rhs);
+    }
+
+    template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T>
+    constexpr auto Si<m, kg, s, A, K, MOL, CD, T>::operator!=(Si::ThisT rhs) const {
+        return !((*this) == rhs);
     }
 
 

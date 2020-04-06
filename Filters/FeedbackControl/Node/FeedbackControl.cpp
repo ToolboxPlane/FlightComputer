@@ -32,7 +32,7 @@ namespace filter {
     }
 
     auto FeedbackControl::speedControl(const State_t &state, si::Speed<> target) const -> si::default_type {
-        if (static_cast<decltype(target)::type>(target) == 0) {
+        if (target == 0 * si::speed || !state.loraRemote.isArmed ) {
             return 0;
         }
 
