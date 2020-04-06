@@ -7,6 +7,7 @@
 
 #include <cmath>
 #include "FeedbackControl.hpp"
+#include "../../../Utilities/time.hpp"
 
 namespace filter {
     using namespace si;
@@ -36,15 +37,16 @@ namespace filter {
             return 0;
         }
 
-        static si::Speed<> diffSum = 0_speed;
+        static si::Meter<> diffSum = 0_meter;
         static auto lastDiff = target - state.speed;
-        auto deltaSpeed = target - state.speed;
-        diffSum += deltaSpeed; // @TODO dt
+        static auto lastTime = util::time::get();
+        auto currTime = util::time::get();
+        auto dt = static_cast<si::Second<>>(lastTime - currTime);
+        lastTime = currTime;
 
-        // Change in sign, anti windup
-        if (0 < static_cast<decltype(lastDiff)::type>(lastDiff * deltaSpeed)) {
-            diffSum = 0_speed;
-        }
+        auto deltaSpeed = target - state.speed;
+        diffSum += deltaSpeed * dt;
+
         lastDiff = deltaSpeed;
 
         // PI-Controller (I necessary to achieve stationary accuracy)

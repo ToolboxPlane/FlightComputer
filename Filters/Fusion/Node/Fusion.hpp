@@ -44,9 +44,6 @@ namespace filter {
             InputChannel<GpsMeasurement_t> gpsIn;
             OutputChannel<State_t> out;
 
-            template<typename T>
-            static auto getCurrSeconds() -> si::Second<T>;
-
             void process();
 
             si::Second<long double> lastUpdate;

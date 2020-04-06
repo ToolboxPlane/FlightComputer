@@ -40,7 +40,8 @@ set(SOURCES
         Filters/OutputFilter/OutputFilter.cpp
         Filters/FeedbackControl/Node/FeedbackControl.cpp
         Utilities/Si/SiExtended.cpp
-        Utilities/Recording/NameProvider.cpp)
+        Utilities/Recording/NameProvider.cpp
+        Utilities/time.cpp)
 
 set(SOURCES_PI ${SOURCES}
         Devices/LoRa/LoRa.cpp)

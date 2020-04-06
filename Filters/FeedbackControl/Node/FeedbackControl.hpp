@@ -41,7 +41,7 @@ namespace filter {
             OutputChannel<Control_t> channelOut;
 
             static constexpr auto SPEED_P = 1.0F / si::speed;
-            static constexpr auto SPEED_I = 0.5F / si::speed;
+            static constexpr auto SPEED_I = 0.5F / si::meter;
             static constexpr auto ALTITUDE_P = 1.0F / si::meter;
             static constexpr auto ALTITUDE_MAX_PITCH = 30.0F;
             static constexpr auto HEADING_MAX_ROLL = 60.0F;

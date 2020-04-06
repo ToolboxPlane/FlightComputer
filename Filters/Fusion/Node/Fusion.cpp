@@ -5,6 +5,7 @@
 #include <numeric>
 #include "Fusion.hpp"
 #include "../Lib/DecodePackage.hpp"
+#include "../../../Utilities/time.hpp"
 
 namespace filter {
     using namespace si;
@@ -14,7 +15,7 @@ namespace filter {
     constexpr auto ACC_SIGMA_W = 0.035F * si::acceleration; // Measurement noise
     constexpr auto CALIB_STAT_THRESH = 2;
 
-    Fusion::Fusion() : lastUpdate{getCurrSeconds<long double>()}, accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
+    Fusion::Fusion() : lastUpdate{util::time::get()}, accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
                        accYFilter{ACC_SIGMA_V, ACC_SIGMA_W}, accZFilter{ACC_SIGMA_V, ACC_SIGMA_W} {
         this->start();
     }
@@ -98,7 +99,7 @@ namespace filter {
             && flightControllerData.magCalibStatus >= CALIB_STAT_THRESH &&
             flightControllerData.gyroCalibStatus >= CALIB_STAT_THRESH) {
 
-            const auto startTime = getCurrSeconds<long double>();
+            const auto startTime = util::time::get();
             auto navData = fusion::decodePackage<NavPackage>(lastNavPackage.value());
             auto gpsMeasurement = lastGpsMeasurement.value();
 
@@ -137,7 +138,7 @@ namespace filter {
             res.rawFlightControllerData = flightControllerData;
             res.navPackage = navData;
 
-            //std::cout << getCurrSeconds<long double>() - startTime << std::endl;
+            //std::cout << util::time::get() - startTime << std::endl;
 
             out.put(res);
         } else {
@@ -169,13 +170,5 @@ namespace filter {
                 std::cerr << "\tNo Nav Data" << std::endl;
             }
         }
-    }
-
-    template<typename T>
-    auto Fusion::getCurrSeconds() -> si::Second<T> {
-        auto tp = std::chrono::high_resolution_clock::now().time_since_epoch();
-        auto microseconds = static_cast<T>(
-                std::chrono::duration_cast<std::chrono::microseconds>(tp).count());
-        return si::Second<T>(microseconds / 10e6);
     }
 }
