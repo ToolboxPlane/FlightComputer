@@ -3,7 +3,7 @@
 # Install necessary software
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y gpsd libgps-dev gpsd-clients setserial
+sudo apt install -y gpsd libgps-dev gpsd-clients setserial tmux vim
 
 # Enter the serial port for gpsd
 sed 's/DEVICE=""/DEVICE="\/dev\/ttyS0"/g' /etc/default/gpsd | sudo tee /etc/default/gpsd > /dev/null

@@ -107,7 +107,7 @@ namespace fusion {
         navPackage.rssi = -pkg.getChannel(0);
         navPackage.baroAltitude = pkg.getChannel(1) * si::meter;
         navPackage.pitotVoltage = pkg.getChannel(2) * si::volt;
-        navPackage.usDistance = pkg.getChannel(3) * si::meter;
+        navPackage.usDistance = (pkg.getChannel(3) / 100.0F) * si::meter;
 
         return navPackage;
     }
