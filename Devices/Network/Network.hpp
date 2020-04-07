@@ -19,7 +19,7 @@
 namespace device {
     class Network : public Node {
         public:
-            explicit Network(const std::string &address);
+            explicit Network(const std::string &address, bool enable = true);
 
             auto getChannelIn() -> InputChannel<rcLib::Package> &;
 

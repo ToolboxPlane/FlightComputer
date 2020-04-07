@@ -31,12 +31,15 @@ namespace device {
                             && !std::isnan(gps_data.fix.epx) && !std::isnan(gps_data.fix.epv)) {
                         gps.fixAquired = true;
 
+                        gps.timestamp = si::Second<long double>{gps_data.fix.time};
+
                         gps.location.lat = gps_data.fix.latitude;
                         gps.location.lon = gps_data.fix.longitude;
-                        gps.timestamp = si::Second<long double>{gps_data.fix.time};
+                        gps.location.altitude = static_cast<si::default_type>(gps_data.fix.altitude) * si::meter;
+
                         gps.speed = static_cast<si::default_type>(gps_data.fix.speed) * si::speed;
                         gps.climb = static_cast<si::default_type>(gps_data.fix.climb) * si::speed;
-                        gps.location.altitude = static_cast<si::default_type>(gps_data.fix.altitude) * si::meter;
+
                         gps.epLat = static_cast<si::default_type>(gps_data.fix.epy) * si::meter;
                         gps.epLon = static_cast<si::default_type>(gps_data.fix.epx) * si::meter;
                         gps.epVert = static_cast<si::default_type>(gps_data.fix.epv) * si::meter;
@@ -46,6 +49,16 @@ namespace device {
                         out.put(gps);
                     } else {
                         gps.fixAquired = false;
+
+                        gps.timestamp = si::Second<long double>(0);
+
+                        gps.location.lat = NAN;
+                        gps.location.lon = NAN;
+                        gps.location.altitude = NAN * si::meter;
+
+                        gps.speed = NAN * si::speed;
+                        gps.climb = NAN * si::speed;
+
                         gps.epLat = std::numeric_limits<si::default_type>::infinity() * si::meter;
                         gps.epLon = std::numeric_limits<si::default_type>::infinity() * si::meter;
                         gps.epVert = std::numeric_limits<si::default_type>::infinity() * si::meter;

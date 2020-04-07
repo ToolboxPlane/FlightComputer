@@ -11,7 +11,11 @@
 #include <utility>
 #include "Network.hpp"
 
-device::Network::Network(const std::string &address) {
+device::Network::Network(const std::string &address, bool enable) {
+    if (!enable) {
+        return;
+    }
+
     this->fd = socket(AF_INET, SOCK_RAW | SOCK_NONBLOCK, PROTOCOL_ID);
     if (this->fd < 0) {
         throw std::runtime_error(std::string{"Network: "} + strerror(errno));

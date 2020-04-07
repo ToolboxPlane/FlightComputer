@@ -32,11 +32,10 @@ int main() {
 
 #ifdef RASPBERRY_PI
     device::SerialPosix fc{"/dev/ttyFC", 115200};
-    device::SerialPosix pdb{"/dev/ttyPDB", 115200};
+    //device::SerialPosix pdb{"/dev/ttyPDB", 115200};
+    device::RcLibSimulator pdb{38, 100000};
     device::SerialPosix lora{"/dev/ttyNav", 115200};
-    //device::Gps gps{};
-    recording::NameProvider replayNameProvider{"2020-04-04_18-24-20"};
-    recording::ChannelReplay<GpsMeasurement_t> gps{replayNameProvider.getInputStream("gps")};
+    device::Gps gps{};
 #else
     recording::NameProvider replayNameProvider{"2020-04-04_18-24-20"};
     recording::ChannelReplay<rcLib::Package> fc{replayNameProvider.getInputStream("fc")};
@@ -51,7 +50,7 @@ int main() {
     }
     recording::ChannelReplay<Waypoint_t> waypointReader{std::move(waypointFile)};
 
-    device::Network network{"192.168.0.120"};
+    device::Network network{"192.168.0.120", true};
 
     /*
      * Filters

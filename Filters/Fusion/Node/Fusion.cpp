@@ -2,7 +2,6 @@
 // Created by paul on 14.03.18.
 //
 
-#include <numeric>
 #include "Fusion.hpp"
 #include "../Lib/DecodePackage.hpp"
 #include "../../../Utilities/time.hpp"
@@ -92,21 +91,70 @@ namespace filter {
             std::cout << "No Lora-Remote Package received!" << std::endl;
         }
 
+        if (!lastNavPackage.has_value()) {
+            std::cerr << "No Nav Package received!" << std::endl;
+            return;
+        }
+
+        if (!lastGpsMeasurement.has_value()) {
+            std::cerr << "No GPS Package received!" << std::endl;
+            return;
+        }
+
+
         auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
-        if (lastGpsMeasurement.has_value() && lastGpsMeasurement.value().fixAquired && lastNavPackage.has_value()
-            && flightControllerData.sysCalibStatus >= CALIB_STAT_THRESH &&
-            flightControllerData.accCalibStatus >= CALIB_STAT_THRESH
-            && flightControllerData.magCalibStatus >= CALIB_STAT_THRESH &&
-            flightControllerData.gyroCalibStatus >= CALIB_STAT_THRESH) {
+        auto gpsMeasurement = lastGpsMeasurement.value();
+        auto navData = fusion::decodePackage<NavPackage>(lastNavPackage.value());
 
-            const auto startTime = util::time::get();
-            auto navData = fusion::decodePackage<NavPackage>(lastNavPackage.value());
-            auto gpsMeasurement = lastGpsMeasurement.value();
-
-            if (!calibration.isCalibrated()) {
+        const auto startTime = util::time::get();
+        if (!calibration.isCalibrated()) {
+            if (gpsMeasurement.fixAquired
+                && flightControllerData.sysCalibStatus >= CALIB_STAT_THRESH &&
+                flightControllerData.accCalibStatus >= CALIB_STAT_THRESH
+                && flightControllerData.magCalibStatus >= CALIB_STAT_THRESH &&
+                flightControllerData.gyroCalibStatus >= CALIB_STAT_THRESH) {
                 calibration.update(startTime, flightControllerData, gpsMeasurement, navData);
-                return;
+            } else {
+                std::cout << "Calib not running, reason(s):\n";
+
+                if (!gpsMeasurement.fixAquired) {
+                    std::cerr << "\tNo GPS Fix" << std::endl;
+                }
+                if (flightControllerData.sysCalibStatus < CALIB_STAT_THRESH) {
+                    std::cerr << "\tBNO Sys Calib Stat: " << static_cast<int>(flightControllerData.sysCalibStatus)
+                              << std::endl;
+                }
+                if (flightControllerData.magCalibStatus < CALIB_STAT_THRESH) {
+                    std::cerr << "\tBNO Mag Calib Stat: " << static_cast<int>(flightControllerData.magCalibStatus)
+                              << std::endl;
+                }
+                if (flightControllerData.accCalibStatus < CALIB_STAT_THRESH) {
+                    std::cerr << "\tBNO Acc Calib Stat: " << static_cast<int>(flightControllerData.accCalibStatus)
+                              << std::endl;
+                }
             }
+        } else {
+            if (!gpsMeasurement.fixAquired) {
+                std::cerr << "No GPS fix, running in pure prediction mode" << std::endl;
+            }
+
+            if (flightControllerData.sysCalibStatus < CALIB_STAT_THRESH) {
+                std::cerr << "\tBNO Sys Calib Stat: " << static_cast<int>(flightControllerData.sysCalibStatus)
+                          << std::endl;
+            }
+            if (flightControllerData.magCalibStatus < CALIB_STAT_THRESH) {
+                std::cerr << "\tBNO Mag Calib Stat: " << static_cast<int>(flightControllerData.magCalibStatus)
+                          << std::endl;
+            }
+            if (flightControllerData.accCalibStatus < CALIB_STAT_THRESH) {
+                std::cerr << "\tBNO Acc Calib Stat: " << static_cast<int>(flightControllerData.accCalibStatus)
+                          << std::endl;
+            }
+            if (flightControllerData.gyroCalibStatus < CALIB_STAT_THRESH) {
+                std::cerr << "\tBNO Gyro Calib Stat: " << static_cast<int>(flightControllerData.gyroCalibStatus)
+                          << std::endl;
+            }
+
             calibration.applyCalib(startTime, flightControllerData, gpsMeasurement, navData);
 
             const auto dtDouble = startTime - lastUpdate;
@@ -141,34 +189,6 @@ namespace filter {
             //std::cout << util::time::get() - startTime << std::endl;
 
             out.put(res);
-        } else {
-            std::cerr << "Fusion not running, reason(s):\n";
-            if (!lastGpsMeasurement.has_value()) {
-                std::cerr << "\tNo GPS Measurement" << std::endl;
-            } else if (!lastGpsMeasurement.value().fixAquired) {
-                std::cerr << "\tNo GPS Fix" << std::endl;
-            }
-
-            if (flightControllerData.sysCalibStatus < CALIB_STAT_THRESH) {
-                std::cerr << "\tBNO Sys Calib Stat: " << static_cast<int>(flightControllerData.sysCalibStatus)
-                          << std::endl;
-            }
-            if (flightControllerData.magCalibStatus < CALIB_STAT_THRESH) {
-                std::cerr << "\tBNO Mag Calib Stat: " << static_cast<int>(flightControllerData.magCalibStatus)
-                          << std::endl;
-            }
-            if (flightControllerData.accCalibStatus < CALIB_STAT_THRESH) {
-                std::cerr << "\tBNO Acc Calib Stat: " << static_cast<int>(flightControllerData.accCalibStatus)
-                          << std::endl;
-            }
-            if (flightControllerData.gyroCalibStatus < CALIB_STAT_THRESH) {
-                std::cerr << "\tBNO Gyro Calib Stat: " << static_cast<int>(flightControllerData.gyroCalibStatus)
-                          << std::endl;
-            }
-
-            if (!lastNavPackage.has_value()) {
-                std::cerr << "\tNo Nav Data" << std::endl;
-            }
         }
     }
 }
