@@ -27,8 +27,8 @@ class StateEstimateParticleFilter {
         -> system_state_t;
 
     private:
-        void init(std::size_t numberOfParticles, const GpsMeasurement_t &gpsMeasurement,
-                  si::Meter<> distanceGround);
+        void init(std::size_t numberOfParticles, const FlightControllerPackage &flightControllerPackage,
+                    const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage);
 
         std::vector<weighted_particle_t> particles;
 };

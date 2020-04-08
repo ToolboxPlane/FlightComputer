@@ -22,7 +22,7 @@ class FlightControllerPackage {
         uint8_t bnoState, bnoError;
         uint8_t sysCalibStatus, gyroCalibStatus, accCalibStatus, magCalibStatus;
         si::default_type roll, pitch, yaw;
-        si::Frequency<> rollDeriv, pitchDeriv, yawDeriv;
+        si::Hertz<> rollDeriv, pitchDeriv, yawDeriv;
         si::Acceleration<> accX, accY, accZ;
         si::default_type elevonLeft, elevonRight;
         si::default_type motor;
@@ -30,9 +30,9 @@ class FlightControllerPackage {
 
 class PdbPackage {
     public:
-        si::Voltage<> voltageVcc;
+        si::Volt<> voltageVcc;
         si::Ampere<> currentVcc;
-        si::Voltage<> voltage5V;
+        si::Volt<> voltage5V;
         si::Ampere<> current5V;
 };
 
@@ -55,7 +55,7 @@ class NavPackage {
     public:
         int rssi;
         si::Meter<> baroAltitude;
-        si::Voltage<> pitotVoltage;
+        si::Volt<> pitotVoltage;
         si::Meter<> usDistance;
 };
 
@@ -63,33 +63,33 @@ class NavPackage {
 class State_t {
     public:
         si::default_type roll{};
+        si::Hertz<> rollDeriv{};
         si::default_type pitch{};
+        si::Hertz<> pitchDeriv{};
         si::default_type yaw{};
+        si::Hertz<> yawDeriv{};
         si::Speed<> speed{};
         si::Meter<> altitude{};
         si::Meter<> altitudeAboveGround{};
-        si::Meter<> altitudeGround;
+        si::Meter<> altitudeGround{};
         double lat{}, lon{};
-        si::Acceleration<> accX, accY, accZ;
+        si::Acceleration<> accX{}, accY{}, accZ{};
         Gps_t startLocation{0,0,0 * si::meter};
-        si::Second<long double> startTime;
+        si::Second<long double> startTime{};
 
         FlightControllerPackage rawFlightControllerData{};
         PdbPackage pdbPackage{};
         TaranisPackage taranisPackage{};
         LoraPackage loraRemote{};
-        NavPackage navPackage;
+        NavPackage navPackage{};
 
         friend std::ostream &operator<<(std::ostream &ostream, State_t state) {
-            ostream << "H:" << state.yaw;
-            ostream << "\tR:" << state.roll;
-            ostream << "\tP:" << state.pitch;
+            ostream << "(" << state.roll << "," << state.pitch << "," << state.yaw << ")";
             ostream << "\tGnd:" << state.altitudeAboveGround;
-            ostream << "\tSea:" << state.altitude;
-            ostream << "\tSpeed:" << state.speed;
+            ostream << " Sea:" << state.altitude;
+            ostream << "\t" << state.speed;
             ostream << "\tAcc:(" << state.accX << "," << state.accY << "," << state.accZ << ")";
             ostream << "\tPos:(" << state.lat << "," << state.lon << ")";
-            ostream << "\tV:" << state.pdbPackage.voltageVcc;
             return ostream;
         }
 };

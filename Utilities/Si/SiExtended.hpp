@@ -51,12 +51,12 @@ namespace si {
     constexpr Acceleration<> acceleration{1};
 
     template<typename T = si::default_type>
-    using Voltage = Si<2, 1, -3, -1, 0, 0, 0, T>;
-    constexpr Voltage<> volt{1};
+    using Volt = Si<2, 1, -3, -1, 0, 0, 0, T>;
+    constexpr Volt<> volt{1};
 
     template<typename T = si::default_type>
-    using Frequency = Si<0, 0, -1, 0, 0, 0, 0, T>;
-    constexpr Frequency<> hertz{1};
+    using Hertz = Si<0, 0, -1, 0, 0, 0, 0, T>;
+    constexpr Hertz<> hertz{1};
 
     namespace literals {
         CREATE_ALL_PREFIX(speed, 1, 0, -1, 0, 0, 0, 0)

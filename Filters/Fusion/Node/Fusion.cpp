@@ -10,9 +10,9 @@ namespace filter {
     using namespace si;
     using namespace si::literals;
 
-    constexpr auto ACC_SIGMA_V = 1900 * si::acceleration / si::second; // Process noise
+    constexpr auto ACC_SIGMA_V = 10 * si::acceleration / si::second; // Process noise
     constexpr auto ACC_SIGMA_W = 0.035F * si::acceleration; // Measurement noise
-    constexpr auto CALIB_STAT_THRESH = 2;
+    constexpr auto CALIB_STAT_THRESH = 0;
 
     Fusion::Fusion() : lastUpdate{util::time::get()}, accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
                        accYFilter{ACC_SIGMA_V, ACC_SIGMA_W}, accZFilter{ACC_SIGMA_V, ACC_SIGMA_W} {
@@ -76,19 +76,19 @@ namespace filter {
         if (lastPdbPackage.has_value()) {
             res.pdbPackage = fusion::decodePackage<PdbPackage>(lastPdbPackage.value());
         } else {
-            std::cout << "No PDB Package received!" << std::endl;
+            //std::cout << "No PDB Package received!" << std::endl;
         }
 
         if (lastTaranisPackage.has_value()) {
             res.taranisPackage = fusion::decodePackage<TaranisPackage>(lastTaranisPackage.value());
         } else {
-            std::cout << "No Taranis Package received!" << std::endl;
+            //std::cout << "No Taranis Package received!" << std::endl;
         }
 
         if (lastRemotePackage.has_value()) {
             res.loraRemote = fusion::decodePackage<LoraPackage>(lastRemotePackage.value());
         } else {
-            std::cout << "No Lora-Remote Package received!" << std::endl;
+            //std::cout << "No Lora-Remote Package received!" << std::endl;
         }
 
         if (!lastNavPackage.has_value()) {
@@ -169,8 +169,11 @@ namespace filter {
             accZFilter.addMeasurement(flightControllerData.accZ, dt);
 
             res.roll = state.roll_angle;
+            res.rollDeriv = state.roll_deriv * hertz;
             res.pitch = state.pitch_angle;
+            res.pitchDeriv = state.pitch_deriv * hertz;
             res.yaw = state.yaw_angle;
+            res.yawDeriv = state.yaw_deriv * hertz;
             res.speed = state.speed * speed;
             res.altitude = state.altitude * meter;
             res.altitudeAboveGround = state.altitude_above_ground * meter;

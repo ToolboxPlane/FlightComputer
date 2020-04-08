@@ -31,12 +31,12 @@ class GpsMeasurement_t {
             if (!gps.fixAquired) {
                 ostream << "No fix";
             } else {
-                ostream << "Timestamp: " << gps.timestamp <<
-                        "\tLat: " << gps.location.lat <<
-                        "\tLon: " << gps.location.lon <<
-                        "\tAlt: " << gps.location.altitude <<
-                        "\tClimb: " << gps.climb <<
-                        "\tSpeed: " << gps.speed;
+                ostream << gps.timestamp <<
+                        "\t(" << gps.location.lat << ", " << gps.location.lon <<
+                        ") (+-" << gps.epLat << ", " << gps.epLon << ")"
+                        "\tAlt: " << gps.location.altitude << " (+-" << gps.epVert << ")"
+                        "\tClimb: " << gps.climb << " (+-" << gps.epClimb << ")"
+                        "\tSpeed: " << gps.speed << " (+-" << gps.epSpeed << ")";
             }
             return ostream;
         }

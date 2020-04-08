@@ -45,9 +45,9 @@ namespace fusion {
         flightControllerPackage.roll = (static_cast<si::default_type>(pkg.getChannel(1)) - 500) / 2.0f;
         flightControllerPackage.pitch = (static_cast<si::default_type>(pkg.getChannel(2)) - 500) / 2.0f;
         flightControllerPackage.yaw = (static_cast<si::default_type>(pkg.getChannel(3)) - 500) / 2.0f;
-        flightControllerPackage.rollDeriv = (static_cast<si::default_type>(pkg.getChannel(4)) - 500) * si::hertz;
-        flightControllerPackage.pitchDeriv = (static_cast<si::default_type>(pkg.getChannel(5)) - 500) * si::hertz;
-        flightControllerPackage.yawDeriv = (static_cast<si::default_type>(pkg.getChannel(6)) - 500) * si::hertz;
+        flightControllerPackage.rollDeriv = (static_cast<si::default_type>(pkg.getChannel(4)) - 500) / 16.0F * si::hertz;
+        flightControllerPackage.pitchDeriv = (static_cast<si::default_type>(pkg.getChannel(5)) - 500) / 16.0F * si::hertz;
+        flightControllerPackage.yawDeriv = (static_cast<si::default_type>(pkg.getChannel(6)) - 500) / 16.0F * si::hertz;
         flightControllerPackage.accX =
                 (static_cast<si::default_type>((pkg.getChannel(7)) - 500) / 6.25F) * si::acceleration;
         flightControllerPackage.accY =

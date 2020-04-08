@@ -23,12 +23,15 @@ Calibration::update(si::Second<long double> currentTime, const FlightControllerP
         lonStdDev = static_cast<double>(gpsMeasurement.epLon / 2);
         altStdDev = gpsMeasurement.epVert / 2;
     } else {
-        mapUpdate(startPosition.lat, latStdDev,
-                  gpsMeasurement.location.lat, static_cast<double>(gpsMeasurement.epLat / 2));
-        mapUpdate(startPosition.lon, lonStdDev,
-                  gpsMeasurement.location.lon, static_cast<double>(gpsMeasurement.epLon / 2));
-        mapUpdate(startPosition.altitude, altStdDev, gpsMeasurement.location.altitude, gpsMeasurement.epVert / 2);
+        //if (lastGpsTimestamp < gpsMeasurement.timestamp) {
+            mapUpdate(startPosition.lat, latStdDev,
+                      gpsMeasurement.location.lat, static_cast<double>(gpsMeasurement.epLat / 2));
+            mapUpdate(startPosition.lon, lonStdDev,
+                      gpsMeasurement.location.lon, static_cast<double>(gpsMeasurement.epLon / 2));
+            mapUpdate(startPosition.altitude, altStdDev, gpsMeasurement.location.altitude, gpsMeasurement.epVert / 2);
+        //}
     }
+    lastGpsTimestamp = gpsMeasurement.timestamp;
 
     auto accSqr = flightControllerPackage.accX * flightControllerPackage.accX
                   + flightControllerPackage.accY * flightControllerPackage.accY

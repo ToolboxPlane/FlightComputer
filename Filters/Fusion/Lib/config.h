@@ -8,10 +8,15 @@
 #ifndef FLIGHTCOMPUTER_CONFIG_H
 #define FLIGHTCOMPUTER_CONFIG_H
 
-#define VAR_SRF02 0.3F
-#define SRF02_MAX_DIST 5.0F
-#define SIGMA_GND 2.0F
-#define SIGMA_V 3.0F
+// Process
+#define SIGMA_GND 4.0F
+#define SIGMA_V 10.0F
+#define SIGMA_PITCH_OFFSET 30.0F
+#define SIGMA_YAW_OFFSET 30.0F
 
+// Measurement
+#define SIGMA_SRF02 0.01F
+#define SRF02_MAX_DIST 5.0F
+#define SIGMA_BARO 1.0F
 
 #endif //FLIGHTCOMPUTER_CONFIG_H
