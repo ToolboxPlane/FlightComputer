@@ -9,10 +9,10 @@
 #define FLIGHTCOMPUTER_CONFIG_H
 
 // Process
-#define SIGMA_GND 4.0F
-#define SIGMA_V 10.0F
-#define SIGMA_PITCH_OFFSET 30.0F
-#define SIGMA_YAW_OFFSET 30.0F
+#define SIGMA_GND 1.0F
+#define SIGMA_V 2.0F
+#define SIGMA_PITCH_OFFSET 1.0F
+#define SIGMA_YAW_OFFSET 1.0F
 
 // Measurement
 #define SIGMA_SRF02 0.01F

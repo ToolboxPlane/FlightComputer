@@ -10,7 +10,7 @@
 #include <random>
 #include "StateEstimateParticleFilter.hpp"
 
-constexpr auto NUM_PARTICLES = 10000;
+constexpr auto NUM_PARTICLES = 100000;
 
 StateEstimateParticleFilter::StateEstimateParticleFilter() {
     srand(time(nullptr)); // Required for the process noise
@@ -38,8 +38,8 @@ StateEstimateParticleFilter::update(si::Second<> dt, const FlightControllerPacka
     measurement.altitude_baro = static_cast<float>(navPackage.baroAltitude);
     measurement.distance_ground = static_cast<float>(navPackage.usDistance);
     measurement.altitude_gps = static_cast<float>(gpsMeasurement.location.altitude);
-    measurement.lat = static_cast<float>(gpsMeasurement.location.lat);
-    measurement.lon = static_cast<float>(gpsMeasurement.location.lon);
+    measurement.lat = gpsMeasurement.location.lat;
+    measurement.lon = gpsMeasurement.location.lon;
 
     measurement_info_t measurementInfo{};
     measurementInfo.expected_error_lat = static_cast<float>(gpsMeasurement.epLat);
@@ -75,10 +75,6 @@ StateEstimateParticleFilter::update(si::Second<> dt, const FlightControllerPacka
     system_state_t estimate{};
 
     float nEffInv = 0;
-    /*std::cout << "Meas:"
-                << "roll=" << measurement.roll_angle << "\n"
-               << "pitch=" << measurement.pitch_angle<< "\n"
-               << "yaw=" << measurement.yaw_angle << std::endl;*/
 
     // Fix PDF (-> Bayes * 1/p(z)) and determine expected state E{x}
     for (auto &[state, weight] : particles) {
@@ -97,11 +93,6 @@ StateEstimateParticleFilter::update(si::Second<> dt, const FlightControllerPacka
         estimate.lat += state.lat * weight;
         estimate.lon += state.lon * weight;
 
-        /*std::cout << "weight=" << weight << "\n"
-                    << "roll=" << state.roll_angle << "\n"
-                    << "pitch=" << state.pitch_angle<< "\n"
-                    << "yaw=" << state.yaw_angle << std::endl;*/
-
         nEffInv += weight * weight;
     }
 
@@ -112,6 +103,8 @@ StateEstimateParticleFilter::update(si::Second<> dt, const FlightControllerPacka
     if (estimate.altitude_above_ground < 0) {
         estimate.altitude_above_ground = 0;
     }
+
+    std::cout << 1/nEffInv << "(" << NUM_PARTICLES << ")" << std::endl;
 
     // Resample
     std::vector<weighted_particle_t> newParticles;
@@ -134,6 +127,7 @@ StateEstimateParticleFilter::init(std::size_t numberOfParticles,
     std::normal_distribution<float> altDist(0, 1);
     std::normal_distribution<float> altGroundDist(0, 0.1);
     std::normal_distribution<float> latLonDist(0, 0.00001);
+    std::normal_distribution<float> speedDist(0, 5);
     particles.clear();
 
     for (std::size_t c = 0; c < numberOfParticles; ++c) {
@@ -148,7 +142,12 @@ StateEstimateParticleFilter::init(std::size_t numberOfParticles,
         weightedParticle.x.altitude = static_cast<float>(gpsMeasurement.location.altitude) + altDist(rng);
         weightedParticle.x.lat = static_cast<float>(gpsMeasurement.location.lat) + latLonDist(rng);
         weightedParticle.x.lon = static_cast<float>(gpsMeasurement.location.lon) + latLonDist(rng);
-        weightedParticle.x.speed = 0;
+        if (std::isnan(static_cast<si::default_type>(gpsMeasurement.speed))) {
+            weightedParticle.x.speed = 0;
+        } else {
+            weightedParticle.x.speed = static_cast<float>(gpsMeasurement.speed);
+        }
+        //weightedParticle.x.speed += speedDist(rng);
 
         weightedParticle.weight = 1.0F / numberOfParticles;
         particles.emplace_back(weightedParticle);
