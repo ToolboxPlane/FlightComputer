@@ -59,8 +59,7 @@ namespace filter {
     void Navigation::rth(const State_t &currentState, bool) {
         Nav_t nav{};
 
-        Gps_t position{currentState.lat, currentState.lon};
-        nav.heading = position.angleTo(currentState.startLocation);
+        nav.heading = currentState.position.angleTo(currentState.startLocation);
         nav.altitude = currentState.startLocation.altitude + RTH_ALTITUDE;
 
         nav.speed = CRUISE_SPEED;
@@ -89,11 +88,11 @@ namespace filter {
             case IN_HAND:
                 nav.speed = 0.0_speed;
                 nav.heading = state.yaw;
-                nav.altitude = state.altitude;
+                nav.altitude = state.position.altitude;
                 if (LAUNCH_THROW_THRESH < state.accX && std::abs(state.roll) < LAUNCH_MAX_ROLL
                     && state.pitch > LAUNCH_MIN_PITCH && state.pitch < LAUNCH_MAX_PITCH) {
                     headingTarget = state.yaw;
-                    altitudeTarget = state.altitude + LAUNCH_TARGET_ALTITUDE;
+                    altitudeTarget = state.position.altitude + LAUNCH_TARGET_ALTITUDE;
                     launchState = THROWN;
                 }
                 break;
@@ -138,7 +137,7 @@ namespace filter {
             nav.altitude = LANDING_FLARE_ALTITUDE - 0.1_meter;
             nav.stateMinor = 2;
         } else { // Flare
-            nav.altitude = state.altitude + 100_meter;
+            nav.altitude = state.position.altitude + 100_meter;
             nav.stateMinor = 3;
         }
 
@@ -150,15 +149,12 @@ namespace filter {
 
     void Navigation::loiter(const State_t &state, bool reset) {
         Nav_t nav{};
-        static Gps_t centre{state.lat, state.lon, state.altitude};
+        static auto centre = state.position;
         if (reset) {
-            centre.lat = state.lat;
-            centre.lon = state.lon;
-            centre.altitude = state.altitude;
+            centre = state.position;
         }
 
-        Gps_t position{state.lat, state.lon};
-        auto angleFromCentre = centre.angleTo(position);
+        auto angleFromCentre = centre.angleTo(state.position);
         auto targetAngle = angleFromCentre + LOITER_TARGET_ANGLE;
         auto latDist = std::cos(targetAngle / 180 * M_PI_F) * LOITER_RADIUS;
         auto lonDist = std::sin(targetAngle / 180 * M_PI_F) * LOITER_RADIUS;
@@ -167,7 +163,7 @@ namespace filter {
             centre.lon + static_cast<double>(lonDist / EARTH_CIRCUMFERENCE * 360 / std::cos(centre.lat / 180 * M_PI_F))
         };
 
-        nav.heading = position.angleTo(targetPosition);
+        nav.heading = state.position.angleTo(targetPosition);
         nav.speed = CRUISE_SPEED;
         nav.altitude = centre.altitude;
 
@@ -181,19 +177,16 @@ namespace filter {
     }
 
     void Navigation::waypoint(const State_t &currentState, bool) {
-        static Waypoint_t nextWaypoint({currentState.lat, currentState.lon},
-                                       std::numeric_limits<si::default_type>::max(), false);
+        static Waypoint_t nextWaypoint(currentState.position, std::numeric_limits<si::default_type>::max(), false);
         static uint16_t waypointIndex = 0;
         Nav_t nav{};
 
-        Gps_t position{currentState.lat, currentState.lon};
-
-        if (position.distanceTo(nextWaypoint.location) < nextWaypoint.maxDelta) {
+        if (currentState.position.distanceTo(nextWaypoint.location) < nextWaypoint.maxDelta) {
             waypointIn.get(nextWaypoint);
             waypointIndex++;
         }
 
-        nav.heading = position.angleTo(nextWaypoint.location);
+        nav.heading = currentState.position.angleTo(nextWaypoint.location);
         nav.altitude = nextWaypoint.location.altitude;
 
         nav.speed = CRUISE_SPEED;

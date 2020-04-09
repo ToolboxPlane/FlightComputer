@@ -5,7 +5,6 @@
 #ifndef FLIGHTCOMPUTER_GPS_MEASUREMENT_T_HPP
 #define FLIGHTCOMPUTER_GPS_MEASUREMENT_T_HPP
 
-#include <cmath>
 #include <iostream>
 #include <string>
 #include <vector>

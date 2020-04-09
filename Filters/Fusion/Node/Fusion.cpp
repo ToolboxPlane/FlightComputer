@@ -175,11 +175,11 @@ namespace filter {
             res.yaw = state.yaw_angle;
             res.yawDeriv = state.yaw_deriv * hertz;
             res.speed = state.speed * speed;
-            res.altitude = state.altitude * meter;
+            res.position.altitude = state.altitude * meter;
             res.altitudeAboveGround = state.altitude_above_ground * meter;
-            res.altitudeGround = res.altitude - res.altitudeAboveGround;
-            res.lat = state.lat;
-            res.lon = state.lon;
+            res.altitudeGround = res.position.altitude - res.altitudeAboveGround;
+            res.position.lat = state.lat;
+            res.position.lon = state.lon;
             res.accX = accXFilter.getMeasurementEstimate();
             res.accY = accYFilter.getMeasurementEstimate();
             res.accZ = accZFilter.getMeasurementEstimate();

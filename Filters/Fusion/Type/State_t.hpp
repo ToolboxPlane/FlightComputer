@@ -69,10 +69,9 @@ class State_t {
         si::default_type yaw{};
         si::Hertz<> yawDeriv{};
         si::Speed<> speed{};
-        si::Meter<> altitude{};
         si::Meter<> altitudeAboveGround{};
         si::Meter<> altitudeGround{};
-        double lat{}, lon{};
+        Gps_t position{0,0};
         si::Acceleration<> accX{}, accY{}, accZ{};
         Gps_t startLocation{0,0,0 * si::meter};
         si::Second<long double> startTime{};
@@ -86,10 +85,10 @@ class State_t {
         friend std::ostream &operator<<(std::ostream &ostream, State_t state) {
             ostream << "(" << state.roll << "," << state.pitch << "," << state.yaw << ")";
             ostream << "\tGnd:" << state.altitudeAboveGround;
-            ostream << " Sea:" << state.altitude;
+            ostream << " Sea:" << state.position.altitude;
             ostream << "\t" << state.speed;
             ostream << "\tAcc:(" << state.accX << "," << state.accY << "," << state.accZ << ")";
-            ostream << "\tPos:(" << state.lat << "," << state.lon << ")";
+            ostream << "\tPos:(" << state.position.lat << "," << state.position.lon << ")";
             return ostream;
         }
 };

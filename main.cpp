@@ -38,8 +38,8 @@ int main() {
     device::Gps gps{};
 #else
     //recording::NameProvider replayNameProvider{"2020-04-07_15-16-45"};
-    //recording::NameProvider replayNameProvider{"2020-04-07_15-28-46"};
-    recording::NameProvider replayNameProvider{"2020-04-07_15-35-41"};
+    recording::NameProvider replayNameProvider{"2020-04-07_15-28-46"};
+    //recording::NameProvider replayNameProvider{"2020-04-07_15-35-41"};
     recording::ChannelReplay<rcLib::Package> fc{replayNameProvider.getInputStream("fc")};
     recording::ChannelReplay<rcLib::Package> pdb{replayNameProvider.getInputStream("pdb")};
     recording::ChannelReplay<rcLib::Package> lora{replayNameProvider.getInputStream("lora")};

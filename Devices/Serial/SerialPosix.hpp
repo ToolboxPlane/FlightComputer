@@ -10,9 +10,6 @@
 #define SERIALTOOLBOX_INTERFACEPOSIX_HPP
 
 #include <string>
-#include <vector>
-#include <future>
-#include <mutex>
 #include "../../Node.hpp"
 #include "../../InputChannel.hpp"
 #include "../rcLib/RadioControlProtocolCpp/rcLib.hpp"

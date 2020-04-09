@@ -5,9 +5,6 @@
 #ifndef FLIGHTCOMPUTER_GPS_HPP
 #define FLIGHTCOMPUTER_GPS_HPP
 
-#include <string>
-#include <gps.h>
-
 #include "../Type/GpsMeasurement_t.hpp"
 #include "../../../Node.hpp"
 #include "../../../InputChannel.hpp"

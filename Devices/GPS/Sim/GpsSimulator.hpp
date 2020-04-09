@@ -8,8 +8,9 @@
 
 #include "../../../Node.hpp"
 #include "../../../InputChannel.hpp"
-#include "../Type/GpsMeasurement_t.hpp"
 #include "../../../OutputChannel.hpp"
+
+#include "../Type/GpsMeasurement_t.hpp"
 
 namespace device {
     class GpsSimulator : public Node {

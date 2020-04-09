@@ -36,25 +36,30 @@ namespace filter {
 
         while (!in.isClosed()) {
             if (in.get(control)) {
+                auto angleToStart = control.state.position.angleTo(control.state.startLocation);
+                auto distToStart = control.state.position.distanceTo(control.state.startLocation);
+                std::cout << distToStart << std::endl;
+
+
                 serialOutPkg.setChannel(0, static_cast<uint16_t>(control.power * 1023));
                 serialOutPkg.setChannel(1, static_cast<uint16_t>(control.pitch + 180));
                 serialOutPkg.setChannel(2, static_cast<uint16_t>(control.roll + 180));
-                serialOutPkg.setChannel(3, 0);
+                serialOutPkg.setChannel(3, static_cast<__uint16_t>(angleToStart * 2 + 500));
 
                 baseOutPkg.setChannel(0, -control.state.navPackage.rssi);
                 baseOutPkg.setChannel(1, static_cast<uint16_t>(control.state.altitudeAboveGround));
-                baseOutPkg.setChannel(2, static_cast<uint16_t>(control.state.lat * 10));
-                baseOutPkg.setChannel(3, static_cast<uint16_t>(control.state.lon * 10));
+                baseOutPkg.setChannel(2, static_cast<uint16_t>(angleToStart * 2 + 500));
+                baseOutPkg.setChannel(3, static_cast<uint16_t>(distToStart / 10));
 
                 networkOutPkg.setChannel(0, -control.state.navPackage.rssi);
                 networkOutPkg.setChannel(1, static_cast<uint16_t>(control.state.altitudeAboveGround * 10));
-                networkOutPkg.setChannel(2, static_cast<uint16_t>(control.state.lat * 10));
-                networkOutPkg.setChannel(3, static_cast<uint16_t>(control.state.lon * 10));
+                networkOutPkg.setChannel(2, static_cast<uint16_t>(angleToStart * 2 + 500));
+                networkOutPkg.setChannel(3, static_cast<uint16_t>(distToStart / 10));
                 networkOutPkg.setChannel(4, static_cast<uint16_t>(control.state.roll * 2 + 500));
                 networkOutPkg.setChannel(5, static_cast<uint16_t>(control.state.pitch * 2 + 500));
                 networkOutPkg.setChannel(6, static_cast<uint16_t>(control.state.yaw * 2 + 500));
                 networkOutPkg.setChannel(7, static_cast<uint16_t>(control.state.speed * 10));
-                networkOutPkg.setChannel(8, static_cast<uint16_t>(control.state.altitude));
+                networkOutPkg.setChannel(8, static_cast<uint16_t>(control.state.position.altitude));
                 networkOutPkg.setChannel(9,
                                          static_cast<uint16_t>(static_cast<si::default_type>(control.state.accX * 10) +
                                                                500));

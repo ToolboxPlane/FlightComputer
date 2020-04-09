@@ -72,7 +72,7 @@ namespace filter {
     }
 
     auto FeedbackControl::altitudeControl(const State_t &state, si::Meter<> target) const -> si::default_type {
-        auto deltaHeight = target - state.altitude;
+        auto deltaHeight = target - state.position.altitude;
         auto pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::ALTITUDE_P);
 
         return clamp(pitch, -ALTITUDE_MAX_PITCH, ALTITUDE_MAX_PITCH);

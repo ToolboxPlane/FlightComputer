@@ -11,15 +11,15 @@ All output packages are 10 bit Packages.
 | 0 | Power (between 0 and 1023) |
 | 1 | Pitch-Target + 180 |
 | 2 | Roll-Target + 180 |
-| 3 | Empty |
+| 3 | Angle To Start * 2 + 500|
 
 ### LoRa
 | Channel | Content |
 | --- | --- |
 | 0 | -RSSI |
 | 1 | Altitude above ground |
-| 2 | Latitude * 10 |
-| 3 | Longitude * 10 |
+| 2 | Angle to Start * 2 + 500 |
+| 3 | Distance to Start / 10 |
 
 
 ### Network
@@ -27,8 +27,8 @@ All output packages are 10 bit Packages.
 | --- | --- |
 | 0 | -RSSI |
 | 1 | Altitude above ground |
-| 2 | Latitude * 10 |
-| 3 | Longitude * 10 |
+| 2 | Angle to Start * 2 + 500 |
+| 3 | Distance to Start / 10 |
 | 4 | Roll * 2 + 500 |
 | 5 | Pitch * 2 + 500 |
 | 6 | Yaw * 2 + 500 |
