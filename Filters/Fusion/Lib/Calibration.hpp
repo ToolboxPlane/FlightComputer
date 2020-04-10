@@ -46,6 +46,7 @@ class Calibration {
         std::size_t numMeas;
 
         Gps_t startPosition;
+        Gps_t lastPosition;
         si::Second<long double> lastGpsTimestamp{};
         // This is actually in meters as well but it gets treated as actual lat/lon error here.
         double latStdDev, lonStdDev;

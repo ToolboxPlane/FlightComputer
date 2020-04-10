@@ -24,9 +24,20 @@ namespace std {
     }
 
     template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T>
+    auto round(si::Si<m, kg, s, A, K, MOL, CD, T> si) -> si::Si<m, kg, s, A, K, MOL, CD, T> {
+        return si::Si<m, kg, s, A, K, MOL, CD, T>{std::round(static_cast<T>(si))};
+    }
+
+    template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T>
+    auto isnan(si::Si<m, kg, s, A, K, MOL, CD, T> si) -> bool {
+        return std::isnan(static_cast<T>(si));
+    }
+
+    template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T>
     auto atan2(si::Si<m, kg, s, A, K, MOL, CD, T> y, si::Si<m, kg, s, A, K, MOL, CD, T> x) -> T {
         return std::atan2(static_cast<T>(y), static_cast<T>(x));
     }
+
 }
 
 #endif //FLIGHTCOMPUTER_SISTL_HPP

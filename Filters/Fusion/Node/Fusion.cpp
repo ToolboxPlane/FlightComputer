@@ -107,6 +107,10 @@ namespace filter {
         auto navData = fusion::decodePackage<NavPackage>(lastNavPackage.value());
 
         const auto startTime = util::time::get();
+        const auto dtDouble = startTime - lastUpdate;
+        const auto dt = static_cast<si::Second<si::default_type>>(dtDouble);
+        lastUpdate = startTime;
+
         if (!calibration.isCalibrated()) {
             if (gpsMeasurement.fixAquired
                 && flightControllerData.sysCalibStatus >= CALIB_STAT_THRESH &&
@@ -157,12 +161,15 @@ namespace filter {
 
             calibration.applyCalib(startTime, flightControllerData, gpsMeasurement, navData);
 
-            const auto dtDouble = startTime - lastUpdate;
-            const auto dt = static_cast<si::Second<si::default_type>>(dtDouble);
-            lastUpdate = startTime;
 
             auto state = particleFilter.update(dt, flightControllerData, gpsMeasurement,
                                                navData, calibration.getAdditionalBaroUncertainty());
+
+            lastGpsMeasurement->location.lat = NAN;
+            lastGpsMeasurement->location.lon = NAN;
+            lastGpsMeasurement->location.altitude = NAN * meter;
+            lastGpsMeasurement->speed = NAN * speed;
+            lastGpsMeasurement->climb = NAN * speed;
 
             accXFilter.addMeasurement(flightControllerData.accX, dt);
             accYFilter.addMeasurement(flightControllerData.accY, dt);

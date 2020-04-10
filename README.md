@@ -3,9 +3,9 @@
 All the modules running on the Raspberry Pi. 
 
 ## Output Package
-All output packages are 10 bit Packages.
 
 ### Flightcontroller
+The Flightcontroller-Package is a 10bit, 4 channel package.
 | Channel | Content |
 | --- | --- |
 | 0 | Power (between 0 and 1023) |
@@ -14,6 +14,7 @@ All output packages are 10 bit Packages.
 | 3 | Angle To Start * 2 + 500|
 
 ### LoRa
+The Lora-Package is a 10bit, 4 channel package.
 | Channel | Content |
 | --- | --- |
 | 0 | -RSSI |
@@ -23,21 +24,22 @@ All output packages are 10 bit Packages.
 
 
 ### Network
+The Network-Package is a 12bit, 16 channel package.
 | Channel | Content |
 | --- | --- |
 | 0 | -RSSI |
-| 1 | Altitude above ground |
-| 2 | Angle to Start * 2 + 500 |
-| 3 | Distance to Start / 10 |
-| 4 | Roll * 2 + 500 |
-| 5 | Pitch * 2 + 500 |
-| 6 | Yaw * 2 + 500 |
-| 7 | Speed * 10 |
-| 8 | Altitude |
-| 9 | Acc-X * 10 + 500 |
-| 10 | Acc-Y * 10 + 500 |
-| 11 | Acc-Z * 10 + 500 |
-| 12 | VCC * 50 |
+| 1 | Altitude above ground * 40|
+| 2 | Angle to Start * 10 + 2000 |
+| 3 | Distance to Start |
+| 4 | Roll * 10 + 2000 |
+| 5 | Pitch * 10 + 2000 |
+| 6 | Yaw * 10 + 2000 |
+| 7 | Speed * 40 |
+| 8 | Altitude * 4|
+| 9 | Acc-X * 40 + 2000 |
+| 10 | Acc-Y * 40 + 2000 |
+| 11 | Acc-Z * 40 + 2000 |
+| 12 | VCC * 200 |
 | 13 | Empty |
 | 14 | Empty |
 | 15 | Empty |

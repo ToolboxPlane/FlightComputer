@@ -10,7 +10,7 @@
 #include <random>
 #include "StateEstimateParticleFilter.hpp"
 
-constexpr auto NUM_PARTICLES = 100000;
+constexpr auto NUM_PARTICLES = 1000;
 
 StateEstimateParticleFilter::StateEstimateParticleFilter() {
     srand(time(nullptr)); // Required for the process noise
@@ -63,23 +63,27 @@ StateEstimateParticleFilter::update(si::Second<> dt, const FlightControllerPacka
 
     if (weight_sum < std::numeric_limits<float>::epsilon()) {
         std::cerr << "weight_sum = 0" << std::endl;
-        init(NUM_PARTICLES, flightControllerPackage, gpsMeasurement, navPackage);
+        //init(NUM_PARTICLES, flightControllerPackage, gpsMeasurement, navPackage);
         weight_sum = 1;
     }
     if (std::isnan(weight_sum)) {
         std::cerr << "weight_sum = NaN" << std::endl;
-        init(NUM_PARTICLES, flightControllerPackage, gpsMeasurement, navPackage);
+        //init(NUM_PARTICLES, flightControllerPackage, gpsMeasurement, navPackage);
         weight_sum = 1;
     }
 
     system_state_t estimate{};
+    system_state_t kahanComp{};
 
     float nEffInv = 0;
+
+    float weight_test = 0;
 
     // Fix PDF (-> Bayes * 1/p(z)) and determine expected state E{x}
     for (auto &[state, weight] : particles) {
         weight /= weight_sum;
         weight = std::min(weight, 1.0F);
+        weight_test += weight;
 
         estimate.roll_angle += state.roll_angle * weight;
         estimate.roll_deriv += state.roll_deriv * weight;
@@ -90,8 +94,17 @@ StateEstimateParticleFilter::update(si::Second<> dt, const FlightControllerPacka
         estimate.speed += state.speed * weight;
         estimate.altitude += state.altitude * weight;
         estimate.altitude_above_ground += state.altitude_above_ground * weight;
-        estimate.lat += state.lat * weight;
-        estimate.lon += state.lon * weight;
+        //estimate.lat += state.lat * weight;
+        //estimate.lon += state.lon * weight;
+        auto yLat = state.lat * weight - kahanComp.lat;
+        auto tLat = estimate.lat + yLat;
+        kahanComp.lat = (tLat - estimate.lat) - yLat;
+        estimate.lat = tLat;
+
+        auto yLon = state.lon * weight - kahanComp.lon;
+        auto tLon = estimate.lon + yLon;
+        kahanComp.lon = (tLon - estimate.lon) - yLon;
+        estimate.lon = tLon;
 
         nEffInv += weight * weight;
     }
@@ -103,8 +116,6 @@ StateEstimateParticleFilter::update(si::Second<> dt, const FlightControllerPacka
     if (estimate.altitude_above_ground < 0) {
         estimate.altitude_above_ground = 0;
     }
-
-    std::cout << 1/nEffInv << "(" << NUM_PARTICLES << ")" << std::endl;
 
     // Resample
     std::vector<weighted_particle_t> newParticles;
@@ -147,7 +158,6 @@ StateEstimateParticleFilter::init(std::size_t numberOfParticles,
         } else {
             weightedParticle.x.speed = static_cast<float>(gpsMeasurement.speed);
         }
-        //weightedParticle.x.speed += speedDist(rng);
 
         weightedParticle.weight = 1.0F / numberOfParticles;
         particles.emplace_back(weightedParticle);

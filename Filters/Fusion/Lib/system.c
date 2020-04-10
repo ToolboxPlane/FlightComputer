@@ -30,8 +30,8 @@ system_state_t predict(const system_state_t *x, const input_t *u, float dt, bool
     float pitch_offset = 0;
     float yaw_offset = 0;
     if (apply_noise) {
-        pitch_offset = gaussian_box_muller(0, SIGMA_PITCH_OFFSET);
-        yaw_offset = gaussian_box_muller(0, SIGMA_YAW_OFFSET);
+        pitch_offset = gaussian_box_muller(0, SIGMA_PITCH_OFFSET * dt);
+        yaw_offset = gaussian_box_muller(0, SIGMA_YAW_OFFSET * dt);
     }
 
     float dist = x->speed * dt;
@@ -54,6 +54,7 @@ system_state_t predict(const system_state_t *x, const input_t *u, float dt, bool
     ret.altitude_above_ground = x->altitude_above_ground + vert_dist;
     ret.lat = x->lat + DIST2LAT(lat_dist);
     ret.lon = x->lon + DIST2LON(lon_dist, x->lat);
+    //printf("Yaw=%f\t(%.15Lf, %.15Lf) -> (%.15Lf, %.15Lf)\tLatDist=%f, Lon Dist=%f\n", x->yaw_angle, x->lat, x->lon, ret.lat, ret.lon, lat_dist, lon_dist);
 
     // @ TODO input
 
@@ -80,8 +81,10 @@ system_state_t predict(const system_state_t *x, const input_t *u, float dt, bool
         float noise_speed = gaussian_box_muller(0, SIGMA_V);
         ret.altitude += noise_speed * gamma_speed[0];
         ret.altitude_above_ground += noise_speed * gamma_speed[0];
-        ret.lat += DIST2LAT(noise_speed * gamma_speed[1]);
-        ret.lon += DIST2LON(noise_speed * gamma_speed[2], ret.lat);
+        long double lat_noise = DIST2LAT(noise_speed * gamma_speed[1]);
+        long double lon_noise = DIST2LON(noise_speed * gamma_speed[2], ret.lat);
+        ret.lat += lat_noise;
+        ret.lon += lon_noise;
         ret.speed += noise_speed * gamma_speed[3];
 
         // Additional noise as ground is not static
@@ -130,12 +133,12 @@ float likelihood(const measurement_t *measurement, const measurement_t *estimate
     }
 
     // GPS: normal distribution with accuracy = 2 * sigma
-    float sigma_lat_dist = VALUE_OR(measurement_info->expected_error_lat, 30) / 2;
-    float sigma_lon_dist = VALUE_OR(measurement_info->expected_error_lon, 30) / 2;
-    float sigma_vert = VALUE_OR(measurement_info->expected_error_vert, 50) / 2;
+    float sigma_lat_dist = VALUE_OR(measurement_info->expected_error_lat, 30);
+    float sigma_lon_dist = VALUE_OR(measurement_info->expected_error_lon, 30);
+    float sigma_vert = VALUE_OR(measurement_info->expected_error_vert, 50);
 
-    float sigma_speed = VALUE_OR(measurement_info->expected_error_speed, 5) / 2;
-    float sigma_climb = VALUE_OR(measurement_info->expected_error_climb, 20) / 2;
+    float sigma_speed = VALUE_OR(measurement_info->expected_error_speed, 3);
+    float sigma_climb = VALUE_OR(measurement_info->expected_error_climb, 20);
 
     float p_lat = 1, p_lon = 1, p_vert = 1, p_speed = 1, p_climb = 1;
     if (!isnan(measurement->lat) && !isnan(measurement->lon)) {

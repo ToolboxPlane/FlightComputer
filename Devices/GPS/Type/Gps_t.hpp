@@ -20,41 +20,33 @@ class Gps_t {
         si::Meter<> altitude;
 
         si::Meter<> distanceTo(const Gps_t &gps) const {
-            auto phi1 = static_cast<si::default_type>(this->lon / 180 * M_PI_F);
-            auto sigma1 = M_PI_F / 2 - static_cast<si::default_type>(this->lat / 180 * M_PI_F);
-            auto r1 = EARTH_RADIUS + this->altitude;
-            auto x1 = r1 * std::sin(sigma1) * std::cos(phi1);
-            auto y1 = r1 * std::sin(sigma1) * std::sin(phi1);
-            auto z1 = r1 * std::cos(sigma1);
+            auto latDiff = gps.lat - this->lat;
+            auto lonDiff = gps.lon - this->lon;
+            auto latMean = (gps.lat + this->lat) / 2;
+            auto altDiff = static_cast<double>(gps.altitude - this->altitude);
 
-            auto phi2 = static_cast<si::default_type>(gps.lon / 180 * M_PI_F);
-            auto sigma2 = M_PI_F / 2 - static_cast<si::default_type>(gps.lat / 180 * M_PI_F);
-            auto r2 = EARTH_RADIUS + gps.altitude;
-            auto x2 = r2 * std::sin(sigma2) * std::cos(phi2);
-            auto y2 = r2 * std::sin(sigma2) * std::sin(phi2);
-            auto z2 = r2 * std::cos(sigma2);
+            auto latDist = latDiff / 360 * EARTH_CIRCUMFERENCE;
+            auto lonDist = lonDiff / 360 * EARTH_CIRCUMFERENCE * std::cos(latMean / 180 * M_PI);
 
-            auto dx = x1 - x2;
-            auto dy = y1 - y2;
-            auto dz = z1 - z2;
-
-            return std::sqrt(dx * dx + dy * dy + dz * dz);
+            return si::Meter<>{static_cast<float>(std::sqrt(latDist * latDist + lonDist *lonDist + altDiff * altDiff))};
         }
 
         auto angleTo(const Gps_t &gps) const -> si::default_type {
-            Gps_t supportPoint(this->lat, gps.lon, (this->altitude + gps.altitude) / 2);
-            auto xDiff = this->distanceTo(supportPoint);
-            auto yDiff = supportPoint.distanceTo(gps);
+            auto latDiff = gps.lat - this->lat;
+            auto lonDiff = gps.lon - this->lon;
+            auto latMean = (gps.lat + this->lat) / 2;
 
-            if (gps.lon < this->lon) {
-                xDiff = xDiff * -1;
+            auto latDist = latDiff;
+            auto lonDist = lonDiff * std::cos(latMean / 180 * M_PI);
+
+            auto angle = -std::atan2(latDist, lonDist) * 180.0 / M_PI + 90;
+            angle = std::fmod(angle, 360);
+            if (angle > 180) {
+                angle -= 360;
+            } else if (angle < -180) {
+                angle += 360;
             }
-
-            if (gps.lat < this->lat) {
-                yDiff = yDiff * -1;
-            }
-
-            return -std::atan2(yDiff, xDiff) * 180.0 / M_PI + 90;
+            return angle;
         }
 
         static constexpr si::Meter<> EARTH_RADIUS{EARTH_CIRCUMFERENCE / (2 * M_PI_F)};

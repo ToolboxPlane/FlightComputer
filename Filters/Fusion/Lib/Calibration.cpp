@@ -8,7 +8,9 @@
 #include "../../../Utilities/Si/SiStl.hpp"
 
 Calibration::Calibration() : calibrationFinished{false}, numMeas{0}, startPosition{0, 0, 0 * si::meter},
-                             latStdDev{NAN}, lonStdDev{NAN}, altStdDev{NAN}, accOffset{0}, baroOffset{0}, calibTime{0} {}
+                             lastPosition{0, 0},
+                             latStdDev{NAN}, lonStdDev{NAN}, altStdDev{NAN}, accOffset{0}, baroOffset{0},
+                             calibTime{0} {}
 
 void
 Calibration::update(si::Second<long double> currentTime, const FlightControllerPackage &flightControllerPackage,
@@ -24,11 +26,11 @@ Calibration::update(si::Second<long double> currentTime, const FlightControllerP
         altStdDev = gpsMeasurement.epVert / 2;
     } else {
         //if (lastGpsTimestamp < gpsMeasurement.timestamp) {
-            mapUpdate(startPosition.lat, latStdDev,
-                      gpsMeasurement.location.lat, static_cast<double>(gpsMeasurement.epLat / 2));
-            mapUpdate(startPosition.lon, lonStdDev,
-                      gpsMeasurement.location.lon, static_cast<double>(gpsMeasurement.epLon / 2));
-            mapUpdate(startPosition.altitude, altStdDev, gpsMeasurement.location.altitude, gpsMeasurement.epVert / 2);
+        mapUpdate(startPosition.lat, latStdDev,
+                  gpsMeasurement.location.lat, static_cast<double>(gpsMeasurement.epLat / 2));
+        mapUpdate(startPosition.lon, lonStdDev,
+                  gpsMeasurement.location.lon, static_cast<double>(gpsMeasurement.epLon / 2));
+        mapUpdate(startPosition.altitude, altStdDev, gpsMeasurement.location.altitude, gpsMeasurement.epVert / 2);
         //}
     }
     lastGpsTimestamp = gpsMeasurement.timestamp;
@@ -71,7 +73,8 @@ Calibration::applyCalib(si::Second<long double> currentTime, FlightControllerPac
                         GpsMeasurement_t &gpsMeasurement, NavPackage &navPackage) {
     // Acceleration
     auto xWeight = static_cast<float>(std::sin(flightControllerPackage.pitch / 180 * M_PI));
-    auto yWeight = static_cast<float>(std::sin(-flightControllerPackage.roll / 180 * M_PI) * std::cos(flightControllerPackage.pitch / 180 * M_PI));
+    auto yWeight = static_cast<float>(std::sin(-flightControllerPackage.roll / 180 * M_PI) *
+                                      std::cos(flightControllerPackage.pitch / 180 * M_PI));
     auto zWeight = std::sqrt(1 - xWeight * xWeight - yWeight * yWeight);
 
     flightControllerPackage.accX -= accOffset * xWeight;
@@ -80,7 +83,13 @@ Calibration::applyCalib(si::Second<long double> currentTime, FlightControllerPac
 
     // Barometer
     navPackage.baroAltitude -= baroOffset;
-    auto distToStart = gpsMeasurement.location.distanceTo(startPosition);
+
+    if (!std::isnan(gpsMeasurement.location.lat) && !std::isnan(gpsMeasurement.location.lon) &&
+        !std::isnan(gpsMeasurement.location.altitude)) {
+        lastPosition = gpsMeasurement.location;
+    }
+
+    auto distToStart = lastPosition.distanceTo(startPosition);
     auto timeToStart = static_cast<si::Second<>>(currentTime - calibTime);
 
     baroCalibUncertainty = distToStart * DISTANCE_ALTITUDE_UNCERTAINTY + timeToStart * TIME_ALTITUDE_UNCERTAINTY;

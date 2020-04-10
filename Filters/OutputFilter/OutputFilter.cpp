@@ -30,7 +30,7 @@ namespace filter {
         Control_t control{};
         rcLib::Package serialOutPkg(1024, 4);
         rcLib::Package baseOutPkg(1024, 4);
-        rcLib::Package networkOutPkg(1024, 16);
+        rcLib::Package networkOutPkg(4096, 16);
 
         baseOutPkg.setMeshProperties(static_cast<uint8_t>(true), 2);
 
@@ -38,7 +38,6 @@ namespace filter {
             if (in.get(control)) {
                 auto angleToStart = control.state.position.angleTo(control.state.startLocation);
                 auto distToStart = control.state.position.distanceTo(control.state.startLocation);
-                std::cout << distToStart << std::endl;
 
 
                 serialOutPkg.setChannel(0, static_cast<uint16_t>(control.power * 1023));
@@ -52,24 +51,24 @@ namespace filter {
                 baseOutPkg.setChannel(3, static_cast<uint16_t>(distToStart / 10));
 
                 networkOutPkg.setChannel(0, -control.state.navPackage.rssi);
-                networkOutPkg.setChannel(1, static_cast<uint16_t>(control.state.altitudeAboveGround * 10));
-                networkOutPkg.setChannel(2, static_cast<uint16_t>(angleToStart * 2 + 500));
-                networkOutPkg.setChannel(3, static_cast<uint16_t>(distToStart / 10));
-                networkOutPkg.setChannel(4, static_cast<uint16_t>(control.state.roll * 2 + 500));
-                networkOutPkg.setChannel(5, static_cast<uint16_t>(control.state.pitch * 2 + 500));
-                networkOutPkg.setChannel(6, static_cast<uint16_t>(control.state.yaw * 2 + 500));
-                networkOutPkg.setChannel(7, static_cast<uint16_t>(control.state.speed * 10));
-                networkOutPkg.setChannel(8, static_cast<uint16_t>(control.state.position.altitude));
+                networkOutPkg.setChannel(1, static_cast<uint16_t>(std::round(control.state.altitudeAboveGround * 40)));
+                networkOutPkg.setChannel(2, static_cast<uint16_t>(std::round(angleToStart * 10 + 2000)));
+                networkOutPkg.setChannel(3, static_cast<uint16_t>(std::round(distToStart)));
+                networkOutPkg.setChannel(4, static_cast<uint16_t>(std::round(control.state.roll * 10 + 2000)));
+                networkOutPkg.setChannel(5, static_cast<uint16_t>(std::round(control.state.pitch * 10 + 2000)));
+                networkOutPkg.setChannel(6, static_cast<uint16_t>(std::round(control.state.yaw * 10 + 2000)));
+                networkOutPkg.setChannel(7, static_cast<uint16_t>(std::round(control.state.speed * 40)));
+                networkOutPkg.setChannel(8, static_cast<uint16_t>(std::round(control.state.position.altitude * 4)));
                 networkOutPkg.setChannel(9,
-                                         static_cast<uint16_t>(static_cast<si::default_type>(control.state.accX * 10) +
-                                                               500));
+                                         static_cast<uint16_t>(std::round(static_cast<si::default_type>(control.state.accX * 40) +
+                                                               2000)));
                 networkOutPkg.setChannel(10,
-                                         static_cast<uint16_t>(static_cast<si::default_type>(control.state.accY * 10) +
-                                                               500));
+                                         static_cast<uint16_t>(std::round(static_cast<si::default_type>(control.state.accY * 40) +
+                                                               2000)));
                 networkOutPkg.setChannel(11,
-                                         static_cast<uint16_t>(static_cast<si::default_type>(control.state.accZ * 10) +
-                                                               500));
-                networkOutPkg.setChannel(12, static_cast<uint16_t>(control.state.pdbPackage.voltageVcc * 50));
+                                         static_cast<uint16_t>(std::round(static_cast<si::default_type>(control.state.accZ * 40) +
+                                                               2000)));
+                networkOutPkg.setChannel(12, static_cast<uint16_t>(std::round(control.state.pdbPackage.voltageVcc * 200)));
 
                 flightControllerOut.put(serialOutPkg);
                 baseOut.put(baseOutPkg);

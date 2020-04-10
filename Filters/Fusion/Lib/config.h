@@ -10,7 +10,7 @@
 
 // Process
 #define SIGMA_GND 1.0F
-#define SIGMA_V 2.0F
+#define SIGMA_V 3.0F
 #define SIGMA_PITCH_OFFSET 1.0F
 #define SIGMA_YAW_OFFSET 1.0F
 
