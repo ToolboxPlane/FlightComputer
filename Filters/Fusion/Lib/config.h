@@ -10,9 +10,9 @@
 
 // Process
 #define SIGMA_GND 1.0F
-#define SIGMA_V 3.0F
-#define SIGMA_PITCH_OFFSET 10.0F
-#define SIGMA_YAW_OFFSET 10.0F
+#define SIGMA_V 5.0F
+#define SIGMA_PITCH_OFFSET 30.0F
+#define SIGMA_YAW_OFFSET 90.0F
 
 // Measurement
 #define SIGMA_SRF02 0.01F
