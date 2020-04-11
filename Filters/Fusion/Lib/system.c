@@ -19,7 +19,7 @@
 #define VALUE_OR(var, val) (isnan(var)?val:var)
 #define DEG_TO_RAD(x) ((x) / 180.0F * (float)M_PI)
 #define RAD_TO_DEG(x) ((x) * 180.0F * (float)M_PI)
-#define DIST2LAT(y) ((y) * 360.0L / EARTH_CIRCUMFERENCE)
+#define DIST2LAT(y) ((y) * 360.0 / EARTH_CIRCUMFERENCE)
 #define DIST2LON(x, lat) ((DIST2LAT((x))) / cos((lat) / 180.0 * M_PI))
 #define LAT2DIST(y) ((float)((y) / 360.0 * EARTH_CIRCUMFERENCE))
 #define LON2DIST(x, lat) ((float)((LAT2DIST((x))) * cos((lat) / 180.0 * M_PI)))
@@ -54,7 +54,6 @@ system_state_t predict(const system_state_t *x, const input_t *u, float dt, bool
     ret.altitude_above_ground = x->altitude_above_ground + vert_dist;
     ret.lat = x->lat + DIST2LAT(lat_dist);
     ret.lon = x->lon + DIST2LON(lon_dist, x->lat);
-    //printf("Yaw=%f\t(%.15Lf, %.15Lf) -> (%.15Lf, %.15Lf)\tLatDist=%f, Lon Dist=%f\n", x->yaw_angle, x->lat, x->lon, ret.lat, ret.lon, lat_dist, lon_dist);
 
     // @ TODO input
 
@@ -81,10 +80,8 @@ system_state_t predict(const system_state_t *x, const input_t *u, float dt, bool
         float noise_speed = gaussian_box_muller(0, SIGMA_V);
         ret.altitude += noise_speed * gamma_speed[0];
         ret.altitude_above_ground += noise_speed * gamma_speed[0];
-        long double lat_noise = DIST2LAT(noise_speed * gamma_speed[1]);
-        long double lon_noise = DIST2LON(noise_speed * gamma_speed[2], ret.lat);
-        ret.lat += lat_noise;
-        ret.lon += lon_noise;
+        ret.lat += DIST2LAT(noise_speed * gamma_speed[1]);
+        ret.lon += DIST2LON(noise_speed * gamma_speed[2], ret.lat);
         ret.speed += noise_speed * gamma_speed[3];
 
         // Additional noise as ground is not static

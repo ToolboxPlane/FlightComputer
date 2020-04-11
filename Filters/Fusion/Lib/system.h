@@ -18,7 +18,7 @@ typedef struct {
     float speed; // The absolute speed of the plane
     float altitude; // The absolute altitude of the plane
     float altitude_above_ground; // The altitude above ground
-    long double lat, lon; // The global position of the plane
+    double lat, lon; // The global position of the plane
 } system_state_t;
 
 typedef struct {
@@ -36,7 +36,7 @@ typedef struct {
     float altitude_baro; // The absolute altitude, as measured by the barometer
     float altitude_gps; // The absolute altitude, as measured by the gps
     float distance_ground; // The distance to the ground, as measured by the distance sensor
-    long double lat, lon; // The position, acquired by the GPS
+    double lat, lon; // The position, acquired by the GPS
 } measurement_t;
 
 typedef struct {
