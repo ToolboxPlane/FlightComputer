@@ -30,6 +30,9 @@ class StateEstimateParticleFilter {
         void init(std::size_t numberOfParticles, const FlightControllerPackage &flightControllerPackage,
                     const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage);
 
+        template <typename T>
+        void kahanSum(T &sum, T &comp, T toAdd);
+
         std::vector<weighted_particle_t> particles;
 };
 

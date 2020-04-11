@@ -196,7 +196,7 @@ namespace filter {
             res.rawFlightControllerData = flightControllerData;
             res.navPackage = navData;
 
-            //std::cout << util::time::get() - startTime << std::endl;
+            std::cout << "dt=" << dt << "\truntime=" << util::time::get() - startTime << std::endl;
 
             out.put(res);
         }

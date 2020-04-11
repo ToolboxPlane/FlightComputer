@@ -24,7 +24,7 @@
 #define LAT2DIST(y) ((float)((y) / 360.0 * EARTH_CIRCUMFERENCE))
 #define LON2DIST(x, lat) ((float)((LAT2DIST((x))) * cos((lat) / 180.0 * M_PI)))
 
-#define IEEE754_FIX_FACTOR 10000
+#define IEEE754_FIX_FACTOR 1000
 
 system_state_t predict(const system_state_t *x, const input_t *u, float dt, bool apply_noise) {
     float pitch_offset = 0;

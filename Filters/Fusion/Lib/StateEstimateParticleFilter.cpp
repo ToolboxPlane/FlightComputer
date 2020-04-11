@@ -10,7 +10,7 @@
 #include <random>
 #include "StateEstimateParticleFilter.hpp"
 
-constexpr auto NUM_PARTICLES = 1000;
+constexpr auto NUM_PARTICLES = 300000;
 
 StateEstimateParticleFilter::StateEstimateParticleFilter() {
     srand(time(nullptr)); // Required for the process noise
@@ -63,12 +63,12 @@ StateEstimateParticleFilter::update(si::Second<> dt, const FlightControllerPacka
 
     if (weight_sum < std::numeric_limits<float>::epsilon()) {
         std::cerr << "weight_sum = 0" << std::endl;
-        //init(NUM_PARTICLES, flightControllerPackage, gpsMeasurement, navPackage);
+        init(NUM_PARTICLES, flightControllerPackage, gpsMeasurement, navPackage);
         weight_sum = 1;
     }
     if (std::isnan(weight_sum)) {
         std::cerr << "weight_sum = NaN" << std::endl;
-        //init(NUM_PARTICLES, flightControllerPackage, gpsMeasurement, navPackage);
+        init(NUM_PARTICLES, flightControllerPackage, gpsMeasurement, navPackage);
         weight_sum = 1;
     }
 
@@ -77,37 +77,26 @@ StateEstimateParticleFilter::update(si::Second<> dt, const FlightControllerPacka
 
     float nEffInv = 0;
 
-    float weight_test = 0;
-
     // Fix PDF (-> Bayes * 1/p(z)) and determine expected state E{x}
     for (auto &[state, weight] : particles) {
         weight /= weight_sum;
-        weight = std::min(weight, 1.0F);
-        weight_test += weight;
-
-        estimate.roll_angle += state.roll_angle * weight;
-        estimate.roll_deriv += state.roll_deriv * weight;
-        estimate.pitch_angle += state.pitch_angle * weight;
-        estimate.pitch_deriv += state.pitch_deriv * weight;
-        estimate.yaw_angle += state.yaw_angle * weight;
-        estimate.yaw_deriv += state.yaw_deriv * weight;
-        estimate.speed += state.speed * weight;
-        estimate.altitude += state.altitude * weight;
-        estimate.altitude_above_ground += state.altitude_above_ground * weight;
-        //estimate.lat += state.lat * weight;
-        //estimate.lon += state.lon * weight;
-        auto yLat = state.lat * weight - kahanComp.lat;
-        auto tLat = estimate.lat + yLat;
-        kahanComp.lat = (tLat - estimate.lat) - yLat;
-        estimate.lat = tLat;
-
-        auto yLon = state.lon * weight - kahanComp.lon;
-        auto tLon = estimate.lon + yLon;
-        kahanComp.lon = (tLon - estimate.lon) - yLon;
-        estimate.lon = tLon;
+        kahanSum(estimate.roll_angle, kahanComp.roll_angle, state.roll_angle * weight);
+        kahanSum(estimate.roll_deriv, kahanComp.roll_deriv, state.roll_deriv * weight);
+        kahanSum(estimate.pitch_angle, kahanComp.pitch_angle, state.pitch_angle * weight);
+        kahanSum(estimate.pitch_deriv, kahanComp.pitch_deriv, state.pitch_deriv * weight);
+        kahanSum(estimate.yaw_angle, kahanComp.yaw_angle, state.yaw_angle * weight);
+        kahanSum(estimate.yaw_deriv, kahanComp.yaw_deriv, state.yaw_deriv * weight);
+        kahanSum(estimate.speed, kahanComp.speed, state.speed * weight);
+        kahanSum(estimate.altitude, kahanComp.altitude, state.altitude * weight);
+        kahanSum(estimate.altitude_above_ground,  kahanComp.altitude_above_ground, state.altitude_above_ground * weight);
+        kahanSum(estimate.lat, kahanComp.lat, (state.lat - particles.front().x.lat) * weight);
+        kahanSum(estimate.lon, kahanComp.lon, (state.lon - particles.front().x.lon) * weight);
 
         nEffInv += weight * weight;
     }
+
+    estimate.lat += particles.front().x.lat;
+    estimate.lon += particles.front().x.lon;
 
     if (estimate.speed < 0) {
         estimate.speed = 0;
@@ -162,5 +151,13 @@ StateEstimateParticleFilter::init(std::size_t numberOfParticles,
         weightedParticle.weight = 1.0F / numberOfParticles;
         particles.emplace_back(weightedParticle);
     }
+}
+
+template<typename T>
+void StateEstimateParticleFilter::kahanSum(T &sum, T &comp, T toAdd) {
+    auto y = toAdd - comp;
+    auto t = sum + y;
+    comp = (t - sum) - y;
+    sum = t;
 }
 
