@@ -12,7 +12,7 @@ namespace filter {
 
     constexpr auto ACC_SIGMA_V = 10 * si::acceleration / si::second; // Process noise
     constexpr auto ACC_SIGMA_W = 0.035F * si::acceleration; // Measurement noise
-    constexpr auto CALIB_STAT_THRESH = 0;
+    constexpr auto CALIB_STAT_THRESH = CalibStatus::NOT_CALIBRATED;
 
     Fusion::Fusion() : lastUpdate{util::time::get()}, accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
                        accYFilter{ACC_SIGMA_V, ACC_SIGMA_W}, accZFilter{ACC_SIGMA_V, ACC_SIGMA_W} {
@@ -108,7 +108,7 @@ namespace filter {
 
         const auto startTime = util::time::get();
         const auto dtDouble = startTime - lastUpdate;
-        const auto dt = static_cast<si::Second<si::default_type>>(dtDouble);
+        const auto dt = static_cast<si::Second<>>(dtDouble);
         lastUpdate = startTime;
 
         if (!calibration.isCalibrated()) {

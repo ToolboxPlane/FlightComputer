@@ -31,7 +31,7 @@ class Gps_t {
             return si::Meter<>{static_cast<float>(std::sqrt(latDist * latDist + lonDist *lonDist + altDiff * altDiff))};
         }
 
-        auto angleTo(const Gps_t &gps) const -> si::default_type {
+        auto angleTo(const Gps_t &gps) const -> si::Scalar<> {
             auto latDiff = gps.lat - this->lat;
             auto lonDiff = gps.lon - this->lon;
             auto latMean = (gps.lat + this->lat) / 2;

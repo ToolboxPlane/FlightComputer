@@ -14,14 +14,15 @@ namespace si {
     template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T = default_type>
     class Si {
             using ThisT = Si<m, kg, s, A, K, MOL, CD, T>;
+            static constexpr bool isScalar = (m==0 && kg == 0 && s == 0 && A == 0 && K == 0 && MOL == 0 && CD == 0);
         public:
             using type = T;
 
             constexpr Si() noexcept = default;
 
-            constexpr explicit Si(T val) noexcept;
+            constexpr explicit(!isScalar) Si(T val) noexcept;
 
-            constexpr explicit operator T() const;
+            constexpr explicit(!isScalar) operator T() const;
 
             template<typename T_>
             constexpr explicit operator T_() const;
@@ -41,6 +42,9 @@ namespace si {
             constexpr auto operator-(ThisT rhs) const -> ThisT;
 
             constexpr void operator-=(ThisT rhs);
+
+            // Unary minus
+            constexpr auto operator-() const -> ThisT;
 
             // Multiply with Unitless
             template<typename T_>
@@ -179,6 +183,11 @@ namespace si {
     template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T>
     constexpr auto Si<m, kg, s, A, K, MOL, CD, T>::operator!=(Si::ThisT rhs) const {
         return !((*this) == rhs);
+    }
+
+    template<int m, int kg, int s, int A, int K, int MOL, int CD, typename T>
+    constexpr auto Si<m, kg, s, A, K, MOL, CD, T>::operator-() const -> Si::ThisT {
+        return ThisT{-val};
     }
 
 

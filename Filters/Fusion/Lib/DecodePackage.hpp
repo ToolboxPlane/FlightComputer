@@ -12,15 +12,15 @@
 #include "../../../Devices/rcLib/RadioControlProtocolCpp/rcLib.hpp"
 
 namespace fusion {
-    auto normalizeTaranis(int input) -> si::default_type {
+    auto normalizeTaranis(int input) -> si::Scalar<> {
         return (static_cast<si::default_type>(input) - 172) / (1811 - 172);
     }
 
     auto getSwitchPos(int input) -> SwitchPos {
         auto val = normalizeTaranis(input);
-        if (val < 1.0 / 3.0) {
+        if (val < 1 / 3.0F * si::scalar) {
             return SwitchPos::UP;
-        } else if (val < 2.0 / 3.0) {
+        } else if (val < 2 / 3.0F * si::scalar) {
             return SwitchPos::CENTRE;
         } else {
             return SwitchPos::DOWN;
@@ -38,27 +38,23 @@ namespace fusion {
         flightControllerPackage.bnoState = pkg.getChannel(0);
         flightControllerPackage.bnoError = pkg.getChannel(10);
         auto calibStat = pkg.getChannel(11);
-        flightControllerPackage.sysCalibStatus = (calibStat >> 6u) & 3u;
-        flightControllerPackage.gyroCalibStatus = (calibStat >> 4u) & 3u;
-        flightControllerPackage.accCalibStatus = (calibStat >> 2u) & 3u;
-        flightControllerPackage.magCalibStatus = (calibStat >> 6u) & 3u;
-        flightControllerPackage.roll = (static_cast<si::default_type>(pkg.getChannel(1)) - 500) / 2.0f;
-        flightControllerPackage.pitch = (static_cast<si::default_type>(pkg.getChannel(2)) - 500) / 2.0f;
-        flightControllerPackage.yaw = (static_cast<si::default_type>(pkg.getChannel(3)) - 500) / 2.0f;
-        flightControllerPackage.rollDeriv = (static_cast<si::default_type>(pkg.getChannel(4)) - 500) / 16.0F * si::hertz;
-        flightControllerPackage.pitchDeriv = (static_cast<si::default_type>(pkg.getChannel(5)) - 500) / 16.0F * si::hertz;
-        flightControllerPackage.yawDeriv = (static_cast<si::default_type>(pkg.getChannel(6)) - 500) / 16.0F * si::hertz;
-        flightControllerPackage.accX =
-                (static_cast<si::default_type>((pkg.getChannel(7)) - 500) / 6.25F) * si::acceleration;
-        flightControllerPackage.accY =
-                (static_cast<si::default_type>((pkg.getChannel(8)) - 500) / 6.25F) * si::acceleration;
-        flightControllerPackage.accZ =
-                (static_cast<si::default_type>((pkg.getChannel(9)) - 500) / 6.25F) * si::acceleration;
+        flightControllerPackage.sysCalibStatus = static_cast<CalibStatus>((calibStat >> 6u) & 3u);
+        flightControllerPackage.gyroCalibStatus = static_cast<CalibStatus>((calibStat >> 4u) & 3u);
+        flightControllerPackage.accCalibStatus = static_cast<CalibStatus>((calibStat >> 2u) & 3u);
+        flightControllerPackage.magCalibStatus = static_cast<CalibStatus>((calibStat >> 6u) & 3u);
+        flightControllerPackage.roll = (pkg.getChannel(1) - 500) / 2.0F;
+        flightControllerPackage.pitch = (pkg.getChannel(2) - 500) / 2.0F;
+        flightControllerPackage.yaw = (pkg.getChannel(3) - 500) / 2.0f;
+        flightControllerPackage.rollDeriv = (pkg.getChannel(4) - 500) / 16.0F * si::hertz;
+        flightControllerPackage.pitchDeriv = (pkg.getChannel(5) - 500) / 16.0F * si::hertz;
+        flightControllerPackage.yawDeriv = (pkg.getChannel(6) - 500) / 16.0F * si::hertz;
+        flightControllerPackage.accX = (pkg.getChannel(7) - 500) / 6.25F * si::acceleration;
+        flightControllerPackage.accY = (pkg.getChannel(8) - 500) / 6.25F * si::acceleration;
+        flightControllerPackage.accZ = (pkg.getChannel(9) - 500) / 6.25F * si::acceleration;
 
-        flightControllerPackage.elevonLeft =
-                (static_cast<si::default_type>(pkg.getChannel(14)) - 500) / 500.0f;
-        flightControllerPackage.elevonRight =
-                (static_cast<si::default_type>(pkg.getChannel(15)) - 500) / 500.0F;
+        flightControllerPackage.motor = pkg.getChannel(13) / 1000.0F;
+        flightControllerPackage.elevonLeft = (pkg.getChannel(14) - 500) / 500.0f;
+        flightControllerPackage.elevonRight = (pkg.getChannel(15) - 500) / 500.0F;
 
         return flightControllerPackage;
     }

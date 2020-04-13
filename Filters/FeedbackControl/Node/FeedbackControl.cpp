@@ -32,7 +32,7 @@ namespace filter {
         }
     }
 
-    auto FeedbackControl::speedControl(const State_t &state, si::Speed<> target) const -> si::default_type {
+    auto FeedbackControl::speedControl(const State_t &state, si::Speed<> target) const -> si::Scalar<> {
         if (target == 0 * si::speed || !state.loraRemote.isArmed ) {
             return 0;
         }
@@ -50,30 +50,29 @@ namespace filter {
         lastDiff = deltaSpeed;
 
         // PI-Controller (I necessary to achieve stationary accuracy)
-        si::default_type speedFeedback = static_cast<si::default_type>
-                (deltaSpeed * FeedbackControl::SPEED_P + diffSum * FeedbackControl::SPEED_I);
+        auto speedFeedback = deltaSpeed * FeedbackControl::SPEED_P + diffSum * FeedbackControl::SPEED_I;
 
         // Feedforward Term
-        auto speedFeedforward = static_cast<si::default_type>(target / MAX_SPEED);
+        auto speedFeedforward = target / MAX_SPEED;
 
-        return clamp(speedFeedback + speedFeedforward, 0.0F, 1.0F);
+        return clamp<si::Scalar<>>(speedFeedback + speedFeedforward, 0.0F, 1.0F);
     }
 
-    auto FeedbackControl::headingControl(const State_t &state, si::default_type target) const -> si::default_type {
+    auto FeedbackControl::headingControl(const State_t &state, si::Scalar<> target) const -> si::Scalar<> {
         auto headingDiff = target - state.yaw;
         headingDiff = fmodf(headingDiff, 360);
-        if (headingDiff > 180) {
-            headingDiff -= 180;
-        } else if (headingDiff < -180) {
-            headingDiff += 360;
+        if (headingDiff > 180.0F) {
+            headingDiff -= 180.0F;
+        } else if (-180.0F > headingDiff) {
+            headingDiff += 360.0F;
         }
         auto roll = headingDiff * HEADING_P;
         return clamp(roll, -HEADING_MAX_ROLL, HEADING_MAX_ROLL);
     }
 
-    auto FeedbackControl::altitudeControl(const State_t &state, si::Meter<> target) const -> si::default_type {
+    auto FeedbackControl::altitudeControl(const State_t &state, si::Meter<> target) const -> si::Scalar<> {
         auto deltaHeight = target - state.position.altitude;
-        auto pitch = static_cast<decltype(deltaHeight)::type>(deltaHeight * FeedbackControl::ALTITUDE_P);
+        auto pitch = deltaHeight * FeedbackControl::ALTITUDE_P;
 
         return clamp(pitch, -ALTITUDE_MAX_PITCH, ALTITUDE_MAX_PITCH);
     }

@@ -44,9 +44,9 @@ namespace filter {
             static constexpr si::Meter<> RTH_ALTITUDE{10};
 
             static constexpr si::Acceleration<> LAUNCH_THROW_THRESH{6.0};
-            static constexpr si::default_type LAUNCH_MAX_ROLL{30};
-            static constexpr si::default_type LAUNCH_MIN_PITCH{0};
-            static constexpr si::default_type LAUNCH_MAX_PITCH{70};
+            static constexpr si::Scalar<> LAUNCH_MAX_ROLL{30};
+            static constexpr si::Scalar<> LAUNCH_MIN_PITCH{0};
+            static constexpr si::Scalar<> LAUNCH_MAX_PITCH{70};
             static constexpr si::Meter<> LAUNCH_TARGET_ALTITUDE{10.0};
 
             static constexpr si::Speed<> LANDING_SPEED{5.0};
@@ -54,7 +54,7 @@ namespace filter {
             static constexpr si::Meter<> LANDING_FLARE_ALTITUDE{0.5};
 
             static constexpr si::Meter<> LOITER_RADIUS{20};
-            static constexpr si::default_type LOITER_TARGET_ANGLE{72};
+            static constexpr si::Scalar<> LOITER_TARGET_ANGLE{72};
     };
 }
 

@@ -27,12 +27,12 @@ namespace filter {
             void run() override;
 
             [[nodiscard]] auto
-            speedControl(const State_t &state, si::Speed<> target) const -> si::default_type;
+            speedControl(const State_t &state, si::Speed<> target) const -> si::Scalar<>;
 
-            [[nodiscard]] auto headingControl(const State_t &state, si::default_type target) const -> si::default_type;
+            [[nodiscard]] auto headingControl(const State_t &state, si::Scalar<> target) const -> si::Scalar<>;
 
             [[nodiscard]] auto
-            altitudeControl(const State_t &state, si::Meter<> target) const -> si::default_type;
+            altitudeControl(const State_t &state, si::Meter<> target) const -> si::Scalar<>;
 
             template<typename T>
             static auto clamp(T val, T min, T max) -> T;
@@ -43,9 +43,9 @@ namespace filter {
             static constexpr auto SPEED_P = 1.0F / si::speed;
             static constexpr auto SPEED_I = 0.5F / si::meter;
             static constexpr auto ALTITUDE_P = 1.0F / si::meter;
-            static constexpr auto ALTITUDE_MAX_PITCH = 30.0F;
-            static constexpr auto HEADING_MAX_ROLL = 60.0F;
-            static constexpr auto HEADING_P = 2.0F;
+            static constexpr si::Scalar<> ALTITUDE_MAX_PITCH = 30.0F;
+            static constexpr si::Scalar<> HEADING_MAX_ROLL = 60.0F;
+            static constexpr si::Scalar<> HEADING_P = 2.0F;
             static constexpr auto MAX_SPEED = 100 / 3.6F * si::speed;
     };
 }

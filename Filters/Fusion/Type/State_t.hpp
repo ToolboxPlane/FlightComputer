@@ -17,15 +17,22 @@ enum class SwitchPos {
     UP, CENTRE, DOWN
 };
 
+enum class CalibStatus : uint8_t {
+    NOT_CALIBRATED = 0,
+    CALIB_STAT_1 = 1,
+    CALIB_STAT_2 = 2,
+    FULLY_CALIBRATED = 3
+};
+
 class FlightControllerPackage {
     public:
         uint8_t bnoState, bnoError;
-        uint8_t sysCalibStatus, gyroCalibStatus, accCalibStatus, magCalibStatus;
-        si::default_type roll, pitch, yaw;
+        CalibStatus sysCalibStatus, gyroCalibStatus, accCalibStatus, magCalibStatus;
+        si::Scalar<> roll, pitch, yaw;
         si::Hertz<> rollDeriv, pitchDeriv, yawDeriv;
         si::Acceleration<> accX, accY, accZ;
-        si::default_type elevonLeft, elevonRight;
-        si::default_type motor;
+        si::Scalar<> elevonLeft, elevonRight;
+        si::Scalar<> motor;
 };
 
 class PdbPackage {
@@ -38,14 +45,14 @@ class PdbPackage {
 
 class TaranisPackage {
     public:
-        si::default_type throttle, pitch, roll;
+        si::Scalar<> throttle, pitch, roll;
         bool isArmed, manualOverrideActive;
-        si::default_type rssi;
+        int rssi;
 };
 
 class LoraPackage {
     public:
-        si::default_type joyLeftX, joyRightX, joyLeftY, joyRightY;
+        si::Scalar<> joyLeftX, joyRightX, joyLeftY, joyRightY;
         FlightMode flightMode = FlightMode::RTH;
         bool isArmed;
         int rssi;
@@ -62,11 +69,11 @@ class NavPackage {
 
 class State_t {
     public:
-        si::default_type roll{};
+        si::Scalar<> roll{};
         si::Hertz<> rollDeriv{};
-        si::default_type pitch{};
+        si::Scalar<> pitch{};
         si::Hertz<> pitchDeriv{};
-        si::default_type yaw{};
+        si::Scalar<> yaw{};
         si::Hertz<> yawDeriv{};
         si::Speed<> speed{};
         si::Meter<> altitudeAboveGround{};
