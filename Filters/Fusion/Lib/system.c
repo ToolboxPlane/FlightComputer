@@ -24,7 +24,17 @@
 #define LAT2DIST(y) ((float)((y) / 360.0 * EARTH_CIRCUMFERENCE))
 #define LON2DIST(x, lat) ((float)((LAT2DIST((x))) * cos((lat) / 180.0 * M_PI)))
 
-#define IEEE754_FIX_FACTOR 1000
+#define IEEE754_FIX_FACTOR 100
+
+float normalize_angle(float alpha) {
+    alpha = fmodf(alpha, 360);
+    if (alpha > 180) {
+        alpha -= 360;
+    } else if (alpha < -180) {
+        alpha += 360;
+    }
+    return alpha;
+}
 
 system_state_t predict(const system_state_t *x, const input_t *u, float dt, bool apply_noise) {
     float pitch_offset = 0;
@@ -45,9 +55,9 @@ system_state_t predict(const system_state_t *x, const input_t *u, float dt, bool
     system_state_t ret;
     ret.roll_angle = x->roll_angle;
     ret.roll_deriv = x->roll_deriv;
-    ret.pitch_angle = x->pitch_angle;
+    ret.pitch_angle = x->pitch_angle + pitch_offset;
     ret.pitch_deriv = x->pitch_deriv;
-    ret.yaw_angle = x->yaw_angle;
+    ret.yaw_angle = x->yaw_angle + yaw_offset;
     ret.yaw_deriv = x->yaw_deriv;
     ret.speed = x->speed;
     ret.altitude = x->altitude + vert_dist;
@@ -79,7 +89,7 @@ system_state_t predict(const system_state_t *x, const input_t *u, float dt, bool
 
         float noise_speed = gaussian_box_muller(0, SIGMA_V);
         ret.altitude += noise_speed * gamma_speed[0];
-        ret.altitude_above_ground += noise_speed * gamma_speed[0];
+        //ret.altitude_above_ground += noise_speed * gamma_speed[0];
         ret.lat += DIST2LAT(noise_speed * gamma_speed[1]);
         ret.lon += DIST2LON(noise_speed * gamma_speed[2], ret.lat);
         ret.speed += noise_speed * gamma_speed[3];
@@ -87,6 +97,10 @@ system_state_t predict(const system_state_t *x, const input_t *u, float dt, bool
         // Additional noise as ground is not static
         ret.altitude_above_ground += gaussian_box_muller(0, dt * SIGMA_GND + gamma_speed[0] * SIGMA_V);
     }
+
+    ret.roll_angle = normalize_angle(ret.roll_angle);
+    ret.pitch_angle = normalize_angle(ret.pitch_angle);
+    ret.yaw_angle = normalize_angle(ret.yaw_angle);
 
     return ret;
 }
@@ -115,6 +129,14 @@ measurement_t measure(const system_state_t *x) {
 
 float likelihood(const measurement_t *measurement, const measurement_t *estimate,
                  const measurement_info_t *measurement_info) {
+    // Angles
+    float p_roll = gaussian(0, SIGMA_BNO_ANGLE, normalize_angle(measurement->roll_angle - estimate->roll_angle));
+    float p_roll_deriv = 1;//gaussian(measurement->roll_deriv, SIGMA_BNO_RATE, estimate->roll_deriv);
+    float p_pitch = gaussian(0, SIGMA_BNO_ANGLE, normalize_angle(measurement->pitch_angle - estimate->pitch_angle));
+    float p_pitch_deriv = 1;//gaussian(measurement->pitch_deriv, SIGMA_BNO_RATE, estimate->pitch_deriv);
+    float p_yaw = gaussian(0, SIGMA_BNO_ANGLE, normalize_angle(measurement->yaw_angle - estimate->yaw_angle));
+    float p_yaw_deriv = 1;//gaussian(measurement->yaw_deriv, SIGMA_BNO_RATE, estimate->yaw_deriv);
+
     // US
     float p_distance_measure;
     if (estimate->distance_ground < 0) {
@@ -149,7 +171,6 @@ float likelihood(const measurement_t *measurement, const measurement_t *estimate
     }
     if (!isnan(measurement->ground_speed)) {
         p_speed = gaussian(measurement->ground_speed, sigma_speed, estimate->ground_speed);
-        //printf("Meas: %f\tEst: %f\tP: %f\n", measurement->ground_speed, estimate->ground_speed, p_speed);
     }
     if (!isnan(measurement->vertical_speed)) {
         p_climb = gaussian(measurement->vertical_speed, sigma_climb, estimate->vertical_speed);
@@ -168,21 +189,27 @@ float likelihood(const measurement_t *measurement, const measurement_t *estimate
 
     // These factors are not weights (in an non IEEE-754 world they would not change a thing),
     // they simply reduce numerical problems due to low likelihoods when they are multiplied together.
-    return (p_distance_measure * IEEE754_FIX_FACTOR)
-           * (p_lat * IEEE754_FIX_FACTOR)
-           * (p_lon * IEEE754_FIX_FACTOR)
-           * (p_vert * IEEE754_FIX_FACTOR)
-           * (p_speed * IEEE754_FIX_FACTOR)
-           * (p_climb * IEEE754_FIX_FACTOR)
-           * (p_airspeed * IEEE754_FIX_FACTOR)
-           * (p_baro * IEEE754_FIX_FACTOR);
+    return (p_pitch * IEEE754_FIX_FACTOR)
+            * (p_pitch_deriv * IEEE754_FIX_FACTOR)
+            * (p_roll * IEEE754_FIX_FACTOR)
+            * (p_roll_deriv * IEEE754_FIX_FACTOR)
+            * (p_yaw * IEEE754_FIX_FACTOR)
+            * (p_yaw_deriv * IEEE754_FIX_FACTOR)
+            * (p_distance_measure * IEEE754_FIX_FACTOR)
+            * (p_lat * IEEE754_FIX_FACTOR)
+            * (p_lon * IEEE754_FIX_FACTOR)
+            * (p_vert * IEEE754_FIX_FACTOR)
+            * (p_speed * IEEE754_FIX_FACTOR)
+            * (p_climb * IEEE754_FIX_FACTOR)
+            * (p_airspeed * IEEE754_FIX_FACTOR)
+            * (p_baro * IEEE754_FIX_FACTOR);
 }
 
 void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, float dt,
                      const measurement_info_t *measurement_info) {
     particle->x.roll_angle = z->roll_angle;
-    particle->x.pitch_angle = z->pitch_angle;
-    particle->x.yaw_angle = z->yaw_angle;
+    /*particle->x.pitch_angle = z->pitch_angle;
+    particle->x.yaw_angle = z->yaw_angle;*/
     particle->x = predict(&particle->x, u, dt, true);
     measurement_t z_hat = measure(&particle->x);
     particle->weight *= likelihood(z, &z_hat, measurement_info);
