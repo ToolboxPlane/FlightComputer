@@ -57,6 +57,7 @@ else ()
     add_executable(${PROJECT_NAME} ${SOURCES_NO_PI})
     target_link_libraries(${PROJECT_NAME} ${LIBS})
 endif ()
-target_include_directories(${PROJECT_NAME} PUBLIC Utilities/SI)
 
+add_definitions(-DSI_DEFAULT_TYPE=float)
+target_include_directories(${PROJECT_NAME} PUBLIC Utilities/SI)
 add_subdirectory(Utilities/SI)

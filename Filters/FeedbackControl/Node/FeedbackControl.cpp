@@ -61,9 +61,9 @@ namespace filter {
     auto FeedbackControl::headingControl(const State_t &state, si::Scalar<> target) const -> si::Scalar<> {
         auto headingDiff = target - state.yaw;
         headingDiff = fmodf(headingDiff, 360);
-        if (headingDiff > 180.0F) {
+        if (headingDiff > Scalar<>{180.0F}) {
             headingDiff -= 180.0F;
-        } else if (-180.0F > headingDiff) {
+        } else if (-Scalar<>{180.0F} > headingDiff) {
             headingDiff += 360.0F;
         }
         auto roll = headingDiff * HEADING_P;
