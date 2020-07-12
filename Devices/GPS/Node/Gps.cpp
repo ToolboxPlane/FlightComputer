@@ -5,6 +5,12 @@
 #include "Gps.hpp"
 #include <gps.h>
 
+#if GPSD_API_MAJOR_VERSION >= 7
+    #define GPS_READ(arg) gps_read(arg, nullptr, 0)
+#else
+    #define GPS_READ(arg) gps_read(arg)
+#endif
+
 namespace device {
     Gps::Gps() {
         this->start();
@@ -21,7 +27,7 @@ namespace device {
         GpsMeasurement_t gps;
         while (true) {
             if (gps_waiting(&gps_data, std::numeric_limits<int>::max())) {
-                if (gps_read(&gps_data) == -1) {
+                if (GPS_READ(&gps_data) == -1) {
                     std::cerr << std::string{"[GPS]:\tError:"} + gps_errstr(errno) << std::endl;
                 } else {
                     if ((gps_data.status == STATUS_FIX || gps_data.status == STATUS_DGPS_FIX) &&
