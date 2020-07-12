@@ -5,7 +5,8 @@
  * Description here TODO
  */
 #include "Calibration.hpp"
-#include "../../../Utilities/Si/SiStl.hpp"
+
+#include <SiStl.hpp>
 
 Calibration::Calibration() : calibrationFinished{false}, numMeas{0}, startPosition{0, 0, 0 * si::meter},
                              lastPosition{0, 0},

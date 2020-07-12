@@ -8,7 +8,9 @@
 #define FLIGHTCOMPUTER_SRF02_HPP
 
 #include <vector>
-#include "../../../Utilities/Si/SiLiterals.hpp"
+
+#include <SiBase.hpp>
+
 #include "../../../Node.hpp"
 #include "../../../OutputChannel.hpp"
 

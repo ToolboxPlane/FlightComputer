@@ -7,8 +7,8 @@
 #ifndef FLIGHTCOMPUTER_CALIBRATION_HPP
 #define FLIGHTCOMPUTER_CALIBRATION_HPP
 
+#include <SiExtended.hpp>
 
-#include "../../../Utilities/Si/SiExtended.hpp"
 #include "../../../Devices/GPS/Type/Gps_t.hpp"
 #include "../Type/State_t.hpp"
 

@@ -4,7 +4,8 @@
 
 #include "OutputFilter.hpp"
 #include "../../Devices/rcLib/PackageUtil.hpp"
-#include "../../Utilities/Si/SiLiterals.hpp"
+
+#include <SiBase.hpp>
 
 namespace filter {
     using namespace si::literals;

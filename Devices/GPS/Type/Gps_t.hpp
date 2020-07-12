@@ -7,9 +7,9 @@
 
 
 #include <cmath>
-#include "../../../Utilities/Si/SiLiterals.hpp"
-#include "../../../Utilities/Si/SiStl.hpp"
-#include "../../../Utilities/Si/SiExtended.hpp"
+#include <SiBase.hpp>
+#include <SiStl.hpp>
+
 #include "../../../constants.hpp"
 
 class Gps_t {

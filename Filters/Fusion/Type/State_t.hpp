@@ -7,7 +7,7 @@
 
 #include <ostream>
 #include "../../../Devices/GPS/Type/GpsMeasurement_t.hpp"
-#include "../../../Utilities/Si/SiExtended.hpp"
+#include <SiExtended.hpp>
 
 enum class FlightMode {
     RTH = 0, LAUNCH = 1, LAND = 2, LOITER = 3, WAYPOINT = 4

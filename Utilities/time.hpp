@@ -7,7 +7,7 @@
 #ifndef FLIGHTCOMPUTER_TIME_HPP
 #define FLIGHTCOMPUTER_TIME_HPP
 
-#include "Si/SiLiterals.hpp"
+#include <SiBase.hpp>
 
 namespace util::time {
     auto get() -> si::Second<long double>;
