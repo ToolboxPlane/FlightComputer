@@ -7,8 +7,10 @@
 
 #if GPSD_API_MAJOR_VERSION >= 7
     #define GPS_READ(arg) gps_read(arg, nullptr, 0)
+    #define GPS_TIME(time) time.tv_sec
 #else
     #define GPS_READ(arg) gps_read(arg)
+    #define GPS_TIME(time) time
 #endif
 
 namespace device {
@@ -37,7 +39,7 @@ namespace device {
                             && !std::isnan(gps_data.fix.epx) && !std::isnan(gps_data.fix.epv)) {
                         gps.fixAquired = true;
 
-                        gps.timestamp = si::Second<long double>{gps_data.fix.time};
+                        gps.timestamp = si::Second<long double>{static_cast<long double>(GPS_TIME(gps_data.fix.time))};
 
                         gps.location.lat = gps_data.fix.latitude;
                         gps.location.lon = gps_data.fix.longitude;
