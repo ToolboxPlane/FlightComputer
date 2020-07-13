@@ -49,7 +49,7 @@ class Gps_t {
             return angle;
         }
 
-        static constexpr si::Meter<> EARTH_RADIUS{EARTH_CIRCUMFERENCE / (2 * M_PI_F)};
+        static constexpr si::Meter<> EARTH_RADIUS{static_cast<float>(EARTH_CIRCUMFERENCE) / (2 * M_PI_F)};
 };
 
 #endif //FLIGHTCOMPUTER_GPS_T_HPP

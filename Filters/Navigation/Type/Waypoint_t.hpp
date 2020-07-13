@@ -9,6 +9,8 @@
 #include "../../../Devices/GPS/Type/Gps_t.hpp"
 #include "../../../Utilities/Recording/Serialization.hpp"
 
+#include <SiPrinter.hpp>
+
 class Waypoint_t {
     public:
         Waypoint_t() : location(0, 0), maxDelta(5), landingAllowed(false) {};
