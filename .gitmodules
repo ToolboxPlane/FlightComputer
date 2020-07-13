@@ -6,4 +6,4 @@
 	url =  https://github.com/ToolboxPlane/RadioControlProtocolCpp.git
 [submodule "Utilities/SI"]
 	path = Utilities/SI
-	url = git@github.com:teamspatzenhirn/SI.git
+	url = https://github.com/teamspatzenhirn/SI.git
