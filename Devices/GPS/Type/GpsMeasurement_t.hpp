@@ -9,8 +9,12 @@
 #include <string>
 #include <vector>
 #include <sstream>
+
+#include <SiBase.hpp>
+#include <SiExtended.hpp>
+#include <SiPrinter.hpp>
+
 #include "Gps_t.hpp"
-#include "../../../Utilities/Si/SiExtended.hpp"
 #include "../../../Utilities/Recording/Serialization.hpp"
 
 class GpsMeasurement_t {

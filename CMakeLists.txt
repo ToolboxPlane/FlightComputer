@@ -39,7 +39,6 @@ set(SOURCES
         Filters/MeshManager/MeshManager.cpp
         Filters/OutputFilter/OutputFilter.cpp
         Filters/FeedbackControl/Node/FeedbackControl.cpp
-        Utilities/Si/SiExtended.cpp
         Utilities/Recording/NameProvider.cpp
         Utilities/time.cpp)
 
@@ -48,14 +47,17 @@ set(SOURCES_PI ${SOURCES}
 
 set(SOURCES_NO_PI ${SOURCES})
 
-set(LIBS gps pthread stdc++fs)
+set(LIBS gps pthread stdc++fs SI)
 
 if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
     add_definitions(-DRASPBERRY_PI)
-    add_executable(FlightComputer ${SOURCES_PI})
-    target_link_libraries(FlightComputer ${LIBS} wiringPi)
+    add_executable(${PROJECT_NAME} ${SOURCES_PI})
+    target_link_libraries(${PROJECT_NAME} ${LIBS} wiringPi)
 else ()
-    add_executable(FlightComputer ${SOURCES_NO_PI})
+    add_executable(${PROJECT_NAME} ${SOURCES_NO_PI})
     target_link_libraries(${PROJECT_NAME} ${LIBS})
 endif ()
 
+add_definitions(-DSI_DEFAULT_TYPE=float)
+target_include_directories(${PROJECT_NAME} PUBLIC Utilities/SI)
+add_subdirectory(Utilities/SI)

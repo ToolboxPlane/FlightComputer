@@ -7,7 +7,8 @@
 #ifndef FLIGHTCOMPUTER_SRF02SIM_HPP
 #define FLIGHTCOMPUTER_SRF02SIM_HPP
 
-#include "../../../Utilities/Si/SiLiterals.hpp"
+#include <SiBase.hpp>
+
 #include "../../../OutputChannel.hpp"
 #include "../../../Node.hpp"
 

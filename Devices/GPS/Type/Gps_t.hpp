@@ -7,9 +7,9 @@
 
 
 #include <cmath>
-#include "../../../Utilities/Si/SiLiterals.hpp"
-#include "../../../Utilities/Si/SiStl.hpp"
-#include "../../../Utilities/Si/SiExtended.hpp"
+#include <SiBase.hpp>
+#include <SiStl.hpp>
+
 #include "../../../constants.hpp"
 
 class Gps_t {
@@ -49,7 +49,7 @@ class Gps_t {
             return angle;
         }
 
-        static constexpr si::Meter<> EARTH_RADIUS{EARTH_CIRCUMFERENCE / (2 * M_PI_F)};
+        static constexpr si::Meter<> EARTH_RADIUS{static_cast<float>(EARTH_CIRCUMFERENCE) / (2 * M_PI_F)};
 };
 
 #endif //FLIGHTCOMPUTER_GPS_T_HPP

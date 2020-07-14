@@ -4,3 +4,6 @@
 [submodule "Devices/rcLib/RadioControlProtocolCpp"]
 	path = Devices/rcLib/RadioControlProtocolCpp
 	url =  https://github.com/ToolboxPlane/RadioControlProtocolCpp.git
+[submodule "Utilities/SI"]
+	path = Utilities/SI
+	url = https://github.com/teamspatzenhirn/SI.git
