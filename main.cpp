@@ -16,6 +16,8 @@
 #include "Utilities/Recording/ChannelRecorder.hpp"
 #include "Utilities/Recording/ChannelReplay.hpp"
 
+#include <SiPrinterExtended.hpp>
+
 int main() {
     using namespace std::chrono_literals;
     using namespace si::literals;

@@ -60,12 +60,12 @@ class Calibration {
 
         si::Meter<> baroCalibUncertainty{};
 
-        static constexpr auto GPS_STDDEV_THRESH = 3 * si::meter;
+        static constexpr auto GPS_STDDEV_THRESH = 3.0F * si::meter;
         static constexpr auto NUM_MEAS_THRESH = 20;
         // Additional uncertainty as uncertainty/distance
-        static constexpr auto DISTANCE_ALTITUDE_UNCERTAINTY = (10 * si::meter) / (1000 * si::meter);
+        static constexpr auto DISTANCE_ALTITUDE_UNCERTAINTY = (10.0F * si::meter) / (1000.0F * si::meter);
         // Additional uncertainty as uncertainty/time
-        static constexpr auto TIME_ALTITUDE_UNCERTAINTY = (10.0F * si::meter) / (60 * 60 * si::second);
+        static constexpr auto TIME_ALTITUDE_UNCERTAINTY = (10.0F * si::meter) / (60.0F * 60.0F * si::second);
 };
 
 

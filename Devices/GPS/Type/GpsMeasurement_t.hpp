@@ -20,7 +20,7 @@
 class GpsMeasurement_t {
     public:
         GpsMeasurement_t(double lat, double lon) :
-                fixAquired{false}, location{lat, lon, 0 * si::meter}, speed{0},
+                fixAquired{false}, location{lat, lon, 0.0F * si::meter}, speed{0},
                 timestamp{0}, climb{0} {};
 
         GpsMeasurement_t() : fixAquired{false}, location{0, 0}, speed{0}, timestamp{0}, climb{0},

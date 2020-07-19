@@ -10,7 +10,7 @@
 #include "../../../Utilities/time.hpp"
 
 namespace filter {
-    using namespace si;
+    //using namespace si;
     using namespace si::literals;
 
     FeedbackControl::FeedbackControl() {
@@ -33,7 +33,7 @@ namespace filter {
     }
 
     auto FeedbackControl::speedControl(const State_t &state, si::Speed<> target) const -> si::Scalar<> {
-        if (target == 0 * si::speed || !state.loraRemote.isArmed ) {
+        if (target == 0.0F * si::speed || !state.loraRemote.isArmed ) {
             return 0;
         }
 
@@ -61,9 +61,9 @@ namespace filter {
     auto FeedbackControl::headingControl(const State_t &state, si::Scalar<> target) const -> si::Scalar<> {
         auto headingDiff = target - state.yaw;
         headingDiff = fmodf(headingDiff, 360);
-        if (headingDiff > Scalar<>{180.0F}) {
+        if (headingDiff > si::Scalar<>{180.0F}) {
             headingDiff -= 180.0F;
-        } else if (-Scalar<>{180.0F} > headingDiff) {
+        } else if (-si::Scalar<>{180.0F} > headingDiff) {
             headingDiff += 360.0F;
         }
         auto roll = headingDiff * HEADING_P;

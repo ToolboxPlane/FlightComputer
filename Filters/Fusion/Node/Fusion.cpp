@@ -7,10 +7,9 @@
 #include "../../../Utilities/time.hpp"
 
 namespace filter {
-    using namespace si;
     using namespace si::literals;
 
-    constexpr auto ACC_SIGMA_V = 10 * si::acceleration / si::second; // Process noise
+    constexpr auto ACC_SIGMA_V = 10.0F * si::acceleration / si::second; // Process noise
     constexpr auto ACC_SIGMA_W = 0.035F * si::acceleration; // Measurement noise
     constexpr auto CALIB_STAT_THRESH = CalibStatus::NOT_CALIBRATED;
 
@@ -167,23 +166,23 @@ namespace filter {
 
             lastGpsMeasurement->location.lat = NAN;
             lastGpsMeasurement->location.lon = NAN;
-            lastGpsMeasurement->location.altitude = NAN * meter;
-            lastGpsMeasurement->speed = NAN * speed;
-            lastGpsMeasurement->climb = NAN * speed;
+            lastGpsMeasurement->location.altitude = NAN * si::meter;
+            lastGpsMeasurement->speed = NAN * si::speed;
+            lastGpsMeasurement->climb = NAN * si::speed;
 
             accXFilter.addMeasurement(flightControllerData.accX, dt);
             accYFilter.addMeasurement(flightControllerData.accY, dt);
             accZFilter.addMeasurement(flightControllerData.accZ, dt);
 
             res.roll = state.roll_angle;
-            res.rollDeriv = state.roll_deriv * hertz;
+            res.rollDeriv = state.roll_deriv * si::hertz;
             res.pitch = state.pitch_angle;
-            res.pitchDeriv = state.pitch_deriv * hertz;
+            res.pitchDeriv = state.pitch_deriv * si::hertz;
             res.yaw = state.yaw_angle;
-            res.yawDeriv = state.yaw_deriv * hertz;
-            res.speed = state.speed * speed;
-            res.position.altitude = state.altitude * meter;
-            res.altitudeAboveGround = state.altitude_above_ground * meter;
+            res.yawDeriv = state.yaw_deriv * si::hertz;
+            res.speed = state.speed * si::speed;
+            res.position.altitude = state.altitude * si::meter;
+            res.altitudeAboveGround = state.altitude_above_ground * si::meter;
             res.altitudeGround = res.position.altitude - res.altitudeAboveGround;
             res.position.lat = state.lat;
             res.position.lon = state.lon;

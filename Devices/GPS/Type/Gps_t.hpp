@@ -14,7 +14,7 @@
 
 class Gps_t {
     public:
-        Gps_t(double lat, double lon, si::Meter<> altitude = 0 * si::meter)
+        Gps_t(double lat, double lon, si::Meter<> altitude = 0.0F * si::meter)
                 : lat(lat), lon(lon), altitude(altitude) {};
         double lat, lon;
         si::Meter<> altitude;

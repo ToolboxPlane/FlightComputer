@@ -8,7 +8,7 @@
 
 #include <SiStl.hpp>
 
-Calibration::Calibration() : calibrationFinished{false}, numMeas{0}, startPosition{0, 0, 0 * si::meter},
+Calibration::Calibration() : calibrationFinished{false}, numMeas{0}, startPosition{0, 0, 0.0F * si::meter},
                              lastPosition{0, 0},
                              latStdDev{NAN}, lonStdDev{NAN}, altStdDev{NAN}, accOffset{0}, baroOffset{0},
                              calibTime{0} {}
@@ -73,9 +73,9 @@ void
 Calibration::applyCalib(si::Second<long double> currentTime, FlightControllerPackage &flightControllerPackage,
                         GpsMeasurement_t &gpsMeasurement, NavPackage &navPackage) {
     // Acceleration
-    auto xWeight = static_cast<float>(std::sin(flightControllerPackage.pitch / 180 * M_PI));
-    auto yWeight = static_cast<float>(std::sin(-flightControllerPackage.roll / 180 * M_PI) *
-                                      std::cos(flightControllerPackage.pitch / 180 * M_PI));
+    auto xWeight = static_cast<float>(std::sin(flightControllerPackage.pitch / static_cast<float>(180 * M_PI)));
+    auto yWeight = static_cast<float>(std::sin(-flightControllerPackage.roll / static_cast<float>(180 * M_PI)) *
+                                      std::cos(flightControllerPackage.pitch / static_cast<float>(180 * M_PI)));
     auto zWeight = std::sqrt(1 - xWeight * xWeight - yWeight * yWeight);
 
     flightControllerPackage.accX -= accOffset * xWeight;

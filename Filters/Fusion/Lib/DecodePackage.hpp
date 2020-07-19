@@ -101,8 +101,8 @@ namespace fusion {
     auto decodePackage<NavPackage>(const rcLib::Package &pkg) -> NavPackage {
         NavPackage navPackage;
         navPackage.rssi = -pkg.getChannel(0);
-        navPackage.baroAltitude = pkg.getChannel(1) * si::meter;
-        navPackage.pitotVoltage = pkg.getChannel(2) * si::volt;
+        navPackage.baroAltitude = static_cast<float>(pkg.getChannel(1))  * si::meter;
+        navPackage.pitotVoltage = static_cast<float>(pkg.getChannel(2)) * si::volt;
         navPackage.usDistance = (pkg.getChannel(3) / 100.0F) * si::meter;
 
         return navPackage;
