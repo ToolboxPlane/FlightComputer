@@ -14,7 +14,7 @@ namespace recording {
     class ChannelRecorder : public Node {
         public:
             explicit ChannelRecorder(std::ofstream &&ostream) : stream(std::move(ostream)) {
-                this->ostream << std::setprecision(std::numeric_limits<long double>::max_digits10);
+                this->stream << std::setprecision(std::numeric_limits<long double>::max_digits10);
                 this->start();
             };
 
