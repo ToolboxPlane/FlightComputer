@@ -6,10 +6,10 @@
 #define FLIGHTCOMPUTER_MESHMANAGER_HPP
 
 
-#include "../../Node.hpp"
+#include "../../Framework/Node.hpp"
 #include "../../Devices/rcLib/RadioControlProtocolCpp/rcLib.hpp"
-#include "../../InputChannel.hpp"
-#include "../../OutputChannel.hpp"
+#include "../../Framework/InputChannel.hpp"
+#include "../../Framework/OutputChannel.hpp"
 
 namespace filter {
     class MeshManager : public Node {

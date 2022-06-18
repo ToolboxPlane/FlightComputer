@@ -8,8 +8,8 @@
 #include <iostream>
 #include <chrono>
 #include <utility>
-#include "../Node.hpp"
-#include "../InputChannel.hpp"
+#include "../Framework/Node.hpp"
+#include "../Framework/InputChannel.hpp"
 
 namespace debug {
     std::mutex _lock; // Not in the class because of template fuckups

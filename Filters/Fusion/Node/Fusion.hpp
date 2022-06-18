@@ -5,12 +5,12 @@
 #ifndef FLIGHTCOMPUTER_FUSION_HPP
 #define FLIGHTCOMPUTER_FUSION_HPP
 
-#include "../../../InputChannel.hpp"
+#include "../../../Framework/InputChannel.hpp"
 #include "../../../Devices/rcLib/RadioControlProtocolCpp/rcLib.hpp"
-#include "../../../Node.hpp"
+#include "../../../Framework/Node.hpp"
 #include "../../../Devices/GPS/Type/GpsMeasurement_t.hpp"
 #include "../Type/State_t.hpp"
-#include "../../../OutputChannel.hpp"
+#include "../../../Framework/OutputChannel.hpp"
 #include "../Lib/StateEstimateParticleFilter.hpp"
 #include "../Lib/AlphaBetaTracker.hpp"
 #include "../Lib/Calibration.hpp"

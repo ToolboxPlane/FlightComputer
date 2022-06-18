@@ -10,10 +10,10 @@
 #define SERIALTOOLBOX_INTERFACEPOSIX_HPP
 
 #include <string>
-#include "../../Node.hpp"
-#include "../../InputChannel.hpp"
+#include "../../Framework/Node.hpp"
+#include "../../Framework/InputChannel.hpp"
 #include "../rcLib/RadioControlProtocolCpp/rcLib.hpp"
-#include "../../OutputChannel.hpp"
+#include "../../Framework/OutputChannel.hpp"
 
 namespace device {
     enum class Parity {

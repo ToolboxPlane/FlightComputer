@@ -6,10 +6,10 @@
 #define FLIGHTCOMPUTER_SERIALSIMULATOR_HPP
 
 
-#include "../../InputChannel.hpp"
+#include "../../Framework/InputChannel.hpp"
 #include "RadioControlProtocolCpp/rcLib.hpp"
-#include "../../Node.hpp"
-#include "../../OutputChannel.hpp"
+#include "../../Framework/Node.hpp"
+#include "../../Framework/OutputChannel.hpp"
 
 namespace device {
     class RcLibSimulator : public Node {

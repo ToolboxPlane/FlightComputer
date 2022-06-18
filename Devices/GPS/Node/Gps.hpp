@@ -6,9 +6,9 @@
 #define FLIGHTCOMPUTER_GPS_HPP
 
 #include "../Type/GpsMeasurement_t.hpp"
-#include "../../../Node.hpp"
-#include "../../../InputChannel.hpp"
-#include "../../../OutputChannel.hpp"
+#include "../../../Framework/Node.hpp"
+#include "../../../Framework/InputChannel.hpp"
+#include "../../../Framework/OutputChannel.hpp"
 
 namespace device {
     class Gps : public Node {

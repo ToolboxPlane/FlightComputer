@@ -11,8 +11,8 @@
 
 #include <SiBase.hpp>
 
-#include "../../../Node.hpp"
-#include "../../../OutputChannel.hpp"
+#include "../../../Framework/Node.hpp"
+#include "../../../Framework/OutputChannel.hpp"
 
 namespace device {
     class SRF02 : public Node {

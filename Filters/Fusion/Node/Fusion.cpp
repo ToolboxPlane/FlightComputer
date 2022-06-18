@@ -75,24 +75,24 @@ namespace filter {
         if (lastPdbPackage.has_value()) {
             res.pdbPackage = fusion::decodePackage<PdbPackage>(lastPdbPackage.value());
         } else {
-            //std::cout << "No PDB Package received!" << std::endl;
+            std::cout << "No PDB Package received!" << std::endl;
         }
 
         if (lastTaranisPackage.has_value()) {
             res.taranisPackage = fusion::decodePackage<TaranisPackage>(lastTaranisPackage.value());
         } else {
-            //std::cout << "No Taranis Package received!" << std::endl;
+            std::cout << "No Taranis Package received!" << std::endl;
         }
 
         if (lastRemotePackage.has_value()) {
             res.loraRemote = fusion::decodePackage<LoraPackage>(lastRemotePackage.value());
         } else {
-            //std::cout << "No Lora-Remote Package received!" << std::endl;
+            std::cout << "No Lora-Remote Package received!" << std::endl;
         }
 
         if (!lastNavPackage.has_value()) {
             std::cerr << "No Nav Package received!" << std::endl;
-            return;
+            //return;
         }
 
         if (!lastGpsMeasurement.has_value()) {
@@ -103,7 +103,7 @@ namespace filter {
 
         auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
         auto gpsMeasurement = lastGpsMeasurement.value();
-        auto navData = fusion::decodePackage<NavPackage>(lastNavPackage.value());
+        auto navData = NavPackage{};//fusion::decodePackage<NavPackage>(lastNavPackage.value()); //@TODO hack here
 
         const auto startTime = util::time::get();
         const auto dtDouble = startTime - lastUpdate;

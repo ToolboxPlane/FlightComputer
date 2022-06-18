@@ -6,8 +6,8 @@
 #define FLIGHTCOMPUTER_RECORDER_HPP
 
 #include <fstream>
-#include "../../Node.hpp"
-#include "../../InputChannel.hpp"
+#include "../../Framework/Node.hpp"
+#include "../../Framework/InputChannel.hpp"
 
 namespace recording {
     template<typename T>

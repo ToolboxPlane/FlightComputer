@@ -8,9 +8,9 @@
 #include <fstream>
 #include <chrono>
 
-#include "../../Node.hpp"
-#include "../../InputChannel.hpp"
-#include "../../OutputChannel.hpp"
+#include "../../Framework/Node.hpp"
+#include "../../Framework/InputChannel.hpp"
+#include "../../Framework/OutputChannel.hpp"
 #include "Serialization.hpp"
 
 namespace recording {

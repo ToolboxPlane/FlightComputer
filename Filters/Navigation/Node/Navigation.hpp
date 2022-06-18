@@ -6,7 +6,7 @@
 #define FLIGHTCOMPUTER_NAVIGATION_HPP
 
 
-#include "../../../Node.hpp"
+#include "../../../Framework/Node.hpp"
 #include "../../Fusion/Node/Fusion.hpp"
 #include "../Type/Nav_t.hpp"
 #include "../Type/Waypoint_t.hpp"

@@ -10,7 +10,7 @@
 #include <random>
 #include "StateEstimateParticleFilter.hpp"
 
-constexpr auto NUM_PARTICLES = 300000;
+constexpr auto NUM_PARTICLES = 5000;
 
 StateEstimateParticleFilter::StateEstimateParticleFilter() {
     srand(time(nullptr)); // Required for the process noise

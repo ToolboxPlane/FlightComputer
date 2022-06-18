@@ -5,11 +5,11 @@
 #ifndef FLIGHTCOMPUTER_LORA_HPP
 #define FLIGHTCOMPUTER_LORA_HPP
 
-#include "../../Node.hpp"
-#include "../../InputChannel.hpp"
+#include "../../Framework/Node.hpp"
+#include "../../Framework/InputChannel.hpp"
 #include <unistd.h>
 #include "../rcLib/RadioControlProtocolCpp/rcLib.hpp"
-#include "../../OutputChannel.hpp"
+#include "../../Framework/OutputChannel.hpp"
 
 namespace device {
     class LoRa : public Node {

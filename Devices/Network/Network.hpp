@@ -11,10 +11,10 @@
 #include <string>
 #include <netinet/in.h>
 
-#include "../../Node.hpp"
-#include "../../InputChannel.hpp"
+#include "../../Framework/Node.hpp"
+#include "../../Framework/InputChannel.hpp"
 #include "../rcLib/RadioControlProtocolCpp/rcLib.hpp"
-#include "../../OutputChannel.hpp"
+#include "../../Framework/OutputChannel.hpp"
 
 namespace device {
     class Network : public Node {

@@ -6,9 +6,9 @@
 #define FLIGHTCOMPUTER_GPSSIMULATOR_HPP
 
 
-#include "../../../Node.hpp"
-#include "../../../InputChannel.hpp"
-#include "../../../OutputChannel.hpp"
+#include "../../../Framework/Node.hpp"
+#include "../../../Framework/InputChannel.hpp"
+#include "../../../Framework/OutputChannel.hpp"
 
 #include "../Type/GpsMeasurement_t.hpp"
 

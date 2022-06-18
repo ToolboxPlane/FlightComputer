@@ -34,18 +34,21 @@ int main() {
 
 #ifdef RASPBERRY_PI
     device::SerialPosix fc{"/dev/ttyFC", 115200};
-    //device::SerialPosix pdb{"/dev/ttyPDB", 115200};
-    device::RcLibSimulator pdb{38, 100000};
-    device::SerialPosix lora{"/dev/ttyNav", 115200};
+    device::SerialPosix pdb{"/dev/ttyPDB", 115200};
+    //device::SerialPosix lora{"/dev/ttyNav", 115200};
     device::Gps gps{};
 #else
     //recording::NameProvider replayNameProvider{"2020-04-07_15-16-45"};
     //recording::NameProvider replayNameProvider{"2020-04-07_15-28-46"};
     recording::NameProvider replayNameProvider{"2020-04-07_15-35-41"};
-    recording::ChannelReplay<rcLib::Package> fc{replayNameProvider.getInputStream("fc")};
-    recording::ChannelReplay<rcLib::Package> pdb{replayNameProvider.getInputStream("pdb")};
-    recording::ChannelReplay<rcLib::Package> lora{replayNameProvider.getInputStream("lora")};
-    recording::ChannelReplay<GpsMeasurement_t> gps{replayNameProvider.getInputStream("gps")};
+    auto fcStream = replayNameProvider.getInputStream("fc");
+    auto pdbStream = replayNameProvider.getInputStream("pdb");
+    auto loraStream = replayNameProvider.getInputStream("lora");
+    auto gpsStream = replayNameProvider.getInputStream("gps");
+    recording::ChannelReplay<rcLib::Package> fc{std::move(fcStream)};
+    recording::ChannelReplay<rcLib::Package> pdb{std::move(pdbStream)};
+    recording::ChannelReplay<rcLib::Package> lora{std::move(loraStream)};
+    recording::ChannelReplay<GpsMeasurement_t> gps{std::move(gpsStream)};
 #endif
 
     std::ifstream waypointFile("Missions/mission.csv");
@@ -54,13 +57,7 @@ int main() {
     }
     recording::ChannelReplay<Waypoint_t> waypointReader{std::move(waypointFile)};
 
-    device::Network network{"192.168.0.120",
-#ifdef DEBUG
-                            false
-#else
-                            true
-#endif
-    };
+    device::Network network{"172.23.27.35", true};
 
     /*
      * Filters
@@ -76,10 +73,10 @@ int main() {
      */
     fc.getChannelOut() >> meshManager.getSerialIn();
     pdb.getChannelOut() >> meshManager.getPdbIn();
-    lora.getChannelOut() >> meshManager.getLoraIn();
+    //lora.getChannelOut() >> meshManager.getLoraIn();
 
     meshManager.getSerialOut() >> fc.getChannelIn();
-    meshManager.getLoraOut() >> lora.getChannelIn();
+    //meshManager.getLoraOut() >> lora.getChannelIn();
 
     meshManager.getFlightControllerOut() >> fusion.getFlightControllerIn();
     meshManager.getPdbOut() >> fusion.getPdbIn();
@@ -89,7 +86,7 @@ int main() {
     meshManager.getNavOut() >> fusion.getNavIn();
 
     pdb.getChannelOut() >> network.getChannelIn();
-    lora.getChannelOut() >> network.getChannelIn();
+    //lora.getChannelOut() >> network.getChannelIn();
     fc.getChannelOut() >> network.getChannelIn();
     outputFilter.getNetworkOut() >> network.getChannelIn();
 
@@ -112,14 +109,14 @@ int main() {
     debug::Logger<rcLib::Package> pdbReceiveDebug{"PDB-Recv", false};
     debug::Logger<rcLib::Package> loraReceiveDebug{"Lora-Recv", false};
     debug::Logger<rcLib::Package> loraSendDebug{"Lora-Send", false};
-    debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", true};
+    debug::Logger<GpsMeasurement_t> gpsDebug{"GPS", false};
     debug::Logger<State_t> fusionDebug{"Fusion", true};
-    debug::Logger<Nav_t> navDebug{"Nav", false};
-    debug::Logger<Control_t> controlDebug{"Control", false};
+    debug::Logger<Nav_t> navDebug{"Nav", true};
+    debug::Logger<Control_t> controlDebug{"Control", true};
 
     fc.getChannelOut() >> fcReceiveDebug.getChannelIn();
     pdb.getChannelOut() >> pdbReceiveDebug.getChannelIn();
-    lora.getChannelOut() >> loraReceiveDebug.getChannelIn();
+    //lora.getChannelOut() >> loraReceiveDebug.getChannelIn();
     meshManager.getSerialOut() >> fcSendDebug.getChannelIn();
     meshManager.getLoraOut() >> loraSendDebug.getChannelIn();
     gps.getChannelOut() >> gpsDebug.getChannelIn();
@@ -139,7 +136,7 @@ int main() {
 
     fc.getChannelOut() >> fcRecorder.getChannelIn();
     pdb.getChannelOut() >> pdbRecorder.getChannelIn();
-    lora.getChannelOut() >> loraRecorder.getChannelIn();
+    //lora.getChannelOut() >> loraRecorder.getChannelIn();
     gps.getChannelOut() >> gpsRecorder.getChannelIn();
 #endif
 

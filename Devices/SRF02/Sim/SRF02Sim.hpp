@@ -9,8 +9,8 @@
 
 #include <SiBase.hpp>
 
-#include "../../../OutputChannel.hpp"
-#include "../../../Node.hpp"
+#include "../../../Framework/OutputChannel.hpp"
+#include "../../../Framework/Node.hpp"
 
 namespace device {
     class SRF02Sim : public Node {
