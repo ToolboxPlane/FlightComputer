@@ -6,26 +6,25 @@
 #define FLIGHTCOMPUTER_GPSSIMULATOR_HPP
 
 
-#include "../../../Framework/Node.hpp"
 #include "../../../Framework/InputChannel.hpp"
+#include "../../../Framework/Node.hpp"
 #include "../../../Framework/OutputChannel.hpp"
-
 #include "../Type/GpsMeasurement_t.hpp"
 
 namespace device {
     class GpsSimulator : public Node {
-        public:
-            explicit GpsSimulator(int intervalMs = 500);
+      public:
+        explicit GpsSimulator(int intervalMs = 500);
 
-            auto getChannelOut() -> OutputChannel<GpsMeasurement_t> &;
+        auto getChannelOut() -> OutputChannel<GpsMeasurement_t> &;
 
-        private:
-            OutputChannel<GpsMeasurement_t> out;
+      private:
+        OutputChannel<GpsMeasurement_t> out;
 
-            void run() override;
+        void run() override;
 
-            const int intervalMs;
+        const int intervalMs;
     };
-}
+} // namespace device
 
-#endif //FLIGHTCOMPUTER_GPSSIMULATOR_HPP
+#endif // FLIGHTCOMPUTER_GPSSIMULATOR_HPP

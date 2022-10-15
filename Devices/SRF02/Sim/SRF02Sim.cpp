@@ -23,8 +23,8 @@ namespace device {
 
             uint16_t distance = 70;
 
-            out.put(distance/100.0F * si::meter);
+            out.put(distance / 100.0F * si::meter);
         }
     }
 
-}
+} // namespace device

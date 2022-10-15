@@ -1,10 +1,13 @@
 [![Build Status](https://travis-ci.org/ToolboxPlane/FlightComputer.svg?branch=master)](https://travis-ci.org/ToolboxPlane/FlightComputer)
+
 # FlightComputer
-All the modules running on the Raspberry Pi. 
+
+All the modules running on the Raspberry Pi.
 
 ## Output Package
 
 ### Flightcontroller
+
 The Flightcontroller-Package is a 10bit, 4 channel package.
 | Channel | Content |
 | --- | --- |
@@ -14,6 +17,7 @@ The Flightcontroller-Package is a 10bit, 4 channel package.
 | 3 | Angle To Start * 2 + 500|
 
 ### LoRa
+
 The Lora-Package is a 10bit, 4 channel package.
 | Channel | Content |
 | --- | --- |
@@ -22,8 +26,8 @@ The Lora-Package is a 10bit, 4 channel package.
 | 2 | Angle to Start * 2 + 500 |
 | 3 | Distance to Start / 10 |
 
-
 ### Network
+
 The Network-Package is a 12bit, 16 channel package.
 | Channel | Content |
 | --- | --- |
@@ -45,19 +49,22 @@ The Network-Package is a 12bit, 16 channel package.
 | 15 | Empty |
 
 ## Recording
+
 Recordings are saved as pseudo-csv files. The first line
 is the recording start time as a unix timestamp
 (seconds since 1970). The second line is the textual
 representation of the column names this is used for compatibility
-and human readability. As a convention the first column is 
+and human readability. As a convention the first column is
 always the timestamp. All following lines are data.
 
 ## Waypoint file Format
+
 The waypoint file is a special type of recording.
 Each line consists of a latitude, a longitude, an altitude, the maximum distance to the waypoint (all doubles),
 and a integer wheter the plane is allowed to land (1 or 0).
 
 ### Example
+
 ```
 0
 Timestamp; Lat; Lon; Altitude; MaxDelta; LandingAllowed

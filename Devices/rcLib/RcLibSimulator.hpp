@@ -7,27 +7,27 @@
 
 
 #include "../../Framework/InputChannel.hpp"
-#include "RadioControlProtocolCpp/rcLib.hpp"
 #include "../../Framework/Node.hpp"
 #include "../../Framework/OutputChannel.hpp"
+#include "RadioControlProtocolCpp/rcLib.hpp"
 
 namespace device {
     class RcLibSimulator : public Node {
-        public:
-            explicit RcLibSimulator(uint8_t deviceId, int intervalMs = 500);
+      public:
+        explicit RcLibSimulator(uint8_t deviceId, int intervalMs = 500);
 
-            void run() override;
+        void run() override;
 
-            auto getChannelIn() -> InputChannel<rcLib::Package> &;
+        auto getChannelIn() -> InputChannel<rcLib::Package> &;
 
-            auto getChannelOut() -> OutputChannel<rcLib::Package> &;
+        auto getChannelOut() -> OutputChannel<rcLib::Package> &;
 
-        private:
-            InputChannel<rcLib::Package> in;
-            OutputChannel<rcLib::Package> out;
-            const uint8_t deviceId;
-            const int intervalMs;
+      private:
+        InputChannel<rcLib::Package> in;
+        OutputChannel<rcLib::Package> out;
+        const uint8_t deviceId;
+        const int intervalMs;
     };
-}
+} // namespace device
 
-#endif //FLIGHTCOMPUTER_SERIALSIMULATOR_HPP
+#endif // FLIGHTCOMPUTER_SERIALSIMULATOR_HPP

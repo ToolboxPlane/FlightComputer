@@ -10,52 +10,51 @@
 #define SERIALTOOLBOX_INTERFACEPOSIX_HPP
 
 #include <string>
-#include "../../Framework/Node.hpp"
+
 #include "../../Framework/InputChannel.hpp"
-#include "../rcLib/RadioControlProtocolCpp/rcLib.hpp"
+#include "../../Framework/Node.hpp"
 #include "../../Framework/OutputChannel.hpp"
+#include "../rcLib/RadioControlProtocolCpp/rcLib.hpp"
 
 namespace device {
-    enum class Parity {
-        NONE = 0, EVEN = 1, ODD = 2, SPACE = 3, MARK = 4
-    };
+    enum class Parity { NONE = 0, EVEN = 1, ODD = 2, SPACE = 3, MARK = 4 };
 
     /**
      * Implements an Interface for Posix conforming systems (POSIX.1-2001). Tested
      * on Linux Kernel 4.15.
      */
     class SerialPosix : public Node {
-        public:
-            explicit SerialPosix(const std::string &port, int baud = 9600);
+      public:
+        explicit SerialPosix(const std::string &port, int baud = 9600);
 
-            void setBaud(int baud);
+        void setBaud(int baud);
 
-            void setPort(const std::string &port);
+        void setPort(const std::string &port);
 
-            void setParity(Parity parity);
+        void setParity(Parity parity);
 
-            void setDataBits(int dataBits);
+        void setDataBits(int dataBits);
 
-            void setStopBits(int stopBits);
+        void setStopBits(int stopBits);
 
-            auto getChannelIn() -> InputChannel<rcLib::Package> &;
+        auto getChannelIn() -> InputChannel<rcLib::Package> &;
 
-            auto getChannelOut() -> OutputChannel<rcLib::Package> &;
+        auto getChannelOut() -> OutputChannel<rcLib::Package> &;
 
-            ~SerialPosix();
+        ~SerialPosix();
 
-        private:
-            void run() override;
+      private:
+        void run() override;
 
-            void sendBuff(const uint8_t *buffer, std::size_t len) const;
+        void sendBuff(const uint8_t *buffer, std::size_t len) const;
 
-            int fd;
+        int fd;
 
-            InputChannel<rcLib::Package> in;
-            OutputChannel<rcLib::Package> out;
+        InputChannel<rcLib::Package> in;
+        OutputChannel<rcLib::Package> out;
 
-            static constexpr std::size_t BUF_SIZE = 512;
+        static constexpr std::size_t BUF_SIZE = 512;
     };
-}
+} // namespace device
 
-#endif //HTERMCLONE_SERIALINTERFACE_HPP
+#endif // HTERMCLONE_SERIALINTERFACE_HPP

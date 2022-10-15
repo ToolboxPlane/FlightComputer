@@ -6,23 +6,22 @@
  */
 
 #include "system.h"
-#include "random_util.h"
 
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 
-#include "config.h"
 #include "../../../constants.hpp"
+#include "config.h"
+#include "random_util.h"
 
-#include <stdio.h>
-
-#define VALUE_OR(var, val) (isnan(var)?val:var)
-#define DEG_TO_RAD(x) ((x) / 180.0F * (float)M_PI)
-#define RAD_TO_DEG(x) ((x) * 180.0F * (float)M_PI)
-#define DIST2LAT(y) ((y) * 360.0 / EARTH_CIRCUMFERENCE)
+#define VALUE_OR(var, val) (isnan(var) ? val : var)
+#define DEG_TO_RAD(x) ((x) / 180.0F * (float) M_PI)
+#define RAD_TO_DEG(x) ((x) *180.0F * (float) M_PI)
+#define DIST2LAT(y) ((y) *360.0 / EARTH_CIRCUMFERENCE)
 #define DIST2LON(x, lat) ((DIST2LAT((x))) / cos((lat) / 180.0 * M_PI))
-#define LAT2DIST(y) ((float)((y) / 360.0 * EARTH_CIRCUMFERENCE))
-#define LON2DIST(x, lat) ((float)((LAT2DIST((x))) * cos((lat) / 180.0 * M_PI)))
+#define LAT2DIST(y) ((float) ((y) / 360.0 * EARTH_CIRCUMFERENCE))
+#define LON2DIST(x, lat) ((float) ((LAT2DIST((x))) * cos((lat) / 180.0 * M_PI)))
 
 #define IEEE754_FIX_FACTOR 100
 
@@ -45,10 +44,8 @@ system_state_t predict(const system_state_t *x, const input_t *u, float dt, bool
     }
 
     float dist = x->speed * dt;
-    float vert_dist =
-            sinf(DEG_TO_RAD(x->pitch_angle + pitch_offset)) * dist; // Vertical distance between in dt
-    float horiz_dist =
-            cosf(DEG_TO_RAD(x->pitch_angle + pitch_offset)) * dist; // Horizontal distance between in dt
+    float vert_dist = sinf(DEG_TO_RAD(x->pitch_angle + pitch_offset)) * dist;  // Vertical distance between in dt
+    float horiz_dist = cosf(DEG_TO_RAD(x->pitch_angle + pitch_offset)) * dist; // Horizontal distance between in dt
     float lat_dist = horiz_dist * cosf(DEG_TO_RAD(x->yaw_angle + yaw_offset)); // Distance north in dt (along latitude)
     float lon_dist = horiz_dist * sinf(DEG_TO_RAD(x->yaw_angle + yaw_offset)); // Distance east in dt (along longitude)
 
@@ -78,18 +75,16 @@ system_state_t predict(const system_state_t *x, const input_t *u, float dt, bool
          *      0.5 * dt^2 * cos(pitch) * sin(yaw);
          *      dt]
          */
-        float gamma_speed[4] = {
-                0.5F * dt * dt * sinf(DEG_TO_RAD(x->pitch_angle + pitch_offset)),
-                0.5F * dt * dt * cosf(DEG_TO_RAD(x->pitch_angle + pitch_offset)) *
-                    cosf(DEG_TO_RAD(x->yaw_angle + yaw_offset)),
-                0.5F * dt * dt * cosf(DEG_TO_RAD(x->pitch_angle + pitch_offset)) *
-                    sinf(DEG_TO_RAD(x->yaw_angle + yaw_offset)),
-                dt
-        };
+        float gamma_speed[4] = {0.5F * dt * dt * sinf(DEG_TO_RAD(x->pitch_angle + pitch_offset)),
+                                0.5F * dt * dt * cosf(DEG_TO_RAD(x->pitch_angle + pitch_offset)) *
+                                        cosf(DEG_TO_RAD(x->yaw_angle + yaw_offset)),
+                                0.5F * dt * dt * cosf(DEG_TO_RAD(x->pitch_angle + pitch_offset)) *
+                                        sinf(DEG_TO_RAD(x->yaw_angle + yaw_offset)),
+                                dt};
 
         float noise_speed = gaussian_box_muller(0, SIGMA_V);
         ret.altitude += noise_speed * gamma_speed[0];
-        //ret.altitude_above_ground += noise_speed * gamma_speed[0];
+        // ret.altitude_above_ground += noise_speed * gamma_speed[0];
         ret.lat += DIST2LAT(noise_speed * gamma_speed[1]);
         ret.lon += DIST2LON(noise_speed * gamma_speed[2], ret.lat);
         ret.speed += noise_speed * gamma_speed[3];
@@ -118,8 +113,8 @@ measurement_t measure(const system_state_t *x) {
     ret.vertical_speed = x->speed * sinf(DEG_TO_RAD(x->pitch_angle));
     ret.altitude_baro = (float) (int) (x->altitude + 0.5F); // Measurement resolution is 1 meter
     ret.altitude_gps = x->altitude;
-    float distance_ground = x->altitude_above_ground /
-                            (cosf(DEG_TO_RAD(x->roll_angle)) * cosf(DEG_TO_RAD(x->pitch_angle)));
+    float distance_ground =
+            x->altitude_above_ground / (cosf(DEG_TO_RAD(x->roll_angle)) * cosf(DEG_TO_RAD(x->pitch_angle)));
     ret.distance_ground = (float) ((int) (distance_ground * 100.0F + 0.5F)) / 100.0F; // Measuremnt resolution is 1cm
     ret.lat = x->lat;
     ret.lon = x->lon;
@@ -131,11 +126,11 @@ float likelihood(const measurement_t *measurement, const measurement_t *estimate
                  const measurement_info_t *measurement_info) {
     // Angles
     float p_roll = gaussian(0, SIGMA_BNO_ANGLE, normalize_angle(measurement->roll_angle - estimate->roll_angle));
-    float p_roll_deriv = 1;//gaussian(measurement->roll_deriv, SIGMA_BNO_RATE, estimate->roll_deriv);
+    float p_roll_deriv = 1; // gaussian(measurement->roll_deriv, SIGMA_BNO_RATE, estimate->roll_deriv);
     float p_pitch = gaussian(0, SIGMA_BNO_ANGLE, normalize_angle(measurement->pitch_angle - estimate->pitch_angle));
-    float p_pitch_deriv = 1;//gaussian(measurement->pitch_deriv, SIGMA_BNO_RATE, estimate->pitch_deriv);
+    float p_pitch_deriv = 1; // gaussian(measurement->pitch_deriv, SIGMA_BNO_RATE, estimate->pitch_deriv);
     float p_yaw = gaussian(0, SIGMA_BNO_ANGLE, normalize_angle(measurement->yaw_angle - estimate->yaw_angle));
-    float p_yaw_deriv = 1;//gaussian(measurement->yaw_deriv, SIGMA_BNO_RATE, estimate->yaw_deriv);
+    float p_yaw_deriv = 1; // gaussian(measurement->yaw_deriv, SIGMA_BNO_RATE, estimate->yaw_deriv);
 
     // US
     float p_distance_measure;
@@ -143,7 +138,7 @@ float likelihood(const measurement_t *measurement, const measurement_t *estimate
         p_distance_measure = 0;
     } else if (measurement->distance_ground > 0) {
         p_distance_measure = gaussian(measurement->distance_ground, SIGMA_SRF02, estimate->distance_ground);
-    } else { // No distance measurement
+    } else {                                              // No distance measurement
         if (estimate->distance_ground < SRF02_MAX_DIST) { // High altitudes are more likely
             p_distance_measure = 0.5F;
         } else {
@@ -189,20 +184,11 @@ float likelihood(const measurement_t *measurement, const measurement_t *estimate
 
     // These factors are not weights (in an non IEEE-754 world they would not change a thing),
     // they simply reduce numerical problems due to low likelihoods when they are multiplied together.
-    return (p_pitch * IEEE754_FIX_FACTOR)
-            * (p_pitch_deriv * IEEE754_FIX_FACTOR)
-            * (p_roll * IEEE754_FIX_FACTOR)
-            * (p_roll_deriv * IEEE754_FIX_FACTOR)
-            * (p_yaw * IEEE754_FIX_FACTOR)
-            * (p_yaw_deriv * IEEE754_FIX_FACTOR)
-            * (p_distance_measure * IEEE754_FIX_FACTOR)
-            * (p_lat * IEEE754_FIX_FACTOR)
-            * (p_lon * IEEE754_FIX_FACTOR)
-            * (p_vert * IEEE754_FIX_FACTOR)
-            * (p_speed * IEEE754_FIX_FACTOR)
-            * (p_climb * IEEE754_FIX_FACTOR)
-            * (p_airspeed * IEEE754_FIX_FACTOR)
-            * (p_baro * IEEE754_FIX_FACTOR);
+    return (p_pitch * IEEE754_FIX_FACTOR) * (p_pitch_deriv * IEEE754_FIX_FACTOR) * (p_roll * IEEE754_FIX_FACTOR) *
+           (p_roll_deriv * IEEE754_FIX_FACTOR) * (p_yaw * IEEE754_FIX_FACTOR) * (p_yaw_deriv * IEEE754_FIX_FACTOR) *
+           (p_distance_measure * IEEE754_FIX_FACTOR) * (p_lat * IEEE754_FIX_FACTOR) * (p_lon * IEEE754_FIX_FACTOR) *
+           (p_vert * IEEE754_FIX_FACTOR) * (p_speed * IEEE754_FIX_FACTOR) * (p_climb * IEEE754_FIX_FACTOR) *
+           (p_airspeed * IEEE754_FIX_FACTOR) * (p_baro * IEEE754_FIX_FACTOR);
 }
 
 void update_particle(weighted_particle_t *particle, const input_t *u, const measurement_t *z, float dt,
@@ -244,4 +230,3 @@ void resample(const weighted_particle_t *old_particles, size_t num_old_particles
         }
     }
 }
-

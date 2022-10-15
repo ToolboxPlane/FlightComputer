@@ -3,18 +3,22 @@
 //
 
 #include "Fusion.hpp"
-#include "../Lib/DecodePackage.hpp"
+
 #include "../../../Utilities/time.hpp"
+#include "../Lib/DecodePackage.hpp"
 
 namespace filter {
     using namespace si::literals;
 
     constexpr auto ACC_SIGMA_V = 10.0F * si::acceleration / si::second; // Process noise
-    constexpr auto ACC_SIGMA_W = 0.035F * si::acceleration; // Measurement noise
+    constexpr auto ACC_SIGMA_W = 0.035F * si::acceleration;             // Measurement noise
     constexpr auto CALIB_STAT_THRESH = CalibStatus::NOT_CALIBRATED;
 
-    Fusion::Fusion() : lastUpdate{util::time::get()}, accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
-                       accYFilter{ACC_SIGMA_V, ACC_SIGMA_W}, accZFilter{ACC_SIGMA_V, ACC_SIGMA_W} {
+    Fusion::Fusion() :
+        lastUpdate{util::time::get()},
+        accXFilter{ACC_SIGMA_V, ACC_SIGMA_W},
+        accYFilter{ACC_SIGMA_V, ACC_SIGMA_W},
+        accZFilter{ACC_SIGMA_V, ACC_SIGMA_W} {
         this->start();
     }
 
@@ -52,12 +56,18 @@ namespace filter {
 
     void Fusion::run() {
         while (!flightControllerIn.isClosed()) {
-            while (gpsIn.get(lastGpsMeasurement));
-            while (pdbIn.get(lastPdbPackage));
-            while (taranisIn.get(lastTaranisPackage));
-            while (baseIn.get(lastBasePackage));
-            while (remoteIn.get(lastRemotePackage));
-            while (navIn.get(lastNavPackage));
+            while (gpsIn.get(lastGpsMeasurement))
+                ;
+            while (pdbIn.get(lastPdbPackage))
+                ;
+            while (taranisIn.get(lastTaranisPackage))
+                ;
+            while (baseIn.get(lastBasePackage))
+                ;
+            while (remoteIn.get(lastRemotePackage))
+                ;
+            while (navIn.get(lastNavPackage))
+                ;
 
             do {
                 flightControllerIn.get(lastFcPackage);
@@ -92,7 +102,7 @@ namespace filter {
 
         if (!lastNavPackage.has_value()) {
             std::cerr << "No Nav Package received!" << std::endl;
-            //return;
+            // return;
         }
 
         if (!lastGpsMeasurement.has_value()) {
@@ -103,7 +113,7 @@ namespace filter {
 
         auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
         auto gpsMeasurement = lastGpsMeasurement.value();
-        auto navData = NavPackage{};//fusion::decodePackage<NavPackage>(lastNavPackage.value()); //@TODO hack here
+        auto navData = NavPackage{}; // fusion::decodePackage<NavPackage>(lastNavPackage.value()); //@TODO hack here
 
         const auto startTime = util::time::get();
         const auto dtDouble = startTime - lastUpdate;
@@ -111,10 +121,9 @@ namespace filter {
         lastUpdate = startTime;
 
         if (!calibration.isCalibrated()) {
-            if (gpsMeasurement.fixAquired
-                && flightControllerData.sysCalibStatus >= CALIB_STAT_THRESH &&
-                flightControllerData.accCalibStatus >= CALIB_STAT_THRESH
-                && flightControllerData.magCalibStatus >= CALIB_STAT_THRESH &&
+            if (gpsMeasurement.fixAquired && flightControllerData.sysCalibStatus >= CALIB_STAT_THRESH &&
+                flightControllerData.accCalibStatus >= CALIB_STAT_THRESH &&
+                flightControllerData.magCalibStatus >= CALIB_STAT_THRESH &&
                 flightControllerData.gyroCalibStatus >= CALIB_STAT_THRESH) {
                 calibration.update(startTime, flightControllerData, gpsMeasurement, navData);
             } else {
@@ -161,8 +170,8 @@ namespace filter {
             calibration.applyCalib(startTime, flightControllerData, gpsMeasurement, navData);
 
 
-            auto state = particleFilter.update(dt, flightControllerData, gpsMeasurement,
-                                               navData, calibration.getAdditionalBaroUncertainty());
+            auto state = particleFilter.update(dt, flightControllerData, gpsMeasurement, navData,
+                                               calibration.getAdditionalBaroUncertainty());
 
             lastGpsMeasurement->location.lat = NAN;
             lastGpsMeasurement->location.lon = NAN;
@@ -200,4 +209,4 @@ namespace filter {
             out.put(res);
         }
     }
-}
+} // namespace filter

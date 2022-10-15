@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 project(FlightComputer)
 
+find_package(Protobuf REQUIRED)
+include_directories(${Protobuf_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif (NOT CMAKE_BUILD_TYPE)
@@ -12,15 +16,17 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Werror -mtune=native -march=nativ
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         set(ASAN_FLAG "-static-libsan")
-    else()
+    else ()
         set(ASAN_FLAG "-static-libasan")
-    endif()
+    endif ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 ${ASAN_FLAG} -DDEBUG")
 else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -DNDEBUG")
 endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=unused-but-set-parameter")
+
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS GroundStation.proto)
 
 set(SOURCES
         main.cpp
@@ -46,14 +52,15 @@ set(SOURCES
         Filters/OutputFilter/OutputFilter.cpp
         Filters/FeedbackControl/Node/FeedbackControl.cpp
         Utilities/Recording/NameProvider.cpp
-        Utilities/time.cpp)
+        Utilities/time.cpp
+        ${PROTO_SRCS} ${PROTO_HDRS})
 
 set(SOURCES_PI ${SOURCES}
         Devices/LoRa/LoRa.cpp)
 
 set(SOURCES_NO_PI ${SOURCES})
 
-set(LIBS gps pthread stdc++fs SI)
+set(LIBS gps pthread stdc++fs SI ${Protobuf_LIBRARIES})
 
 if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++") # libstdc++6 is kind of fucked in Raspbian with GCC 10

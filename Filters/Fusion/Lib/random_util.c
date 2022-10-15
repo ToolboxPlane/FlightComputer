@@ -1,7 +1,7 @@
 #include "random_util.h"
 
-#include <stdlib.h>
 #include <math.h>
+#include <stdlib.h>
 #include <values.h>
 
 float gaussian_box_muller(float mu, float sigma) {
@@ -37,4 +37,3 @@ float gaussian(float mu, float sigma, float x) {
     }
     return res;
 }
-

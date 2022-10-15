@@ -6,7 +6,8 @@
 
 namespace device {
     RcLibSimulator::RcLibSimulator(const uint8_t deviceId, const int intervalMs) :
-            deviceId(deviceId), intervalMs(intervalMs) {
+        deviceId(deviceId),
+        intervalMs(intervalMs) {
         this->start();
     }
 
@@ -30,4 +31,4 @@ namespace device {
     auto RcLibSimulator::getChannelOut() -> OutputChannel<rcLib::Package> & {
         return out;
     }
-}
+} // namespace device

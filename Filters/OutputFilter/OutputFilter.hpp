@@ -6,31 +6,31 @@
 #define FLIGHTCOMPUTER_OUTPUTFILTER_HPP
 
 
-#include "../../Framework/Node.hpp"
 #include "../../Devices/rcLib/RadioControlProtocolCpp/rcLib.hpp"
-#include "../FeedbackControl/Type/Control_t.hpp"
 #include "../../Framework/InputChannel.hpp"
+#include "../../Framework/Node.hpp"
 #include "../../Framework/OutputChannel.hpp"
+#include "../FeedbackControl/Type/Control_t.hpp"
 
 namespace filter {
     class OutputFilter : public Node {
-        public:
-            OutputFilter();
+      public:
+        OutputFilter();
 
-            OutputChannel<rcLib::Package> &getBaseOut();
+        OutputChannel<rcLib::Package> &getBaseOut();
 
-            OutputChannel<rcLib::Package> &getFlightControllerOut();
+        OutputChannel<rcLib::Package> &getFlightControllerOut();
 
-            OutputChannel<rcLib::Package> &getNetworkOut();
+        OutputChannel<rcLib::Package> &getNetworkOut();
 
-            InputChannel<Control_t> &getChannelIn();
+        InputChannel<Control_t> &getChannelIn();
 
-        private:
-            void run() override;
+      private:
+        void run() override;
 
-            OutputChannel<rcLib::Package> flightControllerOut, baseOut, networkOut;
-            InputChannel<Control_t> in;
+        OutputChannel<rcLib::Package> flightControllerOut, baseOut, networkOut;
+        InputChannel<Control_t> in;
     };
-}
+} // namespace filter
 
-#endif //FLIGHTCOMPUTER_OUTPUTFILTER_HPP
+#endif // FLIGHTCOMPUTER_OUTPUTFILTER_HPP

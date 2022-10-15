@@ -15,10 +15,10 @@ namespace recording {
     auto header() -> std::string;
 
     template<typename T>
-    auto getLine(const T&) -> std::string;
+    auto getLine(const T &) -> std::string;
 
-    template <typename T>
-    auto getItem(const std::vector<std::string>&) -> T;
-}
+    template<typename T>
+    auto getItem(const std::vector<std::string> &) -> T;
+} // namespace recording
 
-#endif //FLIGHTCOMPUTER_SERIALIZATION_HPP
+#endif // FLIGHTCOMPUTER_SERIALIZATION_HPP

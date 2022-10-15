@@ -13,4 +13,4 @@ namespace util::time {
     auto get() -> si::Second<long double>;
 }
 
-#endif //FLIGHTCOMPUTER_TIME_HPP
+#endif // FLIGHTCOMPUTER_TIME_HPP

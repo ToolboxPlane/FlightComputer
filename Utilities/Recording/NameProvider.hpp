@@ -12,17 +12,17 @@
 
 namespace recording {
     class NameProvider {
-        public:
-            NameProvider();
-            explicit NameProvider(const std::string &recordingName);
+      public:
+        NameProvider();
+        explicit NameProvider(const std::string &recordingName);
 
-            [[nodiscard]] auto getOutputStream(const std::string &device) const -> std::ofstream;
+        [[nodiscard]] auto getOutputStream(const std::string &device) const -> std::ofstream;
 
-            [[nodiscard]] auto getInputStream(const std::string &device) const -> std::ifstream;
+        [[nodiscard]] auto getInputStream(const std::string &device) const -> std::ifstream;
 
-        private:
-            std::string recordingPath;
+      private:
+        std::string recordingPath;
     };
-}
+} // namespace recording
 
-#endif //FLIGHTCOMPUTER_NAMEPROVIDER_HPP
+#endif // FLIGHTCOMPUTER_NAMEPROVIDER_HPP

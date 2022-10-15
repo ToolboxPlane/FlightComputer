@@ -10,21 +10,22 @@
 
 #include <ostream>
 #include <sstream>
-#include "RadioControlProtocolCpp/rcLib.hpp"
+
 #include "../../Utilities/Recording/Serialization.hpp"
+#include "RadioControlProtocolCpp/rcLib.hpp"
 
 std::ostream &operator<<(std::ostream &ostream, const rcLib::Package &package);
 
 
 namespace recording {
-    template <>
+    template<>
     auto header<rcLib::Package>() -> std::string;
 
-    template <>
+    template<>
     auto getLine<rcLib::Package>(const rcLib::Package &package) -> std::string;
 
-    template <>
+    template<>
     auto getItem<rcLib::Package>(const std::vector<std::string> &line) -> rcLib::Package;
 
-}
-#endif //FLIGHTCOMPUTER_PACKAGEUTIL_HPP
+} // namespace recording
+#endif // FLIGHTCOMPUTER_PACKAGEUTIL_HPP

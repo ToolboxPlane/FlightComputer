@@ -5,8 +5,9 @@
  * Description here TODO
  */
 
-#include <cassert>
 #include "Waypoint_t.hpp"
+
+#include <cassert>
 
 namespace recording {
     template<>
@@ -21,4 +22,4 @@ namespace recording {
 
         return res;
     }
-}
+} // namespace recording

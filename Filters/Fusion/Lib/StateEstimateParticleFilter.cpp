@@ -5,10 +5,11 @@
  * @brief StateEstimateParticleFilter @TODO
  */
 
+#include "StateEstimateParticleFilter.hpp"
+
 #include <cstdlib>
 #include <ctime>
 #include <random>
-#include "StateEstimateParticleFilter.hpp"
 
 constexpr auto NUM_PARTICLES = 5000;
 
@@ -16,11 +17,9 @@ StateEstimateParticleFilter::StateEstimateParticleFilter() {
     srand(time(nullptr)); // Required for the process noise
 }
 
-auto
-StateEstimateParticleFilter::update(si::Second<> dt, const FlightControllerPackage &flightControllerPackage,
-                                    const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage,
-                                    si::Meter<> additionalBaroUncertainty)
--> system_state_t {
+auto StateEstimateParticleFilter::update(si::Second<> dt, const FlightControllerPackage &flightControllerPackage,
+                                         const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage,
+                                         si::Meter<> additionalBaroUncertainty) -> system_state_t {
     if (particles.empty()) {
         init(NUM_PARTICLES, flightControllerPackage, gpsMeasurement, navPackage);
     }
@@ -88,7 +87,7 @@ StateEstimateParticleFilter::update(si::Second<> dt, const FlightControllerPacka
         kahanSum(estimate.yaw_deriv, kahanComp.yaw_deriv, state.yaw_deriv * weight);
         kahanSum(estimate.speed, kahanComp.speed, state.speed * weight);
         kahanSum(estimate.altitude, kahanComp.altitude, state.altitude * weight);
-        kahanSum(estimate.altitude_above_ground,  kahanComp.altitude_above_ground, state.altitude_above_ground * weight);
+        kahanSum(estimate.altitude_above_ground, kahanComp.altitude_above_ground, state.altitude_above_ground * weight);
         kahanSum(estimate.lat, kahanComp.lat, (state.lat - particles.front().x.lat) * weight);
         kahanSum(estimate.lon, kahanComp.lon, (state.lon - particles.front().x.lon) * weight);
 
@@ -117,11 +116,9 @@ StateEstimateParticleFilter::update(si::Second<> dt, const FlightControllerPacka
     return estimate;
 }
 
-void
-StateEstimateParticleFilter::init(std::size_t numberOfParticles,
-                                  const FlightControllerPackage &flightControllerPackage,
-                                  const GpsMeasurement_t &gpsMeasurement,
-                                  const NavPackage &navPackage) {
+void StateEstimateParticleFilter::init(std::size_t numberOfParticles,
+                                       const FlightControllerPackage &flightControllerPackage,
+                                       const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage) {
     std::random_device dev;
     std::mt19937 rng(dev());
     std::normal_distribution<float> altDist(0, 1);
@@ -160,4 +157,3 @@ void StateEstimateParticleFilter::kahanSum(T &sum, T &comp, T toAdd) {
     comp = (t - sum) - y;
     sum = t;
 }
-

@@ -13,14 +13,14 @@
 #include "../../Fusion/Type/State_t.hpp"
 
 class Control_t {
-    public:
-        float pitch, roll, power;
-        State_t state;
+  public:
+    float pitch, roll, power;
+    State_t state;
 
-        friend std::ostream &operator<<(std::ostream &stream, Control_t control) {
-            stream << "Pitch: " << control.pitch << "\tRoll: " << control.roll << "\tPower: " << control.power;
-            return stream;
-        }
+    friend std::ostream &operator<<(std::ostream &stream, Control_t control) {
+        stream << "Pitch: " << control.pitch << "\tRoll: " << control.roll << "\tPower: " << control.power;
+        return stream;
+    }
 };
 
-#endif //FLIGHTCOMPUTER_CONTROL_T_HPP
+#endif // FLIGHTCOMPUTER_CONTROL_T_HPP

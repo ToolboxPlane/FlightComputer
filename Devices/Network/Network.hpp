@@ -8,30 +8,30 @@
 #ifndef FLIGHTCOMPUTER_NETWORK_HPP
 #define FLIGHTCOMPUTER_NETWORK_HPP
 
-#include <string>
 #include <netinet/in.h>
+#include <string>
 
-#include "../../Framework/Node.hpp"
 #include "../../Framework/InputChannel.hpp"
-#include "../rcLib/RadioControlProtocolCpp/rcLib.hpp"
+#include "../../Framework/Node.hpp"
 #include "../../Framework/OutputChannel.hpp"
+#include "../rcLib/RadioControlProtocolCpp/rcLib.hpp"
 
 namespace device {
     class Network : public Node {
-        public:
-            explicit Network(const std::string &address, bool enable = true);
+      public:
+        explicit Network(const std::string &address, bool enable = true);
 
-            auto getChannelIn() -> InputChannel<rcLib::Package> &;
+        auto getChannelIn() -> InputChannel<rcLib::Package> &;
 
-        private:
-            void run() override;
+      private:
+        void run() override;
 
-            int fd;
-            sockaddr_in sockaddrIn{};
-            InputChannel<rcLib::Package> in;
+        int fd;
+        sockaddr_in sockaddrIn{};
+        InputChannel<rcLib::Package> in;
 
-            static constexpr auto PROTOCOL_ID = 253;
+        static constexpr auto PROTOCOL_ID = 253;
     };
-}
+} // namespace device
 
-#endif //FLIGHTCOMPUTER_NETWORK_HPP
+#endif // FLIGHTCOMPUTER_NETWORK_HPP

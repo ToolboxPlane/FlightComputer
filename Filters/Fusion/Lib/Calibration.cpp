@@ -8,14 +8,21 @@
 
 #include <SiStl.hpp>
 
-Calibration::Calibration() : calibrationFinished{false}, numMeas{0}, startPosition{0, 0, 0.0F * si::meter},
-                             lastPosition{0, 0},
-                             latStdDev{NAN}, lonStdDev{NAN}, altStdDev{NAN}, accOffset{0}, baroOffset{0},
-                             calibTime{0} {}
+Calibration::Calibration() :
+    calibrationFinished{false},
+    numMeas{0},
+    startPosition{0, 0, 0.0F * si::meter},
+    lastPosition{0, 0},
+    latStdDev{NAN},
+    lonStdDev{NAN},
+    altStdDev{NAN},
+    accOffset{0},
+    baroOffset{0},
+    calibTime{0} {
+}
 
-void
-Calibration::update(si::Second<long double> currentTime, const FlightControllerPackage &flightControllerPackage,
-                    const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage) {
+void Calibration::update(si::Second<long double> currentTime, const FlightControllerPackage &flightControllerPackage,
+                         const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage) {
     if (calibrationFinished) {
         return;
     }
@@ -26,19 +33,19 @@ Calibration::update(si::Second<long double> currentTime, const FlightControllerP
         lonStdDev = static_cast<double>(gpsMeasurement.epLon / 2);
         altStdDev = gpsMeasurement.epVert / 2;
     } else {
-        //if (lastGpsTimestamp < gpsMeasurement.timestamp) {
-        mapUpdate(startPosition.lat, latStdDev,
-                  gpsMeasurement.location.lat, static_cast<double>(gpsMeasurement.epLat / 2));
-        mapUpdate(startPosition.lon, lonStdDev,
-                  gpsMeasurement.location.lon, static_cast<double>(gpsMeasurement.epLon / 2));
+        // if (lastGpsTimestamp < gpsMeasurement.timestamp) {
+        mapUpdate(startPosition.lat, latStdDev, gpsMeasurement.location.lat,
+                  static_cast<double>(gpsMeasurement.epLat / 2));
+        mapUpdate(startPosition.lon, lonStdDev, gpsMeasurement.location.lon,
+                  static_cast<double>(gpsMeasurement.epLon / 2));
         mapUpdate(startPosition.altitude, altStdDev, gpsMeasurement.location.altitude, gpsMeasurement.epVert / 2);
         //}
     }
     lastGpsTimestamp = gpsMeasurement.timestamp;
 
-    auto accSqr = flightControllerPackage.accX * flightControllerPackage.accX
-                  + flightControllerPackage.accY * flightControllerPackage.accY
-                  + flightControllerPackage.accZ * flightControllerPackage.accZ;
+    auto accSqr = flightControllerPackage.accX * flightControllerPackage.accX +
+                  flightControllerPackage.accY * flightControllerPackage.accY +
+                  flightControllerPackage.accZ * flightControllerPackage.accZ;
     auto accAbs = std::sqrt(accSqr);
 
     accOffset += accAbs;
@@ -47,8 +54,8 @@ Calibration::update(si::Second<long double> currentTime, const FlightControllerP
 
     numMeas += 1;
     if (si::Meter<>{static_cast<float>(latStdDev)} < GPS_STDDEV_THRESH &&
-        si::Meter<>{static_cast<float>(lonStdDev)} < GPS_STDDEV_THRESH
-        && altStdDev < GPS_STDDEV_THRESH && numMeas > NUM_MEAS_THRESH) {
+        si::Meter<>{static_cast<float>(lonStdDev)} < GPS_STDDEV_THRESH && altStdDev < GPS_STDDEV_THRESH &&
+        numMeas > NUM_MEAS_THRESH) {
         accOffset = accOffset / numMeas;
         baroOffset = baroOffset / numMeas - gpsMeasurement.location.altitude;
 
@@ -69,9 +76,8 @@ Calibration::update(si::Second<long double> currentTime, const FlightControllerP
     }
 }
 
-void
-Calibration::applyCalib(si::Second<long double> currentTime, FlightControllerPackage &flightControllerPackage,
-                        GpsMeasurement_t &gpsMeasurement, NavPackage &navPackage) {
+void Calibration::applyCalib(si::Second<long double> currentTime, FlightControllerPackage &flightControllerPackage,
+                             GpsMeasurement_t &gpsMeasurement, NavPackage &navPackage) {
     // Acceleration
     auto xWeight = static_cast<float>(std::sin(flightControllerPackage.pitch / static_cast<float>(180 * M_PI)));
     auto yWeight = static_cast<float>(std::sin(-flightControllerPackage.roll / static_cast<float>(180 * M_PI)) *
@@ -103,12 +109,12 @@ auto Calibration::isCalibrated() const -> bool {
 
 template<typename T>
 void Calibration::mapUpdate(T &x_hat, T &sqrt_p, T z, T sqrt_r) {
-    auto p = sqrt_p * sqrt_p; // Variance of the estimate
-    auto r = sqrt_r * sqrt_r; // Variance of the measurement
+    auto p = sqrt_p * sqrt_p;                            // Variance of the estimate
+    auto r = sqrt_r * sqrt_r;                            // Variance of the measurement
     auto k = static_cast<si::default_type>(p / (p + r)); // Kalman gain
-    auto gamma = z - x_hat; // Measurement error
-    x_hat = x_hat + k * gamma; // State update
-    p = (1 - k) * p; // Variance update
+    auto gamma = z - x_hat;                              // Measurement error
+    x_hat = x_hat + k * gamma;                           // State update
+    p = (1 - k) * p;                                     // Variance update
     sqrt_p = std::sqrt(p);
 }
 

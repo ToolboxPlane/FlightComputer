@@ -5,12 +5,14 @@
  * @brief FeedbackControl @TODO
  */
 
-#include <cmath>
 #include "FeedbackControl.hpp"
+
+#include <cmath>
+
 #include "../../../Utilities/time.hpp"
 
 namespace filter {
-    //using namespace si;
+    // using namespace si;
     using namespace si::literals;
 
     FeedbackControl::FeedbackControl() {
@@ -33,7 +35,7 @@ namespace filter {
     }
 
     auto FeedbackControl::speedControl(const State_t &state, si::Speed<> target) const -> si::Scalar<> {
-        if (target == 0.0F * si::speed || !state.loraRemote.isArmed ) {
+        if (target == 0.0F * si::speed || !state.loraRemote.isArmed) {
             return 0;
         }
 
@@ -95,4 +97,4 @@ namespace filter {
             return val;
         }
     }
-}
+} // namespace filter

@@ -7,15 +7,15 @@
 
 #include "SerialPosix.hpp"
 
-#include <fcntl.h>
+#include <cassert>
 #include <cstring>
+#include <fcntl.h>
+#include <filesystem>
+#include <mutex>
+#include <regex>
 #include <termios.h>
 #include <unistd.h>
-#include <cassert>
 #include <vector>
-#include <mutex>
-#include <filesystem>
-#include <regex>
 
 namespace device {
 
@@ -34,13 +34,13 @@ namespace device {
 
         // disable IGNBRK for mismatched speed tests; otherwise receive break
         // as \000 chars
-        tty.c_iflag &= ~IGNBRK;         // disable break processing
-        tty.c_lflag = 0;                // no signaling chars, no echo, no canonical processing
-        tty.c_oflag = 0;                // no remapping, no delays
-        tty.c_cc[VMIN] = 0;            // polling read
-        tty.c_cc[VTIME] = 0;            // read is non blocking
+        tty.c_iflag &= ~IGNBRK;                 // disable break processing
+        tty.c_lflag = 0;                        // no signaling chars, no echo, no canonical processing
+        tty.c_oflag = 0;                        // no remapping, no delays
+        tty.c_cc[VMIN] = 0;                     // polling read
+        tty.c_cc[VTIME] = 0;                    // read is non blocking
         tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
-        tty.c_cflag |= (CLOCAL | CREAD);// ignore modem controls, enable reading
+        tty.c_cflag |= (CLOCAL | CREAD);        // ignore modem controls, enable reading
 
 #ifdef CRTSCTS
         tty.c_cflag &= ~CRTSCTS; // Disable hardware flow control if possible (not Posix, only Linux)
@@ -220,7 +220,7 @@ namespace device {
             throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
         }
 
-        tty.c_cflag &= ~(PARENB | PARODD);      // shut off parity
+        tty.c_cflag &= ~(PARENB | PARODD); // shut off parity
 
         tcflag_t parityFlag = 0;
         switch (parity) {
@@ -272,7 +272,7 @@ namespace device {
             default:
                 throw std::runtime_error("SerialPosix:\tInvalid dataBits (needs to be \\in [5,8]");
         }
-        tty.c_cflag = (tty.c_cflag & ~CSIZE) | charSize;     // 8-bit chars
+        tty.c_cflag = (tty.c_cflag & ~CSIZE) | charSize; // 8-bit chars
 
         if (tcsetattr(fd, TCSANOW, &tty) != 0) {
             throw std::runtime_error(std::string{"SerialPosix:\t"} + strerror(errno));
@@ -310,4 +310,4 @@ namespace device {
     SerialPosix::~SerialPosix() {
         close(this->fd);
     }
-}
+} // namespace device

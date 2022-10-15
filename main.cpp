@@ -1,26 +1,36 @@
+#include <SiPrinterExtended.hpp>
 #include <cfenv>
 #include <iomanip>
-#include "Devices/rcLib/RcLibSimulator.hpp"
-#include "Filters/Fusion/Node/Fusion.hpp"
-#include "Filters/Navigation/Node/Navigation.hpp"
-#include "Filters/MeshManager/MeshManager.hpp"
-#include "Utilities/Logger.hpp"
-#include "Filters/OutputFilter/OutputFilter.hpp"
-#include "Devices/GPS/Sim/GpsSimulator.hpp"
+
 #include "Devices/GPS/Node/Gps.hpp"
-#include "Filters/FeedbackControl/Node/FeedbackControl.hpp"
+#include "Devices/GPS/Sim/GpsSimulator.hpp"
+#include "Devices/Network/Network.hpp"
 #include "Devices/Serial/SerialPosix.hpp"
 #include "Devices/rcLib/PackageUtil.hpp"
-#include "Devices/Network/Network.hpp"
-#include "Utilities/Recording/NameProvider.hpp"
+#include "Devices/rcLib/RcLibSimulator.hpp"
+#include "Filters/FeedbackControl/Node/FeedbackControl.hpp"
+#include "Filters/Fusion/Node/Fusion.hpp"
+#include "Filters/MeshManager/MeshManager.hpp"
+#include "Filters/Navigation/Node/Navigation.hpp"
+#include "Filters/OutputFilter/OutputFilter.hpp"
+#include "MessageConversion.hpp"
+#include "Utilities/Logger.hpp"
 #include "Utilities/Recording/ChannelRecorder.hpp"
 #include "Utilities/Recording/ChannelReplay.hpp"
-
-#include <SiPrinterExtended.hpp>
+#include "Utilities/Recording/NameProvider.hpp"
 
 int main() {
     using namespace std::chrono_literals;
     using namespace si::literals;
+
+    ToolboxPlaneMessages::FlightController message;
+    message.set_pitch(17);
+    message.set_roll(37);
+    message.set_accx(98);
+    message.set_accy(99);
+    message.set_accz(101);
+    std::cout << message.ByteSize() << std::endl;
+    return 0;
 
 #ifdef DEBUG
     feenableexcept(FE_INVALID | FE_OVERFLOW); // Floating point exceptions
@@ -35,11 +45,11 @@ int main() {
 #ifdef RASPBERRY_PI
     device::SerialPosix fc{"/dev/ttyFC", 115200};
     device::SerialPosix pdb{"/dev/ttyPDB", 115200};
-    //device::SerialPosix lora{"/dev/ttyNav", 115200};
+    // device::SerialPosix lora{"/dev/ttyNav", 115200};
     device::Gps gps{};
 #else
-    //recording::NameProvider replayNameProvider{"2020-04-07_15-16-45"};
-    //recording::NameProvider replayNameProvider{"2020-04-07_15-28-46"};
+    // recording::NameProvider replayNameProvider{"2020-04-07_15-16-45"};
+    // recording::NameProvider replayNameProvider{"2020-04-07_15-28-46"};
     recording::NameProvider replayNameProvider{"2020-04-07_15-35-41"};
     auto fcStream = replayNameProvider.getInputStream("fc");
     auto pdbStream = replayNameProvider.getInputStream("pdb");
@@ -73,10 +83,10 @@ int main() {
      */
     fc.getChannelOut() >> meshManager.getSerialIn();
     pdb.getChannelOut() >> meshManager.getPdbIn();
-    //lora.getChannelOut() >> meshManager.getLoraIn();
+    // lora.getChannelOut() >> meshManager.getLoraIn();
 
     meshManager.getSerialOut() >> fc.getChannelIn();
-    //meshManager.getLoraOut() >> lora.getChannelIn();
+    // meshManager.getLoraOut() >> lora.getChannelIn();
 
     meshManager.getFlightControllerOut() >> fusion.getFlightControllerIn();
     meshManager.getPdbOut() >> fusion.getPdbIn();
@@ -86,7 +96,7 @@ int main() {
     meshManager.getNavOut() >> fusion.getNavIn();
 
     pdb.getChannelOut() >> network.getChannelIn();
-    //lora.getChannelOut() >> network.getChannelIn();
+    // lora.getChannelOut() >> network.getChannelIn();
     fc.getChannelOut() >> network.getChannelIn();
     outputFilter.getNetworkOut() >> network.getChannelIn();
 
@@ -116,7 +126,7 @@ int main() {
 
     fc.getChannelOut() >> fcReceiveDebug.getChannelIn();
     pdb.getChannelOut() >> pdbReceiveDebug.getChannelIn();
-    //lora.getChannelOut() >> loraReceiveDebug.getChannelIn();
+    // lora.getChannelOut() >> loraReceiveDebug.getChannelIn();
     meshManager.getSerialOut() >> fcSendDebug.getChannelIn();
     meshManager.getLoraOut() >> loraSendDebug.getChannelIn();
     gps.getChannelOut() >> gpsDebug.getChannelIn();
@@ -136,11 +146,12 @@ int main() {
 
     fc.getChannelOut() >> fcRecorder.getChannelIn();
     pdb.getChannelOut() >> pdbRecorder.getChannelIn();
-    //lora.getChannelOut() >> loraRecorder.getChannelIn();
+    // lora.getChannelOut() >> loraRecorder.getChannelIn();
     gps.getChannelOut() >> gpsRecorder.getChannelIn();
 #endif
 
-    std::cout << "Started all modules!" << "\n";
+    std::cout << "Started all modules!"
+              << "\n";
     while (!fc.getChannelIn().isClosed()) {
         std::this_thread::sleep_for(24h);
     }

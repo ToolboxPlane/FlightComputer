@@ -5,11 +5,12 @@
  * @brief Network @TODO
  */
 
-#include <sys/socket.h>
+#include "Network.hpp"
+
 #include <arpa/inet.h>
 #include <cstring>
+#include <sys/socket.h>
 #include <utility>
-#include "Network.hpp"
 
 device::Network::Network(const std::string &address, bool enable) {
     if (!enable) {

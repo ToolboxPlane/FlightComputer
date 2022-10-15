@@ -8,14 +8,14 @@
 #include <thread>
 
 class Node {
-    protected:
-        virtual void run() = 0;
+  protected:
+    virtual void run() = 0;
 
-        void start() {
-            std::thread t(&Node::run, this);
-            t.detach();
-        }
+    void start() {
+        std::thread t(&Node::run, this);
+        t.detach();
+    }
 };
 
 
-#endif //FLIGHTCOMPUTER_THREADMODULE_HPP
+#endif // FLIGHTCOMPUTER_THREADMODULE_HPP

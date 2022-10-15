@@ -3,8 +3,10 @@
 //
 
 #include "Navigation.hpp"
-#include "../../Fusion/Type/State_t.hpp"
+
 #include <limits>
+
+#include "../../Fusion/Type/State_t.hpp"
 
 namespace filter {
     using namespace si::literals;
@@ -72,9 +74,7 @@ namespace filter {
     }
 
     void Navigation::launch(const State_t &state, bool reset) {
-        static enum {
-            IN_HAND, THROWN, CLIMB
-        } launchState = IN_HAND;
+        static enum { IN_HAND, THROWN, CLIMB } launchState = IN_HAND;
 
         if (reset) {
             launchState = IN_HAND;
@@ -89,8 +89,8 @@ namespace filter {
                 nav.speed = 0.0_speed;
                 nav.heading = state.yaw;
                 nav.altitude = state.position.altitude;
-                if (LAUNCH_THROW_THRESH < state.accX && std::abs(state.roll) < LAUNCH_MAX_ROLL
-                    && state.pitch > LAUNCH_MIN_PITCH && state.pitch < LAUNCH_MAX_PITCH) {
+                if (LAUNCH_THROW_THRESH < state.accX && std::abs(state.roll) < LAUNCH_MAX_ROLL &&
+                    state.pitch > LAUNCH_MIN_PITCH && state.pitch < LAUNCH_MAX_PITCH) {
                     headingTarget = state.yaw;
                     altitudeTarget = state.position.altitude + LAUNCH_TARGET_ALTITUDE;
                     launchState = THROWN;
@@ -158,10 +158,9 @@ namespace filter {
         auto targetAngle = angleFromCentre + LOITER_TARGET_ANGLE;
         auto latDist = std::cos(targetAngle / 180.0F * M_PI_F) * LOITER_RADIUS;
         auto lonDist = std::sin(targetAngle / 180.0F * M_PI_F) * LOITER_RADIUS;
-        Gps_t targetPosition{
-            centre.lat + static_cast<double>(latDist / EARTH_CIRCUMFERENCE * 360),
-            centre.lon + static_cast<double>(lonDist / EARTH_CIRCUMFERENCE * 360 / std::cos(centre.lat / 180 * M_PI_F))
-        };
+        Gps_t targetPosition{centre.lat + static_cast<double>(latDist / EARTH_CIRCUMFERENCE * 360),
+                             centre.lon + static_cast<double>(lonDist / EARTH_CIRCUMFERENCE * 360 /
+                                                              std::cos(centre.lat / 180 * M_PI_F))};
 
         nav.heading = state.position.angleTo(targetPosition);
         nav.speed = CRUISE_SPEED;
@@ -169,7 +168,7 @@ namespace filter {
 
         nav.heading =
 
-        nav.stateMajor = 3;
+                nav.stateMajor = 3;
         nav.stateMinor = 0;
         nav.state = state;
 
@@ -197,4 +196,4 @@ namespace filter {
 
         out.put(nav);
     }
-}
+} // namespace filter

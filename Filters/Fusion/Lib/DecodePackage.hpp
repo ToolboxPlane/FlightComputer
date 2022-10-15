@@ -8,8 +8,8 @@
 #ifndef FLIGHTCOMPUTER_DECODEPACKAGE_HPP
 #define FLIGHTCOMPUTER_DECODEPACKAGE_HPP
 
-#include "../Type/State_t.hpp"
 #include "../../../Devices/rcLib/RadioControlProtocolCpp/rcLib.hpp"
+#include "../Type/State_t.hpp"
 
 namespace fusion {
     auto normalizeTaranis(int input) -> si::Scalar<> {
@@ -101,12 +101,12 @@ namespace fusion {
     auto decodePackage<NavPackage>(const rcLib::Package &pkg) -> NavPackage {
         NavPackage navPackage;
         navPackage.rssi = -pkg.getChannel(0);
-        navPackage.baroAltitude = static_cast<float>(pkg.getChannel(1))  * si::meter;
+        navPackage.baroAltitude = static_cast<float>(pkg.getChannel(1)) * si::meter;
         navPackage.pitotVoltage = static_cast<float>(pkg.getChannel(2)) * si::volt;
         navPackage.usDistance = (pkg.getChannel(3) / 100.0F) * si::meter;
 
         return navPackage;
     }
-}
+} // namespace fusion
 
-#endif //FLIGHTCOMPUTER_DECODEPACKAGE_HPP
+#endif // FLIGHTCOMPUTER_DECODEPACKAGE_HPP

@@ -2,8 +2,9 @@
 // Created by paul on 15.03.18.
 //
 
-#include <random>
 #include "GpsSimulator.hpp"
+
+#include <random>
 
 namespace device {
     using namespace si::literals;
@@ -30,9 +31,8 @@ namespace device {
             GpsMeasurement_t gps{};
             auto noiseLat = (noiseDist(rng) * sigmaLat) / static_cast<float>(EARTH_CIRCUMFERENCE) * 360;
             gps.location.lat = 48.4235495 + noiseLat;
-            auto noiseLon =
-                    (noiseDist(rng) * sigmaLon) /
-                            static_cast<float>(EARTH_CIRCUMFERENCE) * 360 / std::cos(gps.location.lat / 180 * M_PI);
+            auto noiseLon = (noiseDist(rng) * sigmaLon) / static_cast<float>(EARTH_CIRCUMFERENCE) * 360 /
+                            std::cos(gps.location.lat / 180 * M_PI);
             gps.location.lon = 9.9292937 + noiseLon;
             gps.timestamp = si::Second<long double>{0};
             gps.location.altitude = 500_meter + noiseDist(rng) * sigmaVert * meter;
@@ -52,4 +52,4 @@ namespace device {
     auto GpsSimulator::getChannelOut() -> OutputChannel<GpsMeasurement_t> & {
         return out;
     }
-}
+} // namespace device

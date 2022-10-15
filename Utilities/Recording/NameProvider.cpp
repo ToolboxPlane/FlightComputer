@@ -7,9 +7,9 @@
 #include "NameProvider.hpp"
 
 #include <ctime>
-#include <sstream>
-#include <iomanip>
 #include <filesystem>
+#include <iomanip>
+#include <sstream>
 
 namespace recording {
     NameProvider::NameProvider() {
@@ -17,7 +17,7 @@ namespace recording {
         auto localTime = std::localtime(&time);
 
         std::stringstream dirNameStream;
-        dirNameStream << "Logs/Recording-" << std::put_time(localTime,"%Y-%m-%d_%H-%M-%S");
+        dirNameStream << "Logs/Recording-" << std::put_time(localTime, "%Y-%m-%d_%H-%M-%S");
 
         recordingPath = dirNameStream.str();
 
@@ -50,4 +50,4 @@ namespace recording {
         }
         return std::ifstream{recordingPath + "/" + device + ".csv"};
     }
-}
+} // namespace recording

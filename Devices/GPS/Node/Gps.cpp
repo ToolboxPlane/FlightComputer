@@ -3,6 +3,7 @@
 //
 
 #include "Gps.hpp"
+
 #include <gps.h>
 
 #if GPSD_API_MAJOR_VERSION >= 7
@@ -33,10 +34,10 @@ namespace device {
                     std::cerr << std::string{"[GPS]:\tError:"} + gps_errstr(errno) << std::endl;
                 } else {
                     if ((gps_data.status == STATUS_FIX || gps_data.status == STATUS_DGPS_FIX) &&
-                            gps_data.fix.mode == MODE_3D &&
-                            !std::isnan(gps_data.fix.latitude) && !std::isnan(gps_data.fix.longitude)
-                            && !std::isnan(gps_data.fix.altitude) && !std::isnan(gps_data.fix.epy)
-                            && !std::isnan(gps_data.fix.epx) && !std::isnan(gps_data.fix.epv)) {
+                        gps_data.fix.mode == MODE_3D && !std::isnan(gps_data.fix.latitude) &&
+                        !std::isnan(gps_data.fix.longitude) && !std::isnan(gps_data.fix.altitude) &&
+                        !std::isnan(gps_data.fix.epy) && !std::isnan(gps_data.fix.epx) &&
+                        !std::isnan(gps_data.fix.epv)) {
                         gps.fixAquired = true;
 
                         gps.timestamp = si::Second<long double>{static_cast<long double>(GPS_TIME(gps_data.fix.time))};
@@ -82,4 +83,4 @@ namespace device {
     auto Gps::getChannelOut() -> OutputChannel<GpsMeasurement_t> & {
         return out;
     }
-}
+} // namespace device

@@ -29,4 +29,4 @@ float gaussian_box_muller(float mu, float sigma);
  */
 float gaussian(float mu, float sigma, float x);
 
-#endif //FLIGHTCOMPUTER_RANDOM_UTIL_H
+#endif // FLIGHTCOMPUTER_RANDOM_UTIL_H

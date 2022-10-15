@@ -5,9 +5,10 @@
  * @brief PackageOstream @TODO
  */
 
+#include "PackageUtil.hpp"
+
 #include <cassert>
 #include <iostream>
-#include "PackageUtil.hpp"
 
 std::ostream &operator<<(std::ostream &ostream, const rcLib::Package &package) {
     ostream << "Sender: " << static_cast<int>(package.getDeviceId()) << "\tChannel: " << package.getChannelCount();
@@ -23,25 +24,25 @@ std::ostream &operator<<(std::ostream &ostream, const rcLib::Package &package) {
 }
 
 namespace recording {
-    template <>
+    template<>
     auto header<rcLib::Package>() -> std::string {
         return "Transmitter-ID; Resolution; Channel-Count; Channel-Data";
     }
 
-    template <>
+    template<>
     auto getLine<rcLib::Package>(const rcLib::Package &package) -> std::string {
         std::stringstream stringstream;
         stringstream << static_cast<int>(package.getDeviceId()) << "; ";
         stringstream << package.getResolution() << "; ";
         stringstream << package.getChannelCount();
 
-        for(auto c=0; c<package.getChannelCount(); c++) {
+        for (auto c = 0; c < package.getChannelCount(); c++) {
             stringstream << "; " << package.getChannel(static_cast<uint8_t>(c));
         }
         return stringstream.str();
     }
 
-    template <>
+    template<>
     auto getItem<rcLib::Package>(const std::vector<std::string> &line) -> rcLib::Package {
         assert(line.size() > 3);
         auto deviceId = static_cast<uint8_t>(std::stoi(line[0]));
@@ -53,10 +54,10 @@ namespace recording {
         rcLib::Package pkg{resolution, channelCount};
         pkg.setDeviceId(deviceId);
 
-        for (auto c=0; c<channelCount; ++c) {
-            pkg.setChannel(c, std::stoi(line[c+3]));
+        for (auto c = 0; c < channelCount; ++c) {
+            pkg.setChannel(c, std::stoi(line[c + 3]));
         }
 
         return pkg;
     }
-}
+} // namespace recording

@@ -6,41 +6,41 @@
 #define FLIGHTCOMPUTER_MIMOCHANNEL_HPP
 
 #include <vector>
+
 #include "InputChannel.hpp"
 
 template<typename T>
 class OutputChannel {
-    public:
-        OutputChannel() = default;
+  public:
+    OutputChannel() = default;
 
-        OutputChannel(const OutputChannel<T> &) = delete;
+    OutputChannel(const OutputChannel<T> &) = delete;
 
-        OutputChannel &operator=(const OutputChannel<T> &) = delete;
+    OutputChannel &operator=(const OutputChannel<T> &) = delete;
 
-        void put(T item) {
-            for (auto &channel: outputChannelList) {
-                if (!channel.get().isClosed()) {
-                    channel.get().put(item);
-                }
+    void put(T item) {
+        for (auto &channel : outputChannelList) {
+            if (!channel.get().isClosed()) {
+                channel.get().put(item);
             }
         }
+    }
 
-        void operator>>(InputChannel<T> &channel) {
-            outputChannelList.emplace_back(channel);
-        }
+    void operator>>(InputChannel<T> &channel) {
+        outputChannelList.emplace_back(channel);
+    }
 
-        void close() {
-            for (auto &channel : outputChannelList) {
-                if (!channel.get().isClosed()) {
-                    channel.get().close();
-                }
+    void close() {
+        for (auto &channel : outputChannelList) {
+            if (!channel.get().isClosed()) {
+                channel.get().close();
             }
         }
+    }
 
-    private:
-        std::vector<std::reference_wrapper<InputChannel<T>>> outputChannelList;
-
+  private:
+    std::vector<std::reference_wrapper<InputChannel<T>>> outputChannelList;
 };
 
 
-#endif //FLIGHTCOMPUTER_MIMOCHANNEL_HPP
+#endif // FLIGHTCOMPUTER_MIMOCHANNEL_HPP

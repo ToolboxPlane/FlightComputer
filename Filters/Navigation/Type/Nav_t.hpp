@@ -6,22 +6,23 @@
 #define FLIGHTCOMPUTER_NAV_T_HPP
 
 #include <ostream>
+
 #include "../../Fusion/Type/State_t.hpp"
 
 class Nav_t {
-    public:
-        si::default_type heading;
-        si::Speed<> speed;
-        si::Meter<> altitude;
-        uint16_t stateMajor, stateMinor;
-        State_t state;
+  public:
+    si::default_type heading;
+    si::Speed<> speed;
+    si::Meter<> altitude;
+    uint16_t stateMajor, stateMinor;
+    State_t state;
 
-        friend std::ostream &operator<<(std::ostream &stream, Nav_t nav) {
-            stream << "Heading: " << nav.heading << "\tSpeed : " << nav.speed << "\taltitude: " << nav.altitude;
-            stream << "\tMaj: " << nav.stateMajor << "\tMin: " << nav.stateMinor;
-            return stream;
-        }
+    friend std::ostream &operator<<(std::ostream &stream, Nav_t nav) {
+        stream << "Heading: " << nav.heading << "\tSpeed : " << nav.speed << "\taltitude: " << nav.altitude;
+        stream << "\tMaj: " << nav.stateMajor << "\tMin: " << nav.stateMinor;
+        return stream;
+    }
 };
 
 
-#endif //FLIGHTCOMPUTER_NAV_T_HPP
+#endif // FLIGHTCOMPUTER_NAV_T_HPP

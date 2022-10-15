@@ -2,9 +2,11 @@
 // Created by paul on 15.03.18.
 //
 
-#include <iostream>
-#include "../../Devices/rcLib/PackageUtil.hpp"
 #include "MeshManager.hpp"
+
+#include <iostream>
+
+#include "../../Devices/rcLib/PackageUtil.hpp"
 
 namespace filter {
     enum class DeviceId {
@@ -129,10 +131,10 @@ namespace filter {
                 std::cerr << "[MeshManager]:\tSome external device creates loops in the network: " << pkg << std::endl;
                 break;
             default:
-                std::cerr << "[MeshManager]:\tUnknown Device ("
-                        << static_cast<int>(pkg.getDeviceId()) << ")" << std::endl;
+                std::cerr << "[MeshManager]:\tUnknown Device (" << static_cast<int>(pkg.getDeviceId()) << ")"
+                          << std::endl;
                 break;
         }
     }
 
-}
+} // namespace filter

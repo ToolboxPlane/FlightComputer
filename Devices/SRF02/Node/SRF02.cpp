@@ -4,11 +4,12 @@
  * @date 14.03.20
  * Description here TODO
  */
-#include <fcntl.h>
+#include "SRF02.hpp"
+
 #include <cstring>
+#include <fcntl.h>
 #include <termios.h>
 #include <zconf.h>
-#include "SRF02.hpp"
 
 namespace device {
     device::SRF02::SRF02(const std::string &port) {
@@ -23,7 +24,7 @@ namespace device {
             throw std::runtime_error(std::string{"SRF02:\t"} + strerror(errno));
         }
 
-        cfsetispeed(&tty, B19200);                    // Set the baud rates to 19200
+        cfsetispeed(&tty, B19200); // Set the baud rates to 19200
         cfmakeraw(&tty);
         tty.c_cc[VMIN] = 1;
         tty.c_cc[VTIME] = 50;
@@ -80,4 +81,4 @@ namespace device {
             }
         } while (written < buffer.size());
     }
-}
+} // namespace device

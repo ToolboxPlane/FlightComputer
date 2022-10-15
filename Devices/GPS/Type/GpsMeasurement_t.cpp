@@ -5,16 +5,17 @@
  * Description here TODO
  */
 
-#include <cassert>
 #include "GpsMeasurement_t.hpp"
 
+#include <cassert>
+
 namespace recording {
-    template <>
+    template<>
     auto header<GpsMeasurement_t>() -> std::string {
         return "Timestamp; Fix; Lat; Lon; Altitude; Speed; Climb; EpLat; EpLon; EpVert; EpSpeed; EpClimb";
     }
 
-    template <>
+    template<>
     auto getLine<GpsMeasurement_t>(const GpsMeasurement_t &gpsMeasurement) -> std::string {
         std::stringstream stringstream;
         stringstream << static_cast<long double>(gpsMeasurement.timestamp) << "; ";
@@ -52,4 +53,4 @@ namespace recording {
 
         return measurement;
     }
-}
+} // namespace recording

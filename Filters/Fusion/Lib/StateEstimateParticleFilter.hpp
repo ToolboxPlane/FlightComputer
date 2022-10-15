@@ -8,33 +8,32 @@
 #ifndef FLIGHTCOMPUTER_STATEESTIMATEPARTICLEFILTER_HPP
 #define FLIGHTCOMPUTER_STATEESTIMATEPARTICLEFILTER_HPP
 
-#include <vector>
 #include <chrono>
+#include <vector>
 
 extern "C" {
-    #include "system.h"
+#include "system.h"
 }
 
 #include "../Type/State_t.hpp"
 
 class StateEstimateParticleFilter {
-    public:
-        StateEstimateParticleFilter();
+  public:
+    StateEstimateParticleFilter();
 
-        auto update(si::Second<> dt, const FlightControllerPackage &flightControllerPackage,
-                    const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage,
-                    si::Meter<> additionalBaroUncertainty)
-        -> system_state_t;
+    auto update(si::Second<> dt, const FlightControllerPackage &flightControllerPackage,
+                const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage,
+                si::Meter<> additionalBaroUncertainty) -> system_state_t;
 
-    private:
-        void init(std::size_t numberOfParticles, const FlightControllerPackage &flightControllerPackage,
-                    const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage);
+  private:
+    void init(std::size_t numberOfParticles, const FlightControllerPackage &flightControllerPackage,
+              const GpsMeasurement_t &gpsMeasurement, const NavPackage &navPackage);
 
-        template <typename T>
-        void kahanSum(T &sum, T &comp, T toAdd);
+    template<typename T>
+    void kahanSum(T &sum, T &comp, T toAdd);
 
-        std::vector<weighted_particle_t> particles;
+    std::vector<weighted_particle_t> particles;
 };
 
 
-#endif //FLIGHTCOMPUTER_STATEESTIMATEPARTICLEFILTER_HPP
+#endif // FLIGHTCOMPUTER_STATEESTIMATEPARTICLEFILTER_HPP

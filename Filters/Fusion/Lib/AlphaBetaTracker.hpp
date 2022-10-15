@@ -14,49 +14,52 @@
  */
 template<typename T>
 class AlphaBetaTracker {
-    public:
-        using f_type = typename T::type;
-        using x_type = T;
-        using v_type = decltype(T{} / si::Second<f_type>{});
-        using z_type = x_type;
-        using sigma_v_type = v_type;
-        using sigma_w_type = z_type;
-        using sigma2_v_type = decltype(sigma_v_type{} * sigma_v_type{});
-        using sigma2_w_type = decltype(sigma_w_type{} * sigma_w_type{});
+  public:
+    using f_type = typename T::type;
+    using x_type = T;
+    using v_type = decltype(T{} / si::Second<f_type>{});
+    using z_type = x_type;
+    using sigma_v_type = v_type;
+    using sigma_w_type = z_type;
+    using sigma2_v_type = decltype(sigma_v_type{} * sigma_v_type{});
+    using sigma2_w_type = decltype(sigma_w_type{} * sigma_w_type{});
 
-        AlphaBetaTracker(sigma_v_type sigma_v, sigma_w_type sigma_w,
-                         x_type x_hat = x_type{0}, v_type v_hat = v_type{0});
+    AlphaBetaTracker(sigma_v_type sigma_v, sigma_w_type sigma_w, x_type x_hat = x_type{0}, v_type v_hat = v_type{0});
 
-        void addMeasurement(z_type z, si::Second<> dt);
+    void addMeasurement(z_type z, si::Second<> dt);
 
-        auto getStateEstimate() const -> std::pair<x_type, v_type>;
+    auto getStateEstimate() const -> std::pair<x_type, v_type>;
 
-        auto getMeasurementEstimate() const -> z_type;
+    auto getMeasurementEstimate() const -> z_type;
 
-        auto updateMeasurementNoise(z_type z) -> sigma_w_type;
+    auto updateMeasurementNoise(z_type z) -> sigma_w_type;
 
-        auto getNIS() const -> f_type;
+    auto getNIS() const -> f_type;
 
-        constexpr auto getNIS95Bound() const -> f_type;
+    constexpr auto getNIS95Bound() const -> f_type;
 
-    private:
-        sigma_v_type sigma_v;
-        sigma_w_type sigma_w;
-        x_type x_hat;
-        v_type v_hat;
-        f_type nis;
+  private:
+    sigma_v_type sigma_v;
+    sigma_w_type sigma_w;
+    x_type x_hat;
+    v_type v_hat;
+    f_type nis;
 
-        std::list<z_type> measurements;
+    std::list<z_type> measurements;
 };
 
 template<typename T>
-AlphaBetaTracker<T>::AlphaBetaTracker(sigma_v_type sigma_v, sigma_w_type sigma_w, x_type x_hat, v_type v_hat)
-        : sigma_v{sigma_v}, sigma_w{sigma_w}, x_hat{x_hat}, v_hat{v_hat} {}
+AlphaBetaTracker<T>::AlphaBetaTracker(sigma_v_type sigma_v, sigma_w_type sigma_w, x_type x_hat, v_type v_hat) :
+    sigma_v{sigma_v},
+    sigma_w{sigma_w},
+    x_hat{x_hat},
+    v_hat{v_hat} {
+}
 
 template<typename T>
 void AlphaBetaTracker<T>::addMeasurement(z_type z, si::Second<> dt) {
     // Calculate Kalman Gain
-    const auto lambda = static_cast<f_type >(sigma_v * dt * dt / sigma_w);
+    const auto lambda = static_cast<f_type>(sigma_v * dt * dt / sigma_w);
     const auto lambda2 = lambda * lambda;
     const auto alpha = -0.125F * (lambda2 + 8 * lambda - (lambda + 4) * (std::sqrt(lambda2 + 8 * lambda)));
     const auto beta = 0.25F * (lambda2 + 4 * lambda - lambda * std::sqrt(lambda2 + 8 * lambda));
@@ -134,4 +137,4 @@ auto AlphaBetaTracker<T>::updateMeasurementNoise(z_type z) -> sigma_w_type {
 }
 
 
-#endif //FLIGHTCOMPUTER_ALPHABETATRACKER_HPP
+#endif // FLIGHTCOMPUTER_ALPHABETATRACKER_HPP
