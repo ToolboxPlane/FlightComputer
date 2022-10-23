@@ -22,7 +22,7 @@ namespace filter {
         this->start();
     }
 
-    OutputChannel<State_t> &Fusion::getChannelOut() {
+    OutputChannel<FusionResult> &Fusion::getChannelOut() {
         return out;
     }
 
@@ -30,27 +30,23 @@ namespace filter {
         return gpsIn;
     }
 
-    InputChannel<rcLib::Package> &Fusion::getFlightControllerIn() {
+    InputChannel<FlightControllerPackage> &Fusion::getFlightControllerIn() {
         return flightControllerIn;
     }
 
-    InputChannel<rcLib::Package> &Fusion::getBaseIn() {
-        return baseIn;
-    }
-
-    InputChannel<rcLib::Package> &Fusion::getRemoteIn() {
+    InputChannel<LoraPackage> &Fusion::getRemoteIn() {
         return remoteIn;
     }
 
-    InputChannel<rcLib::Package> &Fusion::getPdbIn() {
+    InputChannel<PdbPackage> &Fusion::getPdbIn() {
         return pdbIn;
     }
 
-    InputChannel<rcLib::Package> &Fusion::getTaranisIn() {
+    InputChannel<TaranisPackage> &Fusion::getTaranisIn() {
         return taranisIn;
     }
 
-    InputChannel<rcLib::Package> &Fusion::getNavIn() {
+    InputChannel<NavPackage> &Fusion::getNavIn() {
         return navIn;
     }
 
@@ -61,8 +57,6 @@ namespace filter {
             while (pdbIn.get(lastPdbPackage))
                 ;
             while (taranisIn.get(lastTaranisPackage))
-                ;
-            while (baseIn.get(lastBasePackage))
                 ;
             while (remoteIn.get(lastRemotePackage))
                 ;
@@ -80,22 +74,22 @@ namespace filter {
     }
 
     void Fusion::process() {
-        State_t res{};
+        FusionResult res{};
 
         if (lastPdbPackage.has_value()) {
-            res.pdbPackage = fusion::decodePackage<PdbPackage>(lastPdbPackage.value());
+            res.pdbPackage = lastPdbPackage.value();
         } else {
             std::cout << "No PDB Package received!" << std::endl;
         }
 
         if (lastTaranisPackage.has_value()) {
-            res.taranisPackage = fusion::decodePackage<TaranisPackage>(lastTaranisPackage.value());
+            res.taranisPackage = lastTaranisPackage.value();
         } else {
             std::cout << "No Taranis Package received!" << std::endl;
         }
 
         if (lastRemotePackage.has_value()) {
-            res.loraRemote = fusion::decodePackage<LoraPackage>(lastRemotePackage.value());
+            res.loraRemote = lastRemotePackage.value();
         } else {
             std::cout << "No Lora-Remote Package received!" << std::endl;
         }
@@ -111,7 +105,7 @@ namespace filter {
         }
 
 
-        auto flightControllerData = fusion::decodePackage<FlightControllerPackage>(lastFcPackage);
+        auto flightControllerData = lastFcPackage;
         auto gpsMeasurement = lastGpsMeasurement.value();
         auto navData = NavPackage{}; // fusion::decodePackage<NavPackage>(lastNavPackage.value()); //@TODO hack here
 
@@ -170,8 +164,8 @@ namespace filter {
             calibration.applyCalib(startTime, flightControllerData, gpsMeasurement, navData);
 
 
-            auto state = particleFilter.update(dt, flightControllerData, gpsMeasurement, navData,
-                                               calibration.getAdditionalBaroUncertainty());
+            auto pfState = particleFilter.update(dt, flightControllerData, gpsMeasurement, navData,
+                                                 calibration.getAdditionalBaroUncertainty());
 
             lastGpsMeasurement->location.lat = NAN;
             lastGpsMeasurement->location.lon = NAN;
@@ -183,26 +177,28 @@ namespace filter {
             accYFilter.addMeasurement(flightControllerData.accY, dt);
             accZFilter.addMeasurement(flightControllerData.accZ, dt);
 
-            res.roll = state.roll_angle;
-            res.rollDeriv = state.roll_deriv * si::hertz;
-            res.pitch = state.pitch_angle;
-            res.pitchDeriv = state.pitch_deriv * si::hertz;
-            res.yaw = state.yaw_angle;
-            res.yawDeriv = state.yaw_deriv * si::hertz;
-            res.speed = state.speed * si::speed;
-            res.position.altitude = state.altitude * si::meter;
-            res.altitudeAboveGround = state.altitude_above_ground * si::meter;
-            res.altitudeGround = res.position.altitude - res.altitudeAboveGround;
-            res.position.lat = state.lat;
-            res.position.lon = state.lon;
-            res.accX = accXFilter.getMeasurementEstimate();
-            res.accY = accYFilter.getMeasurementEstimate();
-            res.accZ = accZFilter.getMeasurementEstimate();
-            res.startTime = calibration.getStartTime();
-            res.startLocation = calibration.getStartLocation();
+            State state{};
+            state.roll = pfState.roll_angle;
+            state.rollDeriv = pfState.roll_deriv * si::hertz;
+            state.pitch = pfState.pitch_angle;
+            state.pitchDeriv = pfState.pitch_deriv * si::hertz;
+            state.yaw = pfState.yaw_angle;
+            state.yawDeriv = pfState.yaw_deriv * si::hertz;
+            state.speed = pfState.speed * si::speed;
+            state.position.altitude = pfState.altitude * si::meter;
+            state.altitudeAboveGround = pfState.altitude_above_ground * si::meter;
+            state.altitudeGround = state.position.altitude - state.altitudeAboveGround;
+            state.position.lat = pfState.lat;
+            state.position.lon = pfState.lon;
+            state.accX = accXFilter.getMeasurementEstimate();
+            state.accY = accYFilter.getMeasurementEstimate();
+            state.accZ = accZFilter.getMeasurementEstimate();
+            state.startTime = calibration.getStartTime();
+            state.startLocation = calibration.getStartLocation();
 
-            res.rawFlightControllerData = flightControllerData;
+            res.flightControllerPackage = flightControllerData;
             res.navPackage = navData;
+            res.state = state;
 
             std::cout << "dt=" << dt << "\truntime=" << util::time::get() - startTime << std::endl;
 

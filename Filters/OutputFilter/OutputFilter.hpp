@@ -11,25 +11,24 @@
 #include "../../Framework/Node.hpp"
 #include "../../Framework/OutputChannel.hpp"
 #include "../FeedbackControl/Type/Control_t.hpp"
+#include "OutputTypes.hpp"
 
 namespace filter {
     class OutputFilter : public Node {
       public:
         OutputFilter();
 
-        OutputChannel<rcLib::Package> &getBaseOut();
+        OutputChannel<FlightControllerSetpoint> &getFlightControllerOut();
 
-        OutputChannel<rcLib::Package> &getFlightControllerOut();
+        //OutputChannel<> &getDebugOut();
 
-        OutputChannel<rcLib::Package> &getNetworkOut();
-
-        InputChannel<Control_t> &getChannelIn();
+        InputChannel<Control> &getChannelIn();
 
       private:
         void run() override;
 
-        OutputChannel<rcLib::Package> flightControllerOut, baseOut, networkOut;
-        InputChannel<Control_t> in;
+        OutputChannel<FlightControllerSetpoint> flightControllerOut;
+        InputChannel<Control> in;
     };
 } // namespace filter
 

@@ -1,9 +1,6 @@
-[submodule "Devices/RadioControlProtocol"]
-	path = Devices/rcLib/RadioControlProtocol
-	url = https://github.com/ToolboxPlane/RadioControlProtocol.git
-[submodule "Devices/rcLib/RadioControlProtocolCpp"]
-	path = Devices/rcLib/RadioControlProtocolCpp
-	url =  https://github.com/ToolboxPlane/RadioControlProtocolCpp.git
 [submodule "Utilities/SI"]
 	path = Utilities/SI
 	url = https://github.com/teamspatzenhirn/SI.git
+[submodule "Filters/MessageCoding/Lib/Messages"]
+	path = Filters/MessageCoding/Lib/Messages
+	url = git@github.com:ToolboxPlane/Messages.git

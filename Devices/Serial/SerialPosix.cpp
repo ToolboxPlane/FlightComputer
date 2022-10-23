@@ -55,7 +55,8 @@ namespace device {
 
     void SerialPosix::run() {
         std::array<uint8_t, BUF_SIZE> buffer{};
-        rcLib::Package pkgIn, pkgOut;
+        uint8_t toSend;
+        std::vector<uint8_t> toSendBuf{};
 
         while (!in.isClosed()) {
             /*
@@ -65,14 +66,14 @@ namespace device {
              */
             auto readed = read(this->fd, buffer.data(), BUF_SIZE);
             for (auto c = 0; c < readed; c++) {
-                if (pkgOut.decode(buffer[c])) {
-                    out.put(pkgOut);
-                }
+                out.put(buffer[c]);
             }
 
-            while (in.get(pkgIn, false)) {
-                auto len = pkgIn.encode();
-                this->sendBuff(pkgIn.getEncodedData(), len);
+            while (in.get(toSend, false)) {
+                toSendBuf.emplace_back(toSend);
+            }
+            if (not toSendBuf.empty()) {
+                sendBuff(toSendBuf.data(), toSendBuf.size());
             }
             std::this_thread::yield();
         }
@@ -299,11 +300,11 @@ namespace device {
         }
     }
 
-    auto SerialPosix::getChannelIn() -> InputChannel<rcLib::Package> & {
+    auto SerialPosix::getChannelIn() -> InputChannel<uint8_t> & {
         return in;
     }
 
-    auto SerialPosix::getChannelOut() -> OutputChannel<rcLib::Package> & {
+    auto SerialPosix::getChannelOut() -> OutputChannel<uint8_t> & {
         return out;
     }
 

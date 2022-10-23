@@ -24,38 +24,39 @@ namespace filter {
 
         void run() override;
 
-        InputChannel<rcLib::Package> &getFlightControllerIn();
+        InputChannel<FlightControllerPackage> &getFlightControllerIn();
 
-        InputChannel<rcLib::Package> &getBaseIn();
+        InputChannel<LoraPackage> &getRemoteIn();
 
-        InputChannel<rcLib::Package> &getRemoteIn();
+        InputChannel<TaranisPackage> &getTaranisIn();
 
-        InputChannel<rcLib::Package> &getTaranisIn();
-
-        InputChannel<rcLib::Package> &getPdbIn();
+        InputChannel<PdbPackage> &getPdbIn();
 
         InputChannel<GpsMeasurement_t> &getGpsIn();
 
-        InputChannel<rcLib::Package> &getNavIn();
+        InputChannel<NavPackage> &getNavIn();
 
-        OutputChannel<State_t> &getChannelOut();
+        OutputChannel<FusionResult> &getChannelOut();
 
       private:
-        InputChannel<rcLib::Package> baseIn, flightControllerIn, remoteIn, pdbIn, taranisIn, navIn;
+        InputChannel<FlightControllerPackage> flightControllerIn;
+        InputChannel<LoraPackage> remoteIn;
+        InputChannel<PdbPackage> pdbIn;
+        InputChannel<TaranisPackage> taranisIn;
+        InputChannel<NavPackage> navIn;
         InputChannel<GpsMeasurement_t> gpsIn;
-        OutputChannel<State_t> out;
+        OutputChannel<FusionResult> out;
 
         void process();
 
         si::Second<long double> lastUpdate;
 
-        rcLib::Package lastFcPackage;
-        std::optional<rcLib::Package> lastPdbPackage;
+        FlightControllerPackage lastFcPackage;
+        std::optional<PdbPackage> lastPdbPackage;
         std::optional<GpsMeasurement_t> lastGpsMeasurement;
-        std::optional<rcLib::Package> lastBasePackage;
-        std::optional<rcLib::Package> lastTaranisPackage;
-        std::optional<rcLib::Package> lastRemotePackage;
-        std::optional<rcLib::Package> lastNavPackage;
+        std::optional<TaranisPackage> lastTaranisPackage;
+        std::optional<LoraPackage> lastRemotePackage;
+        std::optional<NavPackage> lastNavPackage;
 
         StateEstimateParticleFilter particleFilter;
         AlphaBetaTracker<si::Acceleration<>> accXFilter, accYFilter, accZFilter;

@@ -16,11 +16,11 @@ namespace filter {
         this->start();
     }
 
-    OutputChannel<Nav_t> &Navigation::getChannelOut() {
+    OutputChannel<Nav> &Navigation::getChannelOut() {
         return out;
     }
 
-    InputChannel<State_t> &Navigation::getChannelStateIn() {
+    InputChannel<FusionResult> &Navigation::getChannelStateIn() {
         return stateIn;
     }
 
@@ -29,51 +29,51 @@ namespace filter {
     }
 
     void Navigation::run() {
-        State_t currentState{};
+        FusionResult fusionResult{};
         static auto lastFlightMode = FlightMode::RTH;
 
         while (!stateIn.isClosed()) {
-            if (stateIn.get(currentState)) {
-                switch (currentState.loraRemote.flightMode) {
+            if (stateIn.get(fusionResult)) {
+                switch (fusionResult.loraRemote.flightMode) {
                     case FlightMode::RTH:
-                        rth(currentState, lastFlightMode != currentState.loraRemote.flightMode);
+                        rth(fusionResult, lastFlightMode != fusionResult.loraRemote.flightMode);
                         break;
                     case FlightMode::LAUNCH:
-                        launch(currentState, lastFlightMode != currentState.loraRemote.flightMode);
+                        launch(fusionResult, lastFlightMode != fusionResult.loraRemote.flightMode);
                         break;
                     case FlightMode::LAND:
-                        land(currentState, lastFlightMode != currentState.loraRemote.flightMode);
+                        land(fusionResult, lastFlightMode != fusionResult.loraRemote.flightMode);
                         break;
                     case FlightMode::LOITER:
-                        loiter(currentState, lastFlightMode != currentState.loraRemote.flightMode);
+                        loiter(fusionResult, lastFlightMode != fusionResult.loraRemote.flightMode);
                         break;
                     case FlightMode::WAYPOINT:
-                        waypoint(currentState, lastFlightMode != currentState.loraRemote.flightMode);
+                        waypoint(fusionResult, lastFlightMode != fusionResult.loraRemote.flightMode);
                         break;
                     default:
                         std::cerr << "FlightMode not valid!" << std::endl;
                 }
-                lastFlightMode = currentState.loraRemote.flightMode;
+                lastFlightMode = fusionResult.loraRemote.flightMode;
             }
         }
     }
 
-    void Navigation::rth(const State_t &currentState, bool) {
-        Nav_t nav{};
+    void Navigation::rth(const FusionResult &fusionResult, bool) {
+        Nav nav{};
 
-        nav.heading = currentState.position.angleTo(currentState.startLocation);
-        nav.altitude = currentState.startLocation.altitude + RTH_ALTITUDE;
+        nav.heading = fusionResult.state.position.angleTo(fusionResult.state.startLocation);
+        nav.altitude = fusionResult.state.startLocation.altitude + RTH_ALTITUDE;
 
         nav.speed = CRUISE_SPEED;
 
         nav.stateMajor = 0;
         nav.stateMinor = 0;
-        nav.state = currentState;
+        nav.fusionResult = fusionResult;
 
         out.put(nav);
     }
 
-    void Navigation::launch(const State_t &state, bool reset) {
+    void Navigation::launch(const FusionResult &fusionResult, bool reset) {
         static enum { IN_HAND, THROWN, CLIMB } launchState = IN_HAND;
 
         if (reset) {
@@ -82,17 +82,18 @@ namespace filter {
         static si::default_type headingTarget;
         static si::Meter<> altitudeTarget;
 
-        Nav_t nav{};
+        Nav nav{};
 
         switch (launchState) {
             case IN_HAND:
                 nav.speed = 0.0_speed;
-                nav.heading = state.yaw;
-                nav.altitude = state.position.altitude;
-                if (LAUNCH_THROW_THRESH < state.accX && std::abs(state.roll) < LAUNCH_MAX_ROLL &&
-                    state.pitch > LAUNCH_MIN_PITCH && state.pitch < LAUNCH_MAX_PITCH) {
-                    headingTarget = state.yaw;
-                    altitudeTarget = state.position.altitude + LAUNCH_TARGET_ALTITUDE;
+                nav.heading = fusionResult.state.yaw;
+                nav.altitude = fusionResult.state.position.altitude;
+                if (LAUNCH_THROW_THRESH < fusionResult.state.accX &&
+                    std::abs(fusionResult.state.roll) < LAUNCH_MAX_ROLL &&
+                    fusionResult.state.pitch > LAUNCH_MIN_PITCH && fusionResult.state.pitch < LAUNCH_MAX_PITCH) {
+                    headingTarget = fusionResult.state.yaw;
+                    altitudeTarget = fusionResult.state.position.altitude + LAUNCH_TARGET_ALTITUDE;
                     launchState = THROWN;
                 }
                 break;
@@ -100,7 +101,7 @@ namespace filter {
                 nav.speed = std::numeric_limits<si::default_type>::max() * si::speed;
                 nav.altitude = altitudeTarget;
                 nav.heading = headingTarget;
-                if (CRUISE_SPEED < state.speed) {
+                if (CRUISE_SPEED < fusionResult.state.speed) {
                     launchState = CLIMB;
                 }
                 break;
@@ -113,48 +114,48 @@ namespace filter {
 
         nav.stateMajor = 1;
         nav.stateMinor = launchState;
-        nav.state = state;
+        nav.fusionResult = fusionResult;
 
         out.put(nav);
     }
 
-    void Navigation::land(const State_t &state, bool reset) {
-        static auto targetHeading = state.yaw;
+    void Navigation::land(const FusionResult &fusionResult, bool reset) {
+        static auto targetHeading = fusionResult.state.yaw;
         if (reset) {
-            targetHeading = state.yaw;
+            targetHeading = fusionResult.state.yaw;
         }
 
-        Nav_t nav{};
+        Nav nav{};
         nav.speed = 0_speed;
         nav.heading = targetHeading;
-        if (LANDING_APPROACH_ALTITUDE + 0.1_meter < state.altitudeAboveGround) { // Approach
-            nav.altitude = state.altitudeGround + LANDING_APPROACH_ALTITUDE;
+        if (LANDING_APPROACH_ALTITUDE + 0.1_meter < fusionResult.state.altitudeAboveGround) { // Approach
+            nav.altitude = fusionResult.state.altitudeGround + LANDING_APPROACH_ALTITUDE;
             nav.stateMinor = 0;
-        } else if (LANDING_SPEED < state.speed) { // Slow Down
-            nav.altitude = state.altitudeAboveGround + LANDING_APPROACH_ALTITUDE;
+        } else if (LANDING_SPEED < fusionResult.state.speed) { // Slow Down
+            nav.altitude = fusionResult.state.altitudeAboveGround + LANDING_APPROACH_ALTITUDE;
             nav.stateMinor = 1;
-        } else if (LANDING_FLARE_ALTITUDE < state.altitudeAboveGround) { // Landing
+        } else if (LANDING_FLARE_ALTITUDE < fusionResult.state.altitudeAboveGround) { // Landing
             nav.altitude = LANDING_FLARE_ALTITUDE - 0.1_meter;
             nav.stateMinor = 2;
         } else { // Flare
-            nav.altitude = state.position.altitude + 100_meter;
+            nav.altitude = fusionResult.state.position.altitude + 100_meter;
             nav.stateMinor = 3;
         }
 
         nav.stateMajor = 2;
-        nav.state = state;
+        nav.fusionResult = fusionResult;
 
         out.put(nav);
     }
 
-    void Navigation::loiter(const State_t &state, bool reset) {
-        Nav_t nav{};
-        static auto centre = state.position;
+    void Navigation::loiter(const FusionResult &fusionResult, bool reset) {
+        Nav nav{};
+        static auto centre = fusionResult.state.position;
         if (reset) {
-            centre = state.position;
+            centre = fusionResult.state.position;
         }
 
-        auto angleFromCentre = centre.angleTo(state.position);
+        auto angleFromCentre = centre.angleTo(fusionResult.state.position);
         auto targetAngle = angleFromCentre + LOITER_TARGET_ANGLE;
         auto latDist = std::cos(targetAngle / 180.0F * M_PI_F) * LOITER_RADIUS;
         auto lonDist = std::sin(targetAngle / 180.0F * M_PI_F) * LOITER_RADIUS;
@@ -162,7 +163,7 @@ namespace filter {
                              centre.lon + static_cast<double>(lonDist / EARTH_CIRCUMFERENCE * 360 /
                                                               std::cos(centre.lat / 180 * M_PI_F))};
 
-        nav.heading = state.position.angleTo(targetPosition);
+        nav.heading = fusionResult.state.position.angleTo(targetPosition);
         nav.speed = CRUISE_SPEED;
         nav.altitude = centre.altitude;
 
@@ -170,29 +171,30 @@ namespace filter {
 
                 nav.stateMajor = 3;
         nav.stateMinor = 0;
-        nav.state = state;
+        nav.fusionResult = fusionResult;
 
         out.put(nav);
     }
 
-    void Navigation::waypoint(const State_t &currentState, bool) {
-        static Waypoint_t nextWaypoint(currentState.position, std::numeric_limits<si::default_type>::max(), false);
+    void Navigation::waypoint(const FusionResult &fusionResult, bool) {
+        static Waypoint_t nextWaypoint(fusionResult.state.position, std::numeric_limits<si::default_type>::max(),
+                                       false);
         static uint16_t waypointIndex = 0;
-        Nav_t nav{};
+        Nav nav{};
 
-        if (currentState.position.distanceTo(nextWaypoint.location) < nextWaypoint.maxDelta) {
+        if (fusionResult.state.position.distanceTo(nextWaypoint.location) < nextWaypoint.maxDelta) {
             waypointIn.get(nextWaypoint);
             waypointIndex++;
         }
 
-        nav.heading = currentState.position.angleTo(nextWaypoint.location);
+        nav.heading = fusionResult.state.position.angleTo(nextWaypoint.location);
         nav.altitude = nextWaypoint.location.altitude;
 
         nav.speed = CRUISE_SPEED;
 
         nav.stateMajor = 4;
         nav.stateMinor = waypointIndex;
-        nav.state = currentState;
+        nav.fusionResult = fusionResult;
 
         out.put(nav);
     }

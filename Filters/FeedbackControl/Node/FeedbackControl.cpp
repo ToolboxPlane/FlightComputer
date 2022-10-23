@@ -21,37 +21,37 @@ namespace filter {
 
     void FeedbackControl::run() {
         while (!channelIn.isClosed()) {
-            Nav_t nav{};
+            Nav nav{};
             channelIn.get(nav);
 
-            Control_t control{};
-            control.roll = headingControl(nav.state, nav.heading);
-            control.power = speedControl(nav.state, nav.speed);
-            control.pitch = altitudeControl(nav.state, nav.altitude);
-            control.state = nav.state;
+            Control control{};
+            control.roll = headingControl(nav.fusionResult, nav.heading);
+            control.power = speedControl(nav.fusionResult, nav.speed);
+            control.pitch = altitudeControl(nav.fusionResult, nav.altitude);
+            control.fusionResult = nav.fusionResult;
 
             channelOut.put(control);
         }
     }
 
-    auto FeedbackControl::speedControl(const State_t &state, si::Speed<> target) const -> si::Scalar<> {
-        if (target == 0.0F * si::speed || !state.loraRemote.isArmed) {
+    auto FeedbackControl::speedControl(const FusionResult &fusionResult, si::Speed<> target) const -> si::Scalar<> {
+        if (target == 0.0F * si::speed || !fusionResult.loraRemote.isArmed) {
             return 0;
         }
 
         static si::Meter<> diffSum = 0_meter;
-        static auto lastDiff = target - state.speed;
+        static auto lastDiff = target - fusionResult.state.speed;
         static auto lastTime = util::time::get();
         auto currTime = util::time::get();
         auto dt = static_cast<si::Second<>>(lastTime - currTime);
         lastTime = currTime;
 
-        auto deltaSpeed = target - state.speed;
+        auto deltaSpeed = target - fusionResult.state.speed;
         diffSum += deltaSpeed * dt;
 
         lastDiff = deltaSpeed;
 
-        // PI-Controller (I necessary to achieve stationary accuracy)
+        // PI-Controller ("I" necessary to achieve stationary accuracy)
         auto speedFeedback = deltaSpeed * FeedbackControl::SPEED_P + diffSum * FeedbackControl::SPEED_I;
 
         // Feedforward Term
@@ -60,8 +60,8 @@ namespace filter {
         return clamp<si::Scalar<>>(speedFeedback + speedFeedforward, 0.0F, 1.0F);
     }
 
-    auto FeedbackControl::headingControl(const State_t &state, si::Scalar<> target) const -> si::Scalar<> {
-        auto headingDiff = target - state.yaw;
+    auto FeedbackControl::headingControl(const FusionResult &fusionResult, si::Scalar<> target) const -> si::Scalar<> {
+        auto headingDiff = target - fusionResult.state.yaw;
         headingDiff = fmodf(headingDiff, 360);
         if (headingDiff > si::Scalar<>{180.0F}) {
             headingDiff -= 180.0F;
@@ -72,18 +72,18 @@ namespace filter {
         return clamp(roll, -HEADING_MAX_ROLL, HEADING_MAX_ROLL);
     }
 
-    auto FeedbackControl::altitudeControl(const State_t &state, si::Meter<> target) const -> si::Scalar<> {
-        auto deltaHeight = target - state.position.altitude;
+    auto FeedbackControl::altitudeControl(const FusionResult &fusionResult, si::Meter<> target) const -> si::Scalar<> {
+        auto deltaHeight = target - fusionResult.state.position.altitude;
         auto pitch = deltaHeight * FeedbackControl::ALTITUDE_P;
 
         return clamp(pitch, -ALTITUDE_MAX_PITCH, ALTITUDE_MAX_PITCH);
     }
 
-    InputChannel<Nav_t> &FeedbackControl::getChannelIn() {
+    InputChannel<Nav> &FeedbackControl::getChannelIn() {
         return this->channelIn;
     }
 
-    OutputChannel<Control_t> &FeedbackControl::getChannelOut() {
+    OutputChannel<Control> &FeedbackControl::getChannelOut() {
         return this->channelOut;
     }
 

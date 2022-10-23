@@ -19,24 +19,24 @@ namespace filter {
       public:
         FeedbackControl();
 
-        auto getChannelIn() -> InputChannel<Nav_t> &;
+        auto getChannelIn() -> InputChannel<Nav> &;
 
-        auto getChannelOut() -> OutputChannel<Control_t> &;
+        auto getChannelOut() -> OutputChannel<Control> &;
 
       private:
         void run() override;
 
-        [[nodiscard]] auto speedControl(const State_t &state, si::Speed<> target) const -> si::Scalar<>;
+        [[nodiscard]] auto speedControl(const FusionResult &fusionResult, si::Speed<> target) const -> si::Scalar<>;
 
-        [[nodiscard]] auto headingControl(const State_t &state, si::Scalar<> target) const -> si::Scalar<>;
+        [[nodiscard]] auto headingControl(const FusionResult &fusionResult, si::Scalar<> target) const -> si::Scalar<>;
 
-        [[nodiscard]] auto altitudeControl(const State_t &state, si::Meter<> target) const -> si::Scalar<>;
+        [[nodiscard]] auto altitudeControl(const FusionResult &fusionResult, si::Meter<> target) const -> si::Scalar<>;
 
         template<typename T>
         static auto clamp(T val, T min, T max) -> T;
 
-        InputChannel<Nav_t> channelIn;
-        OutputChannel<Control_t> channelOut;
+        InputChannel<Nav> channelIn;
+        OutputChannel<Control> channelOut;
 
         static constexpr auto SPEED_P = 1.0F / si::speed;
         static constexpr auto SPEED_I = 0.5F / si::meter;

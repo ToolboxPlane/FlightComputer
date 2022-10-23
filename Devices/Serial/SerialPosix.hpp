@@ -37,9 +37,9 @@ namespace device {
 
         void setStopBits(int stopBits);
 
-        auto getChannelIn() -> InputChannel<rcLib::Package> &;
+        auto getChannelIn() -> InputChannel<uint8_t> &;
 
-        auto getChannelOut() -> OutputChannel<rcLib::Package> &;
+        auto getChannelOut() -> OutputChannel<uint8_t> &;
 
         ~SerialPosix();
 
@@ -50,8 +50,8 @@ namespace device {
 
         int fd;
 
-        InputChannel<rcLib::Package> in;
-        OutputChannel<rcLib::Package> out;
+        InputChannel<uint8_t> in;
+        OutputChannel<uint8_t> out;
 
         static constexpr std::size_t BUF_SIZE = 512;
     };

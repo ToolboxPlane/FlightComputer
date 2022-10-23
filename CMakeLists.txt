@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(FlightComputer)
 
-find_package(Protobuf REQUIRED)
-include_directories(${Protobuf_INCLUDE_DIRS})
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif (NOT CMAKE_BUILD_TYPE)
@@ -26,8 +22,6 @@ endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=unused-but-set-parameter")
 
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS GroundStation.proto)
-
 set(SOURCES
         main.cpp
         Devices/rcLib/RadioControlProtocolCpp/rcLib.cpp
@@ -48,7 +42,6 @@ set(SOURCES
         Filters/Fusion/Lib/Calibration.cpp
         Filters/Navigation/Node/Navigation.cpp
         Filters/Navigation/Type/Waypoint_t.cpp
-        Filters/MeshManager/MeshManager.cpp
         Filters/OutputFilter/OutputFilter.cpp
         Filters/FeedbackControl/Node/FeedbackControl.cpp
         Utilities/Recording/NameProvider.cpp
@@ -60,7 +53,7 @@ set(SOURCES_PI ${SOURCES}
 
 set(SOURCES_NO_PI ${SOURCES})
 
-set(LIBS gps pthread stdc++fs SI ${Protobuf_LIBRARIES})
+set(LIBS gps pthread stdc++fs SI ToolboxPlaneMessages)
 
 if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++") # libstdc++6 is kind of fucked in Raspbian with GCC 10
@@ -75,3 +68,4 @@ endif ()
 add_definitions(-DSI_DEFAULT_TYPE=float)
 target_include_directories(${PROJECT_NAME} PUBLIC Utilities/SI)
 add_subdirectory(Utilities/SI)
+add_subdirectory(Filters/MessageCoding/Lib/Messages)

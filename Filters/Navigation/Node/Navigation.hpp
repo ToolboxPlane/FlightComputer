@@ -16,28 +16,28 @@ namespace filter {
       public:
         Navigation();
 
-        InputChannel<State_t> &getChannelStateIn();
+        InputChannel<FusionResult> &getChannelStateIn();
 
         InputChannel<Waypoint_t> &getChannelWaypointIn();
 
-        OutputChannel<Nav_t> &getChannelOut();
+        OutputChannel<Nav> &getChannelOut();
 
       private:
         void run() override;
 
-        InputChannel<State_t> stateIn;
+        InputChannel<FusionResult> stateIn;
         InputChannel<Waypoint_t> waypointIn;
-        OutputChannel<Nav_t> out;
+        OutputChannel<Nav> out;
 
-        void waypoint(const State_t &currentState, bool = false);
+        void waypoint(const FusionResult &fusionResult, bool = false);
 
-        void land(const State_t &state, bool reset = false);
+        void land(const FusionResult &state, bool reset = false);
 
-        void launch(const State_t &state, bool reset = false);
+        void launch(const FusionResult &state, bool reset = false);
 
-        void rth(const State_t &currentState, bool = false);
+        void rth(const FusionResult &fusionResult, bool = false);
 
-        void loiter(const State_t &state, bool reset = false);
+        void loiter(const FusionResult &state, bool reset = false);
 
         static constexpr si::Speed<> CRUISE_SPEED{20.0};
 

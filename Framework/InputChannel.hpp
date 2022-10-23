@@ -62,7 +62,7 @@ class InputChannel {
         }
     }
 
-    auto numAvailable() const -> std::size_t {
+    [[nodiscard]] auto numAvailable() const -> std::size_t {
         if (closed) {
             return 0;
         } else {
